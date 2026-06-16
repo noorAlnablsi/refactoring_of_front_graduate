@@ -10,12 +10,12 @@ import {
   Settings,
 } from 'lucide-react'
 import { ROUTES } from '../../constants/routes'
-import { canAccessQuestionBanks } from '../../lib/workspaceContext'
+import { canAccessQuestionBanks, canAccessSubjectsModule } from '../../lib/workspaceContext'
 import { useAuthStore } from '../../store/authStore'
 
 const baseNavItems = [
   { to: ROUTES.DASHBOARD, label: 'لوحة التحكم', icon: LayoutGrid, end: true },
-  { to: ROUTES.SUBJECTS, label: 'إدارة المواد', icon: BookOpen, end: false },
+  { to: ROUTES.SUBJECTS, label: 'إدارة المواد', icon: BookOpen, end: false, requiresSubjectsModule: true },
   { to: ROUTES.QUESTION_BANKS, label: 'بنوك الأسئلة', icon: FileQuestion, end: false, requiresQuestionBanks: true },
   { to: '#', label: 'الامتحانات', icon: ClipboardList, disabled: true },
   { to: '#', label: 'الإحصائيات', icon: BarChart3, disabled: true },
@@ -26,6 +26,7 @@ function Sidebar() {
   const navigate = useNavigate()
   const clearAuth = useAuthStore((s) => s.clearAuth)
   const navItems = baseNavItems.filter((item) => {
+    if (item.requiresSubjectsModule && !canAccessSubjectsModule()) return false
     if (!item.requiresQuestionBanks) return true
     return canAccessQuestionBanks()
   })

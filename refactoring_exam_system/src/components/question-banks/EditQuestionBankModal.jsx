@@ -1,6 +1,7 @@
 import { useMemo, useState } from 'react'
 import { X } from 'lucide-react'
-import { VISIBILITY_OPTIONS } from '../../lib/questionBanks'
+import { getVisibilityOptionsForWorkspace } from '../../lib/questionBanks'
+import { isInstitutionWorkspace } from '../../lib/workspaceContext'
 import { updateQuestionBank } from '../../services/questionBanks.service'
 import { useToastStore } from '../../store/toastStore'
 
@@ -21,6 +22,8 @@ function EditQuestionBankModal({ open, bank, onClose, onUpdated }) {
   const [description, setDescription] = useState(initial.description)
   const [visibility, setVisibility] = useState(initial.visibility)
   const [loading, setLoading] = useState(false)
+
+  const visibilityOptions = getVisibilityOptionsForWorkspace(isInstitutionWorkspace())
 
   if (!open || !bank) return null
 
@@ -72,7 +75,7 @@ function EditQuestionBankModal({ open, bank, onClose, onUpdated }) {
           <div className="space-y-2">
             <label className="text-sm font-semibold text-[#374151]">الخصوصية</label>
             <select value={visibility} onChange={(event) => setVisibility(event.target.value)} className={inputClassName}>
-              {VISIBILITY_OPTIONS.map((option) => (
+              {visibilityOptions.map((option) => (
                 <option key={option.value} value={option.value}>
                   {option.label}
                 </option>

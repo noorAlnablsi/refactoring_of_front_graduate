@@ -23,6 +23,14 @@ export function canAccessQuestionBanks() {
   return membership.role !== 'STUDENT'
 }
 
+export function canAccessSubjectsModule() {
+  const membership = getActiveMembership()
+  if (!membership) return false
+  if (membership.role === 'STUDENT') return false
+  if (membership.workspace?.kind === 'INSTITUTION' && membership.role === 'TEACHER') return false
+  return true
+}
+
 export function canCreateSubject() {
   const membership = getActiveMembership()
   if (!membership) return false
@@ -45,4 +53,11 @@ export function canAssignTeachers() {
 
 export function isInstitutionWorkspace() {
   return getActiveMembership()?.workspace?.kind === 'INSTITUTION'
+}
+
+export function canManageQuestionBank(bank) {
+  const membership = getActiveMembership()
+  if (!membership || !bank) return false
+  if (bank.created_by_membership_id === membership.membership_id) return true
+  return membership.is_owner || membership.role === 'ADMIN'
 }

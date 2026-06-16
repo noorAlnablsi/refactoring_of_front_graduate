@@ -5,6 +5,20 @@ export async function getMyQuestionBanks() {
   return data
 }
 
+export async function getWorkspaceQuestionBanks({ page = 1, perPage = 50 } = {}) {
+  const { data } = await api.get('/question-banks/workspace', {
+    params: { page, per_page: perPage },
+  })
+  return data
+}
+
+export async function getCommunityQuestionBanks({ page = 1, perPage = 50 } = {}) {
+  const { data } = await api.get('/question-banks/community', {
+    params: { page, per_page: perPage },
+  })
+  return data
+}
+
 export async function createQuestionBank(payload) {
   const { data } = await api.post('/question-banks', payload)
   return data

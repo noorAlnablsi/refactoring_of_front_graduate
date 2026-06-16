@@ -3,11 +3,16 @@ import { X } from 'lucide-react'
 import { assignTeacherToSubject } from '../../services/subjects.service'
 import { getWorkspaceTeachers } from '../../services/workspaces.service'
 import { useToastStore } from '../../store/toastStore'
+import {
+  canAssignWorkspaceTeacher,
+  getTeacherMembershipId,
+  isWorkspaceTeacherAssigned,
+} from '../../lib/workspaceTeachers'
 
 function AssignTeacherModalContent({ subjectId, assignedIds, onClose, onSuccess }) {
   const showToast = useToastStore((s) => s.showToast)
   const [teachers, setTeachers] = useState([])
-  const [selectedId, setSelectedId] = useState(null)
+  const [selectedTeacher, setSelectedTeacher] = useState(null)
   const [loading, setLoading] = useState(false)
   const [fetching, setFetching] = useState(true)
 
@@ -34,17 +39,28 @@ function AssignTeacherModalContent({ subjectId, assignedIds, onClose, onSuccess 
   }, [showToast])
 
   const availableTeachers = teachers.filter(
-    (t) => t.membership_id && !assignedIds.includes(t.membership_id),
+    (teacher) => !isWorkspaceTeacherAssigned(teacher, assignedIds),
+  )
+
+  const assignableTeachers = availableTeachers.filter(canAssignWorkspaceTeacher)
+  const missingMembershipIds = availableTeachers.some(
+    (teacher) => !getTeacherMembershipId(teacher),
   )
 
   const handleAssign = async () => {
-    if (!selectedId) {
+    if (!selectedTeacher) {
       showToast('يرجى اختيار معلم', 'error')
       return
     }
+
+    if (!canAssignWorkspaceTeacher(selectedTeacher)) {
+      showToast('تعذّر إسناد هذا المعلم — معرّف العضوية غير متوفر', 'error')
+      return
+    }
+
     setLoading(true)
     try {
-      await assignTeacherToSubject(subjectId, selectedId)
+      await assignTeacherToSubject(subjectId, selectedTeacher)
       showToast('تم إسناد المعلم بنجاح')
       onSuccess()
       onClose()
@@ -67,32 +83,46 @@ function AssignTeacherModalContent({ subjectId, assignedIds, onClose, onSuccess 
 
         {fetching ? (
           <p className="text-sm text-[#64748B]">جاري تحميل المعلمين...</p>
-        ) : teachers.length > 0 && availableTeachers.length === 0 ? (
-          <p className="text-sm text-[#64748B]">
-            {teachers.some((t) => !t.membership_id)
-              ? 'تعذّر تحميل معرّفات العضوية للمعلمين — تأكد أن API يُرجع membership_id'
-              : 'جميع المعلمين مسندون لهذه المادة'}
-          </p>
         ) : availableTeachers.length === 0 ? (
-          <p className="text-sm text-[#64748B]">لا يوجد معلمون متاحون للإسناد</p>
+          <p className="text-sm text-[#64748B]">
+            {teachers.length > 0
+              ? 'جميع المعلمين مسندون لهذه المادة'
+              : 'لا يوجد معلمون متاحون للإسناد'}
+          </p>
         ) : (
-          <div className="max-h-64 space-y-2 overflow-y-auto">
-            {availableTeachers.map((teacher) => (
-              <button
-                key={teacher.user_id}
-                type="button"
-                onClick={() => setSelectedId(teacher.membership_id)}
-                className={`flex w-full items-center justify-between rounded-xl px-4 py-3 text-right text-sm transition ${
-                  selectedId === teacher.membership_id
-                    ? 'bg-[#E8F7F6] ring-2 ring-[#2AA8A2]/35'
-                    : 'bg-[#F6F8F9] hover:bg-[#EEF2F3]'
-                }`}
-              >
-                <span className="font-semibold text-[#374151]">{teacher.full_name}</span>
-                <span className="text-xs text-[#94A3B8]">{teacher.email}</span>
-              </button>
-            ))}
-          </div>
+          <>
+            {missingMembershipIds && assignableTeachers.length === 0 ? (
+              <p className="mb-3 text-sm text-amber-700">
+                تعذّر تحميل معرّفات العضوية للمعلمين — تأكد أن API يُرجع membership_id
+              </p>
+            ) : null}
+            <div className="max-h-64 space-y-2 overflow-y-auto">
+              {availableTeachers.map((teacher) => {
+                const membershipId = getTeacherMembershipId(teacher)
+                const isSelected =
+                  selectedTeacher?.user_id === teacher.user_id ||
+                  (membershipId && selectedTeacher?.membership_id === membershipId)
+                const isDisabled = !canAssignWorkspaceTeacher(teacher)
+
+                return (
+                  <button
+                    key={teacher.user_id ?? membershipId}
+                    type="button"
+                    disabled={isDisabled}
+                    onClick={() => setSelectedTeacher(teacher)}
+                    className={`flex w-full items-center justify-between rounded-xl px-4 py-3 text-right text-sm transition ${
+                      isSelected
+                        ? 'bg-[#E8F7F6] ring-2 ring-[#2AA8A2]/35'
+                        : 'bg-[#F6F8F9] hover:bg-[#EEF2F3]'
+                    } ${isDisabled ? 'cursor-not-allowed opacity-60' : ''}`}
+                  >
+                    <span className="font-semibold text-[#374151]">{teacher.full_name}</span>
+                    <span className="text-xs text-[#94A3B8]">{teacher.email}</span>
+                  </button>
+                )
+              })}
+            </div>
+          </>
         )}
 
         <div className="mt-8 flex items-center justify-end gap-3">
@@ -102,7 +132,7 @@ function AssignTeacherModalContent({ subjectId, assignedIds, onClose, onSuccess 
           <button
             type="button"
             onClick={handleAssign}
-            disabled={loading || !selectedId}
+            disabled={loading || !selectedTeacher || !canAssignWorkspaceTeacher(selectedTeacher)}
             className="rounded-xl bg-[#2AA8A2] px-6 py-3 text-sm font-bold text-white disabled:opacity-70"
           >
             {loading ? 'جاري الإسناد...' : 'إسناد'}

@@ -1,8 +1,11 @@
 import { X } from 'lucide-react'
-import { VISIBILITY_OPTIONS } from '../../../lib/questionBanks'
+import { getVisibilityOptionsForWorkspace } from '../../../lib/questionBanks'
+import { isInstitutionWorkspace } from '../../../lib/workspaceContext'
 
 function PublishQuestionBankModal({ open, visibility, loading, onChangeVisibility, onClose, onPublish }) {
   if (!open) return null
+
+  const visibilityOptions = getVisibilityOptionsForWorkspace(isInstitutionWorkspace())
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/45 p-4">
@@ -16,7 +19,7 @@ function PublishQuestionBankModal({ open, visibility, loading, onChangeVisibilit
         <p className="text-sm text-[#64748B]">اختر من يمكنه رؤية بنك الأسئلة بعد نشره.</p>
 
         <div className="mt-5 grid gap-3 md:grid-cols-3">
-          {VISIBILITY_OPTIONS.map((option) => (
+          {visibilityOptions.map((option) => (
             <button
               key={option.value}
               type="button"

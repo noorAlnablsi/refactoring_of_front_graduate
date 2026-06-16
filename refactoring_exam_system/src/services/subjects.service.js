@@ -25,10 +25,21 @@ export async function getSubjectTeachers(subjectId) {
   return data
 }
 
-export async function assignTeacherToSubject(subjectId, membershipId) {
-  const { data } = await api.post(`/subjects/${subjectId}/teachers`, {
-    membership_id: membershipId,
-  })
+export async function assignTeacherToSubject(subjectId, teacherOrMembershipId) {
+  const body =
+    typeof teacherOrMembershipId === 'object'
+      ? teacherOrMembershipId.membership_id
+        ? { membership_id: teacherOrMembershipId.membership_id }
+        : teacherOrMembershipId.user_id
+          ? { user_id: teacherOrMembershipId.user_id }
+          : null
+      : { membership_id: teacherOrMembershipId }
+
+  if (!body) {
+    throw new Error('تعذّر تحديد المعلم — تأكد أن API يُرجع membership_id')
+  }
+
+  const { data } = await api.post(`/subjects/${subjectId}/teachers`, body)
   return data
 }
 
