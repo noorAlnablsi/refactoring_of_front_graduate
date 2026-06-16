@@ -1,0 +1,76 @@
+import { useEffect, useState } from 'react'
+import { useNavigate } from 'react-router-dom'
+import AuthShell from '../components/auth/AuthShell'
+import MembershipSelector from '../components/auth/MembershipSelector'
+import { ROUTES } from '../constants/routes'
+import { useAuthStore } from '../store/authStore'
+import pathSelectionHero from '../assets/auth/path-selection-hero.png'
+
+function PathSelectionPage() {
+  const navigate = useNavigate()
+  const access_token = useAuthStore((s) => s.access_token)
+  const memberships = useAuthStore((s) => s.memberships)
+  const requires_workspace_selection = useAuthStore((s) => s.requires_workspace_selection)
+  const setSelectedMembership = useAuthStore((s) => s.setSelectedMembership)
+  const [selectedId, setSelectedId] = useState(null)
+  const [error, setError] = useState('')
+
+  useEffect(() => {
+    if (!access_token) {
+      navigate(ROUTES.LOGIN, { replace: true })
+      return
+    }
+
+    const needsSelection = requires_workspace_selection || memberships.length > 1
+    if (!needsSelection || memberships.length === 0) {
+      navigate(ROUTES.DASHBOARD, { replace: true })
+    }
+  }, [access_token, memberships.length, requires_workspace_selection, navigate])
+
+  const handleGo = () => {
+    if (!selectedId) {
+      setError('يرجى اختيار مسار للمتابعة')
+      return
+    }
+
+    setSelectedMembership(selectedId)
+    navigate(ROUTES.DASHBOARD)
+  }
+
+  if (!access_token || memberships.length <= 1) return null
+
+  return (
+    <AuthShell
+      heroImage={pathSelectionHero}
+      heroAlt="اصقل تقييمك الأكاديمي"
+      heroImagePosition="right center"
+    >
+      <h1 className="text-right text-3xl font-extrabold text-[#2A3433] md:text-4xl">!أهلاً بعودتك</h1>
+      <p className="mt-3 text-right text-sm leading-7 text-[#6B7280] md:text-base">
+        لديك عدة مسارات، اختر أحدها للمتابعة
+      </p>
+
+      <div className="mt-8">
+        <MembershipSelector
+          memberships={memberships}
+          selectedId={selectedId}
+          onSelect={(id) => {
+            setSelectedId(id)
+            setError('')
+          }}
+        />
+        {error ? <p className="mt-2 text-sm text-red-600">{error}</p> : null}
+      </div>
+
+      <button
+        type="button"
+        onClick={handleGo}
+        className="mt-8 h-12 w-full rounded-xl bg-[#2AA8A2] text-base font-bold text-white shadow-[0_12px_20px_rgba(42,168,162,0.22)] transition hover:opacity-95 md:w-[448px]"
+      >
+        ذهاب
+      </button>
+    </AuthShell>
+  )
+}
+
+export default PathSelectionPage
