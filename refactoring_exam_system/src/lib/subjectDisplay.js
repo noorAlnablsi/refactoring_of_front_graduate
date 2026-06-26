@@ -61,6 +61,56 @@ export function formatStatValue(value) {
   return value
 }
 
+function readCount(subject, keys, arrayKeys = []) {
+  for (const key of keys) {
+    const parts = key.split('.')
+    let value = subject
+    for (const part of parts) {
+      value = value?.[part]
+    }
+    if (value != null && value !== '') {
+      return Number(value)
+    }
+  }
+
+  for (const key of arrayKeys) {
+    if (Array.isArray(subject?.[key])) {
+      return subject[key].length
+    }
+  }
+
+  return null
+}
+
+export function getSubjectTeachersCount(subject) {
+  return readCount(
+    subject,
+    ['teachers_count', 'teacher_count', 'stats.teachers_count', 'counts.teachers'],
+    ['teachers'],
+  )
+}
+
+export function getSubjectQuestionBanksCount(subject) {
+  return readCount(
+    subject,
+    ['question_banks_count', 'banks_count', 'stats.question_banks_count', 'counts.question_banks'],
+    ['question_banks'],
+  )
+}
+
+export function getSubjectTestsCount(subject) {
+  return readCount(
+    subject,
+    ['tests_count', 'exams_count', 'stats.tests_count', 'counts.tests'],
+    ['tests', 'exams'],
+  )
+}
+
+export function formatSubjectStatCount(value) {
+  if (value === null || value === undefined) return '—'
+  return formatStatValue(value)
+}
+
 export function sortByRecentDate(items, dateKeys = ['assigned_at', 'created_at', 'updated_at']) {
   return [...items].sort((a, b) => {
     const dateA = dateKeys.map((key) => a[key]).find(Boolean)
@@ -70,4 +120,23 @@ export function sortByRecentDate(items, dateKeys = ['assigned_at', 'created_at',
     if (!dateB) return -1
     return new Date(dateB) - new Date(dateA)
   })
+}
+
+function getSubjectTimestamp(subject) {
+  const value = subject?.created_at || subject?.updated_at
+  return value ? new Date(value).getTime() : 0
+}
+
+export function sortSubjects(subjects = [], sortKey = 'newest') {
+  const list = [...subjects]
+
+  if (sortKey === 'name') {
+    return list.sort((a, b) => (a.name || '').localeCompare(b.name || '', 'ar'))
+  }
+
+  if (sortKey === 'oldest') {
+    return list.sort((a, b) => getSubjectTimestamp(a) - getSubjectTimestamp(b))
+  }
+
+  return list.sort((a, b) => getSubjectTimestamp(b) - getSubjectTimestamp(a))
 }

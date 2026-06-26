@@ -6,7 +6,6 @@ import PreviewQuestionsModal from '../../components/question-banks/editor/Previe
 import PublishQuestionBankModal from '../../components/question-banks/editor/PublishQuestionBankModal'
 import QuestionBuilderForm from '../../components/question-banks/editor/QuestionBuilderForm'
 import QuestionsList from '../../components/question-banks/editor/QuestionsList'
-import TopicsPlaceholder from '../../components/question-banks/editor/TopicsPlaceholder'
 import { ROUTES } from '../../constants/routes'
 import { canAccessQuestionBanks } from '../../lib/workspaceContext'
 import { isRichTextEmpty } from '../../lib/richText'
@@ -16,6 +15,8 @@ import {
   getQuestionBankQuestions,
   updateQuestionBank,
 } from '../../services/questionBanks.service'
+import { validateQuestionChoiceRules } from '../../lib/questionBanks'
+import { getSubjectTopics } from '../../services/subjects.service'
 import { useToastStore } from '../../store/toastStore'
 
 function createDefaultQuestion() {
@@ -24,6 +25,7 @@ function createDefaultQuestion() {
     type_code: 'MCQ',
     difficulty: 'EASY',
     points: 1,
+    topic_id: '',
     choices: [
       { body: '', is_correct: true },
       { body: '', is_correct: false },
@@ -46,6 +48,10 @@ function normalizeQuestionForApi(question) {
     }))
   }
 
+  if (question.topic_id) {
+    payload.topic_id = Number(question.topic_id)
+  }
+
   return payload
 }
 
@@ -63,6 +69,7 @@ function QuestionBankEditorPage() {
   const [publishOpen, setPublishOpen] = useState(false)
   const [publishVisibility, setPublishVisibility] = useState('PRIVATE')
   const [publishing, setPublishing] = useState(false)
+  const [topics, setTopics] = useState([])
 
   useEffect(() => {
     if (!id) return
@@ -79,6 +86,19 @@ function QuestionBankEditorPage() {
         setBank(selectedBank)
         setPublishVisibility(selectedBank.visibility || 'PRIVATE')
         setServerQuestions(questionsData.questions || [])
+        if (selectedBank.subject_id) {
+          getSubjectTopics(selectedBank.subject_id)
+            .then((topicsData) => {
+              if (cancelled) return
+              setTopics(topicsData.topics || [])
+            })
+            .catch(() => {
+              if (cancelled) return
+              setTopics([])
+            })
+        } else {
+          setTopics([])
+        }
       })
       .catch((err) => {
         if (cancelled) return
@@ -120,11 +140,15 @@ function QuestionBankEditorPage() {
         showToast('جميع الخيارات يجب أن تكون مكتملة', 'error')
         return false
       }
-      const correctCount = draftQuestion.choices.filter((choice) => choice.is_correct).length
-      if (correctCount === 0) {
-        showToast('حدد إجابة صحيحة واحدة على الأقل', 'error')
+      const choiceError = validateQuestionChoiceRules(draftQuestion.type_code, draftQuestion.choices)
+      if (choiceError) {
+        showToast(choiceError, 'error')
         return false
       }
+    }
+    if (topics.length > 0 && !draftQuestion.topic_id) {
+      showToast('اختر المحور للسؤال', 'error')
+      return false
     }
     return true
   }
@@ -165,13 +189,13 @@ function QuestionBankEditorPage() {
   return (
     <div className="space-y-6">
       <BankInfoSummary bank={bank} />
-      <TopicsPlaceholder />
 
       <QuestionBuilderForm
         value={draftQuestion}
         onChange={setDraftQuestion}
         onSave={handleSaveQuestion}
         onAddAnother={handleAddAnother}
+        topics={topics}
       />
 
       <QuestionsList questions={allQuestions} />

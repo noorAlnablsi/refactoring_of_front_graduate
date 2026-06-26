@@ -51,6 +51,28 @@ export function canAssignTeachers() {
   return membership.is_owner || membership.role === 'ADMIN'
 }
 
+export function canSendInvites() {
+  const membership = getActiveMembership()
+  if (!membership) return false
+  if (membership.role === 'STUDENT') return false
+  if (membership.workspace?.kind === 'SOLO') return true
+  return membership.is_owner || membership.role === 'ADMIN'
+}
+
+export function canAccessExams() {
+  const membership = getActiveMembership()
+  if (!membership) return false
+  return membership.role !== 'STUDENT'
+}
+
+export function canCreateExam() {
+  return canAccessExams()
+}
+
+export function canManageSubjectTopics() {
+  return canCreateSubject()
+}
+
 export function isInstitutionWorkspace() {
   return getActiveMembership()?.workspace?.kind === 'INSTITUTION'
 }

@@ -38,6 +38,7 @@ function SubjectDetailsPage() {
     teachers,
     questionBanks,
     questionBanksCount,
+    topics,
     studentsCount,
     loading,
     error,
@@ -85,7 +86,9 @@ function SubjectDetailsPage() {
           subject={subject}
           teachers={teachers}
           questionBanks={questionBanks}
+          topics={topics}
           onViewAllTeachers={() => setActiveTab('teachers')}
+          onRefreshTopics={refetch}
         />
       ) : null}
 

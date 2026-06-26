@@ -3,12 +3,28 @@ import { Plus } from 'lucide-react'
 import CreateSubjectModal from '../../components/subjects/CreateSubjectModal'
 import EditSubjectModal from '../../components/subjects/EditSubjectModal'
 import SubjectStatsCards from '../../components/subjects/SubjectStatsCards'
+import SubjectsPagination from '../../components/subjects/SubjectsPagination'
+import SubjectsSortSelect from '../../components/subjects/SubjectsSortSelect'
 import SubjectsTable from '../../components/subjects/SubjectsTable'
 import { canCreateSubject } from '../../lib/workspaceContext'
 import { useSubjects } from '../../hooks/subjects/useSubjects'
+import { useSubjectsListView } from '../../hooks/subjects/useSubjectsListView'
+import { useWorkspaceTeachersCount } from '../../hooks/subjects/useWorkspaceTeachersCount'
 
 function SubjectsPage() {
   const { subjects, count, loading, error, refetch } = useSubjects()
+  const { teachersCount, loadingTeachers } = useWorkspaceTeachersCount()
+  const {
+    sortKey,
+    setSortKey,
+    page,
+    setPage,
+    paginatedSubjects,
+    totalPages,
+    totalCount,
+    rangeStart,
+    rangeEnd,
+  } = useSubjectsListView(subjects)
   const [createOpen, setCreateOpen] = useState(false)
   const [editOpen, setEditOpen] = useState(false)
   const [selectedSubject, setSelectedSubject] = useState(null)
@@ -40,15 +56,29 @@ function SubjectsPage() {
         ) : null}
       </div>
 
-      <SubjectStatsCards subjectsCount={count} />
+      <SubjectStatsCards
+        subjectsCount={count}
+        teachersCount={teachersCount}
+        teachersLoading={loadingTeachers}
+      />
 
       {error ? <p className="text-sm text-red-600">{error}</p> : null}
 
-      <SubjectsTable subjects={subjects} loading={loading} onEdit={handleEdit} />
+      {!loading && totalCount > 0 ? (
+        <div className="flex justify-end">
+          <SubjectsSortSelect value={sortKey} onChange={setSortKey} />
+        </div>
+      ) : null}
 
-      <p className="text-center text-sm text-[#94A3B8]">
-        عرض {subjects.length} من أصل {count} مادة
-      </p>
+      <SubjectsTable subjects={paginatedSubjects} loading={loading} onEdit={handleEdit} />
+
+      <SubjectsPagination page={page} totalPages={totalPages} onPageChange={setPage} />
+
+      {!loading && totalCount > 0 ? (
+        <p className="text-center text-sm text-[#94A3B8]">
+          عرض {rangeStart}–{rangeEnd} من أصل {count || totalCount} مادة
+        </p>
+      ) : null}
 
       <CreateSubjectModal open={createOpen} onClose={() => setCreateOpen(false)} onSuccess={refetch} />
 

@@ -25,6 +25,7 @@ export function useOtpVerification() {
   const isLeavingRef = useRef(false)
 
   const isStudentFlow = registration_flow === REGISTRATION_FLOW.STUDENT
+  const isInviteFlow = registration_flow === REGISTRATION_FLOW.INVITE
 
   useEffect(() => {
     if (isLeavingRef.current) return
@@ -32,16 +33,22 @@ export function useOtpVerification() {
     if (!email) {
       if (isStudentFlow) {
         navigate(ROUTES.STUDENT_REGISTER, { replace: true })
+      } else if (isInviteFlow) {
+        navigate(ROUTES.HOME, { replace: true })
       } else {
         navigate(ROUTES.REGISTER_SELECT_ROLE, { replace: true })
       }
       return
     }
 
-    if (isStudentFlow && !student_api_completed) {
-      navigate(ROUTES.STUDENT_JOIN_CODE, { replace: true })
+    if ((isStudentFlow || isInviteFlow) && !student_api_completed) {
+      if (isStudentFlow) {
+        navigate(ROUTES.STUDENT_JOIN_CODE, { replace: true })
+      } else {
+        navigate(ROUTES.HOME, { replace: true })
+      }
     }
-  }, [email, isStudentFlow, student_api_completed, navigate])
+  }, [email, isStudentFlow, isInviteFlow, student_api_completed, navigate])
 
   useEffect(() => {
     if (cooldown <= 0) return undefined
@@ -69,12 +76,16 @@ export function useOtpVerification() {
         setVerifyResult(result)
         setSuccessMessage('تم التحقق بنجاح')
 
-        if (isStudentFlow) {
+        if (isStudentFlow || isInviteFlow) {
           const registeredEmail = email
           isLeavingRef.current = true
           navigate(ROUTES.LOGIN, {
             replace: true,
-            state: { fromRegistration: true, email: registeredEmail, isStudent: true },
+            state: {
+              fromRegistration: true,
+              email: registeredEmail,
+              isStudent: isStudentFlow,
+            },
           })
           reset()
           return
@@ -96,6 +107,7 @@ export function useOtpVerification() {
     [
       email,
       isStudentFlow,
+      isInviteFlow,
       navigate,
       otpValue,
       reset,

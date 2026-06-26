@@ -30,10 +30,6 @@ export function useRegisterFlow() {
         workspace_kind: store.workspace_kind,
         workspace_name,
         slug: generateSlug(workspace_name),
-        city: '',
-        country: '',
-        description: '',
-        website_url: '',
       }
 
       const response = await register(payload)

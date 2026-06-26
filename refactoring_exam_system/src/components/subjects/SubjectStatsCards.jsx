@@ -1,4 +1,6 @@
 import { BookOpen, ClipboardList, Users } from 'lucide-react'
+import { formatStatValue } from '../../lib/subjectDisplay'
+import { isInstitutionWorkspace } from '../../lib/workspaceContext'
 
 function StatCard({ label, value, icon: Icon, iconBg, badge }) {
   return (
@@ -17,7 +19,15 @@ function StatCard({ label, value, icon: Icon, iconBg, badge }) {
   )
 }
 
-function SubjectStatsCards({ subjectsCount }) {
+function SubjectStatsCards({ subjectsCount, teachersCount, teachersLoading }) {
+  const teachersValue = teachersLoading
+    ? '…'
+    : !isInstitutionWorkspace()
+      ? '—'
+      : teachersCount == null
+        ? '—'
+        : formatStatValue(teachersCount)
+
   return (
     <div className="grid gap-4 md:grid-cols-3">
       <StatCard
@@ -29,10 +39,9 @@ function SubjectStatsCards({ subjectsCount }) {
       />
       <StatCard
         label="المعلمون المعينون"
-        value="—"
+        value={teachersValue}
         icon={Users}
         iconBg="bg-blue-50 text-blue-500"
-        badge="+4 جديد"
       />
       <StatCard
         label="إجمالي الاختبارات"

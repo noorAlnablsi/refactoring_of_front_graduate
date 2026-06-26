@@ -23,6 +23,12 @@ function RegisterSelectRolePage() {
     setRegistrationFlow(REGISTRATION_FLOW.INSTITUTION)
   }, [setRegistrationFlow])
 
+  useEffect(() => {
+    if (!store.workspace_kind) {
+      setWorkspaceKind(WORKSPACE_KIND.INSTITUTION)
+    }
+  }, [store.workspace_kind, setWorkspaceKind])
+
   const validate = () => {
     const nextErrors = {}
 

@@ -6,6 +6,7 @@ export const WORKSPACE_KIND = {
 export const REGISTRATION_FLOW = {
   INSTITUTION: 'institution',
   STUDENT: 'student',
+  INVITE: 'invite',
 }
 
 export const WELCOME_SELECTION = {

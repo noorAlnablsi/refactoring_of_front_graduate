@@ -13,7 +13,7 @@ export const VISIBILITY_OPTIONS = [
 export const QUESTION_TYPE_OPTIONS = [
   { value: 'MCQ', label: 'اختيار واحد' },
   { value: 'TRUE_FALSE', label: 'صح / خطأ' },
-  { value: 'MULTI_SELECT', label: 'متعدد الخيارات' },
+  { value: 'MULTI_SELECT', label: 'خيارات متعددة' },
   { value: 'ESSAY', label: 'مقالي' },
 ]
 
@@ -38,6 +38,29 @@ export function getDifficultyLabel(value) {
 
 export function getQuestionTypeLabel(value) {
   return QUESTION_TYPE_OPTIONS.find((item) => item.value === value)?.label || value || '—'
+}
+
+/** Returns an Arabic error message, or empty string when choice rules are satisfied. */
+export function validateQuestionChoiceRules(typeCode, choices = []) {
+  if (typeCode === 'ESSAY') return ''
+
+  const correctCount = choices.filter((choice) => choice.is_correct).length
+
+  if (typeCode === 'MULTI_SELECT') {
+    if (correctCount < 2) {
+      return 'خيارات متعددة: حدد إجابتين صحيحتين على الأقل'
+    }
+    return ''
+  }
+
+  if (typeCode === 'MCQ' || typeCode === 'TRUE_FALSE') {
+    if (correctCount !== 1) {
+      return 'اختيار واحد: حدد إجابة صحيحة واحدة فقط'
+    }
+    return ''
+  }
+
+  return ''
 }
 
 export function filterActiveBanks(banks = []) {
@@ -78,4 +101,32 @@ export function formatDate(dateValue) {
   const date = new Date(dateValue)
   if (Number.isNaN(date.getTime())) return '—'
   return date.toLocaleDateString('ar-EG')
+}
+
+export function formatBankCardDate(dateValue) {
+  if (!dateValue) return '—'
+  const date = new Date(dateValue)
+  if (Number.isNaN(date.getTime())) return '—'
+  return date.toLocaleDateString('ar-EG', {
+    day: 'numeric',
+    month: 'long',
+    year: 'numeric',
+  })
+}
+
+export function getBankQuestionsCount(bank) {
+  const value =
+    bank?.questions_count ??
+    bank?.question_count ??
+    bank?.total_questions ??
+    bank?.questions?.length
+
+  if (value == null || value === '') return null
+  return Number(value)
+}
+
+export function formatBankQuestionsCount(bank) {
+  const count = getBankQuestionsCount(bank)
+  if (count == null || Number.isNaN(count)) return '—'
+  return `${count.toLocaleString('ar-EG')} سؤالاً`
 }

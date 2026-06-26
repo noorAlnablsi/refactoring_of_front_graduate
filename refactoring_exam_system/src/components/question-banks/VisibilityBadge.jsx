@@ -9,7 +9,7 @@ const toneByVisibility = {
 function VisibilityBadge({ value }) {
   return (
     <span
-      className={`rounded-md px-2 py-1 text-xs font-bold ${toneByVisibility[value] || 'bg-[#F1F5F9] text-[#475569]'}`}
+      className={`rounded-lg px-2.5 py-1 text-xs font-bold ${toneByVisibility[value] || 'bg-[#F1F5F9] text-[#475569]'}`}
     >
       {getVisibilityLabel(value)}
     </span>

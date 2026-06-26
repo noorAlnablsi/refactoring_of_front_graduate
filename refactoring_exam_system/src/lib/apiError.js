@@ -1,8 +1,56 @@
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://127.0.0.1:5000'
 
+const FIELD_LABELS = {
+  full_name: 'الاسم الكامل',
+  email: 'البريد الإلكتروني',
+  phone_number: 'رقم التواصل',
+  password: 'كلمة المرور',
+  workspace_kind: 'نوع الحساب',
+  workspace_name: 'اسم المؤسسة',
+  slug: 'المعرّف',
+  join_code: 'كود الانضمام',
+  otp: 'رمز التحقق',
+  auto_distribute_scores: 'تفعيل التوزيع التلقائي للعلامات',
+  'scoring_config.auto_distribute_scores': 'تفعيل التوزيع التلقائي للعلامات',
+  subject_id: 'المادة',
+}
+
+function formatValidationErrors(errors) {
+  if (!errors || typeof errors !== 'object' || Array.isArray(errors)) return null
+
+  const parts = []
+
+  for (const [field, messages] of Object.entries(errors)) {
+    const label = FIELD_LABELS[field] || field
+    const values = Array.isArray(messages) ? messages : [messages]
+
+    for (const message of values) {
+      if (!message) continue
+      parts.push(`${label}: ${message}`)
+    }
+  }
+
+  return parts.length ? parts.join(' • ') : null
+}
+
 function readResponseMessage(data) {
   if (!data) return null
   if (typeof data === 'string') return data
+
+  const validationMessage = formatValidationErrors(data.errors)
+  if (validationMessage) return validationMessage
+
+  if (Array.isArray(data.errors) && data.errors.length) {
+    return data.errors
+      .map((item) => {
+        if (typeof item === 'string') return item
+        if (item?.msg) return item.msg
+        if (item?.message) return item.message
+        return JSON.stringify(item)
+      })
+      .join(' • ')
+  }
+
   return data.message || data.error || data.detail || null
 }
 

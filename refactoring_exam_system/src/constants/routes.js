@@ -7,6 +7,9 @@ export const ROUTES = {
   PATH_SELECTION: '/path-selection',
   SUBJECTS: '/subjects',
   QUESTION_BANKS: '/question-banks',
+  EXAMS: '/exams',
+  EXAM_CREATE: '/exams/new',
+  EXAM_EDIT: '/exams/:id/edit',
 
   REGISTER: '/register',
   REGISTER_SELECT_ROLE: '/register/select-role',
@@ -22,4 +25,8 @@ export const ROUTES = {
 
   STUDENT_REGISTER: '/student/register',
   STUDENT_JOIN_CODE: '/student/join-code',
+
+  INVITE_PREVIEW: '/invites/:token',
+  INVITE_REGISTER: '/invites/:token/register',
+  INVITE_ACCEPT: '/invites/:token/accept',
 }

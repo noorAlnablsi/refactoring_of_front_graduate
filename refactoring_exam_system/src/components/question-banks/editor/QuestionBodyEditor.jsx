@@ -40,7 +40,15 @@ const defaultActiveFormats = {
   paragraphLtr: false,
 }
 
-function QuestionBodyEditor({ value, typeCode, onChange, onTypeChange }) {
+function QuestionBodyEditor({
+  value,
+  typeCode,
+  onChange,
+  onTypeChange,
+  topics = [],
+  topicId = '',
+  onTopicChange,
+}) {
   const editorRef = useRef(null)
   const lastSyncedHtml = useRef(value)
   const [activeFormats, setActiveFormats] = useState(defaultActiveFormats)
@@ -117,12 +125,22 @@ function QuestionBodyEditor({ value, typeCode, onChange, onTypeChange }) {
 
           <div className="relative">
             <select
-              value=""
-              disabled
-              className={`${toolbarSelectClassName} cursor-not-allowed opacity-80`}
+              value={topicId ?? ''}
+              onChange={(event) =>
+                onTopicChange?.(event.target.value ? Number(event.target.value) : '')
+              }
+              disabled={topics.length === 0}
+              className={`${toolbarSelectClassName} ${
+                topics.length === 0 ? 'cursor-not-allowed opacity-80' : ''
+              }`}
               aria-label="الموضوع"
             >
               <option value="">الموضوع</option>
+              {topics.map((topic) => (
+                <option key={topic.id} value={topic.id}>
+                  {topic.name}
+                </option>
+              ))}
             </select>
             <ChevronDown className="pointer-events-none absolute right-2 top-1/2 h-4 w-4 -translate-y-1/2 text-[#2AA8A2]" />
           </div>

@@ -19,6 +19,11 @@ import SubjectsPage from './pages/subjects/SubjectsPage'
 import SubjectDetailsPage from './pages/subjects/SubjectDetailsPage'
 import QuestionBanksPage from './pages/question-banks/QuestionBanksPage'
 import QuestionBankEditorPage from './pages/question-banks/QuestionBankEditorPage'
+import ExamsPage from './pages/exams/ExamsPage'
+import ExamWizardPage, { ExamCreatePage } from './pages/exams/ExamWizardPage'
+import InvitePreviewPage from './pages/invites/InvitePreviewPage'
+import InviteRegisterPage from './pages/invites/InviteRegisterPage'
+import InviteAcceptPage from './pages/invites/InviteAcceptPage'
 import ForgotPasswordPage from './pages/auth/ForgotPasswordPage'
 import ForgotPasswordOtpPage from './pages/auth/ForgotPasswordOtpPage'
 import ResetPasswordPage from './pages/auth/ResetPasswordPage'
@@ -45,6 +50,9 @@ function App() {
           <Route path={`${ROUTES.SUBJECTS}/:id`} element={<SubjectDetailsPage />} />
           <Route path={ROUTES.QUESTION_BANKS} element={<QuestionBanksPage />} />
           <Route path={`${ROUTES.QUESTION_BANKS}/:id/editor`} element={<QuestionBankEditorPage />} />
+          <Route path={ROUTES.EXAMS} element={<ExamsPage />} />
+          <Route path={ROUTES.EXAM_CREATE} element={<ExamCreatePage />} />
+          <Route path={ROUTES.EXAM_EDIT} element={<ExamWizardPage />} />
         </Route>
       </Route>
 
@@ -57,6 +65,10 @@ function App() {
 
       <Route path={ROUTES.STUDENT_REGISTER} element={<StudentRegisterPage />} />
       <Route path={ROUTES.STUDENT_JOIN_CODE} element={<StudentJoinCodePage />} />
+
+      <Route path={ROUTES.INVITE_PREVIEW} element={<InvitePreviewPage />} />
+      <Route path={ROUTES.INVITE_REGISTER} element={<InviteRegisterPage />} />
+      <Route path={ROUTES.INVITE_ACCEPT} element={<InviteAcceptPage />} />
 
       <Route path="*" element={<Navigate to={ROUTES.HOME} replace />} />
     </Routes>

@@ -35,6 +35,28 @@ export const useAuthStore = create(
 
       setSelectedMembership: (selected_membership_id) => set({ selected_membership_id }),
 
+      appendMembership: (membership) =>
+        set((state) => {
+          const exists = state.memberships.some(
+            (item) => item.membership_id === membership.membership_id,
+          )
+          const memberships = exists
+            ? state.memberships.map((item) =>
+                item.membership_id === membership.membership_id ? { ...item, ...membership } : item,
+              )
+            : [...state.memberships, membership]
+
+          const hasMultipleMemberships = memberships.length > 1
+
+          return {
+            memberships,
+            selected_membership_id: hasMultipleMemberships
+              ? null
+              : membership.membership_id,
+            requires_workspace_selection: hasMultipleMemberships,
+          }
+        }),
+
       clearAuth: () => set({ ...initialState }),
     }),
     {

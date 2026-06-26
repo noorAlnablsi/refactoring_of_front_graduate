@@ -1,8 +1,52 @@
 import api from '../lib/axios'
+import {
+  getSubjectQuestionBanksCount,
+  getSubjectTeachersCount,
+} from '../lib/subjectDisplay'
 
 export async function getSubjects() {
   const { data } = await api.get('/subjects')
   return data
+}
+
+async function fetchSubjectListStats(subjectId) {
+  const [teachersResult, banksResult] = await Promise.allSettled([
+    getSubjectTeachers(subjectId),
+    getSubjectQuestionBanks(subjectId),
+  ])
+
+  const teachersData = teachersResult.status === 'fulfilled' ? teachersResult.value : null
+  const banksData = banksResult.status === 'fulfilled' ? banksResult.value : null
+
+  return {
+    teachers_count: teachersData?.count ?? teachersData?.teachers?.length ?? 0,
+    question_banks_count: banksData?.count ?? banksData?.question_banks?.length ?? 0,
+  }
+}
+
+export async function getSubjectsWithStats() {
+  const data = await getSubjects()
+  const subjects = data.subjects || []
+
+  const enrichedSubjects = await Promise.all(
+    subjects.map(async (subject) => {
+      const teachersCount = getSubjectTeachersCount(subject)
+      const banksCount = getSubjectQuestionBanksCount(subject)
+
+      if (teachersCount != null && banksCount != null) {
+        return subject
+      }
+
+      const stats = await fetchSubjectListStats(subject.id)
+      return {
+        ...subject,
+        teachers_count: teachersCount ?? stats.teachers_count,
+        question_banks_count: banksCount ?? stats.question_banks_count,
+      }
+    }),
+  )
+
+  return { ...data, subjects: enrichedSubjects }
 }
 
 export async function createSubject(payload) {
@@ -55,5 +99,25 @@ export async function getSubjectQuestionBanks(subjectId) {
 
 export async function getSubjectStudents(subjectId) {
   const { data } = await api.get(`/subjects/${subjectId}/students`)
+  return data
+}
+
+export async function getSubjectTopics(subjectId) {
+  const { data } = await api.get(`/subjects/${subjectId}/topics`)
+  return data
+}
+
+export async function createSubjectTopic(subjectId, payload) {
+  const { data } = await api.post(`/subjects/${subjectId}/topics`, payload)
+  return data
+}
+
+export async function updateSubjectTopic(subjectId, topicId, payload) {
+  const { data } = await api.patch(`/subjects/${subjectId}/topics/${topicId}`, payload)
+  return data
+}
+
+export async function deleteSubjectTopic(subjectId, topicId) {
+  const { data } = await api.delete(`/subjects/${subjectId}/topics/${topicId}`)
   return data
 }

@@ -12,6 +12,14 @@ const api = axios.create({
   },
 })
 
+function isInvitePublicRoute(url = '') {
+  return (
+    /\/invites\/[^/]+$/.test(url) ||
+    /\/invites\/[^/]+\/register$/.test(url) ||
+    /\/invites\/[^/]+\/reject$/.test(url)
+  )
+}
+
 function isAuthRoute(url = '') {
   return (
     url.includes('/auth/login') ||
@@ -27,7 +35,7 @@ function isAuthRoute(url = '') {
 api.interceptors.request.use(async (config) => {
   const url = config.url || ''
 
-  if (!isAuthRoute(url)) {
+  if (!isAuthRoute(url) && !isInvitePublicRoute(url)) {
     try {
       const token = await ensureValidAccessToken()
       if (token) {
@@ -38,9 +46,11 @@ api.interceptors.request.use(async (config) => {
     }
   }
 
-  const workspaceId = getWorkspaceId()
-  if (workspaceId) {
-    config.headers['X-Workspace-Id'] = String(workspaceId)
+  if (!isAuthRoute(url) && !isInvitePublicRoute(url)) {
+    const workspaceId = getWorkspaceId()
+    if (workspaceId) {
+      config.headers['X-Workspace-Id'] = String(workspaceId)
+    }
   }
 
   return config

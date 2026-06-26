@@ -6,13 +6,21 @@ import {
   sortByRecentDate,
 } from '../../../lib/subjectDisplay'
 import TeacherAvatar from './TeacherAvatar'
+import SubjectTopicsSection from './SubjectTopicsSection'
 
 const placeholderExams = [
   { id: 1, name: 'اختبار الميكانيكا', status: 'completed' },
   { id: 2, name: 'الديناميكا الحرارية', status: 'active' },
 ]
 
-function SubjectOverviewTab({ subject, teachers, questionBanks, onViewAllTeachers }) {
+function SubjectOverviewTab({
+  subject,
+  teachers,
+  questionBanks,
+  topics,
+  onViewAllTeachers,
+  onRefreshTopics,
+}) {
   const recentTeachers = sortByRecentDate(teachers).slice(0, 2)
   const recentBanks = sortByRecentDate(questionBanks).slice(0, 3)
 
@@ -26,6 +34,12 @@ function SubjectOverviewTab({ subject, teachers, questionBanks, onViewAllTeacher
               'لا يوجد وصف مفصل لهذه المادة حالياً. يمكنك إضافة وصف يوضح أهداف المادة ومخرجاتها التعليمية من خلال تعديل المادة.'}
           </p>
         </section>
+
+        <SubjectTopicsSection
+          subjectId={subject.id}
+          topics={topics}
+          onRefresh={onRefreshTopics}
+        />
 
         <section className="rounded-2xl bg-white p-6 shadow-[0_2px_12px_rgba(15,23,42,0.04)] ring-1 ring-[#E5E9EB]">
           <div className="mb-5 flex items-center justify-between gap-3">
@@ -41,8 +55,7 @@ function SubjectOverviewTab({ subject, teachers, questionBanks, onViewAllTeacher
             ) : null}
           </div>
 
-          {recentTeachers.length === 0 ? (
-            <p className="text-sm text-[#94A3B8]">لا يوجد معلمون مسندون لهذه المادة بعد</p>
+          {recentTeachers.length === 0 ? (            <p className="text-sm text-[#94A3B8]">لا يوجد معلمون مسندون لهذه المادة بعد</p>
           ) : (
             <div className="grid gap-4 sm:grid-cols-2">
               {recentTeachers.map((teacher) => (

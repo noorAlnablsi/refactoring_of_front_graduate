@@ -32,7 +32,7 @@ function ChoiceRow({ choice, index, onChange, onRemove, removable, selectable, m
   )
 }
 
-function QuestionBuilderForm({ value, onChange, onSave, onAddAnother }) {
+function QuestionBuilderForm({ value, onChange, onSave, onAddAnother, topics = [] }) {
   const isEssay = value.type_code === 'ESSAY'
   const isTrueFalse = value.type_code === 'TRUE_FALSE'
   const isMultiple = value.type_code === 'MULTI_SELECT'
@@ -59,6 +59,18 @@ function QuestionBuilderForm({ value, onChange, onSave, onAddAnother }) {
         { body: '', is_correct: true },
         { body: '', is_correct: false },
       ]
+    } else if (typeCode === 'MCQ' && value.type_code === 'MULTI_SELECT') {
+      let foundFirst = false
+      nextChoices = value.choices.map((choice) => {
+        if (choice.is_correct && !foundFirst) {
+          foundFirst = true
+          return { ...choice }
+        }
+        return { ...choice, is_correct: false }
+      })
+      if (!foundFirst && nextChoices.length) {
+        nextChoices[0] = { ...nextChoices[0], is_correct: true }
+      }
     }
 
     onChange({ ...value, type_code: typeCode, choices: nextChoices })
@@ -115,7 +127,15 @@ function QuestionBuilderForm({ value, onChange, onSave, onAddAnother }) {
           typeCode={value.type_code}
           onChange={(body) => setField('body', body)}
           onTypeChange={handleTypeChange}
+          topics={topics}
+          topicId={value.topic_id}
+          onTopicChange={(topicId) => setField('topic_id', topicId)}
         />
+        {topics.length === 0 ? (
+          <p className="text-xs text-[#C2410C]">
+            لا توجد محاور لهذه المادة. أضف محاوراً من تفاصيل المادة أولاً.
+          </p>
+        ) : null}
       </div>
 
       <div className="mt-4 space-y-2">
@@ -135,7 +155,7 @@ function QuestionBuilderForm({ value, onChange, onSave, onAddAnother }) {
           <div className="space-y-2">
             {value.choices.map((choice, index) => (
               <ChoiceRow
-                key={`${index}-${choice.body}`}
+                key={index}
                 choice={choice}
                 index={index}
                 onChange={updateChoice}

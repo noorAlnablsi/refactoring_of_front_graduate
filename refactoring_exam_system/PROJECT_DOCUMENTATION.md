@@ -1,687 +1,601 @@
-# QuizHub — توثيق المشروع (Frontend)
+# QuizHub — PROJECT_DOCUMENTATION
 
-> **الغرض:** مرجع شامل لاستكمال العمل على جهاز آخر أو في محادثة Cursor جديدة.  
-> **آخر تحديث:** يونيو 2026  
-> **مسار المشروع:** `refactoring_exam_system/refactoring_exam_system/`  
-> **Backend منفصل:** `refactoring_of_graduating_project/` (Flask على `http://127.0.0.1:5000`)
+## محتويات الملف
 
----
-
-## 1. نظرة عامة
-
-**QuizHub** منصة تعليمية (اختبارات، مواد، بنوك أسئلة) بواجهة **عربية RTL**.
-
-| البند | القيمة |
-|-------|--------|
-| Framework | React 19 + Vite 8 |
-| Routing | React Router 7 |
-| State | Zustand (+ persist لـ auth) |
-| HTTP | Axios |
-| Styling | Tailwind CSS 4 |
-| Icons | lucide-react |
-| لغة الكود | JavaScript (JSX) — بدون TypeScript |
-
-### مبدأ المعمارية
-
-```
-pages/        → تجميع الشاشات (composition فقط)
-components/   → واجهة المستخدم
-hooks/        → منطق الشاشات
-services/     → استدعاءات API
-store/        → حالة Zustand
-lib/          → أدوات مشتركة (axios, auth, permissions, ...)
-constants/    → routes, auth enums, ...
-```
-
-**قواعد ثابتة اتُّفق عليها:**
-- لا تغيير Architecture بدون طلب صريح
-- لا stores مكررة
-- لا ملفات services مكررة
-- RTL دائماً في الواجهات العربية
-- لون العلامة: `#2AA8A2`
-- حقول النماذج: فارغة + placeholder (لا autofill للإيميل/كلمة المرور)
+1. نظرة عامة — Tech stack، مبادئ المعمارية  
+2. التشغيل المحلي — npm، env variables  
+3. Design System — ألوان، typography، UI Kit  
+4. هيكل المجلدات — شجرة كاملة لـ `src/`  
+5. المسارات — كل routes + `DashboardGuard`  
+6. Stores — auth، registration، password reset، toast  
+7. المصادقة وتجديد التوكن — تدفق كامل مع الملفات  
+8. تدفقات التسجيل — institution + student  
+9. نسيان كلمة المرور — 4 خطوات  
+10. Dashboard Layout — TopBar + Sidebar + أبعاد Figma  
+11. الصلاحيات — جدول `workspaceContext.js`  
+12. إدارة المواد — APIs، tabs، assign teacher  
+13. بنوك الأسئلة — tabs، محرر، rich text toolbar  
+14. ملخص APIs — كل endpoints  
+15. TODO — ما لم يُنفَّذ بعد  
+16. Backend — مستودع منفصل + تعديل `membership_id`  
+17. أخطاء شائعة  
+18. Welcome Page — تخطيط UI  
+19. كيف تستكمل على جهاز آخر  
+20. خريطة المكونات
 
 ---
 
-## 2. التشغيل المحلي
+## نظرة عامة — Tech stack، مبادئ المعمارية
+
+- React + Vite + React Router + Zustand + Axios + Tailwind + lucide-react
+- المشروع RTL عربي، ومبدأ الفصل هو:
+  - `pages`: تجميع الشاشات
+  - `components`: UI
+  - `hooks`: منطق التدفقات
+  - `services`: API calls
+  - `store`: Zustand state
+  - `lib`: البنية المشتركة (axios/auth/permissions/helpers)
+  - `constants`: ثوابت المسارات والقيم
+- bootstrap عند بدء التطبيق يمر عبر:
+  - `waitForAuthHydration()` ثم `bootstrapAuth()` ثم `initAuthSession()`  
+  (في `src/main.jsx` + `src/lib/authSession.js`)
+
+---
+
+## التشغيل المحلي — npm، env variables
 
 ```bash
 cd refactoring_exam_system
 npm install
-npm run dev      # Vite — غالباً http://localhost:5173 أو 5174
+npm run dev
 npm run lint
 npm run build
+npm run preview
 ```
 
-| متغير | الافتراضي | الوصف |
-|-------|-----------|--------|
-| `VITE_API_BASE_URL` | `http://127.0.0.1:5000` | عنوان Flask API |
+`.env` (اختياري لكن مهم):
 
-**ملاحظة:** بدون Backend شغّال، تظهر أخطاء شبكة عند Login/API.
+```env
+VITE_API_BASE_URL=http://127.0.0.1:5000
+```
+
+- إذا لم يوجد هذا المتغير، الكود يستخدم fallback إلى `http://127.0.0.1:5000`
+- بدون backend شغال، ستظهر أخطاء شبكة/401 في المصادقة
 
 ---
 
-## 3. Design System (UI Kit)
+## Design System — ألوان، typography، UI Kit
 
-### ألوان رئيسية
+### الألوان الأساسية
 
-| الاستخدام | Hex |
-|-----------|-----|
-| Brand / Primary | `#2AA8A2` |
-| نص رئيسي | `#2A3433`, `#374151` |
-| نص ثانوي | `#64748B`, `#94A3B8` |
-| خلفية صفحة | `#F6F8F9` |
-| خلفية حقول | `#EEF2F3`, `#F3F5F6` |
-| حدود | `#E5E9EB`, `#EEF2F3` |
-| خلفية نشط | `#E8F7F6` |
+- Primary: `#2AA8A2`
+- Backgrounds: `#F6F8F9`, `#EEF2F3`, `#F3F5F6`
+- Text: `#374151`, `#64748B`, `#94A3B8`
+- Borders: `#E5E9EB`
 
 ### Typography
 
-- خطوط: `Cairo`, `Tajawal` (في `index.css`)
-- عناوين: `font-extrabold`
-- حقول: `text-sm`, `rounded-xl`
+- الخطوط من `src/index.css`: `Cairo`, `Tajawal`
+- نمط الحقول المتكرر: rounded-xl + placeholder muted + focus ring بـ primary
 
-### أنماط حقول الإدخال المتكررة
+### UI Kit Patterns
 
-```js
-const inputClassName =
-  'h-12 w-full rounded-xl bg-[#EEF2F3] px-4 text-sm text-[#374151] outline-none placeholder:text-[#94A3B8] focus:ring-2 focus:ring-[#2AA8A2]/40 md:w-[448px]'
-```
-
-### AuthShell
-
-غلاف موحّد لصفحات التسجيل/الدخول:
-- `contentAlign="top"` | `"center"`
-- شريط QuizHub بلون `#2AA8A2` موحّد (ليس split colors)
-- صورة hero على اليمين
+- `src/components/auth/AuthShell.jsx`: shell موحد لواجهات auth
+- `src/components/auth/password-reset/PasswordResetShell.jsx`: shell خاص بإعادة التعيين
+- استعمال متكرر لـ buttons/inputs بنفس spacings والارتفاعات عبر صفحات التسجيل/الدخول
 
 ---
 
-## 4. هيكل المجلدات
+## هيكل المجلدات — شجرة كاملة لـ `src/`
 
-```
+```text
 src/
-├── main.jsx                 # bootstrap auth + render
-├── App.jsx                  # كل المسارات
-├── index.css                # Tailwind + fonts
-│
-├── constants/
-│   ├── routes.js            # كل ROUTES
-│   ├── auth.js              # WORKSPACE_KIND, flows, OTP, password rules
-│   └── passwordReset.js
-│
-├── store/
-│   ├── authStore.js         # tokens, user, memberships (persist)
-│   ├── registrationStore.js # flow التسجيل متعدد الخطوات
-│   ├── passwordResetStore.js
-│   └── toastStore.js
-│
-├── lib/
-│   ├── axios.js             # interceptors + token refresh
-│   ├── authSession.js       # bootstrap, schedule refresh, queue
-│   ├── token.js             # JWT expiry helpers
-│   ├── richText.js          # محرر نص السؤال
-│   ├── apiError.js          # parseApiError + رسائل عربية
-│   ├── workspaceContext.js  # صلاحيات + active membership
-│   ├── workspaceTeachers.js # normalize teachers API
-│   ├── questionBanks.js     # tabs, filters, labels
-│   ├── subjectDisplay.js    # teacher names, avatars
-│   ├── postLoginNavigation.js
-│   └── membershipLabel.js
-│
-├── services/
-│   ├── auth.service.js
-│   ├── subjects.service.js
-│   ├── questionBanks.service.js
-│   ├── workspaces.service.js
-│   └── join.service.js
-│
-├── hooks/
-│   ├── useRegisterFlow.js
-│   ├── useStudentRegisterFlow.js
-│   ├── useForgotPassword.js
-│   ├── usePasswordResetOtp.js
-│   ├── useResetPassword.js
-│   ├── useOtpVerification.js
-│   ├── usePasswordValidation.js
-│   ├── useInstitutionApprovalPolling.js
-│   ├── subjects/
-│   │   ├── useSubjects.js
-│   │   └── useSubjectDetails.js
-│   └── question-banks/
-│       └── useQuestionBanks.js
-│
-├── pages/                   # صفحات كاملة
-├── components/              # مكونات UI
-└── assets/                  # صور auth, landing
+  App.css
+  App.jsx
+  index.css
+  main.jsx
+  assets/
+    react.svg
+    vite.svg
+  constants/
+    auth.js
+    passwordReset.js
+    routes.js
+  store/
+    authStore.js
+    passwordResetStore.js
+    registrationStore.js
+    toastStore.js
+  services/
+    auth.service.js
+    join.service.js
+    questionBanks.service.js
+    subjects.service.js
+    workspaces.service.js
+  lib/
+    apiError.js
+    authSession.js
+    axios.js
+    membershipLabel.js
+    postLoginNavigation.js
+    questionBanks.js
+    richText.js
+    slug.js
+    subjectDisplay.js
+    token.js
+    workspaceContext.js
+    workspaceTeachers.js
+  hooks/
+    useForgotPassword.js
+    useInstitutionApprovalPolling.js
+    useOtpVerification.js
+    usePasswordResetOtp.js
+    usePasswordValidation.js
+    useRegisterFlow.js
+    useResetPassword.js
+    useStudentRegisterFlow.js
+    question-banks/
+      useQuestionBanks.js
+    subjects/
+      useSubjectDetails.js
+      useSubjects.js
+  pages/
+    DashboardPage.jsx
+    JoinPage.jsx
+    LandingPage.jsx
+    LoginPage.jsx
+    PathSelectionPage.jsx
+    RegisterPage.jsx
+    WelcomePage.jsx
+    auth/
+      ForgotPasswordOtpPage.jsx
+      ForgotPasswordPage.jsx
+      ResetPasswordPage.jsx
+      ResetPasswordSuccessPage.jsx
+    question-banks/
+      QuestionBankEditorPage.jsx
+      QuestionBanksPage.jsx
+    register/
+      RegisterDetailsPage.jsx
+      RegisterOtpPage.jsx
+      RegisterPasswordPage.jsx
+      RegisterSelectRolePage.jsx
+      RegisterSuccessPage.jsx
+    student/
+      StudentJoinCodePage.jsx
+      StudentRegisterPage.jsx
+    subjects/
+      SubjectDetailsPage.jsx
+      SubjectsPage.jsx
+  components/
+    common/
+      Toast.jsx
+    dashboard/
+      DashboardGuard.jsx
+      DashboardLayout.jsx
+      Sidebar.jsx
+      TopBar.jsx
+      UserAvatar.jsx
+    landing/
+      CtaSection.jsx
+      FeaturesSection.jsx
+      Footer.jsx
+      Header.jsx
+      HeroSection.jsx
+      TrustedSection.jsx
+    auth/
+      AuthHeroPanel.jsx
+      AuthShell.jsx
+      MembershipSelector.jsx
+      OtpInput.jsx
+      PasswordField.jsx
+      RegisterProgress.jsx
+      RoleSelector.jsx
+      WelcomeOptionSelector.jsx
+      password-reset/
+        BackToLoginLink.jsx
+        PasswordResetDescription.jsx
+        PasswordResetIcon.jsx
+        PasswordResetShell.jsx
+        PasswordResetTitle.jsx
+    subjects/
+      AssignTeacherModal.jsx
+      CreateSubjectModal.jsx
+      EditSubjectModal.jsx
+      SubjectStatsCards.jsx
+      SubjectsTable.jsx
+      details/
+        SubjectDetailsBreadcrumb.jsx
+        SubjectDetailsHeader.jsx
+        SubjectDetailsStats.jsx
+        SubjectDetailsTabs.jsx
+        SubjectExamsTab.jsx
+        SubjectOverviewTab.jsx
+        SubjectQuestionBanksTab.jsx
+        SubjectTeachersTab.jsx
+        TeacherAvatar.jsx
+    question-banks/
+      ArchiveQuestionBankDialog.jsx
+      CommunityBanksPlaceholder.jsx
+      CreateQuestionBankModal.jsx
+      EditQuestionBankModal.jsx
+      QuestionBankCard.jsx
+      QuestionBanksEmptyState.jsx
+      QuestionBanksSkeleton.jsx
+      VisibilityBadge.jsx
+      editor/
+        BankInfoSummary.jsx
+        PreviewQuestionsModal.jsx
+        PublishQuestionBankModal.jsx
+        QuestionBodyEditor.jsx
+        QuestionBuilderForm.jsx
+        QuestionsList.jsx
+        TopicsPlaceholder.jsx
 ```
 
 ---
 
-## 5. المسارات (Routes)
+## المسارات — كل routes + DashboardGuard
 
-| المسار | الصفحة | محمي؟ |
-|--------|--------|-------|
-| `/` | LandingPage | لا |
-| `/login` | LoginPage | لا |
-| `/welcome` | WelcomePage | لا |
-| `/forgot-password` | ForgotPasswordPage | لا |
-| `/forgot-password/otp` | ForgotPasswordOtpPage | لا |
-| `/reset-password` | ResetPasswordPage | لا |
-| `/reset-password/success` | ResetPasswordSuccessPage | لا |
-| `/register/*` | تدفق التسجيل | لا |
-| `/student/register` | StudentRegisterPage | لا |
-| `/student/join-code` | StudentJoinCodePage | لا |
-| `/join` | JoinPage | يحتاج token |
-| `/path-selection` | PathSelectionPage | يحتاج token |
-| `/dashboard` | DashboardPage | DashboardGuard |
-| `/subjects` | SubjectsPage | DashboardGuard |
-| `/subjects/:id` | SubjectDetailsPage | DashboardGuard |
-| `/question-banks` | QuestionBanksPage | DashboardGuard |
-| `/question-banks/:id/editor` | QuestionBankEditorPage | DashboardGuard |
+### Routes Map
 
-**DashboardGuard** (`components/dashboard/DashboardGuard.jsx`):
-1. لا `access_token` → `/login`
-2. عدة memberships بدون اختيار → `/path-selection`
-3. `role === STUDENT` → `/` (via `canAccessDashboard()`)
+- `/` → `LandingPage`
+- `/login` → `LoginPage`
+- `/forgot-password` → `ForgotPasswordPage`
+- `/forgot-password/otp` → `ForgotPasswordOtpPage`
+- `/reset-password` → `ResetPasswordPage`
+- `/reset-password/success` → `ResetPasswordSuccessPage`
+- `/welcome` → `WelcomePage`
+- `/join` → `JoinPage`
+- `/path-selection` → `PathSelectionPage`
+- `/dashboard` → `DashboardPage` (guarded)
+- `/subjects` → `SubjectsPage` (guarded)
+- `/subjects/:id` → `SubjectDetailsPage` (guarded)
+- `/question-banks` → `QuestionBanksPage` (guarded)
+- `/question-banks/:id/editor` → `QuestionBankEditorPage` (guarded)
+- `/register` → `RegisterPage`
+- `/register/select-role` → `RegisterSelectRolePage`
+- `/register/details` → `RegisterDetailsPage`
+- `/register/password` → `RegisterPasswordPage`
+- `/register/otp` → `RegisterOtpPage`
+- `/register/success` → `RegisterSuccessPage`
+- `/student/register` → `StudentRegisterPage`
+- `/student/join-code` → `StudentJoinCodePage`
+- `*` → redirect `/`
 
----
+### DashboardGuard
 
-## 6. إدارة الحالة (Stores)
-
-### `authStore` — `quizhub-auth` في localStorage
-
-```js
-{
-  access_token,
-  refresh_token,
-  user,              // { id, full_name, email, avatar_url, is_superadmin, ... }
-  memberships,       // [{ membership_id, role, workspace, is_owner, ... }]
-  selected_membership_id,
-  requires_workspace_selection,
-}
-```
-
-| Action | الاستخدام |
-|--------|-----------|
-| `setAuth(payload)` | بعد login/register — يضبط كل شيء |
-| `setTokens({ access_token, refresh_token, user })` | بعد refresh |
-| `setSelectedMembership(id)` | اختيار workspace |
-| `clearAuth()` | logout |
-
-### `registrationStore`
-
-يحمل بيانات التسجيل عبر الخطوات (غير persist):
-`registration_flow`, `welcome_selection`, `workspace_kind`, `full_name`, `email`, `phone_number`, `workspace_name`, `password`, `join_code`, ...
-
-### `passwordResetStore`
-
-`email`, `otpVerified`, `resetCompleted` — لتدفق نسيان كلمة المرور.
-
-### `toastStore`
-
-إشعارات UI عبر `components/common/Toast.jsx` في DashboardLayout.
+من `src/components/dashboard/DashboardGuard.jsx`:
+1. إذا لا يوجد `access_token` → redirect `/login`
+2. إذا memberships متعددة وبدون اختيار → redirect `/path-selection`
+3. إذا المستخدم لا يملك dashboard access (مثل STUDENT) → redirect `/`
 
 ---
 
-## 7. المصادقة وتجديد التوكن
+## Stores — auth، registration، password reset، toast
 
-### تدفق Login
+### `authStore` (`src/store/authStore.js`)
 
-1. `POST /auth/login` → `setAuth(data)`
-2. `resolvePostLoginRoute()`:
-   - memberships > 1 → `/path-selection`
-   - membership واحد → `/dashboard`
-3. حقول Login: `autoComplete="off"`, placeholder عربي، password `autoComplete="new-password"`
+- `access_token`, `refresh_token`, `user`
+- `memberships`, `selected_membership_id`, `requires_workspace_selection`
+- actions: `setAuth`, `setTokens`, `setSelectedMembership`, `clearAuth`
+- persisted في localStorage key: `quizhub-auth`
 
-### تجديد Access Token (شفاف للمستخدم)
+### `registrationStore` (`src/store/registrationStore.js`)
 
-**الملفات:** `lib/authSession.js`, `lib/axios.js`, `lib/token.js`, `services/auth.service.js`
+- بيانات flow التسجيل بالكامل (institution/solo/student)
+- يحتفظ ببيانات OTP ومحاولات التحقق وبيانات التسجيل المؤقتة
 
-```
-main.jsx:
-  waitForAuthHydration() → bootstrapAuth() → initAuthSession()
+### `passwordResetStore` (`src/store/passwordResetStore.js`)
 
-bootstrapAuth:
-  إذا refresh_token موجود و access منتهي → POST /auth/refresh
+- `email`, `otpVerified`, `resetCompleted`
 
-initAuthSession:
-  - setTimeout قبل انتهاء access بـ 60 ثانية
-  - visibilitychange → refresh عند العودة للتبويب
-  - subscribe على authStore → إعادة جدولة
+### `toastStore` (`src/store/toastStore.js`)
 
-axios request interceptor:
-  ensureValidAccessToken() قبل كل طلب (ما عدا auth routes)
-
-axios response interceptor:
-  401 → enqueueTokenRefresh() → إعادة الطلب مرة واحدة
-  فشل refresh → redirect /login
-
-enqueueTokenRefresh:
-  queue للطلبات المتزامنة — refresh واحد فقط
-```
-
-**مهم:** `refreshAccessToken` يستخدم `axios` مباشرة (ليس `api` instance) لتجنب حلقة interceptors.
-
-**Response refresh:**
-```json
-{
-  "access_token": "...",
-  "refresh_token": "...",
-  "token_type": "Bearer",
-  "user": { ... }
-}
-```
-
-### Headers على كل طلب API
-
-```
-Authorization: Bearer {access_token}
-X-Workspace-Id: {selected workspace id}
-```
+- `showToast()` + إخفاء تلقائي
+- يتم عرض الـ toast عبر `src/components/common/Toast.jsx`
 
 ---
 
-## 8. تدفقات التسجيل
+## المصادقة وتجديد التوكن — تدفق كامل مع الملفات
 
-### A. إنشاء مساحة تعليمية (Institution)
+### ملفات التدفق
 
-```
-/welcome
-  → اختيار "إنشاء مساحة تعليمية"
-/register/select-role
-  → INSTITUTION | SOLO + الاسم + البريد + الهاتف
-/register/password
-  → اسم المؤسسة (INSTITUTION) + كلمة مرور + تأكيد
-/register/otp
-  → POST /auth/verify-otp
-/register/success
-```
+- `src/main.jsx`
+- `src/lib/authSession.js`
+- `src/lib/axios.js`
+- `src/lib/token.js`
+- `src/services/auth.service.js`
 
-### B. الانضمام كطالب
+### التدفق
 
-```
-/welcome → "الانضمام كطالب"
-/student/register → بيانات + كلمة مرور
-/student/join-code → كود الانضمام
-```
-
-### حقول النماذج
-
-- `autoComplete="off"` على النماذج
-- `autoComplete="new-password"` على حقول كلمة المرور
-- placeholders عربية بدل autofill
+1. تشغيل التطبيق: hydration ثم bootstrap session
+2. إذا access token منتهي ومعه refresh token: `POST /auth/refresh`
+3. request interceptor:
+   - `ensureValidAccessToken()` قبل إرسال الطلبات المحمية
+   - إضافة `Authorization` و `X-Workspace-Id`
+4. response interceptor:
+   - عند `401`: retry مرة واحدة بعد `enqueueTokenRefresh()`
+   - عند فشل refresh: logout/redirect إلى `/login`
+5. scheduling:
+   - refresh قبل انتهاء access token
+   - refresh عند العودة للتبويب
 
 ---
 
-## 9. نسيان كلمة المرور
+## تدفقات التسجيل — institution + student
 
-| الخطوة | Route | API |
-|--------|-------|-----|
-| 1 | `/forgot-password` | `POST /auth/forgot-password` |
-| 2 | `/forgot-password/otp` | `POST /auth/verify-otp` |
-| 3 | `/reset-password` | `POST /auth/reset-password` |
-| 4 | `/reset-password/success` | — |
+### Institution / Solo
 
-**Hooks:** `useForgotPassword`, `usePasswordResetOtp`, `useResetPassword`  
-**Components:** `components/auth/password-reset/*`  
-**Shell:** `PasswordResetShell.jsx`
+`/welcome` → `/register/select-role` → `/register/password` → `/register/otp` → `/register/success`
 
----
+- register API: `POST /auth/register`
+- verify OTP: `POST /auth/verify-otp`
+- resend OTP: `POST /auth/resend-otp`
 
-## 10. Dashboard Layout
+### Student
 
-```
-┌─────────────────────────────────────────────────────────┐
-│ TopBar (h-80, max-w-1024, bg #F8FAFC/80)               │
-├──────────────┬──────────────────────────────────────────┤
-│ Sidebar      │ Main content (Outlet)                    │
-│ w-260px      │ p-6, bg #F6F8F9                          │
-│              │                                          │
-│ QuizHub logo │                                          │
-│ Nav items    │                                          │
-│ Logout       │                                          │
-└──────────────┴──────────────────────────────────────────┘
-```
+`/welcome` → `/student/register` → `/student/join-code` → `/register/otp`
 
-### TopBar (`components/dashboard/TopBar.jsx`)
-
-**ترتيب LTR داخل container (محاذاة Figma):**
-
-| الجانب | المحتوى | الأبعاد |
-|--------|---------|---------|
-| يسار | صورة + اسم + مؤسسة + \| + مساعدة + إشعارات | user block: 154×40 |
-| يمين | حقل بحث | area: 697×36, input: 448×36 |
-
-- `justify-between`, `px-8` (32px padding)
-- `UserAvatar`: صورة أو أول حرف من `user.full_name`
-- البحث: placeholder فقط — **غير موصول بـ API بعد**
-
-### Sidebar (`components/dashboard/Sidebar.jsx`)
-
-- عرض: `260px`
-- ارتفاع header الشعار: `h-20` (80px) — متوافق مع TopBar
-- spacing محسّن (py-8, space-y-2, py-3.5 للعناصر)
-
-**عناصر القائمة:**
-
-| Label | Route | ملاحظات |
-|-------|-------|---------|
-| لوحة التحكم | `/dashboard` | |
-| إدارة المواد | `/subjects` | `canAccessSubjectsModule()` |
-| بنوك الأسئلة | `/question-banks` | `canAccessQuestionBanks()` |
-| الامتحانات | `#` | disabled |
-| الإحصائيات | `#` | disabled |
-| الإعدادات | `#` | disabled |
-| تسجيل الخروج | — | `clearAuth()` |
+- join/register API: `POST /join-codes/register-student`
+- بعد verify OTP: redirect لتسجيل الدخول
 
 ---
 
-## 11. الصلاحيات (`lib/workspaceContext.js`)
+## نسيان كلمة المرور — 4 خطوات
 
-| Function | من يرى؟ |
-|----------|---------|
-| `canAccessDashboard()` | ليس STUDENT |
-| `canAccessSubjectsModule()` | ليس STUDENT؛ TEACHER في INSTITUTION → ❌ |
-| `canAccessQuestionBanks()` | ليس STUDENT؛ superadmin → ❌ |
-| `canCreateSubject()` | SOLO: ✅؛ INSTITUTION: owner/admin فقط |
-| `canEditSubject()` | = canCreateSubject |
+1. `Forgot Password` (`/forgot-password`)  
+   API: `POST /auth/forgot-password`
+2. `OTP Verification` (`/forgot-password/otp`)  
+   API: `POST /auth/verify-otp`
+3. `Reset Password` (`/reset-password`)  
+   API: `POST /auth/reset-password`
+4. `Success` (`/reset-password/success`)
+
+الملفات:  
+`src/pages/auth/*` + hooks:
+`useForgotPassword`, `usePasswordResetOtp`, `useResetPassword`
+
+---
+
+## Dashboard Layout — TopBar + Sidebar + أبعاد Figma
+
+- `src/components/dashboard/DashboardLayout.jsx`: wrapper عام (Sidebar + TopBar + Outlet + Toast)
+- `src/components/dashboard/Sidebar.jsx`:
+  - عرض sidebar: `w-[260px]`
+  - logo/header height: `h-20`
+- `src/components/dashboard/TopBar.jsx`:
+  - height: `h-20`
+  - content container: `max-w-[1024px]`
+  - search area: `w-[697px]`
+  - search input: `w-[448px]`
+  - user info block: `w-[154px]`
+
+> ملاحظة: لا يوجد ملف Figma داخل المستودع، لذلك الأبعاد موثقة من كود Tailwind الحالي.
+
+---
+
+## الصلاحيات — جدول `workspaceContext.js`
+
+| الدالة | الوصف |
+|---|---|
+| `canAccessDashboard()` | يمنع STUDENT من dashboard |
+| `canAccessQuestionBanks()` | يمنع STUDENT، ويمنع superadmin حسب المنطق الحالي |
+| `canAccessSubjectsModule()` | يمنع STUDENT وTeacher داخل workspace نوعه INSTITUTION |
+| `canCreateSubject()` | SOLO مسموح، وINSTITUTION فقط owner/admin |
+| `canEditSubject()` | نفس create |
 | `canAssignTeachers()` | INSTITUTION + owner/admin |
-| `canManageQuestionBank(bank)` | منشئ البنك أو owner/admin |
-| `isInstitutionWorkspace()` | workspace.kind === INSTITUTION |
+| `canManageQuestionBank(bank)` | creator أو owner/admin |
 
-**Active membership:** `getActiveMembership()` من `selected_membership_id` أو أول membership.
-
----
-
-## 12. إدارة المواد (Subjects)
-
-### قائمة المواد — `/subjects`
-
-**Page:** `pages/subjects/SubjectsPage.jsx`  
-**Hook:** `hooks/subjects/useSubjects.js`  
-**API:** `GET /subjects`
-
-| ميزة | API | صلاحية |
-|------|-----|--------|
-| عرض جدول | GET /subjects | canAccessSubjectsModule |
-| إنشاء | POST /subjects | canCreateSubject |
-| تعديل | PATCH /subjects/:id | canEditSubject |
-| تفاصيل | navigate `/subjects/:id` | — |
-
-**Components:**
-- `SubjectStatsCards` — إحصائيات (بعضها placeholder `—`)
-- `SubjectsTable`
-- `CreateSubjectModal`, `EditSubjectModal`
-
-### تفاصيل المادة — `/subjects/:id`
-
-**Page:** `pages/subjects/SubjectDetailsPage.jsx`  
-**Hook:** `hooks/subjects/useSubjectDetails.js`
-
-**APIs متوازية:**
-```
-GET /subjects/:id
-GET /subjects/:id/teachers
-GET /subjects/:id/question-banks
-GET /subjects/:id/students
-```
-
-**4 Tabs:**
-
-| Tab | Component | حالة |
-|-----|-----------|------|
-| نظرة عامة | SubjectOverviewTab | ✅ |
-| المعلمون | SubjectTeachersTab | ✅ إزالة معلم |
-| بنوك الأسئلة | SubjectQuestionBanksTab | ✅ عرض فقط |
-| الاختبارات | SubjectExamsTab | ⚠️ placeholder وهمي |
-
-**إسناد معلم:**
-- `AssignTeacherModal` → `GET /workspaces/teachers` → `POST /subjects/:id/teachers`
-- body: `{ membership_id }` — **Backend أُصلح** لإرجاع `membership_id`
-- normalize في `lib/workspaceTeachers.js`
-
-**إزالة معلم:** `DELETE /subjects/:id/teachers/:membershipId`
+الملف: `src/lib/workspaceContext.js`
 
 ---
 
-## 13. بنوك الأسئلة (Question Banks)
+## إدارة المواد — APIs، tabs، assign teacher
 
-### قائمة البنوك — `/question-banks`
+### Subjects List (`/subjects`)
 
-**Page:** `pages/question-banks/QuestionBanksPage.jsx`  
-**Hook:** `hooks/question-banks/useQuestionBanks.js`
+- load: `GET /subjects`
+- create: `POST /subjects`
+- edit: `PATCH /subjects/:subjectId`
+- UI: `SubjectsTable`, `CreateSubjectModal`, `EditSubjectModal`
 
-**3 Tabs:**
+### Subject Details (`/subjects/:id`)
 
-| Tab | ID | API | فلتر |
-|-----|-----|-----|------|
-| بنوكي | `my` | GET /question-banks/my | PRIVATE فقط |
-| بنوك ضمن المؤسسة | `workspace` | /my + /workspace | WORKSPACE — **مخفي لـ SOLO** |
-| مجتمع | `community` | GET /question-banks/community | — |
+- `GET /subjects/:subjectId`
+- `GET /subjects/:subjectId/teachers`
+- `GET /subjects/:subjectId/question-banks`
+- `GET /subjects/:subjectId/students`
 
-**إجراءات:**
-| Action | API |
-|--------|-----|
-| إنشاء | POST /question-banks |
-| تعديل | PATCH /question-banks/:id |
-| أرشفة | DELETE /question-banks/:id |
-| فتح محرر | navigate `/:id/editor` |
+### Tabs
 
-**Visibility:** `PRIVATE` | `WORKSPACE` | `COMMUNITY`
+- `overview`
+- `teachers`
+- `banks`
+- `exams` (placeholder حاليًا)
 
-### محرر البنك — `/question-banks/:id/editor`
+### Assign Teacher
 
-**Page:** `pages/question-banks/QuestionBankEditorPage.jsx`
-
-**Flow:**
-1. تحميل البنك + أسئلته
-2. بناء أسئلة محلياً (`localQuestions`)
-3. نشر: PATCH visibility + POST questions
-
-**أنواع الأسئلة:**
-- `MCQ` — اختيار واحد
-- `TRUE_FALSE` — صح/خطأ
-- `MULTI_SELECT` — متعدد الخيارات
-- `ESSAY` — مقالي
-
-**Components:**
-- `QuestionBuilderForm` — نوع، صعوبة، علامة، خيارات
-- `QuestionBodyEditor` — محرر نص غني
-- `QuestionsList`, `PreviewQuestionsModal`
-- `PublishQuestionBankModal`
-- `TopicsPlaceholder` — ⚠️ غير مربوط
-
-### محرر نص السؤال (`QuestionBodyEditor.jsx`)
-
-**Toolbar:**
-
-| الرمز | الوظيفة | حالة نشطة |
-|-------|---------|-----------|
-| U | Underline | ✅ |
-| B | Bold | ✅ |
-| I | Italic | ✅ |
-| List | قائمة نقطية | ✅ |
-| Σ | إدراج رمز Σ | — |
-| ¶→ | اتجاه فقرة RTL | ✅ |
-| ¶← | اتجاه فقرة LTR | ✅ |
-
-- `contentEditable` — body يُحفظ كـ **HTML**
-- `lib/richText.js`: `applyParagraphDirection`, `getRichTextActiveFormats`
-- dropdown "الموضوع" — **disabled** (ينتظر API topics)
-- dropdown نوع السؤال — منقول للـ toolbar
-
-**Validation:** `isRichTextEmpty()` في `QuestionBankEditorPage`
+- fetch teachers: `GET /workspaces/teachers`
+- assign: `POST /subjects/:subjectId/teachers` body فيه `membership_id`
+- remove: `DELETE /subjects/:subjectId/teachers/:membershipId`
+- normalization helpers: `src/lib/workspaceTeachers.js`
 
 ---
 
-## 14. ملخص APIs
+## بنوك الأسئلة — tabs، محرر، rich text toolbar
+
+### Tabs في صفحة البنوك (`/question-banks`)
+
+- `my` → `GET /question-banks/my`
+- `workspace` → `GET /question-banks/workspace` (يظهر حسب الصلاحية)
+- `community` → `GET /question-banks/community`
+
+### إجراءات
+
+- إنشاء: `POST /question-banks`
+- تعديل: `PATCH /question-banks/:bankId`
+- أرشفة/حذف: `DELETE /question-banks/:bankId`
+- محرر: `/question-banks/:id/editor`
+
+### محرر البنك
+
+الملف الأساسي: `src/pages/question-banks/QuestionBankEditorPage.jsx`
+
+- load bank + questions
+- edit local questions
+- publish (visibility + questions)
+
+### Rich Text Toolbar
+
+من `src/components/question-banks/editor/QuestionBodyEditor.jsx`:
+- Bold / Italic / Underline
+- Bullet List
+- Sigma insertion
+- Paragraph direction RTL/LTR
+- helpers في `src/lib/richText.js`
+
+---
+
+## ملخص APIs — كل endpoints
 
 ### Auth
-```
-POST /auth/login
-POST /auth/register
-POST /auth/verify-otp
-POST /auth/resend-otp
-POST /auth/refresh          ← body: { refresh_token }
-POST /auth/forgot-password
-POST /auth/reset-password
-```
+
+- `POST /auth/register`
+- `POST /auth/verify-otp`
+- `POST /auth/resend-otp`
+- `POST /auth/login`
+- `POST /auth/forgot-password`
+- `POST /auth/reset-password`
+- `POST /auth/refresh`
+
+### Join
+
+- `POST /join-codes/register-student`
+- `POST /join-codes/join`
 
 ### Subjects
-```
-GET|POST        /subjects
-GET|PATCH       /subjects/:id
-GET             /subjects/:id/teachers
-POST            /subjects/:id/teachers     { membership_id }
-DELETE          /subjects/:id/teachers/:membershipId
-GET             /subjects/:id/question-banks
-GET             /subjects/:id/students
-```
+
+- `GET /subjects`
+- `POST /subjects`
+- `GET /subjects/:subjectId`
+- `PATCH /subjects/:subjectId`
+- `GET /subjects/:subjectId/teachers`
+- `POST /subjects/:subjectId/teachers`
+- `DELETE /subjects/:subjectId/teachers/:membershipId`
+- `GET /subjects/:subjectId/question-banks`
+- `GET /subjects/:subjectId/students`
 
 ### Question Banks
-```
-POST            /question-banks
-GET             /question-banks/my
-GET             /question-banks/workspace
-GET             /question-banks/community
-PATCH           /question-banks/:id
-DELETE          /question-banks/:id        (archive)
-GET             /question-banks/:id/questions
-POST            /question-banks/:id/questions   { questions: [...] }
-```
+
+- `GET /question-banks/my`
+- `GET /question-banks/workspace`
+- `GET /question-banks/community`
+- `POST /question-banks`
+- `PATCH /question-banks/:bankId`
+- `DELETE /question-banks/:bankId`
+- `GET /question-banks/:bankId/questions`
+- `POST /question-banks/:bankId/questions`
 
 ### Workspaces
-```
-GET             /workspaces/teachers
-```
+
+- `GET /workspaces/teachers`
 
 ---
 
-## 15. ما لم يُنفَّذ بعد (TODO)
+## TODO — ما لم يُنفَّذ بعد
 
-| الميزة | الموقع | ملاحظة |
-|--------|--------|--------|
-| بحث TopBar | TopBar.jsx | UI فقط |
-| إشعارات / مساعدة | TopBar | أزرار بدون logic |
-| الامتحانات | Sidebar + SubjectExamsTab | disabled / placeholder |
-| الإحصائيات | Sidebar | disabled |
-| الإعدادات | Sidebar | disabled |
-| Topics في محرر البنك | TopicsPlaceholder | ينتظر API |
-| dropdown الموضوع في toolbar | QuestionBodyEditor | disabled |
-| Pagination بنوك الأسئلة | QuestionBanksPage | — |
-| إحصائيات المواد في الجدول | SubjectsTable | أعمدة `—` |
-| Route guard TEACHER مؤسسة على `/subjects` URL مباشر | — | مذكور سابقاً |
-| Pagination tabs بنوك | — | — |
-| Admin يرى PRIVATE banks في "بنوكي" | — | لا API |
+- TopBar search UI غير مربوط بـ API
+- أزرار الإشعارات/المساعدة غير مكتملة logic
+- عناصر Sidebar التالية disabled: الامتحانات، الإحصائيات، الإعدادات
+- `SubjectExamsTab` placeholder
+- `TopicsPlaceholder` في محرر بنوك الأسئلة غير مربوط
+- dropdown الموضوع في toolbar معطل
+- بعض إحصائيات المواد placeholder
 
 ---
 
-## 16. Backend (مستودع منفصل)
+## Backend — مستودع منفصل + تعديل `membership_id`
 
-**المسار:** `c:\Users\Lenovo\refactoring_of_graduating_project`
-
-**تعديل مهم سابق:**
-- `workspace_service.py` — `_serialize_workspace_teacher` أُضيف له `membership_id` (لإسناد المعلم)
-
-**تشغيل Backend:**
-```bash
-# حسب إعداد المشروع Flask
-python app.py  # أو flask run
-```
+- backend موجود في مستودع منفصل (ليس داخل هذا workspace)
+- frontend يعتمد على وجود `membership_id` لإسناد المدرسين للمواد
+- التعديل المطلوب في backend: التأكد أن teacher serialization يعيد `membership_id`
 
 ---
 
-## 17. أخطاء شائعة
+## أخطاء شائعة
 
-| المشكلة | السبب | الحل |
-|---------|-------|------|
-| Network Error | Backend متوقف | شغّل Flask على :5000 |
-| 401 متكرر | refresh_token منتهي | login من جديد |
-| Assign teacher فاشل | membership_id ناقص | تأكد Backend محدّث |
-| CORS | origin غير مسموح | Backend CORS config |
-
-**رسائل الأخطاء:** `lib/apiError.js` — `parseApiError()` يترجم للعربية.
+- `Network Error`: backend غير شغّال أو `VITE_API_BASE_URL` خطأ
+- `401` متكرر: refresh token منتهي/غير صالح
+- فشل Assign Teacher: بيانات teachers لا تحتوي `membership_id`
+- CORS: backend لا يسمح بـ origin الخاص بالواجهة
 
 ---
 
-## 18. Welcome Page — تخطيط (مرجع UI)
+## Welcome Page — تخطيط UI
 
-**ملف:** `pages/WelcomePage.jsx`
+الملفات:
+- `src/pages/WelcomePage.jsx`
+- `src/components/auth/WelcomeOptionSelector.jsx`
+- `src/components/auth/AuthShell.jsx`
 
-- 3 مناطق: عنوان أعلى | خيارات + login في الوسط | زر التالي أسفل
-- `WelcomeOptionSelector`: `space-y-7`, `-mt-3` على "إنشاء مساحة تعليمية"
-- `AuthShell contentAlign="top"`
-
----
-
-## 19. كيف تستكمل على جهاز آخر
-
-1. **Clone** المستودع (frontend + backend)
-2. `npm install` في `refactoring_exam_system/`
-3. أنشئ `.env` إذا لزم:
-   ```
-   VITE_API_BASE_URL=http://127.0.0.1:5000
-   ```
-4. شغّل Backend ثم `npm run dev`
-5. **اقرأ هذا الملف** + افتح `App.jsx` + `lib/workspaceContext.js`
-6. في Cursor جديد، أرفق هذا الملف أو قل: "اقرأ PROJECT_DOCUMENTATION.md"
-
-### ملفات حرجة — لا تكسرها
-
-```
-lib/axios.js
-lib/authSession.js
-lib/workspaceContext.js
-store/authStore.js
-components/dashboard/DashboardLayout.jsx
-components/dashboard/TopBar.jsx
-components/dashboard/Sidebar.jsx
-```
+الترتيب:
+- عنوان + وصف في أعلى المحتوى
+- خياران رئيسيان (إنشاء مساحة / الانضمام كطالب)
+- زر "التالي" في الأسفل
+- صفحة auth تستخدم `AuthShell` مع محاذاة علوية
 
 ---
 
-## 20. Git / Commits
+## كيف تستكمل على جهاز آخر
 
-- لا commits تلقائية — فقط عند طلب المستخدم
-- `lint` و `build` يمرّان قبل أي PR
+1. انسخ المشروع وافتحه في Cursor
+2. ادخل على `refactoring_exam_system` ثم شغّل:
+   - `npm install`
+   - `npm run dev`
+3. اضبط `.env` (إن لزم): `VITE_API_BASE_URL`
+4. تأكد أن backend المنفصل شغال
+5. اقرأ هذا الملف قبل أي تعديل
 
----
-
-## 21. خريطة المكونات حسب الميزة
-
-```
-Auth & Register
-├── pages/LoginPage.jsx
-├── pages/WelcomePage.jsx
-├── pages/register/*
-├── pages/student/*
-├── pages/auth/*                    (forgot password)
-├── components/auth/*
-└── hooks/useRegisterFlow.js
-
-Dashboard Shell
-├── components/dashboard/DashboardLayout.jsx
-├── components/dashboard/TopBar.jsx
-├── components/dashboard/Sidebar.jsx
-├── components/dashboard/UserAvatar.jsx
-└── components/dashboard/DashboardGuard.jsx
-
-Subjects
-├── pages/subjects/*
-├── components/subjects/*
-├── hooks/subjects/*
-└── services/subjects.service.js
-
-Question Banks
-├── pages/question-banks/*
-├── components/question-banks/*
-├── components/question-banks/editor/*
-├── hooks/question-banks/*
-├── services/questionBanks.service.js
-└── lib/richText.js
-```
+على الجهاز الجديد: افتح المشروع في Cursor وقل:
+"اقرأ `PROJECT_DOCUMENTATION.md` واستكمل من حيث توقفنا"
+أو أرفق الملف في المحادثة الجديدة.
 
 ---
 
-*نهاية التوثيق — QuizHub Frontend*
+## خريطة المكونات
+
+### Auth & Registration
+
+- `pages/LoginPage.jsx`
+- `pages/WelcomePage.jsx`
+- `pages/register/*`
+- `pages/student/*`
+- `pages/auth/*`
+- `components/auth/*`
+- `hooks/useRegisterFlow.js`
+- `hooks/useStudentRegisterFlow.js`
+
+### Dashboard Shell
+
+- `components/dashboard/DashboardLayout.jsx`
+- `components/dashboard/TopBar.jsx`
+- `components/dashboard/Sidebar.jsx`
+- `components/dashboard/UserAvatar.jsx`
+- `components/dashboard/DashboardGuard.jsx`
+
+### Subjects
+
+- `pages/subjects/*`
+- `components/subjects/*`
+- `hooks/subjects/*`
+- `services/subjects.service.js`
+
+### Question Banks
+
+- `pages/question-banks/*`
+- `components/question-banks/*`
+- `components/question-banks/editor/*`
+- `hooks/question-banks/useQuestionBanks.js`
+- `services/questionBanks.service.js`
+- `lib/richText.js`

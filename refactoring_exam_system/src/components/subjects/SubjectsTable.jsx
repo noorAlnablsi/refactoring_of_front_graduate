@@ -1,6 +1,12 @@
 import { useNavigate } from 'react-router-dom'
 import { Archive, Eye, FlaskConical, Pencil } from 'lucide-react'
 import { ROUTES } from '../../constants/routes'
+import {
+  formatSubjectStatCount,
+  getSubjectQuestionBanksCount,
+  getSubjectTeachersCount,
+  getSubjectTestsCount,
+} from '../../lib/subjectDisplay'
 import { canEditSubject } from '../../lib/workspaceContext'
 
 function SubjectsTable({ subjects, loading, onEdit }) {
@@ -56,9 +62,15 @@ function SubjectsTable({ subjects, loading, onEdit }) {
                     </div>
                   </div>
                 </td>
-                <td className="px-5 py-4 text-[#64748B]">—</td>
-                <td className="px-5 py-4 text-[#64748B]">—</td>
-                <td className="px-5 py-4 text-[#64748B]">—</td>
+                <td className="px-5 py-4 text-[#64748B]">
+                  {formatSubjectStatCount(getSubjectTeachersCount(subject))}
+                </td>
+                <td className="px-5 py-4 text-[#64748B]">
+                  {formatSubjectStatCount(getSubjectQuestionBanksCount(subject))}
+                </td>
+                <td className="px-5 py-4 text-[#64748B]">
+                  {formatSubjectStatCount(getSubjectTestsCount(subject))}
+                </td>
                 <td className="px-5 py-4">
                   <div className="flex items-center gap-2">
                     <button

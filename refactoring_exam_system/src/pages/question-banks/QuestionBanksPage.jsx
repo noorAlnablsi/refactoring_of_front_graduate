@@ -5,6 +5,7 @@ import ArchiveQuestionBankDialog from '../../components/question-banks/ArchiveQu
 import CreateQuestionBankModal from '../../components/question-banks/CreateQuestionBankModal'
 import EditQuestionBankModal from '../../components/question-banks/EditQuestionBankModal'
 import QuestionBankCard from '../../components/question-banks/QuestionBankCard'
+import QuestionBankCreateCard from '../../components/question-banks/QuestionBankCreateCard'
 import QuestionBanksEmptyState from '../../components/question-banks/QuestionBanksEmptyState'
 import QuestionBanksSkeleton from '../../components/question-banks/QuestionBanksSkeleton'
 import { ROUTES } from '../../constants/routes'
@@ -124,7 +125,22 @@ function QuestionBanksPage() {
       {error ? <p className="text-sm text-red-600">{error}</p> : null}
 
       {loading ? <QuestionBanksSkeleton /> : null}
-      {!loading && filteredBanks.length > 0 ? (
+      {!loading && activeTab === QUESTION_BANK_TABS.MY ? (
+        <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
+          <QuestionBankCreateCard onClick={() => setCreateOpen(true)} />
+          {filteredBanks.map((bank) => (
+            <QuestionBankCard
+              key={bank.id}
+              bank={bank}
+              canManage={canManageQuestionBank(bank)}
+              onEdit={setEditBank}
+              onArchive={setArchiveBank}
+              onOpenEditor={(id) => navigate(`${ROUTES.QUESTION_BANKS}/${id}/editor`)}
+            />
+          ))}
+        </div>
+      ) : null}
+      {!loading && activeTab !== QUESTION_BANK_TABS.MY && filteredBanks.length > 0 ? (
         <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
           {filteredBanks.map((bank) => (
             <QuestionBankCard
@@ -138,7 +154,7 @@ function QuestionBanksPage() {
           ))}
         </div>
       ) : null}
-      {!loading && filteredBanks.length === 0 ? (
+      {!loading && filteredBanks.length === 0 && !(activeTab === QUESTION_BANK_TABS.MY && !hasSearch) ? (
         <QuestionBanksEmptyState
           searching={hasSearch}
           tab={activeTab}

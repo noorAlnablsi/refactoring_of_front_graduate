@@ -4,6 +4,7 @@ import {
   getSubjectQuestionBanks,
   getSubjectStudents,
   getSubjectTeachers,
+  getSubjectTopics,
 } from '../../services/subjects.service'
 
 export function useSubjectDetails(subjectId) {
@@ -11,6 +12,8 @@ export function useSubjectDetails(subjectId) {
   const [teachers, setTeachers] = useState([])
   const [questionBanks, setQuestionBanks] = useState([])
   const [questionBanksCount, setQuestionBanksCount] = useState(0)
+  const [topics, setTopics] = useState([])
+  const [topicsCount, setTopicsCount] = useState(0)
   const [studentsCount, setStudentsCount] = useState(0)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState('')
@@ -20,16 +23,19 @@ export function useSubjectDetails(subjectId) {
     setLoading(true)
     setError('')
     try {
-      const [subjectData, teachersData, banksData, studentsData] = await Promise.all([
+      const [subjectData, teachersData, banksData, studentsData, topicsData] = await Promise.all([
         getSubjectById(subjectId),
         getSubjectTeachers(subjectId),
         getSubjectQuestionBanks(subjectId),
         getSubjectStudents(subjectId),
+        getSubjectTopics(subjectId),
       ])
       setSubject(subjectData)
       setTeachers(teachersData.teachers || [])
       setQuestionBanks(banksData.question_banks || [])
       setQuestionBanksCount(banksData.count ?? banksData.question_banks?.length ?? 0)
+      setTopics(topicsData.topics || [])
+      setTopicsCount(topicsData.count ?? topicsData.topics?.length ?? 0)
       setStudentsCount(studentsData.count ?? 0)
     } catch (err) {
       setError(err.message)
@@ -48,13 +54,16 @@ export function useSubjectDetails(subjectId) {
       getSubjectTeachers(subjectId),
       getSubjectQuestionBanks(subjectId),
       getSubjectStudents(subjectId),
+      getSubjectTopics(subjectId),
     ])
-      .then(([subjectData, teachersData, banksData, studentsData]) => {
+      .then(([subjectData, teachersData, banksData, studentsData, topicsData]) => {
         if (cancelled) return
         setSubject(subjectData)
         setTeachers(teachersData.teachers || [])
         setQuestionBanks(banksData.question_banks || [])
         setQuestionBanksCount(banksData.count ?? banksData.question_banks?.length ?? 0)
+        setTopics(topicsData.topics || [])
+        setTopicsCount(topicsData.count ?? topicsData.topics?.length ?? 0)
         setStudentsCount(studentsData.count ?? 0)
       })
       .catch((err) => {
@@ -76,6 +85,8 @@ export function useSubjectDetails(subjectId) {
     teachers,
     questionBanks,
     questionBanksCount,
+    topics,
+    topicsCount,
     studentsCount,
     loading,
     error,

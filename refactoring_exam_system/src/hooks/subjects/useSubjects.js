@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useState } from 'react'
-import { getSubjects } from '../../services/subjects.service'
+import { getSubjectsWithStats } from '../../services/subjects.service'
 
 export function useSubjects() {
   const [subjects, setSubjects] = useState([])
@@ -11,7 +11,7 @@ export function useSubjects() {
     setLoading(true)
     setError('')
     try {
-      const data = await getSubjects()
+      const data = await getSubjectsWithStats()
       setSubjects(data.subjects || [])
       setCount(data.count ?? data.subjects?.length ?? 0)
     } catch (err) {
@@ -24,7 +24,7 @@ export function useSubjects() {
   useEffect(() => {
     let cancelled = false
 
-    getSubjects()
+    getSubjectsWithStats()
       .then((data) => {
         if (cancelled) return
         setSubjects(data.subjects || [])
