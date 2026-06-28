@@ -10,7 +10,6 @@ function EditSubjectForm({ subject, onClose, onSuccess }) {
   const showToast = useToastStore((s) => s.showToast)
   const [name, setName] = useState(subject.name || '')
   const [description, setDescription] = useState(subject.description || '')
-  const [isArchived, setIsArchived] = useState(Boolean(subject.is_archived))
   const [loading, setLoading] = useState(false)
   const [errors, setErrors] = useState({})
 
@@ -28,7 +27,6 @@ function EditSubjectForm({ subject, onClose, onSuccess }) {
       await updateSubject(subject.id, {
         name: name.trim(),
         description: description.trim(),
-        is_archived: isArchived,
       })
       showToast('تم تحديث المادة بنجاح')
       onSuccess()
@@ -58,16 +56,6 @@ function EditSubjectForm({ subject, onClose, onSuccess }) {
             className={inputClassName}
           />
         </div>
-
-        <label className="flex cursor-pointer items-center gap-2">
-          <input
-            type="checkbox"
-            checked={isArchived}
-            onChange={(e) => setIsArchived(e.target.checked)}
-            className="h-4 w-4 accent-[#2AA8A2]"
-          />
-          <span className="text-sm text-[#64748B]">أرشفة المادة</span>
-        </label>
       </div>
 
       <div className="mt-8 flex items-center justify-end gap-3">

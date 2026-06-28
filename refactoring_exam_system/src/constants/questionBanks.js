@@ -1,0 +1,1 @@
+export const COMMUNITY_BANKS_PAGE_SIZE = 8

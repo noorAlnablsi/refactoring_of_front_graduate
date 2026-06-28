@@ -1,20 +1,25 @@
 import { useMemo, useState } from 'react'
-import { Navigate, useNavigate } from 'react-router-dom'
+import { Navigate, useNavigate, useSearchParams } from 'react-router-dom'
 import { Plus, Search } from 'lucide-react'
-import ArchiveQuestionBankDialog from '../../components/question-banks/ArchiveQuestionBankDialog'
+import SoftDeleteConfirmDialog from '../../components/common/SoftDeleteConfirmDialog'
+import AlertNoticeDialog from '../../components/common/AlertNoticeDialog'
 import CreateQuestionBankModal from '../../components/question-banks/CreateQuestionBankModal'
 import EditQuestionBankModal from '../../components/question-banks/EditQuestionBankModal'
 import QuestionBankCard from '../../components/question-banks/QuestionBankCard'
+import CommunityQuestionBankCard from '../../components/question-banks/CommunityQuestionBankCard'
 import QuestionBankCreateCard from '../../components/question-banks/QuestionBankCreateCard'
 import QuestionBanksEmptyState from '../../components/question-banks/QuestionBanksEmptyState'
+import QuestionBanksPagination from '../../components/question-banks/QuestionBanksPagination'
 import QuestionBanksSkeleton from '../../components/question-banks/QuestionBanksSkeleton'
 import { ROUTES } from '../../constants/routes'
+import { useCommunityBanksView } from '../../hooks/question-banks/useCommunityBanksView'
 import { useQuestionBanks } from '../../hooks/question-banks/useQuestionBanks'
-import { QUESTION_BANK_TABS } from '../../lib/questionBanks'
+import { getQuestionBanksListPath, parseQuestionBanksTab, QUESTION_BANK_TABS } from '../../lib/questionBanks'
 import {
   canAccessQuestionBanks,
   canManageQuestionBank,
   isInstitutionWorkspace,
+  isQuestionBankOwner,
 } from '../../lib/workspaceContext'
 import { archiveQuestionBank } from '../../services/questionBanks.service'
 import { useToastStore } from '../../store/toastStore'
@@ -27,22 +32,38 @@ const TABS = [
 
 function QuestionBanksPage() {
   const navigate = useNavigate()
+  const [searchParams, setSearchParams] = useSearchParams()
   const showToast = useToastStore((s) => s.showToast)
   const showInstitutionTab = isInstitutionWorkspace()
   const visibleTabs = useMemo(
     () => TABS.filter((tab) => !tab.institutionOnly || showInstitutionTab),
     [showInstitutionTab],
   )
-  const [activeTab, setActiveTab] = useState(QUESTION_BANK_TABS.MY)
+  const visibleTabIds = useMemo(() => visibleTabs.map((tab) => tab.id), [visibleTabs])
+  const activeTab = parseQuestionBanksTab(searchParams.get('tab'), visibleTabIds)
   const { banks, filteredBanks, loading, error, search, setSearch, refetch } = useQuestionBanks(activeTab)
+  const isCommunityTab = activeTab === QUESTION_BANK_TABS.COMMUNITY
+  const {
+    page: communityPage,
+    setPage: setCommunityPage,
+    paginatedBanks: paginatedCommunityBanks,
+    totalPages: communityTotalPages,
+  } = useCommunityBanksView(isCommunityTab ? filteredBanks : [])
   const [createOpen, setCreateOpen] = useState(false)
   const [editBank, setEditBank] = useState(null)
   const [archiveBank, setArchiveBank] = useState(null)
   const [archiveLoading, setArchiveLoading] = useState(false)
+  const [blockedNotice, setBlockedNotice] = useState('')
 
   const handleTabChange = (tabId) => {
     setSearch('')
-    setActiveTab(tabId)
+    const nextParams = new URLSearchParams(searchParams)
+    if (tabId === QUESTION_BANK_TABS.MY) {
+      nextParams.delete('tab')
+    } else {
+      nextParams.set('tab', tabId)
+    }
+    setSearchParams(nextParams)
   }
 
   const hasSearch = search.trim().length > 0
@@ -56,7 +77,7 @@ function QuestionBanksPage() {
     setArchiveLoading(true)
     try {
       await archiveQuestionBank(archiveBank.id)
-      showToast('تمت أرشفة بنك الأسئلة')
+      showToast('تم حذف بنك الأسئلة')
       setArchiveBank(null)
       refetch()
     } catch (err) {
@@ -64,6 +85,30 @@ function QuestionBanksPage() {
     } finally {
       setArchiveLoading(false)
     }
+  }
+
+  const isOwnedStyleTab =
+    activeTab === QUESTION_BANK_TABS.MY || activeTab === QUESTION_BANK_TABS.WORKSPACE
+
+  const openEditor = (bank) =>
+    navigate(`${ROUTES.QUESTION_BANKS}/${bank.id}/editor`, {
+      state: { bank, sourceTab: activeTab },
+    })
+
+  const handleCommunityEdit = (bank) => {
+    if (isQuestionBankOwner(bank)) {
+      setEditBank(bank)
+      return
+    }
+    setBlockedNotice('لا يمكنك التعديل على هذا البنك')
+  }
+
+  const handleCommunityDelete = (bank) => {
+    if (isQuestionBankOwner(bank)) {
+      setArchiveBank(bank)
+      return
+    }
+    setBlockedNotice('لا يمكنك حذف هذا البنك')
   }
 
   return (
@@ -124,37 +169,53 @@ function QuestionBanksPage() {
 
       {error ? <p className="text-sm text-red-600">{error}</p> : null}
 
-      {loading ? <QuestionBanksSkeleton /> : null}
-      {!loading && activeTab === QUESTION_BANK_TABS.MY ? (
-        <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
-          <QuestionBankCreateCard onClick={() => setCreateOpen(true)} />
+      {loading ? <QuestionBanksSkeleton ownedStyle={isOwnedStyleTab} /> : null}
+
+      {!loading && isOwnedStyleTab ? (
+        <div className="flex flex-wrap gap-4">
+          {activeTab === QUESTION_BANK_TABS.MY ? (
+            <QuestionBankCreateCard onClick={() => setCreateOpen(true)} />
+          ) : null}
           {filteredBanks.map((bank) => (
             <QuestionBankCard
               key={bank.id}
               bank={bank}
               canManage={canManageQuestionBank(bank)}
               onEdit={setEditBank}
-              onArchive={setArchiveBank}
-              onOpenEditor={(id) => navigate(`${ROUTES.QUESTION_BANKS}/${id}/editor`)}
+              onDelete={setArchiveBank}
+              onOpenEditor={openEditor}
             />
           ))}
         </div>
       ) : null}
-      {!loading && activeTab !== QUESTION_BANK_TABS.MY && filteredBanks.length > 0 ? (
-        <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
-          {filteredBanks.map((bank) => (
-            <QuestionBankCard
-              key={bank.id}
-              bank={bank}
-              canManage={canManageQuestionBank(bank)}
-              onEdit={setEditBank}
-              onArchive={setArchiveBank}
-              onOpenEditor={(id) => navigate(`${ROUTES.QUESTION_BANKS}/${id}/editor`)}
-            />
-          ))}
+
+      {!loading && activeTab === QUESTION_BANK_TABS.COMMUNITY ? (
+        <div className="space-y-6">
+          <QuestionBanksPagination
+            page={communityPage}
+            totalPages={communityTotalPages}
+            onPageChange={setCommunityPage}
+          />
+
+          <div className="flex flex-wrap gap-4">
+            <QuestionBankCreateCard onClick={() => setCreateOpen(true)} />
+            {paginatedCommunityBanks.map((bank) => (
+              <CommunityQuestionBankCard
+                key={bank.id}
+                bank={bank}
+                onEdit={handleCommunityEdit}
+                onDelete={handleCommunityDelete}
+                onOpenEditor={openEditor}
+              />
+            ))}
+          </div>
         </div>
       ) : null}
-      {!loading && filteredBanks.length === 0 && !(activeTab === QUESTION_BANK_TABS.MY && !hasSearch) ? (
+
+      {!loading &&
+      filteredBanks.length === 0 &&
+      !(activeTab === QUESTION_BANK_TABS.MY && !hasSearch) &&
+      !(activeTab === QUESTION_BANK_TABS.COMMUNITY && !hasSearch) ? (
         <QuestionBanksEmptyState
           searching={hasSearch}
           tab={activeTab}
@@ -165,7 +226,11 @@ function QuestionBanksPage() {
       <CreateQuestionBankModal
         open={createOpen}
         onClose={() => setCreateOpen(false)}
-        onCreated={(bank) => navigate(`${ROUTES.QUESTION_BANKS}/${bank.id}/editor`, { state: { bank } })}
+        onCreated={(bank) =>
+          navigate(`${ROUTES.QUESTION_BANKS}/${bank.id}/editor`, {
+            state: { bank, sourceTab: QUESTION_BANK_TABS.MY },
+          })
+        }
       />
 
       <EditQuestionBankModal
@@ -179,12 +244,19 @@ function QuestionBanksPage() {
         }}
       />
 
-      <ArchiveQuestionBankDialog
+      <SoftDeleteConfirmDialog
         open={Boolean(archiveBank)}
-        bankTitle={archiveBank?.title}
+        itemLabel="البنك"
+        itemName={archiveBank?.title}
         loading={archiveLoading}
         onClose={() => setArchiveBank(null)}
         onConfirm={handleArchive}
+      />
+
+      <AlertNoticeDialog
+        open={Boolean(blockedNotice)}
+        message={blockedNotice}
+        onClose={() => setBlockedNotice('')}
       />
     </div>
   )

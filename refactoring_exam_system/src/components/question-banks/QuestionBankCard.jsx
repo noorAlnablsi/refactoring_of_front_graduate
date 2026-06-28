@@ -1,112 +1,125 @@
-import { useState } from 'react'
-import { CalendarDays, FileQuestion, MoreVertical, Pencil, Sigma, Trash2 } from 'lucide-react'
+import { useEffect, useRef, useState } from 'react'
+import { CalendarDays, FileText, MoreVertical, Pencil, Trash2 } from 'lucide-react'
 import {
   formatBankCardDate,
   formatBankQuestionsCount,
+  ownedQuestionBankCardClassName,
 } from '../../lib/questionBanks'
 
-function QuestionBankCard({ bank, canManage = true, onEdit, onArchive, onOpenEditor }) {
+const cardShadow =
+  'shadow-[0_1px_3px_rgba(16,24,40,0.06),0_1px_2px_rgba(16,24,40,0.04)]'
+const cardShadowHover =
+  'hover:shadow-[0_4px_12px_rgba(16,24,40,0.08),0_2px_4px_rgba(16,24,40,0.04)]'
+
+function QuestionBankCard({ bank, canManage = false, onEdit, onDelete, onOpenEditor }) {
   const [menuOpen, setMenuOpen] = useState(false)
+  const menuRef = useRef(null)
 
-  const handleOpenEditor = () => {
-    onOpenEditor(bank.id)
-  }
+  useEffect(() => {
+    if (!menuOpen) return undefined
 
-  const handleEdit = (event) => {
+    const handleClickOutside = (event) => {
+      if (!menuRef.current?.contains(event.target)) {
+        setMenuOpen(false)
+      }
+    }
+
+    document.addEventListener('click', handleClickOutside)
+    return () => document.removeEventListener('click', handleClickOutside)
+  }, [menuOpen])
+
+  const stopCardAction = (event) => {
+    event.preventDefault()
     event.stopPropagation()
-    setMenuOpen(false)
-    onEdit(bank)
-  }
-
-  const handleArchive = (event) => {
-    event.stopPropagation()
-    setMenuOpen(false)
-    onArchive(bank)
-  }
-
-  const toggleMenu = (event) => {
-    event.stopPropagation()
-    setMenuOpen((prev) => !prev)
   }
 
   return (
     <article
       role="button"
       tabIndex={0}
-      onClick={() => {
-        setMenuOpen(false)
-        handleOpenEditor()
-      }}
+      dir="rtl"
+      onClick={() => onOpenEditor(bank)}
       onKeyDown={(event) => {
         if (event.key === 'Enter' || event.key === ' ') {
           event.preventDefault()
-          handleOpenEditor()
+          onOpenEditor(bank)
         }
       }}
-      className="group relative flex h-full cursor-pointer flex-col overflow-hidden rounded-2xl bg-white shadow-[0_2px_12px_rgba(15,23,42,0.04)] ring-1 ring-[#E5E9EB] transition hover:shadow-[0_8px_24px_rgba(15,23,42,0.08)]"
+      className={`flex cursor-pointer flex-col overflow-hidden rounded-xl bg-white transition active:scale-[0.995] ${ownedQuestionBankCardClassName} ${cardShadow} ${cardShadowHover}`}
     >
-      <div className="h-[3px] bg-[#2AA8A2]" aria-hidden="true" />
+      <div
+        className="h-1 bg-gradient-to-r from-[#A7E3DA] to-[#22C1A3]"
+        aria-hidden="true"
+      />
 
       <div className="flex flex-1 flex-col p-5">
         <div className="flex items-start justify-between gap-3">
-          <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-[#E8F7F6] text-[#2AA8A2]">
-            <Sigma className="h-5 w-5" strokeWidth={2} />
-          </span>
-          <span className="rounded-lg bg-[#E8F7F6] px-3 py-1 text-xs font-bold text-[#2AA8A2]">
+          {canManage ? (
+            <div className="relative shrink-0" ref={menuRef} onClick={stopCardAction}>
+              <button
+                type="button"
+                onClick={() => setMenuOpen((open) => !open)}
+                className="flex h-10 w-10 items-center justify-center rounded-xl text-[#64748B] transition hover:bg-[#F6F8F9] hover:text-[#374151]"
+                aria-label="خيارات البنك"
+                aria-expanded={menuOpen}
+              >
+                <MoreVertical className="h-5 w-5" strokeWidth={2} />
+              </button>
+
+              {menuOpen ? (
+                <div className="absolute right-0 top-full z-20 mt-1 min-w-[132px] overflow-hidden rounded-xl bg-white py-1 shadow-[0_8px_24px_rgba(15,23,42,0.12)] ring-1 ring-[#E5E9EB]">
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setMenuOpen(false)
+                      onEdit?.(bank)
+                    }}
+                    className="flex w-full items-center gap-2 px-4 py-2.5 text-sm font-medium text-[#374151] hover:bg-[#F8FAFB]"
+                  >
+                    <Pencil className="h-4 w-4 text-[#64748B]" />
+                    تعديل
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setMenuOpen(false)
+                      onDelete?.(bank)
+                    }}
+                    className="flex w-full items-center gap-2 px-4 py-2.5 text-sm font-medium text-red-600 hover:bg-red-50"
+                  >
+                    <Trash2 className="h-4 w-4" />
+                    حذف
+                  </button>
+                </div>
+              ) : null}
+            </div>
+          ) : (
+            <span className="h-10 w-10 shrink-0" aria-hidden="true" />
+          )}
+
+          <span className="rounded-full bg-[#E8F7F3] px-3 py-1 text-xs font-medium text-[#0EA896]">
             {bank.subject_name || 'عام'}
           </span>
         </div>
 
-        {canManage ? (
-          <div className="absolute left-4 top-6 z-10">
-            <button
-              type="button"
-              onClick={toggleMenu}
-              className="rounded-lg p-1.5 text-[#94A3B8] opacity-0 transition hover:bg-[#F6F8F9] hover:text-[#64748B] group-hover:opacity-100"
-              aria-label="إجراءات البنك"
-            >
-              <MoreVertical className="h-4 w-4" />
-            </button>
-            {menuOpen ? (
-              <div
-                className="absolute left-0 mt-1 min-w-[9rem] overflow-hidden rounded-xl bg-white py-1 shadow-lg ring-1 ring-[#E5E9EB]"
-                onClick={(event) => event.stopPropagation()}
-              >
-                <button
-                  type="button"
-                  onClick={handleEdit}
-                  className="flex w-full items-center gap-2 px-3 py-2 text-sm font-semibold text-[#64748B] hover:bg-[#F8FAFB]"
-                >
-                  <Pencil className="h-3.5 w-3.5" />
-                  تعديل
-                </button>
-                <button
-                  type="button"
-                  onClick={handleArchive}
-                  className="flex w-full items-center gap-2 px-3 py-2 text-sm font-semibold text-red-600 hover:bg-red-50"
-                >
-                  <Trash2 className="h-3.5 w-3.5" />
-                  أرشفة
-                </button>
-              </div>
-            ) : null}
+        <div className="mt-5 flex flex-1 flex-col">
+          <h3 className="line-clamp-2 text-center text-lg font-bold leading-8 text-[#111827]">
+            {bank.title}
+          </h3>
+          <p className="mt-2 line-clamp-2 text-center text-[13px] leading-6 text-[#6B7280]">
+            {bank.description || 'لا يوجد وصف لهذا البنك بعد.'}
+          </p>
+        </div>
+
+        <div className="mt-5 flex items-center justify-between gap-3 pt-1">
+          <div className="flex items-center gap-1.5 text-xs font-medium text-[#111827]">
+            <span>{formatBankQuestionsCount(bank)}</span>
+            <FileText className="h-4 w-4 text-[#0EA896]" strokeWidth={2} />
           </div>
-        ) : null}
-
-        <h3 className="mt-5 line-clamp-2 text-xl font-extrabold leading-8 text-[#2A3433]">{bank.title}</h3>
-        <p className="mt-3 line-clamp-3 flex-1 text-sm leading-7 text-[#64748B]">
-          {bank.description || 'لا يوجد وصف لهذا البنك بعد.'}
-        </p>
-
-        <div className="mt-5 flex items-center justify-between gap-3 border-t border-[#EEF2F3] pt-4">
-          <span className="inline-flex items-center gap-1.5 text-sm font-semibold text-[#374151]">
-            <FileQuestion className="h-4 w-4 text-[#94A3B8]" />
-            {formatBankQuestionsCount(bank)}
-          </span>
-          <span className="inline-flex items-center gap-1.5 text-xs text-[#94A3B8]">
-            <CalendarDays className="h-3.5 w-3.5 shrink-0" />
-            {formatBankCardDate(bank.created_at)}
-          </span>
+          <div className="flex items-center gap-1.5 text-xs text-[#64748B]">
+            <CalendarDays className="h-3.5 w-3.5 shrink-0" strokeWidth={2} />
+            <span>{formatBankCardDate(bank.created_at)}</span>
+          </div>
         </div>
       </div>
     </article>

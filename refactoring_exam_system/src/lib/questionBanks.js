@@ -1,7 +1,124 @@
+import { ROUTES } from '../constants/routes'
+import { getPlainTextFromHtml } from './richText'
+
 export const QUESTION_BANK_TABS = {
   MY: 'my',
   WORKSPACE: 'workspace',
   COMMUNITY: 'community',
+}
+
+export function getQuestionBanksListPath(tab = QUESTION_BANK_TABS.MY) {
+  const params = new URLSearchParams()
+  if (tab && tab !== QUESTION_BANK_TABS.MY) {
+    params.set('tab', tab)
+  }
+  const query = params.toString()
+  return query ? `${ROUTES.QUESTION_BANKS}?${query}` : ROUTES.QUESTION_BANKS
+}
+
+export function parseQuestionBanksTab(value, allowedTabs = Object.values(QUESTION_BANK_TABS)) {
+  if (allowedTabs.includes(value)) return value
+  return QUESTION_BANK_TABS.MY
+}
+
+/** Figma dimensions for بنوكي + ضمن المؤسسة cards */
+export const OWNED_QUESTION_BANK_CARD_SIZE = {
+  width: 293.33,
+  height: 321,
+}
+
+export const ownedQuestionBankCardClassName = `h-[321px] w-[293.33px] shrink-0`
+
+/** Same Figma size for community cards */
+export const communityQuestionBankCardClassName = ownedQuestionBankCardClassName
+
+const COMMUNITY_BANK_THEMES = [
+  { accent: '#8B5CF6', badgeBg: '#F3E8FF', badgeText: '#7C3AED' },
+  { accent: '#14B8A6', badgeBg: '#CCFBF1', badgeText: '#0D9488' },
+  { accent: '#22C55E', badgeBg: '#DCFCE7', badgeText: '#16A34A' },
+  { accent: '#EC4899', badgeBg: '#FCE7F3', badgeText: '#DB2777' },
+  { accent: '#F97316', badgeBg: '#FFEDD5', badgeText: '#EA580C' },
+]
+
+function hashString(value) {
+  const text = String(value || '')
+  let hash = 0
+  for (let index = 0; index < text.length; index += 1) {
+    hash = (hash << 5) - hash + text.charCodeAt(index)
+    hash |= 0
+  }
+  return Math.abs(hash)
+}
+
+export function getCommunityBankTheme(bank) {
+  const key = bank?.subject_id ?? bank?.subject_name ?? bank?.id ?? ''
+  const index = hashString(key) % COMMUNITY_BANK_THEMES.length
+  return COMMUNITY_BANK_THEMES[index]
+}
+
+export function getCommunityBankAuthorName(bank) {
+  return (
+    bank?.author_name ||
+    bank?.created_by_name ||
+    bank?.owner_name ||
+    bank?.created_by?.full_name ||
+    bank?.creator?.name ||
+    bank?.creator_name ||
+    'مؤلف البنك'
+  )
+}
+
+export function getCommunityBankAuthorAvatar(bank) {
+  return (
+    bank?.author_avatar_url ||
+    bank?.created_by_avatar_url ||
+    bank?.owner_avatar_url ||
+    bank?.created_by?.avatar_url ||
+    bank?.creator?.avatar_url ||
+    null
+  )
+}
+
+export function getCommunityBankRating(bank) {
+  const value = bank?.rating ?? bank?.average_rating ?? bank?.stars
+  if (value == null || value === '') return 5
+  const numeric = Number(value)
+  if (Number.isNaN(numeric)) return 5
+  return Math.min(5, Math.max(0, numeric))
+}
+
+export function getCommunityBankUsageCount(bank) {
+  const value =
+    bank?.usage_count ?? bank?.uses_count ?? bank?.imports_count ?? bank?.download_count
+
+  if (value == null || value === '') return null
+  return Number(value)
+}
+
+export function formatCommunityQuestionsCount(bank) {
+  const count = getBankQuestionsCount(bank)
+  if (count == null || Number.isNaN(count)) return '—'
+  return `${count.toLocaleString('ar-EG')} سؤال`
+}
+
+export function formatCommunityUsageCount(bank) {
+  const count = getCommunityBankUsageCount(bank)
+  if (count == null || Number.isNaN(count)) return '—'
+  return `${count.toLocaleString('ar-EG')} استخدام`
+}
+
+export function formatQuestionForCopy(question) {
+  const lines = [getPlainTextFromHtml(question?.body)]
+
+  if (Array.isArray(question?.choices) && question.choices.length) {
+    question.choices.forEach((choice, index) => {
+      const label = getPlainTextFromHtml(choice.body)
+      const marker = choice.is_correct ? ' ✓' : ''
+      lines.push(`${index + 1}. ${label}${marker}`)
+    })
+  }
+
+  return lines.filter(Boolean).join('\n')
 }
 
 export const VISIBILITY_OPTIONS = [

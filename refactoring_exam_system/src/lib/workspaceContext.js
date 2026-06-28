@@ -77,6 +77,12 @@ export function isInstitutionWorkspace() {
   return getActiveMembership()?.workspace?.kind === 'INSTITUTION'
 }
 
+export function isQuestionBankOwner(bank) {
+  const membership = getActiveMembership()
+  if (!membership || !bank) return false
+  return bank.created_by_membership_id === membership.membership_id
+}
+
 export function canManageQuestionBank(bank) {
   const membership = getActiveMembership()
   if (!membership || !bank) return false

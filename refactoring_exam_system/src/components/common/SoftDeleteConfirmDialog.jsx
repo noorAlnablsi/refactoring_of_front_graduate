@@ -1,6 +1,13 @@
 import { AlertTriangle } from 'lucide-react'
 
-function ArchiveQuestionBankDialog({ open, bankTitle, loading, onClose, onConfirm }) {
+function SoftDeleteConfirmDialog({
+  open,
+  itemLabel = 'العنصر',
+  itemName,
+  loading = false,
+  onClose,
+  onConfirm,
+}) {
   if (!open) return null
 
   return (
@@ -13,9 +20,9 @@ function ArchiveQuestionBankDialog({ open, bankTitle, loading, onClose, onConfir
           <div>
             <h3 className="text-lg font-extrabold text-[#2A3433]">تأكيد الحذف</h3>
             <p className="mt-2 text-sm leading-7 text-[#374151]">هل أنت متأكد من الحذف؟</p>
-            {bankTitle ? (
+            {itemName ? (
               <p className="mt-2 text-sm leading-7 text-[#64748B]">
-                البنك: <span className="font-bold text-[#2A3433]">{bankTitle}</span>
+                {itemLabel}: <span className="font-bold text-[#2A3433]">{itemName}</span>
               </p>
             ) : null}
             <p className="mt-3 rounded-xl bg-[#F8FAFB] px-3 py-2 text-xs leading-6 text-[#64748B]">
@@ -42,4 +49,4 @@ function ArchiveQuestionBankDialog({ open, bankTitle, loading, onClose, onConfir
   )
 }
 
-export default ArchiveQuestionBankDialog
+export default SoftDeleteConfirmDialog

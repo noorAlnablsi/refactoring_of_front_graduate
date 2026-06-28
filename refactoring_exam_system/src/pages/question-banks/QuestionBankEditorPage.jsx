@@ -2,20 +2,26 @@ import { useEffect, useMemo, useState } from 'react'
 import { Navigate, useLocation, useNavigate, useParams } from 'react-router-dom'
 import { Eye } from 'lucide-react'
 import BankInfoSummary from '../../components/question-banks/editor/BankInfoSummary'
+import QuestionsLoadErrorBanner from '../../components/question-banks/editor/QuestionsLoadErrorBanner'
 import PreviewQuestionsModal from '../../components/question-banks/editor/PreviewQuestionsModal'
 import PublishQuestionBankModal from '../../components/question-banks/editor/PublishQuestionBankModal'
 import QuestionBuilderForm from '../../components/question-banks/editor/QuestionBuilderForm'
 import QuestionsList from '../../components/question-banks/editor/QuestionsList'
+import { parseApiError } from '../../lib/apiError'
 import { ROUTES } from '../../constants/routes'
-import { canAccessQuestionBanks } from '../../lib/workspaceContext'
+import { canAccessQuestionBanks, canManageQuestionBank, isQuestionBankOwner } from '../../lib/workspaceContext'
 import { isRichTextEmpty } from '../../lib/richText'
 import {
+  getQuestionBanksListPath,
+  QUESTION_BANK_TABS,
+  validateQuestionChoiceRules,
+} from '../../lib/questionBanks'
+import {
   createQuestionBankQuestions,
-  getMyQuestionBanks,
-  getQuestionBankQuestions,
+  findQuestionBankById,
+  loadQuestionBankQuestionsForView,
   updateQuestionBank,
 } from '../../services/questionBanks.service'
-import { validateQuestionChoiceRules } from '../../lib/questionBanks'
 import { getSubjectTopics } from '../../services/subjects.service'
 import { useToastStore } from '../../store/toastStore'
 
@@ -60,7 +66,12 @@ function QuestionBankEditorPage() {
   const navigate = useNavigate()
   const { id } = useParams()
   const showToast = useToastStore((s) => s.showToast)
-  const [bank, setBank] = useState(() => location.state?.bank || null)
+  const sourceTab = location.state?.sourceTab || QUESTION_BANK_TABS.MY
+  const banksListPath = getQuestionBanksListPath(sourceTab)
+  const [bank, setBank] = useState(() => {
+    const stateBank = location.state?.bank
+    return stateBank && String(stateBank.id) === String(id) ? stateBank : null
+  })
   const [serverQuestions, setServerQuestions] = useState([])
   const [localQuestions, setLocalQuestions] = useState([])
   const [draftQuestion, setDraftQuestion] = useState(createDefaultQuestion())
@@ -70,23 +81,63 @@ function QuestionBankEditorPage() {
   const [publishVisibility, setPublishVisibility] = useState('PRIVATE')
   const [publishing, setPublishing] = useState(false)
   const [topics, setTopics] = useState([])
+  const [questionsLoadError, setQuestionsLoadError] = useState(null)
+
+  const canEditBank = bank
+    ? sourceTab === QUESTION_BANK_TABS.COMMUNITY
+      ? isQuestionBankOwner(bank)
+      : canManageQuestionBank(bank)
+    : false
+  const readOnly = bank ? !canEditBank : sourceTab === QUESTION_BANK_TABS.COMMUNITY
 
   useEffect(() => {
     if (!id) return
     let cancelled = false
-    Promise.all([getMyQuestionBanks(), getQuestionBankQuestions(id)])
-      .then(([banksData, questionsData]) => {
+
+    const load = async () => {
+      try {
+        const stateBank = location.state?.bank
+        const selectedBank =
+          stateBank && String(stateBank.id) === String(id)
+            ? stateBank
+            : await findQuestionBankById(id, sourceTab)
+
         if (cancelled) return
-        const selectedBank = (banksData.question_banks || []).find((item) => String(item.id) === String(id))
+
         if (!selectedBank) {
-          showToast('لا يمكن الوصول إلى بنك الأسئلة', 'error')
-          navigate(ROUTES.QUESTION_BANKS, { replace: true })
+          showToast('بنك الأسئلة غير موجود', 'error')
+          navigate(banksListPath, { replace: true })
           return
         }
+
         setBank(selectedBank)
         setPublishVisibility(selectedBank.visibility || 'PRIVATE')
-        setServerQuestions(questionsData.questions || [])
-        if (selectedBank.subject_id) {
+        setQuestionsLoadError(null)
+
+        const isCommunityViewer =
+          sourceTab === QUESTION_BANK_TABS.COMMUNITY && !isQuestionBankOwner(selectedBank)
+
+        try {
+          const questionsData = await loadQuestionBankQuestionsForView(id, { bank: selectedBank })
+          if (!cancelled) {
+            setServerQuestions(questionsData.questions || [])
+          }
+        } catch (questionsError) {
+          if (cancelled) return
+
+          const message = parseApiError(questionsError)
+          const status = questionsError?.response?.status
+
+          if (isCommunityViewer) {
+            setServerQuestions([])
+            setQuestionsLoadError({ message, status })
+            showToast(message, 'error')
+          } else {
+            throw questionsError
+          }
+        }
+
+        if (!isCommunityViewer && selectedBank.subject_id) {
           getSubjectTopics(selectedBank.subject_id)
             .then((topicsData) => {
               if (cancelled) return
@@ -99,21 +150,23 @@ function QuestionBankEditorPage() {
         } else {
           setTopics([])
         }
-      })
-      .catch((err) => {
+      } catch (err) {
         if (cancelled) return
         showToast(err.message, 'error')
-        navigate(ROUTES.QUESTION_BANKS, { replace: true })
-      })
-      .finally(() => {
-        if (cancelled) return
-        setLoading(false)
-      })
+        navigate(banksListPath, { replace: true })
+      } finally {
+        if (!cancelled) {
+          setLoading(false)
+        }
+      }
+    }
+
+    load()
 
     return () => {
       cancelled = true
     }
-  }, [id, navigate, showToast])
+  }, [banksListPath, id, location.state?.bank, navigate, showToast, sourceTab])
 
   const allQuestions = useMemo(() => [...serverQuestions, ...localQuestions], [serverQuestions, localQuestions])
 
@@ -174,7 +227,7 @@ function QuestionBankEditorPage() {
       await updateQuestionBank(bank.id, { visibility: publishVisibility })
       await createQuestionBankQuestions(bank.id, localQuestions)
       showToast('Question Bank Published Successfully')
-      navigate(ROUTES.QUESTION_BANKS)
+      navigate(banksListPath)
     } catch (err) {
       showToast(err.message, 'error')
     } finally {
@@ -190,15 +243,29 @@ function QuestionBankEditorPage() {
     <div className="space-y-6">
       <BankInfoSummary bank={bank} />
 
-      <QuestionBuilderForm
-        value={draftQuestion}
-        onChange={setDraftQuestion}
-        onSave={handleSaveQuestion}
-        onAddAnother={handleAddAnother}
-        topics={topics}
-      />
+      {!readOnly ? (
+        <QuestionBuilderForm
+          value={draftQuestion}
+          onChange={setDraftQuestion}
+          onSave={handleSaveQuestion}
+          onAddAnother={handleAddAnother}
+          topics={topics}
+        />
+      ) : null}
 
-      <QuestionsList questions={allQuestions} />
+      <QuestionsLoadErrorBanner bankId={id} error={questionsLoadError} />
+
+      <QuestionsList
+        questions={allQuestions}
+        readOnly={readOnly}
+        emptyMessage={
+          questionsLoadError
+            ? 'لم يتم تحميل الأسئلة بسبب خطأ من الخادم.'
+            : readOnly && sourceTab === QUESTION_BANK_TABS.COMMUNITY
+              ? 'لا توجد أسئلة في هذا البنك.'
+              : undefined
+        }
+      />
 
       <div className="flex flex-wrap items-center gap-3 rounded-2xl bg-white p-4 shadow-[0_2px_12px_rgba(15,23,42,0.04)] ring-1 ring-[#E5E9EB]">
         <button
@@ -209,13 +276,15 @@ function QuestionBankEditorPage() {
           <Eye className="h-4 w-4" />
           معاينة الأسئلة
         </button>
-        <button
-          type="button"
-          onClick={() => setPublishOpen(true)}
-          className="rounded-xl bg-[#2AA8A2] px-6 py-3 text-sm font-bold text-white"
-        >
-          رفع بنك الأسئلة
-        </button>
+        {!readOnly ? (
+          <button
+            type="button"
+            onClick={() => setPublishOpen(true)}
+            className="rounded-xl bg-[#2AA8A2] px-6 py-3 text-sm font-bold text-white"
+          >
+            رفع بنك الأسئلة
+          </button>
+        ) : null}
       </div>
 
       <PreviewQuestionsModal open={previewOpen} questions={allQuestions} onClose={() => setPreviewOpen(false)} />

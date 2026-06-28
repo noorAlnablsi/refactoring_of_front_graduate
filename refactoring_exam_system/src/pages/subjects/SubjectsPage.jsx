@@ -1,5 +1,6 @@
-import { useState } from 'react'
+import { useMemo, useState } from 'react'
 import { Plus } from 'lucide-react'
+import SoftDeleteConfirmDialog from '../../components/common/SoftDeleteConfirmDialog'
 import CreateSubjectModal from '../../components/subjects/CreateSubjectModal'
 import EditSubjectModal from '../../components/subjects/EditSubjectModal'
 import SubjectStatsCards from '../../components/subjects/SubjectStatsCards'
@@ -10,9 +11,16 @@ import { canCreateSubject } from '../../lib/workspaceContext'
 import { useSubjects } from '../../hooks/subjects/useSubjects'
 import { useSubjectsListView } from '../../hooks/subjects/useSubjectsListView'
 import { useWorkspaceTeachersCount } from '../../hooks/subjects/useWorkspaceTeachersCount'
+import { deleteSubject } from '../../services/subjects.service'
+import { useToastStore } from '../../store/toastStore'
 
 function SubjectsPage() {
-  const { subjects, count, loading, error, refetch } = useSubjects()
+  const showToast = useToastStore((s) => s.showToast)
+  const { subjects, loading, error, refetch } = useSubjects()
+  const activeSubjects = useMemo(
+    () => subjects.filter((subject) => !subject.is_archived),
+    [subjects],
+  )
   const { teachersCount, loadingTeachers } = useWorkspaceTeachersCount()
   const {
     sortKey,
@@ -24,14 +32,31 @@ function SubjectsPage() {
     totalCount,
     rangeStart,
     rangeEnd,
-  } = useSubjectsListView(subjects)
+  } = useSubjectsListView(activeSubjects)
   const [createOpen, setCreateOpen] = useState(false)
   const [editOpen, setEditOpen] = useState(false)
   const [selectedSubject, setSelectedSubject] = useState(null)
+  const [deleteSubjectItem, setDeleteSubjectItem] = useState(null)
+  const [deleteLoading, setDeleteLoading] = useState(false)
 
   const handleEdit = (subject) => {
     setSelectedSubject(subject)
     setEditOpen(true)
+  }
+
+  const handleDelete = async () => {
+    if (!deleteSubjectItem) return
+    setDeleteLoading(true)
+    try {
+      await deleteSubject(deleteSubjectItem.id)
+      showToast('تم حذف المادة')
+      setDeleteSubjectItem(null)
+      refetch()
+    } catch (err) {
+      showToast(err.message, 'error')
+    } finally {
+      setDeleteLoading(false)
+    }
   }
 
   return (
@@ -57,7 +82,7 @@ function SubjectsPage() {
       </div>
 
       <SubjectStatsCards
-        subjectsCount={count}
+        subjectsCount={totalCount}
         teachersCount={teachersCount}
         teachersLoading={loadingTeachers}
       />
@@ -70,13 +95,18 @@ function SubjectsPage() {
         </div>
       ) : null}
 
-      <SubjectsTable subjects={paginatedSubjects} loading={loading} onEdit={handleEdit} />
+      <SubjectsTable
+        subjects={paginatedSubjects}
+        loading={loading}
+        onEdit={handleEdit}
+        onDelete={setDeleteSubjectItem}
+      />
 
       <SubjectsPagination page={page} totalPages={totalPages} onPageChange={setPage} />
 
       {!loading && totalCount > 0 ? (
         <p className="text-center text-sm text-[#94A3B8]">
-          عرض {rangeStart}–{rangeEnd} من أصل {count || totalCount} مادة
+          عرض {rangeStart}–{rangeEnd} من أصل {totalCount} مادة
         </p>
       ) : null}
 
@@ -92,6 +122,14 @@ function SubjectsPage() {
         onSuccess={refetch}
       />
 
+      <SoftDeleteConfirmDialog
+        open={Boolean(deleteSubjectItem)}
+        itemLabel="المادة"
+        itemName={deleteSubjectItem?.name}
+        loading={deleteLoading}
+        onClose={() => setDeleteSubjectItem(null)}
+        onConfirm={handleDelete}
+      />
     </div>
   )
 }

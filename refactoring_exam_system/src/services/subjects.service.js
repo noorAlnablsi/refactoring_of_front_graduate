@@ -64,6 +64,11 @@ export async function updateSubject(subjectId, payload) {
   return data
 }
 
+export async function deleteSubject(subjectId) {
+  const { data } = await api.patch(`/subjects/${subjectId}`, { is_archived: true })
+  return data
+}
+
 export async function getSubjectTeachers(subjectId) {
   const { data } = await api.get(`/subjects/${subjectId}/teachers`)
   return data

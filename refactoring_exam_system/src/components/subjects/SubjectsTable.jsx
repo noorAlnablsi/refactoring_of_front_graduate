@@ -1,5 +1,5 @@
 import { useNavigate } from 'react-router-dom'
-import { Archive, Eye, FlaskConical, Pencil } from 'lucide-react'
+import { Eye, FlaskConical, Pencil, Trash2 } from 'lucide-react'
 import { ROUTES } from '../../constants/routes'
 import {
   formatSubjectStatCount,
@@ -9,7 +9,7 @@ import {
 } from '../../lib/subjectDisplay'
 import { canEditSubject } from '../../lib/workspaceContext'
 
-function SubjectsTable({ subjects, loading, onEdit }) {
+function SubjectsTable({ subjects, loading, onEdit, onDelete }) {
   const navigate = useNavigate()
   const showEdit = canEditSubject()
 
@@ -82,19 +82,24 @@ function SubjectsTable({ subjects, loading, onEdit }) {
                       <Eye className="h-4 w-4" />
                     </button>
                     {showEdit ? (
-                      <button
-                        type="button"
-                        onClick={() => onEdit(subject)}
-                        className="rounded-lg p-2 text-[#64748B] hover:bg-[#F6F8F9]"
-                        aria-label="تعديل"
-                      >
-                        <Pencil className="h-4 w-4" />
-                      </button>
-                    ) : null}
-                    {subject.is_archived ? (
-                      <span className="rounded-lg bg-[#F1F5F9] p-2 text-[#94A3B8]">
-                        <Archive className="h-4 w-4" />
-                      </span>
+                      <>
+                        <button
+                          type="button"
+                          onClick={() => onEdit(subject)}
+                          className="rounded-lg p-2 text-[#64748B] hover:bg-[#F6F8F9]"
+                          aria-label="تعديل"
+                        >
+                          <Pencil className="h-4 w-4" />
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => onDelete?.(subject)}
+                          className="rounded-lg p-2 text-red-600 hover:bg-red-50"
+                          aria-label="حذف"
+                        >
+                          <Trash2 className="h-4 w-4" />
+                        </button>
+                      </>
                     ) : null}
                   </div>
                 </td>

@@ -54,10 +54,22 @@ function readResponseMessage(data) {
   return data.message || data.error || data.detail || null
 }
 
+function localizeApiMessage(message) {
+  if (!message) return message
+
+  const normalized = String(message).toLowerCase()
+
+  if (normalized.includes('question bank not found')) {
+    return 'الباكند رفض طلب الأسئلة (404). بنوك المجتمع تحتاج صلاحية قراءة للجميع على GET /question-banks/{id}/questions'
+  }
+
+  return message
+}
+
 export function parseApiError(error) {
   if (error?.response) {
     const { status, data } = error.response
-    const apiMessage = readResponseMessage(data)
+    const apiMessage = localizeApiMessage(readResponseMessage(data))
 
     if (apiMessage) return apiMessage
     if (status === 401) return 'بيانات الدخول غير صحيحة'
