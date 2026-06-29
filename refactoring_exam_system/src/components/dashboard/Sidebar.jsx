@@ -22,6 +22,26 @@ const baseNavItems = [
   { to: '#', label: 'الإعدادات', icon: Settings, disabled: true },
 ]
 
+function SidebarBrand() {
+  return (
+    <div className="flex h-16 shrink-0 items-center gap-3 border-b border-[#E5E9EB] px-6">
+      <span
+        className="flex h-8 w-8 shrink-0 items-center justify-center bg-[#D1FAE5]"
+        style={{ clipPath: 'polygon(25% 0%, 75% 0%, 100% 50%, 75% 100%, 25% 100%, 0% 50%)' }}
+        aria-hidden="true"
+      >
+        <GraduationCap className="h-4 w-4 text-[#2AA8A2]" strokeWidth={2.2} />
+      </span>
+      <div>
+        <p className="text-base font-semibold leading-tight text-[#2AA8A2]">QuizHub</p>
+        <p className="mt-0.5 text-[11px] font-normal uppercase leading-tight text-[#6B7280]">
+          Admin Dashboard
+        </p>
+      </div>
+    </div>
+  )
+}
+
 function Sidebar() {
   const navigate = useNavigate()
   const clearAuth = useAuthStore((s) => s.clearAuth)
@@ -39,19 +59,9 @@ function Sidebar() {
 
   return (
     <aside className="hidden w-[260px] shrink-0 flex-col border-l border-[#E5E9EB] bg-white lg:flex">
-      <div className="flex h-20 shrink-0 items-center gap-4 border-b border-[#E5E9EB] px-6 py-5">
-        <span className="flex h-10 w-10 items-center justify-center rounded-xl bg-[#2AA8A2] text-white">
-          <GraduationCap className="h-5 w-5" strokeWidth={2.2} />
-        </span>
-        <div>
-          <p className="text-lg font-extrabold leading-snug text-[#2AA8A2]">QuizHub</p>
-          <p className="mt-1.5 text-[10px] font-semibold uppercase tracking-[0.14em] text-[#94A3B8]">
-            Admin Dashboard
-          </p>
-        </div>
-      </div>
+      <SidebarBrand />
 
-      <nav className="flex-1 space-y-2 overflow-y-auto px-4 py-8">
+      <nav className="flex-1 space-y-2 overflow-y-auto px-4 py-6">
         {navItems.map(({ to, label, icon: Icon, end = true, disabled }) =>
           disabled ? (
             <span

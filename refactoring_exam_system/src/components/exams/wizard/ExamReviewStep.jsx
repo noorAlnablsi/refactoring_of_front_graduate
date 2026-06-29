@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { ChevronLeft, ChevronRight } from 'lucide-react'
 import { getDifficultyLabel, getQuestionTypeLabel } from '../../../lib/questionBanks'
-import { getSourceTypeLabel, getTestTotalPoints } from '../../../lib/testDisplay'
+import { getSourceTypeLabel, getTestQuestionsCount, getTestTotalPoints } from '../../../lib/testDisplay'
 import { getTestName } from '../../../lib/testModel'
 
 function ExamReviewStep({ test, onNext, onBack }) {
@@ -9,6 +9,7 @@ function ExamReviewStep({ test, onNext, onBack }) {
   const [currentIndex, setCurrentIndex] = useState(0)
   const current = questions[currentIndex]
   const totalPoints = getTestTotalPoints(test)
+  const displayQuestionsCount = getTestQuestionsCount(test)
 
   return (
     <div className="space-y-5">
@@ -25,7 +26,7 @@ function ExamReviewStep({ test, onNext, onBack }) {
           </div>
           <div className="rounded-xl bg-[#F6F8F9] p-3">
             <dt className="text-xs text-[#94A3B8]">عدد الأسئلة</dt>
-            <dd className="mt-1 font-bold text-[#2AA8A2]">{questions.length}</dd>
+            <dd className="mt-1 font-bold text-[#2AA8A2]">{displayQuestionsCount}</dd>
           </div>
           <div className="rounded-xl bg-[#F6F8F9] p-3">
             <dt className="text-xs text-[#94A3B8]">مجموع الدرجات</dt>

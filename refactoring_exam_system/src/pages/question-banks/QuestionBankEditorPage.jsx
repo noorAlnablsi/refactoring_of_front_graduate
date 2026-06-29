@@ -2,6 +2,7 @@ import { useEffect, useMemo, useState } from 'react'
 import { Navigate, useLocation, useNavigate, useParams } from 'react-router-dom'
 import { Eye } from 'lucide-react'
 import BankInfoSummary from '../../components/question-banks/editor/BankInfoSummary'
+import EditQuestionModal from '../../components/question-banks/editor/EditQuestionModal'
 import QuestionsLoadErrorBanner from '../../components/question-banks/editor/QuestionsLoadErrorBanner'
 import PreviewQuestionsModal from '../../components/question-banks/editor/PreviewQuestionsModal'
 import PublishQuestionBankModal from '../../components/question-banks/editor/PublishQuestionBankModal'
@@ -20,6 +21,7 @@ import {
   createQuestionBankQuestions,
   findQuestionBankById,
   loadQuestionBankQuestionsForView,
+  updateQuestionInBank,
   updateQuestionBank,
 } from '../../services/questionBanks.service'
 import { getSubjectTopics } from '../../services/subjects.service'
@@ -61,6 +63,18 @@ function normalizeQuestionForApi(question) {
   return payload
 }
 
+function extractTopicsList(payload) {
+  if (Array.isArray(payload)) return payload
+  if (!payload || typeof payload !== 'object') return []
+
+  if (Array.isArray(payload.topics)) return payload.topics
+  if (Array.isArray(payload.subject_topics)) return payload.subject_topics
+  if (Array.isArray(payload.data)) return payload.data
+  if (Array.isArray(payload.items)) return payload.items
+
+  return []
+}
+
 function QuestionBankEditorPage() {
   const location = useLocation()
   const navigate = useNavigate()
@@ -80,6 +94,8 @@ function QuestionBankEditorPage() {
   const [publishOpen, setPublishOpen] = useState(false)
   const [publishVisibility, setPublishVisibility] = useState('PRIVATE')
   const [publishing, setPublishing] = useState(false)
+  const [editingQuestion, setEditingQuestion] = useState(null)
+  const [updatingQuestion, setUpdatingQuestion] = useState(false)
   const [topics, setTopics] = useState([])
   const [questionsLoadError, setQuestionsLoadError] = useState(null)
 
@@ -126,7 +142,7 @@ function QuestionBankEditorPage() {
           if (cancelled) return
 
           const message = parseApiError(questionsError)
-          const status = questionsError?.response?.status
+          const status = questionsError?.status ?? questionsError?.response?.status
 
           if (isCommunityViewer) {
             setServerQuestions([])
@@ -137,11 +153,11 @@ function QuestionBankEditorPage() {
           }
         }
 
-        if (!isCommunityViewer && selectedBank.subject_id) {
+        if (selectedBank.subject_id) {
           getSubjectTopics(selectedBank.subject_id)
             .then((topicsData) => {
               if (cancelled) return
-              setTopics(topicsData.topics || [])
+              setTopics(extractTopicsList(topicsData))
             })
             .catch(() => {
               if (cancelled) return
@@ -235,6 +251,24 @@ function QuestionBankEditorPage() {
     }
   }
 
+  const handleUpdateQuestion = async (payload) => {
+    if (!bank || !editingQuestion?.id) return
+    setUpdatingQuestion(true)
+    try {
+      const result = await updateQuestionInBank(bank.id, editingQuestion.id, payload)
+      const updatedQuestion = result?.question || { ...editingQuestion, ...payload }
+      setServerQuestions((prev) =>
+        prev.map((question) => (String(question.id) === String(editingQuestion.id) ? updatedQuestion : question)),
+      )
+      setEditingQuestion(null)
+      showToast('تم تعديل السؤال بنجاح')
+    } catch (err) {
+      showToast(err.message, 'error')
+    } finally {
+      setUpdatingQuestion(false)
+    }
+  }
+
   if (loading || !bank) {
     return <div className="h-64 animate-pulse rounded-2xl bg-white" />
   }
@@ -258,6 +292,9 @@ function QuestionBankEditorPage() {
       <QuestionsList
         questions={allQuestions}
         readOnly={readOnly}
+        topics={topics}
+        canEdit={!readOnly}
+        onEditQuestion={setEditingQuestion}
         emptyMessage={
           questionsLoadError
             ? 'لم يتم تحميل الأسئلة بسبب خطأ من الخادم.'
@@ -287,7 +324,20 @@ function QuestionBankEditorPage() {
         ) : null}
       </div>
 
-      <PreviewQuestionsModal open={previewOpen} questions={allQuestions} onClose={() => setPreviewOpen(false)} />
+      <PreviewQuestionsModal
+        open={previewOpen}
+        questions={allQuestions}
+        topics={topics}
+        onClose={() => setPreviewOpen(false)}
+      />
+      <EditQuestionModal
+        open={Boolean(editingQuestion)}
+        question={editingQuestion}
+        topics={topics}
+        submitting={updatingQuestion}
+        onClose={() => setEditingQuestion(null)}
+        onSubmit={handleUpdateQuestion}
+      />
       <PublishQuestionBankModal
         open={publishOpen}
         visibility={publishVisibility}

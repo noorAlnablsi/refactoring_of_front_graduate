@@ -11,7 +11,7 @@ import ExamSettingsStep from '../../components/exams/wizard/ExamSettingsStep'
 import { ROUTES } from '../../constants/routes'
 import { TEST_STATUS, TEST_WIZARD_STEPS } from '../../constants/tests'
 import { canCreateExam, canAccessExams } from '../../lib/workspaceContext'
-import { canEditTest, getEditBlockedMessage, getTestQuestionsCount } from '../../lib/testDisplay'
+import { canEditTest, getEditBlockedMessage } from '../../lib/testDisplay'
 import { getTestId, getTestName } from '../../lib/testModel'
 import {
   createTest,
@@ -227,7 +227,6 @@ function ExamWizardPage({ isNew = false }) {
     description: test.description || '',
     subject_id: test.subject_id,
     duration_minutes: test.duration_minutes ?? 60,
-    questions_count: getTestQuestionsCount(test) || '',
     total_score: test.total_score ?? 100,
     passing_score: test.passing_score ?? 60,
     auto_distribute_scores: test.auto_distribute_scores ?? true,

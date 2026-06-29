@@ -5,11 +5,7 @@ import { getTestName } from '../../lib/testModel'
 import ExamStatusBadge from './ExamStatusBadge'
 
 function ExamSummarySidebar({ test, draft, currentStep }) {
-  const actualQuestionsCount = getTestQuestionsCount(test)
-  const plannedCount = draft?.questions_count !== '' && draft?.questions_count != null
-    ? Number(draft.questions_count)
-    : null
-  const questionsCount = actualQuestionsCount || plannedCount || 0
+  const questionsCount = getTestQuestionsCount(test)
   const totalScore = test?.total_score ?? draft?.total_score ?? 0
   const duration = test?.duration_minutes ?? draft?.duration_minutes
   const status = test?.status || TEST_STATUS.DRAFT

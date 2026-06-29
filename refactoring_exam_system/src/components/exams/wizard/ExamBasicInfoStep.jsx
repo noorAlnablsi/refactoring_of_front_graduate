@@ -23,7 +23,6 @@ function ExamBasicInfoStep({
     description: '',
     subject_id: '',
     duration_minutes: 60,
-    questions_count: '',
     total_score: 100,
     passing_score: 60,
     auto_distribute_scores: true,
@@ -49,10 +48,6 @@ function ExamBasicInfoStep({
         ...prev,
         ...initialValues,
         subject_id: initialValues.subject_id ? String(initialValues.subject_id) : '',
-        questions_count:
-          initialValues.questions_count != null && initialValues.questions_count !== ''
-            ? String(initialValues.questions_count)
-            : '',
       }))
     }
   }, [initialValues])
@@ -176,19 +171,7 @@ function ExamBasicInfoStep({
         </div>
       </div>
 
-      <div className="grid gap-4 md:grid-cols-3">
-        <div>
-          <label className="mb-2 block text-sm font-bold text-[#374151]">عدد الأسئلة</label>
-          <input
-            type="number"
-            min={0}
-            value={form.questions_count}
-            onChange={(e) => setField('questions_count', e.target.value)}
-            placeholder="0"
-            className={inputClassName}
-          />
-        </div>
-
+      <div className="grid gap-4 md:grid-cols-2">
         <div>
           <label className="mb-2 block text-sm font-bold text-[#374151]">الدرجة الكلية</label>
           <input

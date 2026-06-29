@@ -86,7 +86,10 @@ api.interceptors.response.use(
     }
 
     logApiError(error, originalRequest)
-    return Promise.reject(new Error(parseApiError(error)))
+    const apiError = new Error(parseApiError(error))
+    apiError.response = error.response
+    apiError.status = error.response?.status
+    return Promise.reject(apiError)
   },
 )
 

@@ -1,4 +1,4 @@
-import { Copy } from 'lucide-react'
+import { Copy, Pencil } from 'lucide-react'
 import {
   formatQuestionForCopy,
   getDifficultyLabel,
@@ -20,7 +20,29 @@ async function copyText(text, showToast, successMessage) {
   }
 }
 
-function QuestionsList({ questions, emptyMessage, readOnly = false }) {
+function getQuestionTopicLabel(question, topics = []) {
+  if (question?.topic_name || question?.topic?.name || question?.topic_title || question?.topic_label) {
+    return question.topic_name || question.topic?.name || question.topic_title || question.topic_label
+  }
+
+  if (question?.topic_id != null && topics.length) {
+    const topic = topics.find(
+      (item) => String(item.id ?? item.topic_id ?? item.value) === String(question.topic_id),
+    )
+    if (topic?.name) return topic.name
+  }
+
+  return question?.topic_id ? `محور #${question.topic_id}` : 'بدون محور'
+}
+
+function QuestionsList({
+  questions,
+  emptyMessage,
+  readOnly = false,
+  topics = [],
+  canEdit = false,
+  onEditQuestion,
+}) {
   const showToast = useToastStore((s) => s.showToast)
 
   const handleCopyQuestion = (question, index) => {
@@ -59,9 +81,7 @@ function QuestionsList({ questions, emptyMessage, readOnly = false }) {
             <Copy className="h-3.5 w-3.5" />
             نسخ الكل
           </button>
-        ) : (
-          <span className="text-xs font-semibold text-[#94A3B8]">التعديل سيتوفر قريباً</span>
-        )}
+        ) : null}
       </div>
 
       <div className="space-y-3">
@@ -78,7 +98,19 @@ function QuestionsList({ questions, emptyMessage, readOnly = false }) {
                   <span>{getDifficultyLabel(question.difficulty)}</span>
                   <span>•</span>
                   <span>{question.points} علامة</span>
+                  <span>•</span>
+                  <span>{getQuestionTopicLabel(question, topics)}</span>
                 </div>
+                {canEdit && question?.id ? (
+                  <button
+                    type="button"
+                    onClick={() => onEditQuestion?.(question)}
+                    className="rounded-lg p-1.5 text-[#64748B] hover:bg-white hover:text-[#2AA8A2]"
+                    aria-label={`تعديل السؤال ${index + 1}`}
+                  >
+                    <Pencil className="h-4 w-4" />
+                  </button>
+                ) : null}
                 {readOnly ? (
                   <button
                     type="button"

@@ -1,3 +1,19 @@
+export function getMembershipShortLabel(membership) {
+  if (!membership) return ''
+
+  if (membership.role === 'STUDENT') return 'طالب'
+
+  if (membership.workspace?.kind === 'SOLO') return 'معلم مستقل'
+
+  if (membership.is_owner) return 'مالك المؤسسة'
+
+  if (membership.role === 'TEACHER') return 'معلم ضمن مؤسسة'
+
+  if (membership.role === 'ADMIN') return 'مدير'
+
+  return membership.role
+}
+
 export function getMembershipLabel(membership) {
   const name = membership.workspace?.name || 'مساحة تعليمية'
 

@@ -29,8 +29,25 @@ export async function fetchQuestionBanksForTab(tab) {
   return filterActiveBanks(data.question_banks)
 }
 
+export async function getQuestionBankById(bankId) {
+  const { data } = await api.get(`/question-banks/${bankId}`)
+  return data
+}
+
 export async function findQuestionBankById(bankId, sourceTab) {
   const matchId = (bank) => String(bank?.id) === String(bankId)
+
+  if (sourceTab === QUESTION_BANK_TABS.COMMUNITY) {
+    try {
+      const data = await getQuestionBankById(bankId)
+      if (data?.question_bank && matchId(data.question_bank)) {
+        return data.question_bank
+      }
+    } catch {
+      // Fall back to community list lookup.
+    }
+  }
+
   const tabsToSearch = sourceTab
     ? [sourceTab, ...Object.values(QUESTION_BANK_TABS).filter((tab) => tab !== sourceTab)]
     : Object.values(QUESTION_BANK_TABS)
@@ -97,5 +114,10 @@ export async function getQuestionBankQuestions(bankId) {
 
 export async function createQuestionBankQuestions(bankId, questions) {
   const { data } = await api.post(`/question-banks/${bankId}/questions`, { questions })
+  return data
+}
+
+export async function updateQuestionInBank(bankId, questionId, payload) {
+  const { data } = await api.patch(`/question-banks/${bankId}/questions/${questionId}`, payload)
   return data
 }

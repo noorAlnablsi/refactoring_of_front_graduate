@@ -17,8 +17,7 @@ function QuestionsLoadErrorBanner({ bankId, error }) {
             GET /question-banks/{bankId}/questions
           </p>
           <p className="mt-2">
-            الباكند أرجع 404 رغم أن البنك يظهر في قائمة المجتمع. المطلوب: السماح بقراءة
-            الأسئلة لأي مستخدم مسجّل عندما يكون البنك COMMUNITY.
+            تحقق من تسجيل الدخول ومن إرسال رأس X-Workspace-Id مع الطلب.
           </p>
         </div>
       ) : null}

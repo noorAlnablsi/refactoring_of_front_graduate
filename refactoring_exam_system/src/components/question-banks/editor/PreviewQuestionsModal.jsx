@@ -1,6 +1,21 @@
 import { X } from 'lucide-react'
 import { getQuestionTypeLabel } from '../../../lib/questionBanks'
 
+function getQuestionTopicLabel(question, topics = []) {
+  if (question?.topic_name || question?.topic?.name || question?.topic_title || question?.topic_label) {
+    return question.topic_name || question.topic?.name || question.topic_title || question.topic_label
+  }
+
+  if (question?.topic_id != null && topics.length) {
+    const topic = topics.find(
+      (item) => String(item.id ?? item.topic_id ?? item.value) === String(question.topic_id),
+    )
+    if (topic?.name) return topic.name
+  }
+
+  return question?.topic_id ? `محور #${question.topic_id}` : 'بدون محور'
+}
+
 function PreviewChoices({ question }) {
   if (question.type_code === 'ESSAY') {
     return <p className="mt-3 rounded-lg bg-[#F8FAFB] px-3 py-2 text-sm text-[#64748B]">سؤال مقالي بدون خيارات.</p>
@@ -40,7 +55,7 @@ function PreviewChoices({ question }) {
   )
 }
 
-function PreviewQuestionsModal({ open, questions, onClose }) {
+function PreviewQuestionsModal({ open, questions, topics = [], onClose }) {
   if (!open) return null
 
   return (
@@ -55,9 +70,13 @@ function PreviewQuestionsModal({ open, questions, onClose }) {
         <div className="max-h-[70vh] space-y-3 overflow-auto">
           {questions.map((question, index) => (
             <article key={`${question.id || 'local'}-${index}`} className="rounded-xl border border-[#EEF2F3] p-4">
-              <div className="mb-2 flex items-center justify-between text-xs text-[#64748B]">
+              <div className="mb-2 flex items-center justify-between gap-2 text-xs text-[#64748B]">
                 <span>سؤال {index + 1}</span>
-                <span>{getQuestionTypeLabel(question.type_code)}</span>
+                <div className="flex items-center gap-2">
+                  <span>{getQuestionTypeLabel(question.type_code)}</span>
+                  <span>•</span>
+                  <span>{getQuestionTopicLabel(question, topics)}</span>
+                </div>
               </div>
               <div
                 className="text-sm font-semibold text-[#374151]"

@@ -111,6 +111,34 @@ export function formatSubjectStatCount(value) {
   return formatStatValue(value)
 }
 
+export function formatSubjectTeachersLabel(subject) {
+  const count = getSubjectTeachersCount(subject)
+  if (count === null || count === undefined) return '—'
+  return `${formatStatValue(count)} معلم`
+}
+
+export function formatSubjectBanksLabel(subject) {
+  const count = getSubjectQuestionBanksCount(subject)
+  if (count === null || count === undefined) return '—'
+  return `${formatStatValue(count)} بنك`
+}
+
+export function formatSubjectTestsLabel(subject) {
+  const count = getSubjectTestsCount(subject)
+  if (count === null || count === undefined) return '—'
+  return `${formatStatValue(count)} اختبار`
+}
+
+export function getSubjectTableSubtitle(subject) {
+  if (subject?.description?.trim()) {
+    return subject.description.trim()
+  }
+  if (subject?.department?.trim()) {
+    return subject.department.trim()
+  }
+  return 'مادة دراسية ضمن المنهج التعليمي'
+}
+
 export function sortByRecentDate(items, dateKeys = ['assigned_at', 'created_at', 'updated_at']) {
   return [...items].sort((a, b) => {
     const dateA = dateKeys.map((key) => a[key]).find(Boolean)

@@ -4,8 +4,6 @@ import SoftDeleteConfirmDialog from '../../components/common/SoftDeleteConfirmDi
 import CreateSubjectModal from '../../components/subjects/CreateSubjectModal'
 import EditSubjectModal from '../../components/subjects/EditSubjectModal'
 import SubjectStatsCards from '../../components/subjects/SubjectStatsCards'
-import SubjectsPagination from '../../components/subjects/SubjectsPagination'
-import SubjectsSortSelect from '../../components/subjects/SubjectsSortSelect'
 import SubjectsTable from '../../components/subjects/SubjectsTable'
 import { canCreateSubject } from '../../lib/workspaceContext'
 import { useSubjects } from '../../hooks/subjects/useSubjects'
@@ -30,8 +28,6 @@ function SubjectsPage() {
     paginatedSubjects,
     totalPages,
     totalCount,
-    rangeStart,
-    rangeEnd,
   } = useSubjectsListView(activeSubjects)
   const [createOpen, setCreateOpen] = useState(false)
   const [editOpen, setEditOpen] = useState(false)
@@ -63,7 +59,7 @@ function SubjectsPage() {
     <div className="space-y-6">
       <div className="flex flex-wrap items-start justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-extrabold text-[#2A3433] md:text-3xl">المواد الدراسية</h1>
+          <h1 className="text-2xl font-extrabold text-[#2A3433] md:text-[28px]">المواد الدراسية</h1>
           <p className="mt-2 max-w-2xl text-sm leading-7 text-[#64748B]">
             إدارة المواد الدراسية وتحديد المعلمين المسؤولين عنها داخل المؤسسة التعليمية بكفاءة
             واحترافية.
@@ -73,9 +69,9 @@ function SubjectsPage() {
           <button
             type="button"
             onClick={() => setCreateOpen(true)}
-            className="inline-flex items-center gap-2 rounded-xl bg-[#2AA8A2] px-5 py-3 text-sm font-bold text-white shadow-[0_8px_16px_rgba(42,168,162,0.2)]"
+            className="inline-flex items-center gap-2 rounded-xl bg-[#2AA8A2] px-5 py-3 text-sm font-bold text-white shadow-[0_8px_16px_rgba(42,168,162,0.22)]"
           >
-            <Plus className="h-4 w-4" />
+            <Plus className="h-4 w-4" strokeWidth={2.5} />
             إضافة مادة جديدة
           </button>
         ) : null}
@@ -89,26 +85,18 @@ function SubjectsPage() {
 
       {error ? <p className="text-sm text-red-600">{error}</p> : null}
 
-      {!loading && totalCount > 0 ? (
-        <div className="flex justify-end">
-          <SubjectsSortSelect value={sortKey} onChange={setSortKey} />
-        </div>
-      ) : null}
-
       <SubjectsTable
         subjects={paginatedSubjects}
         loading={loading}
+        sortKey={sortKey}
+        onSortChange={setSortKey}
+        page={page}
+        totalPages={totalPages}
+        onPageChange={setPage}
+        totalCount={totalCount}
         onEdit={handleEdit}
         onDelete={setDeleteSubjectItem}
       />
-
-      <SubjectsPagination page={page} totalPages={totalPages} onPageChange={setPage} />
-
-      {!loading && totalCount > 0 ? (
-        <p className="text-center text-sm text-[#94A3B8]">
-          عرض {rangeStart}–{rangeEnd} من أصل {totalCount} مادة
-        </p>
-      ) : null}
 
       <CreateSubjectModal open={createOpen} onClose={() => setCreateOpen(false)} onSuccess={refetch} />
 

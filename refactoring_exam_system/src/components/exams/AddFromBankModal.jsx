@@ -88,76 +88,76 @@ function AddFromBankModal({ open, testId, onClose, onSuccess }) {
             <X className="h-5 w-5" />
           </button>
         </div>
-      <form onSubmit={handleSubmit} className="space-y-4">
-        <p className="text-sm text-[#64748B]">اختر بنكاً واحداً ثم حدد الأسئلة المطلوبة.</p>
+        <form onSubmit={handleSubmit} className="space-y-4">
+          <p className="text-sm text-[#64748B]">اختر بنكاً واحداً ثم حدد الأسئلة المطلوبة.</p>
 
-        <div>
-          <label className="mb-2 block text-sm font-bold text-[#374151]">بنك الأسئلة</label>
-          <select
-            value={bankId}
-            onChange={(e) => setBankId(e.target.value)}
-            className={inputClassName}
-            disabled={loadingBanks}
-          >
-            <option value="">— اختر البنك —</option>
-            {banks.map((bank) => (
-              <option key={bank.id} value={bank.id}>
-                {bank.title} {bank.subject_name ? `(${bank.subject_name})` : ''}
-              </option>
-            ))}
-          </select>
-        </div>
-
-        {bankId ? (
           <div>
-            <div className="mb-2 flex items-center justify-between">
-              <p className="text-sm font-bold text-[#374151]">الأسئلة</p>
-              {questions.length > 0 ? (
-                <button type="button" onClick={toggleAll} className="text-xs font-bold text-[#2AA8A2]">
-                  {selectedIds.length === questions.length ? 'إلغاء الكل' : 'تحديد الكل'}
-                </button>
-              ) : null}
-            </div>
-            {loadingQuestions ? (
-              <p className="text-sm text-[#94A3B8]">جاري التحميل...</p>
-            ) : questions.length === 0 ? (
-              <p className="text-sm text-[#94A3B8]">لا توجد أسئلة في هذا البنك.</p>
-            ) : (
-              <ul className="max-h-60 space-y-2 overflow-y-auto">
-                {questions.map((question) => (
-                  <li key={question.id}>
-                    <label className="flex cursor-pointer items-start gap-3 rounded-xl bg-[#F6F8F9] p-3">
-                      <input
-                        type="checkbox"
-                        checked={selectedIds.includes(question.id)}
-                        onChange={() => toggleQuestion(question.id)}
-                        className="mt-1 accent-[#2AA8A2]"
-                      />
-                      <span
-                        className="line-clamp-2 text-sm text-[#64748B]"
-                        dangerouslySetInnerHTML={{ __html: question.body || '' }}
-                      />
-                    </label>
-                  </li>
-                ))}
-              </ul>
-            )}
+            <label className="mb-2 block text-sm font-bold text-[#374151]">بنك الأسئلة</label>
+            <select
+              value={bankId}
+              onChange={(e) => setBankId(e.target.value)}
+              className={inputClassName}
+              disabled={loadingBanks}
+            >
+              <option value="">— اختر البنك —</option>
+              {banks.map((bank) => (
+                <option key={bank.id} value={bank.id}>
+                  {bank.title} {bank.subject_name ? `(${bank.subject_name})` : ''}
+                </option>
+              ))}
+            </select>
           </div>
-        ) : null}
 
-        <div className="flex justify-end gap-2 pt-2">
-          <button type="button" onClick={onClose} className="rounded-xl px-4 py-2 text-sm font-bold text-[#64748B]">
-            إلغاء
-          </button>
-          <button
-            type="submit"
-            disabled={submitting || !selectedIds.length}
-            className="rounded-xl bg-[#2AA8A2] px-5 py-2 text-sm font-bold text-white disabled:opacity-50"
-          >
-            {submitting ? 'جاري الإضافة...' : `إضافة (${selectedIds.length})`}
-          </button>
-        </div>
-      </form>
+          {bankId ? (
+            <div>
+              <div className="mb-2 flex items-center justify-between">
+                <p className="text-sm font-bold text-[#374151]">الأسئلة</p>
+                {questions.length > 0 ? (
+                  <button type="button" onClick={toggleAll} className="text-xs font-bold text-[#2AA8A2]">
+                    {selectedIds.length === questions.length ? 'إلغاء الكل' : 'تحديد الكل'}
+                  </button>
+                ) : null}
+              </div>
+              {loadingQuestions ? (
+                <p className="text-sm text-[#94A3B8]">جاري التحميل...</p>
+              ) : questions.length === 0 ? (
+                <p className="text-sm text-[#94A3B8]">لا توجد أسئلة في هذا البنك.</p>
+              ) : (
+                <ul className="max-h-60 space-y-2 overflow-y-auto">
+                  {questions.map((question) => (
+                    <li key={question.id}>
+                      <label className="flex cursor-pointer items-start gap-3 rounded-xl bg-[#F6F8F9] p-3">
+                        <input
+                          type="checkbox"
+                          checked={selectedIds.includes(question.id)}
+                          onChange={() => toggleQuestion(question.id)}
+                          className="mt-1 accent-[#2AA8A2]"
+                        />
+                        <span
+                          className="line-clamp-2 text-sm text-[#64748B]"
+                          dangerouslySetInnerHTML={{ __html: question.body || '' }}
+                        />
+                      </label>
+                    </li>
+                  ))}
+                </ul>
+              )}
+            </div>
+          ) : null}
+
+          <div className="flex justify-end gap-2 pt-2">
+            <button type="button" onClick={onClose} className="rounded-xl px-4 py-2 text-sm font-bold text-[#64748B]">
+              إلغاء
+            </button>
+            <button
+              type="submit"
+              disabled={submitting || !selectedIds.length}
+              className="rounded-xl bg-[#2AA8A2] px-5 py-2 text-sm font-bold text-white disabled:opacity-50"
+            >
+              {submitting ? 'جاري الإضافة...' : `إضافة (${selectedIds.length})`}
+            </button>
+          </div>
+        </form>
       </div>
     </div>
   )

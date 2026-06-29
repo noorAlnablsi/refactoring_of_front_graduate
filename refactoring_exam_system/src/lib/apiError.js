@@ -60,7 +60,7 @@ function localizeApiMessage(message) {
   const normalized = String(message).toLowerCase()
 
   if (normalized.includes('question bank not found')) {
-    return 'الباكند رفض طلب الأسئلة (404). بنوك المجتمع تحتاج صلاحية قراءة للجميع على GET /question-banks/{id}/questions'
+    return 'بنك الأسئلة غير موجود أو لا يمكنك الوصول إليه'
   }
 
   return message

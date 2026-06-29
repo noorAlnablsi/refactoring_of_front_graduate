@@ -66,60 +66,60 @@ function AddRandomBanksModal({ open, testId, onClose, onSuccess }) {
             <X className="h-5 w-5" />
           </button>
         </div>
-      <form onSubmit={handleSubmit} className="space-y-4">
-        <p className="text-sm text-[#64748B]">اختر بنكاً أو أكثر وحدد عدد الأسئلة لكل مستوى صعوبة.</p>
+        <form onSubmit={handleSubmit} className="space-y-4">
+          <p className="text-sm text-[#64748B]">اختر بنكاً أو أكثر وحدد عدد الأسئلة لكل مستوى صعوبة.</p>
 
-        <div>
-          <p className="mb-2 text-sm font-bold text-[#374151]">البنوك</p>
-          <ul className="max-h-40 space-y-2 overflow-y-auto">
-            {banks.map((bank) => (
-              <li key={bank.id}>
-                <label className="flex cursor-pointer items-center gap-3 rounded-xl bg-[#F6F8F9] px-3 py-2">
-                  <input
-                    type="checkbox"
-                    checked={selectedBankIds.includes(bank.id)}
-                    onChange={() => toggleBank(bank.id)}
-                    className="accent-[#2AA8A2]"
-                  />
-                  <span className="text-sm text-[#64748B]">
-                    {bank.title} {bank.subject_name ? `(${bank.subject_name})` : ''}
-                  </span>
-                </label>
-              </li>
+          <div>
+            <p className="mb-2 text-sm font-bold text-[#374151]">البنوك</p>
+            <ul className="max-h-40 space-y-2 overflow-y-auto">
+              {banks.map((bank) => (
+                <li key={bank.id}>
+                  <label className="flex cursor-pointer items-center gap-3 rounded-xl bg-[#F6F8F9] px-3 py-2">
+                    <input
+                      type="checkbox"
+                      checked={selectedBankIds.includes(bank.id)}
+                      onChange={() => toggleBank(bank.id)}
+                      className="accent-[#2AA8A2]"
+                    />
+                    <span className="text-sm text-[#64748B]">
+                      {bank.title} {bank.subject_name ? `(${bank.subject_name})` : ''}
+                    </span>
+                  </label>
+                </li>
+              ))}
+            </ul>
+          </div>
+
+          <div className="grid gap-3 sm:grid-cols-3">
+            {DIFFICULTY_OPTIONS.map(({ value, label }) => (
+              <div key={value}>
+                <label className="mb-1 block text-xs font-bold text-[#64748B]">{label}</label>
+                <input
+                  type="number"
+                  min={0}
+                  value={counts[value]}
+                  onChange={(e) => setCounts((prev) => ({ ...prev, [value]: e.target.value }))}
+                  className={inputClassName}
+                />
+              </div>
             ))}
-          </ul>
-        </div>
+          </div>
 
-        <div className="grid gap-3 sm:grid-cols-3">
-          {DIFFICULTY_OPTIONS.map(({ value, label }) => (
-            <div key={value}>
-              <label className="mb-1 block text-xs font-bold text-[#64748B]">{label}</label>
-              <input
-                type="number"
-                min={0}
-                value={counts[value]}
-                onChange={(e) => setCounts((prev) => ({ ...prev, [value]: e.target.value }))}
-                className={inputClassName}
-              />
-            </div>
-          ))}
-        </div>
+          <p className="text-sm font-bold text-[#2AA8A2]">المجموع: {totalCount} سؤال</p>
 
-        <p className="text-sm font-bold text-[#2AA8A2]">المجموع: {totalCount} سؤال</p>
-
-        <div className="flex justify-end gap-2 pt-2">
-          <button type="button" onClick={onClose} className="rounded-xl px-4 py-2 text-sm font-bold text-[#64748B]">
-            إلغاء
-          </button>
-          <button
-            type="submit"
-            disabled={submitting || totalCount < 1}
-            className="rounded-xl bg-[#2AA8A2] px-5 py-2 text-sm font-bold text-white disabled:opacity-50"
-          >
-            {submitting ? 'جاري الإضافة...' : 'إضافة الأسئلة'}
-          </button>
-        </div>
-      </form>
+          <div className="flex justify-end gap-2 pt-2">
+            <button type="button" onClick={onClose} className="rounded-xl px-4 py-2 text-sm font-bold text-[#64748B]">
+              إلغاء
+            </button>
+            <button
+              type="submit"
+              disabled={submitting || totalCount < 1}
+              className="rounded-xl bg-[#2AA8A2] px-5 py-2 text-sm font-bold text-white disabled:opacity-50"
+            >
+              {submitting ? 'جاري الإضافة...' : 'إضافة الأسئلة'}
+            </button>
+          </div>
+        </form>
       </div>
     </div>
   )

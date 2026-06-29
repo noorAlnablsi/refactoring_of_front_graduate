@@ -1,4 +1,5 @@
 import { ChevronLeft, ChevronRight } from 'lucide-react'
+import { formatStatValue } from '../../lib/subjectDisplay'
 
 function PageButton({ children, active, disabled, onClick, ariaLabel }) {
   return (
@@ -8,10 +9,10 @@ function PageButton({ children, active, disabled, onClick, ariaLabel }) {
       disabled={disabled}
       aria-label={ariaLabel}
       aria-current={active ? 'page' : undefined}
-      className={`flex h-9 min-w-9 items-center justify-center rounded-lg px-3 text-sm font-bold transition ${
+      className={`flex h-9 min-w-9 items-center justify-center px-3 text-sm font-bold transition ${
         active
-          ? 'bg-[#2AA8A2] text-white'
-          : 'bg-white text-[#64748B] ring-1 ring-[#E5E9EB] hover:bg-[#F8FAFB] disabled:cursor-not-allowed disabled:opacity-50'
+          ? 'rounded-full bg-[#2AA8A2] text-white shadow-[0_2px_8px_rgba(42,168,162,0.28)]'
+          : 'rounded-lg bg-white text-[#64748B] ring-1 ring-[#E5E9EB] hover:bg-[#F8FAFB] disabled:cursor-not-allowed disabled:opacity-50'
       }`}
     >
       {children}
@@ -23,7 +24,7 @@ function SubjectsPagination({ page, totalPages, onPageChange }) {
   if (totalPages <= 1) return null
 
   return (
-    <div className="flex items-center justify-center gap-2">
+    <div className="flex items-center gap-2">
       <PageButton
         ariaLabel="الصفحة السابقة"
         disabled={page <= 1}
@@ -39,7 +40,7 @@ function SubjectsPagination({ page, totalPages, onPageChange }) {
           ariaLabel={`الصفحة ${pageNumber}`}
           onClick={() => onPageChange(pageNumber)}
         >
-          {pageNumber}
+          {formatStatValue(pageNumber)}
         </PageButton>
       ))}
 
