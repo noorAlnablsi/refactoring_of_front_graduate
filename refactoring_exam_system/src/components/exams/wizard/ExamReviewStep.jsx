@@ -1,38 +1,45 @@
-import { useState } from 'react'
-import { ChevronLeft, ChevronRight } from 'lucide-react'
-import { getDifficultyLabel, getQuestionTypeLabel } from '../../../lib/questionBanks'
-import { getSourceTypeLabel, getTestQuestionsCount, getTestTotalPoints } from '../../../lib/testDisplay'
+import { ArrowLeft, ArrowRight, ClipboardList } from 'lucide-react'
+import { getTestQuestionsCount, getTestTotalPoints } from '../../../lib/testDisplay'
 import { getTestName } from '../../../lib/testModel'
+import ExamRandomGeneratedQuestionsPanel from '../ExamRandomGeneratedQuestionsPanel'
 
-function ExamReviewStep({ test, onNext, onBack }) {
+function ExamReviewStep({ test, onNext, onBack, onSaveDraft, savingDraft = false }) {
   const questions = test?.questions || []
-  const [currentIndex, setCurrentIndex] = useState(0)
-  const current = questions[currentIndex]
   const totalPoints = getTestTotalPoints(test)
   const displayQuestionsCount = getTestQuestionsCount(test)
 
   return (
-    <div className="space-y-5">
-      <div className="rounded-2xl bg-white p-6 ring-1 ring-[#E5E9EB]">
-        <h2 className="text-xl font-extrabold text-[#2A3433]">مراجعة الامتحان</h2>
-        <p className="mt-1 text-sm text-[#64748B]">
-          راجع تفاصيل الامتحان والأسئلة قبل النشر.
+    <div className="space-y-6">
+      <header className="text-right">
+        <p className="text-sm font-bold text-[#2AA8A2]">المراجعة النهائية</p>
+        <h2 className="mt-2 text-[28px] font-extrabold leading-tight text-[#2A3433] md:text-[32px]">
+          مراجعة الامتحان
+        </h2>
+        <p className="mt-3 max-w-3xl text-sm leading-8 text-[#64748B]">
+          راجع تفاصيل الامتحان والأسئلة قبل الانتقال إلى خطوة النشر.
         </p>
+      </header>
 
-        <dl className="mt-5 grid gap-3 text-sm sm:grid-cols-2 lg:grid-cols-4">
-          <div className="rounded-xl bg-[#F6F8F9] p-3">
-            <dt className="text-xs text-[#94A3B8]">العنوان</dt>
+      <div className="rounded-2xl bg-white p-6 ring-1 ring-[#E5E9EB]">
+        <div className="mb-5 flex items-center gap-2">
+          <ClipboardList className="h-5 w-5 text-[#2AA8A2]" />
+          <h3 className="text-base font-extrabold text-[#2A3433]">ملخص الامتحان</h3>
+        </div>
+
+        <dl className="grid gap-3 text-sm sm:grid-cols-2 lg:grid-cols-4">
+          <div className="rounded-xl bg-[#F6F8F9] p-4">
+            <dt className="text-xs text-[#94A3B8]">اسم الامتحان</dt>
             <dd className="mt-1 font-bold text-[#2A3433]">{getTestName(test)}</dd>
           </div>
-          <div className="rounded-xl bg-[#F6F8F9] p-3">
+          <div className="rounded-xl bg-[#F6F8F9] p-4">
             <dt className="text-xs text-[#94A3B8]">عدد الأسئلة</dt>
             <dd className="mt-1 font-bold text-[#2AA8A2]">{displayQuestionsCount}</dd>
           </div>
-          <div className="rounded-xl bg-[#F6F8F9] p-3">
+          <div className="rounded-xl bg-[#F6F8F9] p-4">
             <dt className="text-xs text-[#94A3B8]">مجموع الدرجات</dt>
             <dd className="mt-1 font-bold text-[#2AA8A2]">{totalPoints}</dd>
           </div>
-          <div className="rounded-xl bg-[#F6F8F9] p-3">
+          <div className="rounded-xl bg-[#F6F8F9] p-4">
             <dt className="text-xs text-[#94A3B8]">المدة</dt>
             <dd className="mt-1 font-bold text-[#2A3433]">{test?.duration_minutes || '—'} دقيقة</dd>
           </div>
@@ -40,80 +47,46 @@ function ExamReviewStep({ test, onNext, onBack }) {
       </div>
 
       {questions.length > 0 ? (
-        <div className="rounded-2xl bg-white p-6 ring-1 ring-[#E5E9EB]">
-          <div className="flex items-center justify-between gap-3">
-            <p className="text-sm font-extrabold text-[#2A3433]">
-              معاينة السؤال {currentIndex + 1} من {questions.length}
-            </p>
-            <div className="flex gap-2">
-              <button
-                type="button"
-                disabled={currentIndex === 0}
-                onClick={() => setCurrentIndex((i) => i - 1)}
-                className="rounded-lg bg-[#F6F8F9] p-2 disabled:opacity-40"
-              >
-                <ChevronRight className="h-4 w-4" />
-              </button>
-              <button
-                type="button"
-                disabled={currentIndex >= questions.length - 1}
-                onClick={() => setCurrentIndex((i) => i + 1)}
-                className="rounded-lg bg-[#F6F8F9] p-2 disabled:opacity-40"
-              >
-                <ChevronLeft className="h-4 w-4" />
-              </button>
-            </div>
+        <ExamRandomGeneratedQuestionsPanel
+          embedded
+          questions={questions}
+          sectionTitle="قائمة الأسئلة"
+          continueLabel="التالي — النشر"
+          onBack={onBack}
+          onSaveDraft={onSaveDraft}
+          onContinue={onNext}
+          savingDraft={savingDraft}
+        />
+      ) : (
+        <div className="sticky bottom-0 z-10 rounded-2xl border border-[#E5E9EB] bg-white/95 px-4 py-4 shadow-[0_-10px_30px_rgba(15,23,42,0.08)] backdrop-blur">
+          <div className="flex flex-wrap items-center justify-between gap-3">
+            <button
+              type="button"
+              onClick={onBack}
+              className="inline-flex items-center gap-2 rounded-xl bg-[#F6F8F9] px-6 py-3 text-sm font-bold text-[#64748B]"
+            >
+              <ArrowRight className="h-4 w-4" />
+              رجوع
+            </button>
+            <button
+              type="button"
+              onClick={onSaveDraft}
+              disabled={savingDraft}
+              className="text-sm font-bold text-[#64748B] disabled:opacity-50"
+            >
+              {savingDraft ? 'جاري الحفظ...' : 'حفظ كمسودة'}
+            </button>
+            <button
+              type="button"
+              onClick={onNext}
+              className="inline-flex items-center gap-2 rounded-xl bg-[#2AA8A2] px-7 py-3 text-sm font-bold text-white"
+            >
+              التالي — النشر
+              <ArrowLeft className="h-4 w-4" />
+            </button>
           </div>
-
-          {current ? (
-            <div className="mt-4 space-y-3">
-              <div className="flex flex-wrap gap-2 text-xs font-semibold text-[#64748B]">
-                <span className="rounded-full bg-[#E8F7F6] px-2 py-0.5 text-[#2AA8A2]">
-                  {getQuestionTypeLabel(current.snapshot_type_code)}
-                </span>
-                <span>{getDifficultyLabel(current.snapshot_difficulty)}</span>
-                <span>· {current.snapshot_points} درجة</span>
-                <span>· {getSourceTypeLabel(current.source_type)}</span>
-              </div>
-              <div
-                className="prose prose-sm max-w-none text-[#374151]"
-                dangerouslySetInnerHTML={{ __html: current.snapshot_question_text || '' }}
-              />
-              {Array.isArray(current.snapshot_choices) && current.snapshot_choices.length > 0 ? (
-                <ul className="space-y-2">
-                  {current.snapshot_choices.map((choice, idx) => (
-                    <li
-                      key={choice.id || idx}
-                      className={`rounded-xl px-4 py-2 text-sm ${
-                        choice.is_correct ? 'bg-[#E8F7F6] text-[#2AA8A2]' : 'bg-[#F6F8F9] text-[#64748B]'
-                      }`}
-                    >
-                      <span dangerouslySetInnerHTML={{ __html: choice.body || choice.text || '' }} />
-                    </li>
-                  ))}
-                </ul>
-              ) : null}
-            </div>
-          ) : null}
         </div>
-      ) : null}
-
-      <div className="flex justify-between">
-        <button
-          type="button"
-          onClick={onBack}
-          className="rounded-xl bg-[#F6F8F9] px-6 py-3 text-sm font-bold text-[#64748B]"
-        >
-          السابق
-        </button>
-        <button
-          type="button"
-          onClick={onNext}
-          className="rounded-xl bg-[#2AA8A2] px-6 py-3 text-sm font-bold text-white"
-        >
-          التالي — النشر
-        </button>
-      </div>
+      )}
     </div>
   )
 }

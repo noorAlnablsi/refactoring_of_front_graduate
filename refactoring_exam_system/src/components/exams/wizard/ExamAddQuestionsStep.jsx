@@ -1,11 +1,17 @@
-import { useEffect, useState } from 'react'
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { BookOpen, FileSpreadsheet, PenLine, Shuffle, Sparkles } from 'lucide-react'
-import { getDifficultyLabel, getQuestionTypeLabel } from '../../../lib/questionBanks'
-import { getSourceTypeLabel } from '../../../lib/testDisplay'
+import {
+  EXAM_QUESTIONS_VIEWS,
+  getExamWizardProgress,
+} from '../../../lib/examWizardProgress'
 import { getTestId } from '../../../lib/testModel'
-import AddFromBankModal from '../AddFromBankModal'
+import { getQuestionBankById } from '../../../services/questionBanks.service'
+import { getTestById } from '../../../services/tests.service'
 import AddRandomBanksModal from '../AddRandomBanksModal'
 import ExamManualQuestionsPanel from '../ExamManualQuestionsPanel'
+import ExamPickBankQuestionsPanel from '../ExamPickBankQuestionsPanel'
+import ExamRandomBlueprintPanel from '../ExamRandomBlueprintPanel'
+import ExamRandomGeneratedQuestionsPanel from '../ExamRandomGeneratedQuestionsPanel'
 
 const METHODS = [
   {
@@ -47,21 +53,341 @@ const METHODS = [
   },
 ]
 
-function ExamAddQuestionsStep({ test, onRefresh, onNext, onBack }) {
+const REVIEW_COPY = {
+  random: {
+    eyebrow: 'بناء المعايير الأكاديمية',
+    title: 'مخطط الاختبار (Blueprint)',
+    description: 'تم اختيار الأسئلة عشوائياً وفق النسب التي حددتها. راجعها ثم تابع.',
+    sectionTitle: 'تكوين بنوك الأسئلة المختارة',
+  },
+  'from-bank': {
+    eyebrow: 'من بنك الأسئلة',
+    title: 'أسئلة الامتحان المختارة',
+    description: 'راجع الأسئلة التي اخترتها من البنك قبل المتابعة إلى الإعدادات.',
+    sectionTitle: 'الأسئلة المضافة للامتحان',
+  },
+  manual: {
+    eyebrow: 'إنشاء يدوي',
+    title: 'أسئلة الامتحان',
+    description: 'راجع الأسئلة التي أنشأتها يدوياً قبل المتابعة إلى الإعدادات.',
+    sectionTitle: 'الأسئلة المضافة للامتحان',
+  },
+  exam: {
+    eyebrow: 'إضافة الأسئلة',
+    title: 'أسئلة الامتحان',
+    description: 'راجع أسئلة الامتحان قبل المتابعة إلى الإعدادات.',
+    sectionTitle: 'الأسئلة المضافة للامتحان',
+  },
+}
+
+async function resolveBankById(bankId) {
+  if (!bankId) return null
+  try {
+    const data = await getQuestionBankById(bankId)
+    return data.question_bank || data
+  } catch {
+    return null
+  }
+}
+
+async function resolveBanksByIds(bankIds = []) {
+  const banks = await Promise.all(bankIds.map((bankId) => resolveBankById(bankId)))
+  return banks.filter(Boolean)
+}
+
+function ExamAddQuestionsStep({
+  test,
+  onRefresh,
+  onNext,
+  onBack,
+  onBlueprintActiveChange,
+  onSaveDraftProgress,
+  savingDraft = false,
+}) {
   const [activeMethod, setActiveMethod] = useState(null)
   const [fromBankOpen, setFromBankOpen] = useState(false)
   const [randomOpen, setRandomOpen] = useState(false)
+  const [selectedFromBank, setSelectedFromBank] = useState(null)
+  const [fromBankSelectedIds, setFromBankSelectedIds] = useState([])
+  const [showManualView, setShowManualView] = useState(false)
+  const [blueprintBanks, setBlueprintBanks] = useState(null)
+  const [restoredBlueprints, setRestoredBlueprints] = useState(null)
+  const [generatedQuestions, setGeneratedQuestions] = useState(null)
+  const [showGeneratedView, setShowGeneratedView] = useState(false)
+  const [reviewSource, setReviewSource] = useState('exam')
+  const [restoring, setRestoring] = useState(true)
+  const restoredRef = useRef(false)
   const testId = getTestId(test)
   const questions = test?.questions || []
+  const blueprintBankIds = useMemo(
+    () => (blueprintBanks ? blueprintBanks.map((bank) => bank.id) : []),
+    [blueprintBanks],
+  )
+
+  const subFlowActive =
+    Boolean(blueprintBanks?.length) ||
+    Boolean(selectedFromBank) ||
+    showManualView ||
+    showGeneratedView
+
+  const saveQuestionsProgress = useCallback(
+    (questionsProgress) => {
+      onSaveDraftProgress?.({ questions: questionsProgress })
+    },
+    [onSaveDraftProgress],
+  )
 
   useEffect(() => {
-    if (activeMethod === 'from-bank') setFromBankOpen(true)
-    if (activeMethod === 'random') setRandomOpen(true)
-  }, [activeMethod])
+    if (activeMethod === 'from-bank' && !selectedFromBank) setFromBankOpen(true)
+    if (activeMethod === 'random' && !blueprintBanks) setRandomOpen(true)
+    if (activeMethod === 'manual') setShowManualView(true)
+  }, [activeMethod, blueprintBanks, selectedFromBank])
+
+  useEffect(() => {
+    if (restoredRef.current) return undefined
+    restoredRef.current = true
+
+    let cancelled = false
+
+    const restoreProgress = async () => {
+      const progress = getExamWizardProgress(testId)
+      const savedQuestions = progress?.questions
+
+      if (!savedQuestions) {
+        if (questions.length > 0) {
+          setShowGeneratedView(true)
+          setReviewSource('exam')
+        }
+        setRestoring(false)
+        return
+      }
+
+      switch (savedQuestions.view) {
+        case EXAM_QUESTIONS_VIEWS.REVIEW:
+          setReviewSource(savedQuestions.reviewSource || 'exam')
+          setShowGeneratedView(true)
+          break
+        case EXAM_QUESTIONS_VIEWS.FROM_BANK_QUESTIONS: {
+          const bank = await resolveBankById(savedQuestions.bankId)
+          if (!cancelled && bank) {
+            setSelectedFromBank(bank)
+            setFromBankSelectedIds(savedQuestions.selectedQuestionIds || [])
+            setActiveMethod('from-bank')
+          }
+          break
+        }
+        case EXAM_QUESTIONS_VIEWS.MANUAL:
+          setShowManualView(true)
+          setActiveMethod('manual')
+          break
+        case EXAM_QUESTIONS_VIEWS.RANDOM_BLUEPRINT: {
+          const banks = await resolveBanksByIds(savedQuestions.bankIds || [])
+          if (!cancelled && banks.length) {
+            setBlueprintBanks(banks)
+            setRestoredBlueprints(savedQuestions.blueprints || null)
+            setActiveMethod('random')
+          }
+          break
+        }
+        case EXAM_QUESTIONS_VIEWS.METHOD_PICKER:
+        default:
+          break
+      }
+
+      if (!cancelled) setRestoring(false)
+    }
+
+    restoreProgress()
+
+    return () => {
+      cancelled = true
+    }
+  }, [questions.length, testId])
+
+  useEffect(() => {
+    onBlueprintActiveChange?.(subFlowActive)
+    return () => onBlueprintActiveChange?.(false)
+  }, [subFlowActive, onBlueprintActiveChange])
+
+  const resolveGeneratedQuestions = async (nextQuestions) => {
+    if (nextQuestions?.length) return nextQuestions
+    if (!testId) return []
+    try {
+      const data = await getTestById(testId)
+      return (data.test || data).questions || []
+    } catch {
+      return []
+    }
+  }
 
   const handleNext = () => {
     if (questions.length < 1) return
     onNext?.()
+  }
+
+  const openGeneratedReview = async (source, nextQuestions) => {
+    const list = await resolveGeneratedQuestions(nextQuestions)
+    if (!list.length) return
+    setGeneratedQuestions(list)
+    setReviewSource(source)
+    setShowGeneratedView(true)
+    setSelectedFromBank(null)
+    setFromBankSelectedIds([])
+    setShowManualView(false)
+    setBlueprintBanks(null)
+    setRestoredBlueprints(null)
+    setActiveMethod(null)
+  }
+
+  const handleBanksSelected = (banks) => {
+    setBlueprintBanks(banks)
+    setRestoredBlueprints(null)
+    setActiveMethod('random')
+    setRandomOpen(false)
+  }
+
+  const handleFromBankSelected = (banks) => {
+    if (!banks?.length) return
+    setSelectedFromBank(banks[0])
+    setFromBankSelectedIds([])
+    setActiveMethod('from-bank')
+    setFromBankOpen(false)
+  }
+
+  const mergeBlueprintBanks = (banks) => {
+    setBlueprintBanks((prev) => {
+      if (!prev?.length) return banks
+
+      const byId = new Map(prev.map((bank) => [bank.id, bank]))
+      banks.forEach((bank) => {
+        byId.set(bank.id, bank)
+      })
+      return [...byId.values()]
+    })
+  }
+
+  const reviewCopy = REVIEW_COPY[reviewSource] || REVIEW_COPY.exam
+
+  if (restoring) {
+    return (
+      <div className="flex min-h-[320px] items-center justify-center rounded-2xl bg-white ring-1 ring-[#E5E9EB]">
+        <p className="text-sm text-[#94A3B8]">جاري استعادة مسودة الامتحان...</p>
+      </div>
+    )
+  }
+
+  if (showGeneratedView && questions.length) {
+    return (
+      <ExamRandomGeneratedQuestionsPanel
+        questions={generatedQuestions?.length ? generatedQuestions : questions}
+        eyebrow={reviewCopy.eyebrow}
+        title={reviewCopy.title}
+        description={reviewCopy.description}
+        sectionTitle={reviewCopy.sectionTitle}
+        savingDraft={savingDraft}
+        onBack={() => {
+          setShowGeneratedView(false)
+          setGeneratedQuestions(null)
+        }}
+        onSaveDraft={() =>
+          saveQuestionsProgress({
+            view: EXAM_QUESTIONS_VIEWS.REVIEW,
+            reviewSource,
+          })
+        }
+        onContinue={handleNext}
+      />
+    )
+  }
+
+  if (selectedFromBank) {
+    return (
+      <ExamPickBankQuestionsPanel
+        bank={selectedFromBank}
+        test={test}
+        testId={testId}
+        initialSelectedIds={fromBankSelectedIds}
+        savingDraft={savingDraft}
+        onBack={() => {
+          setSelectedFromBank(null)
+          setFromBankSelectedIds([])
+          setActiveMethod(null)
+        }}
+        onSaveDraft={(selectedQuestionIds) =>
+          saveQuestionsProgress({
+            view: EXAM_QUESTIONS_VIEWS.FROM_BANK_QUESTIONS,
+            bankId: selectedFromBank.id,
+            selectedQuestionIds,
+          })
+        }
+        onSuccess={async () => {
+          await onRefresh?.()
+          await openGeneratedReview('from-bank')
+        }}
+      />
+    )
+  }
+
+  if (showManualView) {
+    return (
+      <ExamManualQuestionsPanel
+        test={test}
+        testId={testId}
+        savingDraft={savingDraft}
+        onBack={() => {
+          setShowManualView(false)
+          setActiveMethod(null)
+        }}
+        onSaveDraft={() =>
+          saveQuestionsProgress({
+            view: EXAM_QUESTIONS_VIEWS.MANUAL,
+          })
+        }
+        onSuccess={onRefresh}
+        onViewQuestions={async () => {
+          await onRefresh?.()
+          await openGeneratedReview('manual')
+        }}
+      />
+    )
+  }
+
+  if (blueprintBanks?.length) {
+    return (
+      <>
+        <ExamRandomBlueprintPanel
+          test={test}
+          testId={testId}
+          banks={blueprintBanks}
+          initialBlueprints={restoredBlueprints}
+          savingDraft={savingDraft}
+          onBack={() => {
+            setBlueprintBanks(null)
+            setRestoredBlueprints(null)
+            setActiveMethod(null)
+          }}
+          onAddBanks={() => setRandomOpen(true)}
+          onSaveDraft={(blueprints) =>
+            saveQuestionsProgress({
+              view: EXAM_QUESTIONS_VIEWS.RANDOM_BLUEPRINT,
+              bankIds: blueprintBankIds,
+              blueprints,
+            })
+          }
+          onSuccess={async (nextQuestions) => {
+            await openGeneratedReview('random', nextQuestions)
+          }}
+        />
+
+        <AddRandomBanksModal
+          open={randomOpen}
+          subjectId={test?.subject_id}
+          initialSelectedIds={blueprintBankIds}
+          onClose={() => setRandomOpen(false)}
+          onBanksSelected={mergeBlueprintBanks}
+        />
+      </>
+    )
   }
 
   return (
@@ -98,50 +424,6 @@ function ExamAddQuestionsStep({ test, onRefresh, onNext, onBack }) {
         </div>
       </div>
 
-      {activeMethod === 'manual' ? (
-        <ExamManualQuestionsPanel testId={testId} onSuccess={onRefresh} />
-      ) : null}
-
-      <div className="rounded-2xl bg-white p-6 ring-1 ring-[#E5E9EB]">
-        <div className="flex items-center justify-between gap-3">
-          <h3 className="text-sm font-extrabold text-[#2A3433]">
-            أسئلة الامتحان ({questions.length})
-          </h3>
-          {questions.length < 1 ? (
-            <span className="text-xs font-semibold text-red-600">مطلوب سؤال واحد على الأقل</span>
-          ) : null}
-        </div>
-
-        {questions.length === 0 ? (
-          <p className="mt-4 text-sm text-[#94A3B8]">لم تُضف أي أسئلة بعد.</p>
-        ) : (
-          <ul className="mt-4 space-y-3">
-            {questions.map((question, index) => (
-              <li
-                key={question.id}
-                className="rounded-xl bg-[#F6F8F9] px-4 py-3 text-sm text-[#64748B]"
-              >
-                <div className="flex flex-wrap items-center gap-2">
-                  <span className="font-bold text-[#2AA8A2]">س{index + 1}</span>
-                  <span className="rounded-full bg-white px-2 py-0.5 text-xs font-semibold">
-                    {getQuestionTypeLabel(question.snapshot_type_code)}
-                  </span>
-                  <span className="text-xs">{getDifficultyLabel(question.snapshot_difficulty)}</span>
-                  <span className="text-xs">· {question.snapshot_points} درجة</span>
-                  <span className="text-xs text-[#94A3B8]">
-                    · {getSourceTypeLabel(question.source_type)}
-                  </span>
-                </div>
-                <div
-                  className="mt-2 line-clamp-2 text-[#374151]"
-                  dangerouslySetInnerHTML={{ __html: question.snapshot_question_text || '' }}
-                />
-              </li>
-            ))}
-          </ul>
-        )}
-      </div>
-
       <div className="flex justify-between">
         <button
           type="button"
@@ -160,32 +442,25 @@ function ExamAddQuestionsStep({ test, onRefresh, onNext, onBack }) {
         </button>
       </div>
 
-      <AddFromBankModal
+      <AddRandomBanksModal
         open={fromBankOpen}
-        testId={testId}
+        subjectId={test?.subject_id}
+        selectionMode="single"
         onClose={() => {
           setFromBankOpen(false)
           setActiveMethod(null)
         }}
-        onSuccess={() => {
-          setFromBankOpen(false)
-          setActiveMethod(null)
-          onRefresh?.()
-        }}
+        onBanksSelected={handleFromBankSelected}
       />
 
       <AddRandomBanksModal
         open={randomOpen}
-        testId={testId}
+        subjectId={test?.subject_id}
         onClose={() => {
           setRandomOpen(false)
           setActiveMethod(null)
         }}
-        onSuccess={() => {
-          setRandomOpen(false)
-          setActiveMethod(null)
-          onRefresh?.()
-        }}
+        onBanksSelected={handleBanksSelected}
       />
     </div>
   )

@@ -10,7 +10,7 @@ import QuestionBuilderForm from '../../components/question-banks/editor/Question
 import QuestionsList from '../../components/question-banks/editor/QuestionsList'
 import { parseApiError } from '../../lib/apiError'
 import { ROUTES } from '../../constants/routes'
-import { canAccessQuestionBanks, canManageQuestionBank, isQuestionBankOwner } from '../../lib/workspaceContext'
+import { canAccessQuestionBanks, canEditQuestionBank, isQuestionBankOwner } from '../../lib/workspaceContext'
 import { isRichTextEmpty } from '../../lib/richText'
 import {
   getQuestionBanksListPath,
@@ -99,11 +99,7 @@ function QuestionBankEditorPage() {
   const [topics, setTopics] = useState([])
   const [questionsLoadError, setQuestionsLoadError] = useState(null)
 
-  const canEditBank = bank
-    ? sourceTab === QUESTION_BANK_TABS.COMMUNITY
-      ? isQuestionBankOwner(bank)
-      : canManageQuestionBank(bank)
-    : false
+  const canEditBank = bank ? canEditQuestionBank(bank, sourceTab) : false
   const readOnly = bank ? !canEditBank : sourceTab === QUESTION_BANK_TABS.COMMUNITY
 
   useEffect(() => {
@@ -234,14 +230,16 @@ function QuestionBankEditorPage() {
 
   const handlePublish = async () => {
     if (!bank) return
-    if (!localQuestions.length) {
+    if (allQuestions.length < 1) {
       showToast('أضف سؤالاً واحداً على الأقل قبل النشر', 'error')
       return
     }
     setPublishing(true)
     try {
       await updateQuestionBank(bank.id, { visibility: publishVisibility })
-      await createQuestionBankQuestions(bank.id, localQuestions)
+      if (localQuestions.length > 0) {
+        await createQuestionBankQuestions(bank.id, localQuestions)
+      }
       showToast('Question Bank Published Successfully')
       navigate(banksListPath)
     } catch (err) {
@@ -252,7 +250,7 @@ function QuestionBankEditorPage() {
   }
 
   const handleUpdateQuestion = async (payload) => {
-    if (!bank || !editingQuestion?.id) return
+    if (!bank || !editingQuestion?.id || !canEditBank) return
     setUpdatingQuestion(true)
     try {
       const result = await updateQuestionInBank(bank.id, editingQuestion.id, payload)
@@ -293,7 +291,7 @@ function QuestionBankEditorPage() {
         questions={allQuestions}
         readOnly={readOnly}
         topics={topics}
-        canEdit={!readOnly}
+        canEdit={canEditBank}
         onEditQuestion={setEditingQuestion}
         emptyMessage={
           questionsLoadError

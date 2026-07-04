@@ -1,11 +1,17 @@
-import { Sparkles } from 'lucide-react'
 import { TEST_STATUS } from '../../constants/tests'
 import { getTestQuestionsCount } from '../../lib/testDisplay'
 import { getTestName } from '../../lib/testModel'
 import ExamStatusBadge from './ExamStatusBadge'
 
-function ExamSummarySidebar({ test, draft, currentStep }) {
-  const questionsCount = getTestQuestionsCount(test)
+function ExamSummarySidebar({
+  test,
+  draft,
+  currentStep,
+  questionsCountOverride,
+  showStepIndicator = true,
+}) {
+  const questionsCount =
+    questionsCountOverride != null ? questionsCountOverride : getTestQuestionsCount(test)
   const totalScore = test?.total_score ?? draft?.total_score ?? 0
   const duration = test?.duration_minutes ?? draft?.duration_minutes
   const status = test?.status || TEST_STATUS.DRAFT
@@ -43,21 +49,9 @@ function ExamSummarySidebar({ test, draft, currentStep }) {
         ) : null}
       </aside>
 
-      <aside className="rounded-2xl bg-[#E8F7F6] p-5 ring-1 ring-[#CFECE9]">
-        <div className="flex items-start gap-3">
-          <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-white text-[#2AA8A2]">
-            <Sparkles className="h-4 w-4" />
-          </span>
-          <div>
-            <p className="text-sm font-extrabold text-[#2A3433]">مساعد الذكاء الاصطناعي</p>
-            <p className="mt-1 text-xs leading-6 text-[#64748B]">
-              يمكنك لاحقاً توليد أسئلة تلقائياً بناءً على المادة والوصف المُدخل.
-            </p>
-          </div>
-        </div>
-      </aside>
-
-      <p className="text-center text-xs text-[#94A3B8]">الخطوة {currentStep} من 5</p>
+      {showStepIndicator && currentStep ? (
+        <p className="text-center text-xs text-[#94A3B8]">الخطوة {currentStep} من 5</p>
+      ) : null}
     </div>
   )
 }

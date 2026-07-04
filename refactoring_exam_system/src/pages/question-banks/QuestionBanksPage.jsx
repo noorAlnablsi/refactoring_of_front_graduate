@@ -17,7 +17,7 @@ import { useQuestionBanks } from '../../hooks/question-banks/useQuestionBanks'
 import { getQuestionBanksListPath, parseQuestionBanksTab, QUESTION_BANK_TABS } from '../../lib/questionBanks'
 import {
   canAccessQuestionBanks,
-  canManageQuestionBank,
+  canEditQuestionBank,
   isInstitutionWorkspace,
   isQuestionBankOwner,
 } from '../../lib/workspaceContext'
@@ -180,7 +180,7 @@ function QuestionBanksPage() {
             <QuestionBankCard
               key={bank.id}
               bank={bank}
-              canManage={canManageQuestionBank(bank)}
+              canManage={canEditQuestionBank(bank, activeTab)}
               onEdit={setEditBank}
               onDelete={setArchiveBank}
               onOpenEditor={openEditor}

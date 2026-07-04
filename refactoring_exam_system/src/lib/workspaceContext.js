@@ -1,4 +1,5 @@
 import { useAuthStore } from '../store/authStore'
+import { QUESTION_BANK_TABS } from './questionBanks'
 
 export function getActiveMembership() {
   const { memberships, selected_membership_id } = useAuthStore.getState()
@@ -80,12 +81,49 @@ export function isInstitutionWorkspace() {
 export function isQuestionBankOwner(bank) {
   const membership = getActiveMembership()
   if (!membership || !bank) return false
-  return bank.created_by_membership_id === membership.membership_id
+
+  const creatorId =
+    bank.created_by_membership_id ??
+    bank.creator_membership_id ??
+    bank.created_by?.membership_id
+
+  if (creatorId == null) return false
+  return Number(creatorId) === Number(membership.membership_id)
 }
 
-export function canManageQuestionBank(bank) {
+function isInstitutionManager() {
+  const membership = getActiveMembership()
+  if (!membership) return false
+  return membership.is_owner || membership.role === 'ADMIN'
+}
+
+/**
+ * Edit questions / bank metadata:
+ * - بنوكي (MY): creator only
+ * - ضمن المؤسسة (WORKSPACE): creator, or institution owner/admin
+ * - مجتمع (COMMUNITY): creator only (view-only for everyone else)
+ */
+export function canEditQuestionBank(bank, sourceTab) {
   const membership = getActiveMembership()
   if (!membership || !bank) return false
-  if (bank.created_by_membership_id === membership.membership_id) return true
-  return membership.is_owner || membership.role === 'ADMIN'
+
+  if (isQuestionBankOwner(bank)) return true
+
+  if (
+    sourceTab === QUESTION_BANK_TABS.WORKSPACE &&
+    isInstitutionWorkspace() &&
+    isInstitutionManager()
+  ) {
+    return true
+  }
+
+  return false
+}
+
+/** @deprecated Use canEditQuestionBank(bank, sourceTab) */
+export function canManageQuestionBank(bank, sourceTab) {
+  if (sourceTab) return canEditQuestionBank(bank, sourceTab)
+  if (!bank) return false
+  if (isQuestionBankOwner(bank)) return true
+  return isInstitutionWorkspace() && isInstitutionManager()
 }

@@ -5,6 +5,7 @@ import { TEST_STATUS } from '../../constants/tests'
 import { formatDate } from '../../lib/questionBanks'
 import { canEditTest, getTestQuestionsCount, getTestTotalPoints } from '../../lib/testDisplay'
 import { getTestId, getTestName } from '../../lib/testModel'
+import { getResumeWizardStep, getExamWizardProgress } from '../../lib/examWizardProgress'
 import ExamStatusBadge from './ExamStatusBadge'
 
 function ExamCard({ test, onArchive, onClose }) {
@@ -16,8 +17,10 @@ function ExamCard({ test, onArchive, onClose }) {
   const editable = canEditTest(test)
 
   const handleContinue = () => {
-    const step = questionsCount > 0 ? 2 : 1
-    navigate(ROUTES.EXAM_EDIT.replace(':id', getTestId(test)) + `?step=${step}`)
+    const testId = getTestId(test)
+    const progress = getExamWizardProgress(testId)
+    const step = getResumeWizardStep(test, progress)
+    navigate(ROUTES.EXAM_EDIT.replace(':id', testId) + `?step=${step}`)
   }
 
   return (

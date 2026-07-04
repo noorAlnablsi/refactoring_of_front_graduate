@@ -9,6 +9,7 @@ import {
   getCommunityBankRating,
   getCommunityBankTheme,
 } from '../../lib/questionBanks'
+import { isQuestionBankOwner } from '../../lib/workspaceContext'
 
 const cardShadow =
   'shadow-[0_1px_3px_rgba(16,24,40,0.06),0_1px_2px_rgba(16,24,40,0.04)]'
@@ -60,6 +61,7 @@ function AuthorAvatar({ name, avatarUrl, accent }) {
 function CommunityQuestionBankCard({ bank, onEdit, onDelete, onOpenEditor }) {
   const [menuOpen, setMenuOpen] = useState(false)
   const menuRef = useRef(null)
+  const canManage = isQuestionBankOwner(bank)
   const theme = getCommunityBankTheme(bank)
   const authorName = getCommunityBankAuthorName(bank)
   const authorAvatar = getCommunityBankAuthorAvatar(bank)
@@ -101,44 +103,48 @@ function CommunityQuestionBankCard({ bank, onEdit, onDelete, onOpenEditor }) {
 
       <div className="flex flex-1 flex-col p-5">
         <div className="flex items-start justify-between gap-2">
-          <div className="relative shrink-0" ref={menuRef} onClick={stopCardAction}>
-            <button
-              type="button"
-              onClick={() => setMenuOpen((open) => !open)}
-              className="flex h-10 w-10 items-center justify-center rounded-xl text-[#64748B] transition hover:bg-[#F6F8F9] hover:text-[#374151]"
-              aria-label="خيارات البنك"
-              aria-expanded={menuOpen}
-            >
-              <MoreVertical className="h-5 w-5" strokeWidth={2} />
-            </button>
+          {canManage ? (
+            <div className="relative shrink-0" ref={menuRef} onClick={stopCardAction}>
+              <button
+                type="button"
+                onClick={() => setMenuOpen((open) => !open)}
+                className="flex h-10 w-10 items-center justify-center rounded-xl text-[#64748B] transition hover:bg-[#F6F8F9] hover:text-[#374151]"
+                aria-label="خيارات البنك"
+                aria-expanded={menuOpen}
+              >
+                <MoreVertical className="h-5 w-5" strokeWidth={2} />
+              </button>
 
-            {menuOpen ? (
-              <div className="absolute right-0 top-full z-20 mt-1 min-w-[132px] overflow-hidden rounded-xl bg-white py-1 shadow-[0_8px_24px_rgba(15,23,42,0.12)] ring-1 ring-[#E5E9EB]">
-                <button
-                  type="button"
-                  onClick={() => {
-                    setMenuOpen(false)
-                    onEdit?.(bank)
-                  }}
-                  className="flex w-full items-center gap-2 px-4 py-2.5 text-sm font-medium text-[#374151] hover:bg-[#F8FAFB]"
-                >
-                  <Pencil className="h-4 w-4 text-[#64748B]" />
-                  تعديل
-                </button>
-                <button
-                  type="button"
-                  onClick={() => {
-                    setMenuOpen(false)
-                    onDelete?.(bank)
-                  }}
-                  className="flex w-full items-center gap-2 px-4 py-2.5 text-sm font-medium text-red-600 hover:bg-red-50"
-                >
-                  <Trash2 className="h-4 w-4" />
-                  حذف
-                </button>
-              </div>
-            ) : null}
-          </div>
+              {menuOpen ? (
+                <div className="absolute right-0 top-full z-20 mt-1 min-w-[132px] overflow-hidden rounded-xl bg-white py-1 shadow-[0_8px_24px_rgba(15,23,42,0.12)] ring-1 ring-[#E5E9EB]">
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setMenuOpen(false)
+                      onEdit?.(bank)
+                    }}
+                    className="flex w-full items-center gap-2 px-4 py-2.5 text-sm font-medium text-[#374151] hover:bg-[#F8FAFB]"
+                  >
+                    <Pencil className="h-4 w-4 text-[#64748B]" />
+                    تعديل
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setMenuOpen(false)
+                      onDelete?.(bank)
+                    }}
+                    className="flex w-full items-center gap-2 px-4 py-2.5 text-sm font-medium text-red-600 hover:bg-red-50"
+                  >
+                    <Trash2 className="h-4 w-4" />
+                    حذف
+                  </button>
+                </div>
+              ) : null}
+            </div>
+          ) : (
+            <span className="h-10 w-10 shrink-0" aria-hidden="true" />
+          )}
 
           <span
             className="max-w-[70%] truncate rounded-full px-3 py-1 text-xs font-medium"

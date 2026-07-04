@@ -39,7 +39,16 @@ export function filterTestsByTab(tests = [], tab) {
 }
 
 export function getTestQuestionsCount(test) {
-  return Array.isArray(test?.questions) ? test.questions.length : 0
+  if (Array.isArray(test?.questions) && test.questions.length > 0) {
+    return test.questions.length
+  }
+
+  const count = test?.questions_count ?? test?.question_count
+  if (count != null && count !== '') {
+    return Number(count) || 0
+  }
+
+  return 0
 }
 
 export function getTestTotalPoints(test) {

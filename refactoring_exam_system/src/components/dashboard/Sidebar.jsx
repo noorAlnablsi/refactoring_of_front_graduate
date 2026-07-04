@@ -58,10 +58,10 @@ function Sidebar() {
   }
 
   return (
-    <aside className="hidden w-[260px] shrink-0 flex-col border-l border-[#E5E9EB] bg-white lg:flex">
+    <aside className="sticky top-0 hidden h-screen w-[260px] shrink-0 flex-col border-l border-[#E5E9EB] bg-white lg:flex">
       <SidebarBrand />
 
-      <nav className="flex-1 space-y-2 overflow-y-auto px-4 py-6">
+      <nav className="min-h-0 flex-1 space-y-2 overflow-y-auto px-4 py-6">
         {navItems.map(({ to, label, icon: Icon, end = true, disabled }) =>
           disabled ? (
             <span
@@ -98,7 +98,7 @@ function Sidebar() {
         )}
       </nav>
 
-      <div className="border-t border-[#E5E9EB] px-4 py-5">
+      <div className="shrink-0 border-t border-[#E5E9EB] px-4 py-5">
         <button
           type="button"
           onClick={handleLogout}

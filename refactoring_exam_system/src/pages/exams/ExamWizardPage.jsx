@@ -2,6 +2,8 @@ import { useCallback, useEffect, useState } from 'react'
 import { ArrowRight } from 'lucide-react'
 import { Navigate, useNavigate, useParams, useSearchParams } from 'react-router-dom'
 import ExamSummarySidebar from '../../components/exams/ExamSummarySidebar'
+import ExamPublishSummarySidebar from '../../components/exams/ExamPublishSummarySidebar'
+import ExamSettingsSummarySidebar from '../../components/exams/ExamSettingsSummarySidebar'
 import ExamWizardStepper from '../../components/exams/ExamWizardStepper'
 import ExamAddQuestionsStep from '../../components/exams/wizard/ExamAddQuestionsStep'
 import ExamBasicInfoStep from '../../components/exams/wizard/ExamBasicInfoStep'
@@ -12,7 +14,12 @@ import { ROUTES } from '../../constants/routes'
 import { TEST_STATUS, TEST_WIZARD_STEPS } from '../../constants/tests'
 import { canCreateExam, canAccessExams } from '../../lib/workspaceContext'
 import { canEditTest, getEditBlockedMessage } from '../../lib/testDisplay'
-import { getTestId, getTestName } from '../../lib/testModel'
+import { getTestId, getTestName, mergeTestPreservingQuestions } from '../../lib/testModel'
+import { buildUpdateTestInfoPayloadFromStep1 } from '../../lib/testPayload'
+import {
+  getResumeWizardStep,
+  saveExamWizardProgress,
+} from '../../lib/examWizardProgress'
 import {
   createTest,
   getTestById,
@@ -40,31 +47,95 @@ function ExamWizardPage({ isNew = false }) {
   const [publishing, setPublishing] = useState(false)
   const [draft, setDraft] = useState(null)
   const [savingDraft, setSavingDraft] = useState(false)
+  const [blueprintActive, setBlueprintActive] = useState(false)
+  const [settingsPreview, setSettingsPreview] = useState(null)
 
   const goToStep = useCallback(
     (step) => {
       setSearchParams({ step: String(step) }, { replace: true })
+      const testId = getTestId(test)
+      if (testId && step !== TEST_WIZARD_STEPS.QUESTIONS) {
+        saveExamWizardProgress(testId, { step, questions: null })
+      }
     },
-    [setSearchParams],
+    [setSearchParams, test],
   )
 
-  const loadTest = useCallback(async () => {
+  const handleSaveWizardDraftProgress = useCallback(
+    async (step, extra = {}) => {
+      const testId = getTestId(test)
+      if (!testId) return
+
+      setSavingDraft(true)
+      try {
+        saveExamWizardProgress(testId, { step, questions: null, ...extra })
+        showToast('تم حفظ المسودة')
+        navigate(ROUTES.EXAMS)
+      } finally {
+        setSavingDraft(false)
+      }
+    },
+    [navigate, showToast, test],
+  )
+
+  const handleSaveSettingsDraft = useCallback(
+    async (payload) => {
+      const testId = getTestId(test)
+      if (!testId) return
+
+      setSavingDraft(true)
+      try {
+        const data = await updateTest(testId, payload)
+        setTest((prev) => mergeTestPreservingQuestions(prev, data.test || data))
+        saveExamWizardProgress(testId, { step: TEST_WIZARD_STEPS.SETTINGS, questions: null })
+        showToast('تم حفظ المسودة')
+        navigate(ROUTES.EXAMS)
+      } catch (err) {
+        showToast(err.message, 'error')
+      } finally {
+        setSavingDraft(false)
+      }
+    },
+    [navigate, showToast, test],
+  )
+
+  const handleSaveQuestionsDraftProgress = useCallback(
+    async (progressSlice) => {
+      const testId = getTestId(test)
+      if (!testId) return
+
+      setSavingDraft(true)
+      try {
+        saveExamWizardProgress(testId, {
+          step: currentStep,
+          ...progressSlice,
+        })
+        showToast('تم حفظ المسودة')
+        navigate(ROUTES.EXAMS)
+      } finally {
+        setSavingDraft(false)
+      }
+    },
+    [currentStep, navigate, showToast, test],
+  )
+
+  const loadTest = useCallback(async (silent = false) => {
     if (!id) return
-    setLoading(true)
+    if (!silent) setLoading(true)
     try {
       const data = await getTestById(id)
-      const testData = data.test || data
-      setTest(testData)
+      const fetched = data.test || data
+      setTest((prev) => mergeTestPreservingQuestions(prev, fetched))
 
-      if (!canEditTest(testData) && testData.status === TEST_STATUS.DRAFT) {
-        const msg = getEditBlockedMessage(testData)
+      if (!canEditTest(fetched) && fetched.status === TEST_STATUS.DRAFT) {
+        const msg = getEditBlockedMessage(fetched)
         if (msg) showToast(msg, 'error')
       }
     } catch (err) {
       showToast(err.message, 'error')
       navigate(ROUTES.EXAMS, { replace: true })
     } finally {
-      setLoading(false)
+      if (!silent) setLoading(false)
     }
   }, [id, navigate, showToast])
 
@@ -78,15 +149,9 @@ function ExamWizardPage({ isNew = false }) {
     return <Navigate to={ROUTES.DASHBOARD} replace />
   }
 
-  const persistNewTest = async ({ create, scoring_config }) => {
+  const persistNewTest = async ({ create }) => {
     const data = await createTest(create)
-    const created = data.test || data
-    const testId = getTestId(created)
-    if (scoring_config) {
-      const updated = await updateTest(testId, { scoring_config })
-      return updated.test || updated
-    }
-    return created
+    return data.test || data
   }
 
   const handleCreate = async (payload) => {
@@ -107,17 +172,16 @@ function ExamWizardPage({ isNew = false }) {
     try {
       if (isNew) {
         const created = await persistNewTest(payload)
+        saveExamWizardProgress(getTestId(created), { step: TEST_WIZARD_STEPS.INFO })
         showToast('تم حفظ المسودة')
         navigate(ROUTES.EXAM_EDIT.replace(':id', getTestId(created)), { replace: true })
         return
       }
       const testId = getTestId(test)
       if (!testId) return
-      const data = await updateTest(testId, {
-        ...payload.create,
-        scoring_config: payload.scoring_config,
-      })
-      setTest(data.test || data)
+      const data = await updateTest(testId, buildUpdateTestInfoPayloadFromStep1(payload))
+      setTest((prev) => mergeTestPreservingQuestions(prev, data.test || data))
+      saveExamWizardProgress(testId, { step: currentStep })
       showToast('تم حفظ المسودة')
     } catch (err) {
       showToast(err.message, 'error')
@@ -131,11 +195,8 @@ function ExamWizardPage({ isNew = false }) {
     if (!testId) return
     setSubmitting(true)
     try {
-      const data = await updateTest(testId, {
-        ...payload.create,
-        scoring_config: payload.scoring_config,
-      })
-      setTest(data.test || data)
+      const data = await updateTest(testId, buildUpdateTestInfoPayloadFromStep1(payload))
+      setTest((prev) => mergeTestPreservingQuestions(prev, data.test || data))
       showToast('تم حفظ المعلومات')
       goToStep(TEST_WIZARD_STEPS.QUESTIONS)
     } catch (err) {
@@ -151,7 +212,8 @@ function ExamWizardPage({ isNew = false }) {
     setSubmitting(true)
     try {
       const data = await updateTest(testId, payload)
-      setTest(data.test || data)
+      setTest((prev) => mergeTestPreservingQuestions(prev, data.test || data))
+      saveExamWizardProgress(testId, { step: TEST_WIZARD_STEPS.REVIEW, questions: null })
       showToast('تم حفظ الإعدادات')
       goToStep(TEST_WIZARD_STEPS.REVIEW)
     } catch (err) {
@@ -234,10 +296,14 @@ function ExamWizardPage({ isNew = false }) {
 
   return (
     <div className="space-y-6">
-      <WizardHeader onBack={() => navigate(ROUTES.EXAMS)} title={getTestName(test) || 'تحرير الامتحان'} />
-      <ExamWizardStepper currentStep={currentStep} />
+      {!blueprintActive ? (
+        <>
+          <WizardHeader onBack={() => navigate(ROUTES.EXAMS)} title={getTestName(test) || 'تحرير الامتحان'} />
+          <ExamWizardStepper currentStep={currentStep} />
+        </>
+      ) : null}
 
-      <div className="grid gap-6 lg:grid-cols-[1fr_300px]">
+      <div className={`grid gap-6 ${blueprintActive ? '' : 'lg:grid-cols-[1fr_300px]'}`}>
         <div>
           {currentStep === TEST_WIZARD_STEPS.INFO ? (
             <ExamBasicInfoStep
@@ -252,9 +318,15 @@ function ExamWizardPage({ isNew = false }) {
           {currentStep === TEST_WIZARD_STEPS.QUESTIONS ? (
             <ExamAddQuestionsStep
               test={test}
-              onRefresh={loadTest}
-              onNext={() => goToStep(TEST_WIZARD_STEPS.SETTINGS)}
+              onRefresh={() => loadTest(true)}
+              onNext={async () => {
+                await loadTest(true)
+                goToStep(TEST_WIZARD_STEPS.SETTINGS)
+              }}
               onBack={() => goToStep(TEST_WIZARD_STEPS.INFO)}
+              onBlueprintActiveChange={setBlueprintActive}
+              onSaveDraftProgress={handleSaveQuestionsDraftProgress}
+              savingDraft={savingDraft}
             />
           ) : null}
 
@@ -263,7 +335,10 @@ function ExamWizardPage({ isNew = false }) {
               test={test}
               onSubmit={handleUpdateSettings}
               submitting={submitting}
+              savingDraft={savingDraft}
               onBack={() => goToStep(TEST_WIZARD_STEPS.QUESTIONS)}
+              onSaveDraft={handleSaveSettingsDraft}
+              onFormChange={setSettingsPreview}
             />
           ) : null}
 
@@ -272,6 +347,8 @@ function ExamWizardPage({ isNew = false }) {
               test={test}
               onNext={() => goToStep(TEST_WIZARD_STEPS.PUBLISH)}
               onBack={() => goToStep(TEST_WIZARD_STEPS.SETTINGS)}
+              savingDraft={savingDraft}
+              onSaveDraft={() => handleSaveWizardDraftProgress(TEST_WIZARD_STEPS.REVIEW)}
             />
           ) : null}
 
@@ -279,14 +356,30 @@ function ExamWizardPage({ isNew = false }) {
             <ExamPublishStep
               test={test}
               publishing={publishing}
+              savingDraft={savingDraft}
               onPublishNow={handlePublishNow}
               onSchedule={handleSchedule}
               onBack={() => goToStep(TEST_WIZARD_STEPS.REVIEW)}
+              onSaveDraft={() => handleSaveWizardDraftProgress(TEST_WIZARD_STEPS.PUBLISH)}
             />
           ) : null}
         </div>
 
-        <ExamSummarySidebar test={test} currentStep={currentStep} />
+        {!blueprintActive ? (
+          currentStep === TEST_WIZARD_STEPS.SETTINGS ? (
+            <ExamSettingsSummarySidebar
+              test={test}
+              settings={settingsPreview || test?.settings_config}
+            />
+          ) : currentStep === TEST_WIZARD_STEPS.PUBLISH ? (
+            <ExamPublishSummarySidebar
+              test={test}
+              settings={settingsPreview || test?.settings_config}
+            />
+          ) : (
+            <ExamSummarySidebar test={test} currentStep={currentStep} />
+          )
+        ) : null}
       </div>
     </div>
   )

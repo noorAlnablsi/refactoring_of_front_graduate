@@ -1,125 +1,289 @@
-import { useEffect, useState } from 'react'
-import { X } from 'lucide-react'
-import { DIFFICULTY_OPTIONS } from '../../lib/questionBanks'
-import { getMyQuestionBanks } from '../../services/questionBanks.service'
-import { addRandomQuestionsFromBanks } from '../../services/tests.service'
+import { useEffect, useMemo, useState } from 'react'
+import { Globe, X } from 'lucide-react'
+import { QUESTION_BANK_TABS } from '../../lib/questionBanks'
+import {
+  getWorkspaceQuestionBanks,
+  getCommunityQuestionBanks,
+  getMyQuestionBanks,
+} from '../../services/questionBanks.service'
 import { useToastStore } from '../../store/toastStore'
+import { isInstitutionWorkspace } from '../../lib/workspaceContext'
+import QuestionBanksPagination from '../question-banks/QuestionBanksPagination'
+import SelectableQuestionBankCard from './SelectableQuestionBankCard'
 
-const inputClassName =
-  'w-full rounded-xl bg-[#F6F8F9] px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-[#2AA8A2]/40'
+const PICKER_TABS = {
+  MY: QUESTION_BANK_TABS.MY,
+  COMMUNITY: QUESTION_BANK_TABS.COMMUNITY,
+}
 
-function AddRandomBanksModal({ open, testId, onClose, onSuccess }) {
+const BANKS_PER_PAGE = 3
+const EMPTY_SELECTED_IDS = []
+
+function AddRandomBanksModal({
+  open,
+  subjectId,
+  initialSelectedIds = EMPTY_SELECTED_IDS,
+  selectionMode = 'multiple',
+  onClose,
+  onBanksSelected,
+}) {
   const showToast = useToastStore((s) => s.showToast)
-  const [banks, setBanks] = useState([])
+  const showWorkspaceTab = isInstitutionWorkspace()
+  const [activeTab, setActiveTab] = useState(PICKER_TABS.MY)
+  const [myBanks, setMyBanks] = useState([])
+  const [workspaceBanks, setWorkspaceBanks] = useState([])
+  const [communityBanks, setCommunityBanks] = useState([])
+  const [loading, setLoading] = useState(false)
+  const [page, setPage] = useState(1)
   const [selectedBankIds, setSelectedBankIds] = useState([])
-  const [counts, setCounts] = useState({ EASY: 0, MEDIUM: 0, HARD: 0 })
-  const [submitting, setSubmitting] = useState(false)
+
+  const initialSelectedIdsKey = initialSelectedIds.join(',')
 
   useEffect(() => {
     if (!open) return
-    getMyQuestionBanks()
-      .then((data) => setBanks((data.question_banks || []).filter((b) => !b.is_archived)))
-      .catch((err) => showToast(err.message, 'error'))
-  }, [open, showToast])
+    setSelectedBankIds([...initialSelectedIds])
+  }, [open, initialSelectedIdsKey, initialSelectedIds])
+
+  useEffect(() => {
+    if (!open) return undefined
+
+    setActiveTab(PICKER_TABS.MY)
+    setPage(1)
+
+    let cancelled = false
+    setLoading(true)
+
+    const resolveBankSubjectId = (bank) =>
+      bank?.subject_id ?? bank?.subject?.id ?? bank?.subject?.subject_id ?? bank?.subjectId ?? null
+
+    const matchesSubject = (bank) => {
+      if (subjectId == null || subjectId === '') return true
+
+      const bankSubjectId = resolveBankSubjectId(bank)
+      if (bankSubjectId == null || bankSubjectId === '') return true
+
+      return String(bankSubjectId) === String(subjectId)
+    }
+
+    Promise.allSettled([
+      getMyQuestionBanks().then((data) =>
+        (data.question_banks || [])
+          .filter((bank) => !bank.is_archived)
+          .filter((bank) => bank.visibility === 'PRIVATE'),
+      ),
+      showWorkspaceTab
+        ? Promise.all([getMyQuestionBanks(), getWorkspaceQuestionBanks({ perPage: 100 })]).then(
+            ([myData, workspaceData]) => {
+              const myWorkspaceBanks = (myData.question_banks || []).filter(
+                (bank) => !bank.is_archived && bank.visibility === 'WORKSPACE',
+              )
+              const sharedWorkspaceBanks = (workspaceData.question_banks || []).filter(
+                (bank) => !bank.is_archived,
+              )
+              const byId = new Map()
+              ;[...myWorkspaceBanks, ...sharedWorkspaceBanks].forEach((bank) => {
+                if (bank?.id != null) byId.set(bank.id, bank)
+              })
+              return [...byId.values()]
+            },
+          )
+        : Promise.resolve([]),
+      getCommunityQuestionBanks({ perPage: 100 }).then(
+        (data) => (data.question_banks || []).filter((bank) => !bank.is_archived),
+      ),
+    ])
+      .then(([mineResult, workspaceResult, communityResult]) => {
+        if (cancelled) return
+
+        const mine = mineResult.status === 'fulfilled' ? mineResult.value : []
+        const workspace = workspaceResult.status === 'fulfilled' ? workspaceResult.value : []
+        const community = communityResult.status === 'fulfilled' ? communityResult.value : []
+
+        setMyBanks(mine.filter(matchesSubject))
+        setWorkspaceBanks(workspace.filter(matchesSubject))
+        setCommunityBanks(community.filter(matchesSubject))
+
+        if (mineResult.status === 'rejected') showToast(mineResult.reason?.message || 'تعذر تحميل بنوكي', 'error')
+        if (workspaceResult.status === 'rejected') {
+          showToast(workspaceResult.reason?.message || 'تعذر تحميل بنوك المؤسسة', 'error')
+        }
+        if (communityResult.status === 'rejected') {
+          showToast(communityResult.reason?.message || 'تعذر تحميل بنوك المجتمع', 'error')
+        }
+      })
+      .finally(() => {
+        if (!cancelled) setLoading(false)
+      })
+
+    return () => {
+      cancelled = true
+    }
+  }, [open, showToast, subjectId, showWorkspaceTab])
+
+  const banksForTab =
+    activeTab === PICKER_TABS.MY
+      ? myBanks
+      : activeTab === QUESTION_BANK_TABS.WORKSPACE
+        ? workspaceBanks
+        : communityBanks
+  const totalPages = Math.max(1, Math.ceil(banksForTab.length / BANKS_PER_PAGE))
+
+  useEffect(() => {
+    setPage(1)
+  }, [activeTab, banksForTab.length])
+
+  useEffect(() => {
+    if (page > totalPages) setPage(totalPages)
+  }, [page, totalPages])
+
+  const paginatedBanks = useMemo(() => {
+    const start = (page - 1) * BANKS_PER_PAGE
+    return banksForTab.slice(start, start + BANKS_PER_PAGE)
+  }, [banksForTab, page])
+
+  const allBanks = useMemo(
+    () => [...myBanks, ...workspaceBanks, ...communityBanks],
+    [communityBanks, myBanks, workspaceBanks],
+  )
 
   const toggleBank = (id) => {
+    if (selectionMode === 'single') {
+      setSelectedBankIds((prev) => (prev.includes(id) ? [] : [id]))
+      return
+    }
+
     setSelectedBankIds((prev) =>
       prev.includes(id) ? prev.filter((item) => item !== id) : [...prev, id],
     )
   }
 
-  const totalCount = Object.values(counts).reduce((sum, n) => sum + (Number(n) || 0), 0)
-
-  const handleSubmit = async (event) => {
-    event.preventDefault()
-    if (!selectedBankIds.length || totalCount < 1) {
-      showToast('اختر بنكاً واحداً على الأقل وحدد عدد الأسئلة', 'error')
+  const handlePickDone = () => {
+    if (!selectedBankIds.length) {
+      showToast(
+        selectionMode === 'single' ? 'اختر بنكاً واحداً' : 'اختر بنكاً واحداً على الأقل',
+        'error',
+      )
       return
     }
-    setSubmitting(true)
-    try {
-      await addRandomQuestionsFromBanks(testId, {
-        bank_ids: selectedBankIds.map(Number),
-        counts_by_difficulty: {
-          EASY: Number(counts.EASY) || 0,
-          MEDIUM: Number(counts.MEDIUM) || 0,
-          HARD: Number(counts.HARD) || 0,
-        },
-      })
-      showToast(`تمت إضافة ${totalCount} سؤال عشوائي`)
-      onSuccess?.()
-    } catch (err) {
-      showToast(err.message, 'error')
-    } finally {
-      setSubmitting(false)
-    }
+
+    const selectedBanks = allBanks.filter((bank) => selectedBankIds.includes(bank.id))
+    onBanksSelected?.(selectedBanks)
+    onClose?.()
   }
 
   if (!open) return null
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/45 p-4">
-      <div dir="rtl" className="max-h-[90vh] w-full max-w-xl overflow-y-auto rounded-2xl bg-white p-6 shadow-xl">
-        <div className="mb-4 flex items-center justify-between">
-          <h2 className="text-xl font-extrabold text-[#2A3433]">إضافة عشوائية من البنوك</h2>
-          <button type="button" onClick={onClose} className="text-[#94A3B8]">
+      <div
+        dir="rtl"
+        className="flex h-[785px] w-full max-w-[896px] flex-col overflow-hidden rounded-[22px] bg-white shadow-[0_24px_60px_rgba(15,23,42,0.22)]"
+      >
+        <div className="flex items-center justify-between px-6 py-5">
+          <button type="button" onClick={onClose} className="text-[#94A3B8] hover:text-[#64748B]">
             <X className="h-5 w-5" />
           </button>
+          <h2 className="text-[44px] font-extrabold leading-[1.2] text-[#2A3433]">اختر بنك الأسئلة</h2>
         </div>
-        <form onSubmit={handleSubmit} className="space-y-4">
-          <p className="text-sm text-[#64748B]">اختر بنكاً أو أكثر وحدد عدد الأسئلة لكل مستوى صعوبة.</p>
 
-          <div>
-            <p className="mb-2 text-sm font-bold text-[#374151]">البنوك</p>
-            <ul className="max-h-40 space-y-2 overflow-y-auto">
-              {banks.map((bank) => (
-                <li key={bank.id}>
-                  <label className="flex cursor-pointer items-center gap-3 rounded-xl bg-[#F6F8F9] px-3 py-2">
-                    <input
-                      type="checkbox"
-                      checked={selectedBankIds.includes(bank.id)}
-                      onChange={() => toggleBank(bank.id)}
-                      className="accent-[#2AA8A2]"
-                    />
-                    <span className="text-sm text-[#64748B]">
-                      {bank.title} {bank.subject_name ? `(${bank.subject_name})` : ''}
-                    </span>
-                  </label>
-                </li>
-              ))}
-            </ul>
-          </div>
-
-          <div className="grid gap-3 sm:grid-cols-3">
-            {DIFFICULTY_OPTIONS.map(({ value, label }) => (
-              <div key={value}>
-                <label className="mb-1 block text-xs font-bold text-[#64748B]">{label}</label>
-                <input
-                  type="number"
-                  min={0}
-                  value={counts[value]}
-                  onChange={(e) => setCounts((prev) => ({ ...prev, [value]: e.target.value }))}
-                  className={inputClassName}
-                />
-              </div>
-            ))}
-          </div>
-
-          <p className="text-sm font-bold text-[#2AA8A2]">المجموع: {totalCount} سؤال</p>
-
-          <div className="flex justify-end gap-2 pt-2">
-            <button type="button" onClick={onClose} className="rounded-xl px-4 py-2 text-sm font-bold text-[#64748B]">
-              إلغاء
-            </button>
+        <div className="border-b border-[#E5E9EB] px-6 pt-5">
+          <div className="flex items-center justify-start gap-8">
             <button
-              type="submit"
-              disabled={submitting || totalCount < 1}
-              className="rounded-xl bg-[#2AA8A2] px-5 py-2 text-sm font-bold text-white disabled:opacity-50"
+              type="button"
+              onClick={() => setActiveTab(PICKER_TABS.MY)}
+              className={`relative pb-3 text-base font-bold transition ${
+                activeTab === PICKER_TABS.MY ? 'text-[#2AA8A2]' : 'text-[#64748B]'
+              }`}
             >
-              {submitting ? 'جاري الإضافة...' : 'إضافة الأسئلة'}
+              بنوكي
+              {!loading ? (
+                <span className="mr-2 rounded-full bg-[#E8F7F6] px-2 py-0.5 text-xs text-[#2AA8A2]">
+                  {myBanks.length}
+                </span>
+              ) : null}
+              {activeTab === PICKER_TABS.MY ? (
+                <span className="absolute inset-x-0 bottom-0 h-0.5 rounded-full bg-[#2AA8A2]" />
+              ) : null}
+            </button>
+
+            {showWorkspaceTab ? (
+              <button
+                type="button"
+                onClick={() => setActiveTab(QUESTION_BANK_TABS.WORKSPACE)}
+                className={`relative pb-3 text-base font-bold transition ${
+                  activeTab === QUESTION_BANK_TABS.WORKSPACE ? 'text-[#2AA8A2]' : 'text-[#64748B]'
+                }`}
+              >
+                ضمن مؤسسة
+                {!loading ? (
+                  <span className="mr-2 rounded-full bg-[#E8F7F6] px-2 py-0.5 text-xs text-[#2AA8A2]">
+                    {workspaceBanks.length}
+                  </span>
+                ) : null}
+                {activeTab === QUESTION_BANK_TABS.WORKSPACE ? (
+                  <span className="absolute inset-x-0 bottom-0 h-0.5 rounded-full bg-[#2AA8A2]" />
+                ) : null}
+              </button>
+            ) : null}
+            <button
+              type="button"
+              onClick={() => setActiveTab(PICKER_TABS.COMMUNITY)}
+              className={`relative inline-flex items-center gap-2 pb-3 text-base font-bold transition ${
+                activeTab === PICKER_TABS.COMMUNITY ? 'text-[#2AA8A2]' : 'text-[#64748B]'
+              }`}
+            >
+              <Globe className="h-4 w-4" />
+              المجتمع
+              {!loading ? (
+                <span className="rounded-full bg-[#E8F7F6] px-2 py-0.5 text-xs text-[#2AA8A2]">
+                  {communityBanks.length}
+                </span>
+              ) : null}
+              {activeTab === PICKER_TABS.COMMUNITY ? (
+                <span className="absolute inset-x-0 bottom-0 h-0.5 rounded-full bg-[#2AA8A2]" />
+              ) : null}
             </button>
           </div>
-        </form>
+        </div>
+
+        <div className="min-h-0 flex-1 overflow-y-auto px-6 py-8">
+          {loading ? (
+            <div className="flex justify-center gap-4">
+              {[1, 2, 3].map((item) => (
+                <div key={item} className="h-[324px] w-[255.67px] animate-pulse rounded-xl bg-[#F1F5F9]" />
+              ))}
+            </div>
+          ) : paginatedBanks.length === 0 ? (
+            <p className="py-16 text-center text-sm text-[#94A3B8]">لا توجد بنوك في هذا القسم.</p>
+          ) : (
+            <div className="flex justify-center gap-4">
+              {paginatedBanks.map((bank) => (
+                <SelectableQuestionBankCard
+                  key={bank.id}
+                  bank={bank}
+                  selected={selectedBankIds.includes(bank.id)}
+                  variant={activeTab === PICKER_TABS.COMMUNITY ? 'community' : 'owned'}
+                  onToggle={toggleBank}
+                />
+              ))}
+            </div>
+          )}
+        </div>
+
+        <div className="space-y-4 border-t border-[#E5E9EB] px-6 py-5">
+          <QuestionBanksPagination page={page} totalPages={totalPages} onPageChange={setPage} />
+
+          <div className="flex justify-end">
+            <button
+              type="button"
+              onClick={handlePickDone}
+              disabled={!selectedBankIds.length}
+              className="min-w-[126px] rounded-xl bg-[#2AA8A2] px-8 py-3 text-base font-bold text-white shadow-[0_8px_16px_rgba(42,168,162,0.2)] disabled:opacity-50"
+            >
+              تم
+            </button>
+          </div>
+        </div>
       </div>
     </div>
   )
