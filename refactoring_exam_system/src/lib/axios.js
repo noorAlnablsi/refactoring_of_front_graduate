@@ -28,7 +28,8 @@ function isAuthRoute(url = '') {
     url.includes('/auth/verify-otp') ||
     url.includes('/auth/resend-otp') ||
     url.includes('/auth/forgot-password') ||
-    url.includes('/auth/reset-password')
+    url.includes('/auth/reset-password') ||
+    url.includes('/auth/logout')
   )
 }
 

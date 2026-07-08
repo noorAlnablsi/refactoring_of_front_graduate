@@ -22,7 +22,7 @@ function AssignTeacherModalContent({ subjectId, assignedIds, onClose, onSuccess 
     getWorkspaceTeachers()
       .then((data) => {
         if (cancelled) return
-        setTeachers(data.data || [])
+        setTeachers(data.teachers || [])
       })
       .catch((err) => {
         if (cancelled) return

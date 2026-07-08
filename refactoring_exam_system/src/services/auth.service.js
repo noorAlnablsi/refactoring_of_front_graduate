@@ -47,6 +47,21 @@ export async function resetPassword(payload) {
   return data
 }
 
+export async function changePassword(payload) {
+  const { data } = await api.post('/auth/change-password', payload)
+  return data
+}
+
+export async function logout() {
+  const { data } = await api.post('/auth/logout')
+  return data
+}
+
+export async function logoutAll() {
+  const { data } = await api.post('/auth/logout-all')
+  return data
+}
+
 export async function checkInstitutionApprovalStatus({ email, password }) {
   try {
     await api.post('/auth/login', { email, password })

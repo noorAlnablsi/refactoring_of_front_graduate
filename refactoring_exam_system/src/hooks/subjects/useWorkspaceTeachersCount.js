@@ -18,7 +18,7 @@ export function useWorkspaceTeachersCount() {
     getWorkspaceTeachers()
       .then((data) => {
         if (cancelled) return
-        setCount(data.count ?? data.data?.length ?? 0)
+        setCount(data.total ?? data.count ?? data.teachers?.length ?? 0)
       })
       .catch(() => {
         if (cancelled) return

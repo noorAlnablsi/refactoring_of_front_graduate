@@ -10,7 +10,6 @@ const cardShadow =
 
 function SelectableQuestionBankCard({ bank, selected, onToggle, variant = 'owned' }) {
   const theme = variant === 'community' ? getCommunityBankTheme(bank) : null
-  const accent = theme?.accent || '#2AA8A2'
   const badgeBg = theme?.badgeBg || '#E8F7F3'
   const badgeText = theme?.badgeText || '#0EA896'
 
@@ -24,7 +23,7 @@ function SelectableQuestionBankCard({ bank, selected, onToggle, variant = 'owned
           : 'ring-1 ring-[#E5E9EB] hover:ring-[#2AA8A2]/40'
       }`}
     >
-      <div className="h-1 bg-gradient-to-r from-[#A7E3DA] to-[#22C1A3]" />
+      <div className="h-3 shrink-0 bg-gradient-to-r from-[#A7E3DA] to-[#22C1A3]" />
 
       <div className="flex flex-1 flex-col p-5">
         <div className="flex items-start justify-between gap-3">

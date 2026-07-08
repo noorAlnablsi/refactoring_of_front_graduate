@@ -1,99 +1,14 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
-import { BookOpen, FileSpreadsheet, PenLine, Shuffle, Sparkles } from 'lucide-react'
-import {
-  EXAM_QUESTIONS_VIEWS,
-  getExamWizardProgress,
-} from '../../../lib/examWizardProgress'
+import { EXAM_QUESTIONS_VIEWS } from '../../../lib/examWizardProgress'
 import { getTestId } from '../../../lib/testModel'
-import { getQuestionBankById } from '../../../services/questionBanks.service'
-import { getTestById } from '../../../services/tests.service'
 import AddRandomBanksModal from '../AddRandomBanksModal'
 import ExamManualQuestionsPanel from '../ExamManualQuestionsPanel'
 import ExamPickBankQuestionsPanel from '../ExamPickBankQuestionsPanel'
 import ExamRandomBlueprintPanel from '../ExamRandomBlueprintPanel'
 import ExamRandomGeneratedQuestionsPanel from '../ExamRandomGeneratedQuestionsPanel'
-
-const METHODS = [
-  {
-    id: 'from-bank',
-    title: 'من بنك الأسئلة',
-    description: 'اختر أسئلة محددة من بنك واحد',
-    icon: BookOpen,
-    enabled: true,
-  },
-  {
-    id: 'random',
-    title: 'عشوائي من البنوك',
-    description: 'اختر أسئلة عشوائية من بنك أو أكثر',
-    icon: Shuffle,
-    enabled: true,
-  },
-  {
-    id: 'manual',
-    title: 'إنشاء يدوي',
-    description: 'أنشئ أسئلة جديدة خاصة بهذا الامتحان',
-    icon: PenLine,
-    enabled: true,
-  },
-  {
-    id: 'csv',
-    title: 'استيراد CSV',
-    description: 'قريباً — استيراد أسئلة من ملف',
-    icon: FileSpreadsheet,
-    enabled: false,
-    comingSoon: true,
-  },
-  {
-    id: 'ai',
-    title: 'توليد بالذكاء الاصطناعي',
-    description: 'قريباً — توليد أسئلة تلقائياً',
-    icon: Sparkles,
-    enabled: false,
-    comingSoon: true,
-  },
-]
-
-const REVIEW_COPY = {
-  random: {
-    eyebrow: 'بناء المعايير الأكاديمية',
-    title: 'مخطط الاختبار (Blueprint)',
-    description: 'تم اختيار الأسئلة عشوائياً وفق النسب التي حددتها. راجعها ثم تابع.',
-    sectionTitle: 'تكوين بنوك الأسئلة المختارة',
-  },
-  'from-bank': {
-    eyebrow: 'من بنك الأسئلة',
-    title: 'أسئلة الامتحان المختارة',
-    description: 'راجع الأسئلة التي اخترتها من البنك قبل المتابعة إلى الإعدادات.',
-    sectionTitle: 'الأسئلة المضافة للامتحان',
-  },
-  manual: {
-    eyebrow: 'إنشاء يدوي',
-    title: 'أسئلة الامتحان',
-    description: 'راجع الأسئلة التي أنشأتها يدوياً قبل المتابعة إلى الإعدادات.',
-    sectionTitle: 'الأسئلة المضافة للامتحان',
-  },
-  exam: {
-    eyebrow: 'إضافة الأسئلة',
-    title: 'أسئلة الامتحان',
-    description: 'راجع أسئلة الامتحان قبل المتابعة إلى الإعدادات.',
-    sectionTitle: 'الأسئلة المضافة للامتحان',
-  },
-}
-
-async function resolveBankById(bankId) {
-  if (!bankId) return null
-  try {
-    const data = await getQuestionBankById(bankId)
-    return data.question_bank || data
-  } catch {
-    return null
-  }
-}
-
-async function resolveBanksByIds(bankIds = []) {
-  const banks = await Promise.all(bankIds.map((bankId) => resolveBankById(bankId)))
-  return banks.filter(Boolean)
-}
+import ExamQuestionsMethodPicker from './addQuestions/ExamQuestionsMethodPicker'
+import { EXAM_QUESTIONS_REVIEW_COPY } from './addQuestions/examAddQuestionsConstants'
+import { restoreExamQuestionsProgress } from './addQuestions/restoreExamQuestionsProgress'
 
 function ExamAddQuestionsStep({
   test,
@@ -149,55 +64,42 @@ function ExamAddQuestionsStep({
 
     let cancelled = false
 
-    const restoreProgress = async () => {
-      const progress = getExamWizardProgress(testId)
-      const savedQuestions = progress?.questions
+    const applyRestore = async () => {
+      const result = await restoreExamQuestionsProgress({
+        testId,
+        hasQuestions: questions.length > 0,
+      })
 
-      if (!savedQuestions) {
-        if (questions.length > 0) {
-          setShowGeneratedView(true)
-          setReviewSource('exam')
-        }
-        setRestoring(false)
-        return
-      }
+      if (cancelled) return
 
-      switch (savedQuestions.view) {
-        case EXAM_QUESTIONS_VIEWS.REVIEW:
-          setReviewSource(savedQuestions.reviewSource || 'exam')
+      switch (result.kind) {
+        case 'review':
+          setReviewSource(result.reviewSource)
           setShowGeneratedView(true)
           break
-        case EXAM_QUESTIONS_VIEWS.FROM_BANK_QUESTIONS: {
-          const bank = await resolveBankById(savedQuestions.bankId)
-          if (!cancelled && bank) {
-            setSelectedFromBank(bank)
-            setFromBankSelectedIds(savedQuestions.selectedQuestionIds || [])
-            setActiveMethod('from-bank')
-          }
+        case 'from-bank':
+          setSelectedFromBank(result.bank)
+          setFromBankSelectedIds(result.selectedQuestionIds)
+          setActiveMethod('from-bank')
           break
-        }
-        case EXAM_QUESTIONS_VIEWS.MANUAL:
+        case 'manual':
           setShowManualView(true)
           setActiveMethod('manual')
           break
-        case EXAM_QUESTIONS_VIEWS.RANDOM_BLUEPRINT: {
-          const banks = await resolveBanksByIds(savedQuestions.bankIds || [])
-          if (!cancelled && banks.length) {
-            setBlueprintBanks(banks)
-            setRestoredBlueprints(savedQuestions.blueprints || null)
-            setActiveMethod('random')
-          }
+        case 'random-blueprint':
+          setBlueprintBanks(result.banks)
+          setRestoredBlueprints(result.blueprints)
+          setActiveMethod('random')
           break
-        }
-        case EXAM_QUESTIONS_VIEWS.METHOD_PICKER:
+        case 'idle':
         default:
           break
       }
 
-      if (!cancelled) setRestoring(false)
+      setRestoring(false)
     }
 
-    restoreProgress()
+    applyRestore()
 
     return () => {
       cancelled = true
@@ -209,15 +111,9 @@ function ExamAddQuestionsStep({
     return () => onBlueprintActiveChange?.(false)
   }, [subFlowActive, onBlueprintActiveChange])
 
-  const resolveGeneratedQuestions = async (nextQuestions) => {
+  const resolveGeneratedQuestions = (nextQuestions) => {
     if (nextQuestions?.length) return nextQuestions
-    if (!testId) return []
-    try {
-      const data = await getTestById(testId)
-      return (data.test || data).questions || []
-    } catch {
-      return []
-    }
+    return questions
   }
 
   const handleNext = () => {
@@ -225,8 +121,8 @@ function ExamAddQuestionsStep({
     onNext?.()
   }
 
-  const openGeneratedReview = async (source, nextQuestions) => {
-    const list = await resolveGeneratedQuestions(nextQuestions)
+  const openGeneratedReview = (source, nextQuestions) => {
+    const list = resolveGeneratedQuestions(nextQuestions)
     if (!list.length) return
     setGeneratedQuestions(list)
     setReviewSource(source)
@@ -266,7 +162,7 @@ function ExamAddQuestionsStep({
     })
   }
 
-  const reviewCopy = REVIEW_COPY[reviewSource] || REVIEW_COPY.exam
+  const reviewCopy = EXAM_QUESTIONS_REVIEW_COPY[reviewSource] || EXAM_QUESTIONS_REVIEW_COPY.exam
 
   if (restoring) {
     return (
@@ -322,7 +218,7 @@ function ExamAddQuestionsStep({
         }
         onSuccess={async () => {
           await onRefresh?.()
-          await openGeneratedReview('from-bank')
+          openGeneratedReview('from-bank')
         }}
       />
     )
@@ -346,7 +242,7 @@ function ExamAddQuestionsStep({
         onSuccess={onRefresh}
         onViewQuestions={async () => {
           await onRefresh?.()
-          await openGeneratedReview('manual')
+          openGeneratedReview('manual')
         }}
       />
     )
@@ -375,7 +271,7 @@ function ExamAddQuestionsStep({
             })
           }
           onSuccess={async (nextQuestions) => {
-            await openGeneratedReview('random', nextQuestions)
+            openGeneratedReview('random', nextQuestions)
           }}
         />
 
@@ -391,78 +287,26 @@ function ExamAddQuestionsStep({
   }
 
   return (
-    <div className="space-y-5">
-      <div className="rounded-2xl bg-white p-6 ring-1 ring-[#E5E9EB]">
-        <h2 className="text-xl font-extrabold text-[#2A3433]">إضافة الأسئلة</h2>
-        <p className="mt-1 text-sm text-[#64748B]">
-          اختر طريقة إضافة الأسئلة. يجب إضافة سؤال واحد على الأقل للمتابعة.
-        </p>
-
-        <div className="mt-5 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
-          {METHODS.map(({ id, title, description, icon: Icon, enabled, comingSoon }) => (
-            <button
-              key={id}
-              type="button"
-              disabled={!enabled}
-              onClick={() => enabled && setActiveMethod(id)}
-              className={`relative rounded-2xl border p-4 text-right transition ${
-                enabled
-                  ? 'border-[#E5E9EB] hover:border-[#2AA8A2] hover:bg-[#F8FDFC]'
-                  : 'cursor-not-allowed border-[#F1F5F9] bg-[#FAFBFC] opacity-70'
-              } ${activeMethod === id ? 'border-[#2AA8A2] bg-[#E8F7F6]' : ''}`}
-            >
-              {comingSoon ? (
-                <span className="absolute left-3 top-3 rounded-full bg-[#F1F5F9] px-2 py-0.5 text-[10px] font-bold text-[#94A3B8]">
-                  قريباً
-                </span>
-              ) : null}
-              <Icon className="h-6 w-6 text-[#2AA8A2]" />
-              <p className="mt-3 text-sm font-extrabold text-[#2A3433]">{title}</p>
-              <p className="mt-1 text-xs leading-5 text-[#64748B]">{description}</p>
-            </button>
-          ))}
-        </div>
-      </div>
-
-      <div className="flex justify-between">
-        <button
-          type="button"
-          onClick={onBack}
-          className="rounded-xl bg-[#F6F8F9] px-6 py-3 text-sm font-bold text-[#64748B]"
-        >
-          السابق
-        </button>
-        <button
-          type="button"
-          onClick={handleNext}
-          disabled={questions.length < 1}
-          className="rounded-xl bg-[#2AA8A2] px-6 py-3 text-sm font-bold text-white disabled:opacity-50"
-        >
-          التالي — الإعدادات
-        </button>
-      </div>
-
-      <AddRandomBanksModal
-        open={fromBankOpen}
-        subjectId={test?.subject_id}
-        selectionMode="single"
-        onClose={() => {
-          setFromBankOpen(false)
-          setActiveMethod(null)
-        }}
-        onBanksSelected={handleFromBankSelected}
-      />
-
-      <AddRandomBanksModal
-        open={randomOpen}
-        subjectId={test?.subject_id}
-        onClose={() => {
-          setRandomOpen(false)
-          setActiveMethod(null)
-        }}
-        onBanksSelected={handleBanksSelected}
-      />
-    </div>
+    <ExamQuestionsMethodPicker
+      test={test}
+      activeMethod={activeMethod}
+      onSelectMethod={setActiveMethod}
+      questionsCount={questions.length}
+      onBack={onBack}
+      onNext={handleNext}
+      fromBankOpen={fromBankOpen}
+      randomOpen={randomOpen}
+      onFromBankClose={() => {
+        setFromBankOpen(false)
+        setActiveMethod(null)
+      }}
+      onRandomClose={() => {
+        setRandomOpen(false)
+        setActiveMethod(null)
+      }}
+      onFromBankSelected={handleFromBankSelected}
+      onRandomBanksSelected={handleBanksSelected}
+    />
   )
 }
 

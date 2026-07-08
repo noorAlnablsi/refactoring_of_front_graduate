@@ -1,3 +1,17 @@
+export function getMembershipRoleLabel(membership) {
+  if (!membership) return ''
+
+  if (membership.role === 'STUDENT') return 'طالب'
+
+  if (membership.is_owner) return 'مالك'
+
+  if (membership.role === 'TEACHER') return 'معلم'
+
+  if (membership.role === 'ADMIN') return 'مدير'
+
+  return membership.role
+}
+
 export function getMembershipShortLabel(membership) {
   if (!membership) return ''
 

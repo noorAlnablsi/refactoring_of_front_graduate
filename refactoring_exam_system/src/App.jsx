@@ -15,6 +15,10 @@ import RegisterOtpPage from './pages/register/RegisterOtpPage'
 import RegisterSuccessPage from './pages/register/RegisterSuccessPage'
 import StudentRegisterPage from './pages/student/StudentRegisterPage'
 import StudentJoinCodePage from './pages/student/StudentJoinCodePage'
+import StudentDashboardPage from './pages/student/StudentDashboardPage'
+import StudentPlaceholderPage from './pages/student/StudentPlaceholderPage'
+import StudentDashboardGuard from './components/student/dashboard/StudentDashboardGuard'
+import StudentDashboardLayout from './components/student/dashboard/StudentDashboardLayout'
 import SubjectsPage from './pages/subjects/SubjectsPage'
 import SubjectDetailsPage from './pages/subjects/SubjectDetailsPage'
 import QuestionBanksPage from './pages/question-banks/QuestionBanksPage'
@@ -28,6 +32,10 @@ import ForgotPasswordPage from './pages/auth/ForgotPasswordPage'
 import ForgotPasswordOtpPage from './pages/auth/ForgotPasswordOtpPage'
 import ResetPasswordPage from './pages/auth/ResetPasswordPage'
 import ResetPasswordSuccessPage from './pages/auth/ResetPasswordSuccessPage'
+import SettingsPage from './pages/settings/SettingsPage'
+import ChangePasswordPage from './pages/settings/ChangePasswordPage'
+import CreateWorkspacePage from './pages/settings/CreateWorkspacePage'
+import MembersPage from './pages/members/MembersPage'
 import { ROUTES } from './constants/routes'
 
 function App() {
@@ -42,17 +50,21 @@ function App() {
       <Route path={ROUTES.WELCOME} element={<WelcomePage />} />
       <Route path={ROUTES.JOIN} element={<JoinPage />} />
       <Route path={ROUTES.PATH_SELECTION} element={<PathSelectionPage />} />
+      <Route path={ROUTES.SETTINGS_CREATE_WORKSPACE} element={<CreateWorkspacePage />} />
 
       <Route element={<DashboardGuard />}>
         <Route element={<DashboardLayout />}>
           <Route path={ROUTES.DASHBOARD} element={<DashboardPage />} />
           <Route path={ROUTES.SUBJECTS} element={<SubjectsPage />} />
           <Route path={`${ROUTES.SUBJECTS}/:id`} element={<SubjectDetailsPage />} />
+          <Route path={ROUTES.MEMBERS} element={<MembersPage />} />
           <Route path={ROUTES.QUESTION_BANKS} element={<QuestionBanksPage />} />
           <Route path={`${ROUTES.QUESTION_BANKS}/:id/editor`} element={<QuestionBankEditorPage />} />
           <Route path={ROUTES.EXAMS} element={<ExamsPage />} />
           <Route path={ROUTES.EXAM_CREATE} element={<ExamCreatePage />} />
           <Route path={ROUTES.EXAM_EDIT} element={<ExamWizardPage />} />
+          <Route path={ROUTES.SETTINGS} element={<SettingsPage />} />
+          <Route path={ROUTES.SETTINGS_CHANGE_PASSWORD} element={<ChangePasswordPage />} />
         </Route>
       </Route>
 
@@ -65,6 +77,39 @@ function App() {
 
       <Route path={ROUTES.STUDENT_REGISTER} element={<StudentRegisterPage />} />
       <Route path={ROUTES.STUDENT_JOIN_CODE} element={<StudentJoinCodePage />} />
+
+      <Route element={<StudentDashboardGuard />}>
+        <Route element={<StudentDashboardLayout />}>
+          <Route path={ROUTES.STUDENT_DASHBOARD} element={<StudentDashboardPage />} />
+          <Route
+            path={ROUTES.STUDENT_EXAMS}
+            element={
+              <StudentPlaceholderPage
+                title="الاختبارات"
+                description="ستجد هنا جميع اختباراتك المتاحة والقادمة والمكتملة."
+              />
+            }
+          />
+          <Route
+            path={ROUTES.STUDENT_RESULTS}
+            element={
+              <StudentPlaceholderPage
+                title="النتائج"
+                description="ستعرض هذه الصفحة نتائج اختباراتك وتفاصيل درجاتك."
+              />
+            }
+          />
+          <Route
+            path={ROUTES.STUDENT_SETTINGS}
+            element={
+              <StudentPlaceholderPage
+                title="الإعدادات"
+                description="إعدادات حساب الطالب والتفضيلات ستكون متاحة هنا قريباً."
+              />
+            }
+          />
+        </Route>
+      </Route>
 
       <Route path={ROUTES.INVITE_PREVIEW} element={<InvitePreviewPage />} />
       <Route path={ROUTES.INVITE_REGISTER} element={<InviteRegisterPage />} />

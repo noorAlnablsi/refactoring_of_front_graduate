@@ -1,4 +1,5 @@
 import { ArrowLeft, ArrowRight, Check, ClipboardList } from 'lucide-react'
+import ExamWizardFooter from './ExamWizardFooter'
 import { getDifficultyLabel } from '../../lib/questionBanks'
 
 const CHOICE_LETTERS = ['أ', 'ب', 'ج', 'د', 'هـ', 'و']
@@ -115,7 +116,7 @@ function ExamRandomGeneratedQuestionsPanel({
         </div>
       </div>
 
-      <div className="sticky bottom-0 z-10 -mx-1 mt-2 rounded-2xl border border-[#E5E9EB] bg-white/95 px-4 py-4 shadow-[0_-10px_30px_rgba(15,23,42,0.08)] backdrop-blur">
+      <ExamWizardFooter className="-mx-1 mt-2">
         <div className="flex flex-wrap items-center justify-between gap-3">
           <button
             type="button"
@@ -145,7 +146,7 @@ function ExamRandomGeneratedQuestionsPanel({
             </button>
           </div>
         </div>
-      </div>
+      </ExamWizardFooter>
     </div>
   )
 }

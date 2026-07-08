@@ -1,56 +1,16 @@
 import { useEffect, useState } from 'react'
 import { ArrowRight } from 'lucide-react'
 import QuestionBuilderForm from '../question-banks/editor/QuestionBuilderForm'
-import { isRichTextEmpty } from '../../lib/richText'
-import { validateQuestionChoiceRules } from '../../lib/questionBanks'
+import ExamWizardFooter from './ExamWizardFooter'
+import {
+  createDefaultExamQuestion,
+  normalizeManualQuestionForApi,
+  validateManualQuestionForExam,
+} from '../../lib/examQuestions'
+import { extractTopicsList } from '../../lib/subjectTopics'
 import { getSubjectTopics } from '../../services/subjects.service'
 import { addManualQuestions } from '../../services/tests.service'
 import { useToastStore } from '../../store/toastStore'
-
-function createDefaultQuestion() {
-  return {
-    body: '',
-    type_code: 'MCQ',
-    difficulty: 'EASY',
-    points: 1,
-    topic_id: '',
-    choices: [
-      { body: '', is_correct: true },
-      { body: '', is_correct: false },
-    ],
-  }
-}
-
-function normalizeQuestionForApi(question) {
-  const payload = {
-    body: question.body.trim(),
-    type_code: question.type_code,
-    difficulty: question.difficulty,
-    points: Number(question.points) || 1,
-  }
-
-  if (question.type_code !== 'ESSAY') {
-    payload.choices = question.choices.map((choice) => ({
-      body: choice.body.trim(),
-      is_correct: Boolean(choice.is_correct),
-    }))
-  }
-
-  if (question.topic_id) {
-    payload.topic_id = Number(question.topic_id)
-  }
-
-  return payload
-}
-
-function extractTopicsList(payload) {
-  if (Array.isArray(payload)) return payload
-  if (!payload || typeof payload !== 'object') return []
-  if (Array.isArray(payload.topics)) return payload.topics
-  if (Array.isArray(payload.subject_topics)) return payload.subject_topics
-  if (Array.isArray(payload.data)) return payload.data
-  return []
-}
 
 function ExamManualQuestionsPanel({
   test,
@@ -62,7 +22,7 @@ function ExamManualQuestionsPanel({
   savingDraft = false,
 }) {
   const showToast = useToastStore((s) => s.showToast)
-  const [draft, setDraft] = useState(createDefaultQuestion())
+  const [draft, setDraft] = useState(createDefaultExamQuestion)
   const [topics, setTopics] = useState([])
   const [submitting, setSubmitting] = useState(false)
 
@@ -87,28 +47,11 @@ function ExamManualQuestionsPanel({
   }, [test?.subject_id])
 
   const validate = () => {
-    if (isRichTextEmpty(draft.body)) {
-      showToast('نص السؤال مطلوب', 'error')
-      return false
-    }
-    if (!draft.points || Number(draft.points) < 1) {
-      showToast('العلامة يجب أن تكون أكبر من 0', 'error')
-      return false
-    }
-    if (draft.type_code !== 'ESSAY') {
-      const hasEmptyChoice = draft.choices.some((choice) => !choice.body.trim())
-      if (hasEmptyChoice) {
-        showToast('جميع الخيارات مطلوبة', 'error')
-        return false
-      }
-      const choiceError = validateQuestionChoiceRules(draft.type_code, draft.choices)
-      if (choiceError) {
-        showToast(choiceError, 'error')
-        return false
-      }
-    }
-    if (topics.length > 0 && !draft.topic_id) {
-      showToast('اختر المحور للسؤال', 'error')
+    const error = validateManualQuestionForExam(draft, {
+      requireTopic: topics.length > 0,
+    })
+    if (error) {
+      showToast(error, 'error')
       return false
     }
     return true
@@ -119,11 +62,11 @@ function ExamManualQuestionsPanel({
     setSubmitting(true)
     try {
       await addManualQuestions(testId, {
-        questions: [normalizeQuestionForApi(draft)],
+        questions: [normalizeManualQuestionForApi(draft)],
       })
       showToast('تمت إضافة السؤال')
       if (resetAfter) {
-        setDraft(createDefaultQuestion())
+        setDraft(createDefaultExamQuestion())
       }
       await onSuccess?.()
     } catch (err) {
@@ -154,7 +97,7 @@ function ExamManualQuestionsPanel({
         topics={topics}
       />
 
-      <div className="sticky bottom-0 z-10 -mx-1 rounded-2xl border border-[#E5E9EB] bg-white/95 px-4 py-4 shadow-[0_-10px_30px_rgba(15,23,42,0.08)] backdrop-blur">
+      <ExamWizardFooter className="-mx-1">
         <div className="flex flex-wrap items-center justify-between gap-3">
           <button
             type="button"
@@ -185,7 +128,7 @@ function ExamManualQuestionsPanel({
             ) : null}
           </div>
         </div>
-      </div>
+      </ExamWizardFooter>
 
       {submitting ? (
         <p className="text-xs text-[#94A3B8]">جاري الحفظ...</p>

@@ -20,7 +20,7 @@ function DashboardGuard() {
     return <Navigate to={ROUTES.LOGIN} replace state={{ redirectTo: location.pathname }} />
   }
 
-  if (memberships.length > 1 && !useAuthStore.getState().selected_membership_id) {
+  if (memberships.length > 0 && !useAuthStore.getState().selected_membership_id) {
     return <Navigate to={ROUTES.PATH_SELECTION} replace />
   }
 

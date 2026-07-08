@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useState } from 'react'
 import { ArrowRight, Check, Plus, Search } from 'lucide-react'
+import ExamWizardFooter from './ExamWizardFooter'
 import {
   getDifficultyLabel,
   getQuestionTypeLabel,
@@ -275,7 +276,7 @@ function ExamPickBankQuestionsPanel({
         </div>
       )}
 
-      <div className="sticky bottom-0 z-10 -mx-1 mt-2 rounded-2xl border border-[#E5E9EB] bg-white/95 px-4 py-4 shadow-[0_-10px_30px_rgba(15,23,42,0.08)] backdrop-blur">
+      <ExamWizardFooter className="-mx-1 mt-2">
         <div className="flex flex-wrap items-center justify-between gap-4">
           <button
             type="button"
@@ -312,7 +313,7 @@ function ExamPickBankQuestionsPanel({
             </button>
           </div>
         </div>
-      </div>
+      </ExamWizardFooter>
     </div>
   )
 }

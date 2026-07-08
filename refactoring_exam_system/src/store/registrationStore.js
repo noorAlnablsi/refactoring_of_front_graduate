@@ -1,5 +1,5 @@
 import { create } from 'zustand'
-import { WORKSPACE_KIND } from '../constants/auth'
+import { resolveWorkspaceName } from '../lib/workspaceName'
 
 const initialState = {
   registration_flow: null,
@@ -37,8 +37,9 @@ export const useRegistrationStore = create((set) => ({
 }))
 
 export function getWorkspaceNameForRegister(state) {
-  if (state.workspace_kind === WORKSPACE_KIND.SOLO) {
-    return state.full_name.trim()
-  }
-  return state.workspace_name.trim()
+  return resolveWorkspaceName({
+    kind: state.workspace_kind,
+    fullName: state.full_name,
+    workspaceName: state.workspace_name,
+  })
 }

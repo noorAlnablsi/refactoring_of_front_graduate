@@ -10,6 +10,11 @@ export async function getMyTests() {
   return data
 }
 
+export async function getAvailableTests() {
+  const { data } = await api.get('/tests/available')
+  return data
+}
+
 export async function getTestById(testId) {
   const { data } = await api.get(`/tests/${testId}`)
   return data

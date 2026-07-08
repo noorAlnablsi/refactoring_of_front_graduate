@@ -33,7 +33,31 @@ export const useAuthStore = create(
           user: user ?? state.user,
         })),
 
-      setSelectedMembership: (selected_membership_id) => set({ selected_membership_id }),
+      updateUser: (user) =>
+        set((state) => ({
+          user: state.user ? { ...state.user, ...user } : user,
+        })),
+
+      updateMembershipWorkspace: (workspaceId, patch) =>
+        set((state) => ({
+          memberships: state.memberships.map((membership) =>
+            membership.workspace?.id === workspaceId
+              ? { ...membership, workspace: { ...membership.workspace, ...patch } }
+              : membership,
+          ),
+        })),
+
+      setSelectedMembership: (selected_membership_id) =>
+        set({
+          selected_membership_id,
+          requires_workspace_selection: false,
+        }),
+
+      exitCurrentSession: () =>
+        set((state) => ({
+          selected_membership_id: null,
+          requires_workspace_selection: state.memberships.length > 0,
+        })),
 
       appendMembership: (membership) =>
         set((state) => {

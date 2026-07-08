@@ -99,7 +99,7 @@ function CommunityQuestionBankCard({ bank, onEdit, onDelete, onOpenEditor }) {
       }}
       className={`flex cursor-pointer flex-col overflow-hidden rounded-xl bg-white transition active:scale-[0.995] ${communityQuestionBankCardClassName} ${cardShadow} ${cardShadowHover}`}
     >
-      <div className="h-2 shrink-0" style={{ backgroundColor: theme.accent }} aria-hidden="true" />
+      <div className="h-3 shrink-0" style={{ backgroundColor: theme.accent }} aria-hidden="true" />
 
       <div className="flex flex-1 flex-col p-5">
         <div className="flex items-start justify-between gap-2">

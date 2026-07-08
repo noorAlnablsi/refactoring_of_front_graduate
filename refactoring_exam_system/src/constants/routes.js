@@ -6,10 +6,14 @@ export const ROUTES = {
   DASHBOARD: '/dashboard',
   PATH_SELECTION: '/path-selection',
   SUBJECTS: '/subjects',
+  MEMBERS: '/members',
   QUESTION_BANKS: '/question-banks',
   EXAMS: '/exams',
   EXAM_CREATE: '/exams/new',
   EXAM_EDIT: '/exams/:id/edit',
+  SETTINGS: '/settings',
+  SETTINGS_CHANGE_PASSWORD: '/settings/change-password',
+  SETTINGS_CREATE_WORKSPACE: '/settings/create-workspace',
 
   REGISTER: '/register',
   REGISTER_SELECT_ROLE: '/register/select-role',
@@ -25,6 +29,10 @@ export const ROUTES = {
 
   STUDENT_REGISTER: '/student/register',
   STUDENT_JOIN_CODE: '/student/join-code',
+  STUDENT_DASHBOARD: '/student/dashboard',
+  STUDENT_EXAMS: '/student/exams',
+  STUDENT_RESULTS: '/student/results',
+  STUDENT_SETTINGS: '/student/settings',
 
   INVITE_PREVIEW: '/invites/:token',
   INVITE_REGISTER: '/invites/:token/register',

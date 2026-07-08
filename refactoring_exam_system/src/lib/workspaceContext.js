@@ -16,6 +16,14 @@ export function canAccessDashboard() {
   return membership.role !== 'STUDENT'
 }
 
+export function isStudentMembership(membership = getActiveMembership()) {
+  return membership?.role === 'STUDENT'
+}
+
+export function canAccessStudentDashboard() {
+  return isStudentMembership()
+}
+
 export function canAccessQuestionBanks() {
   const { user } = useAuthStore.getState()
   const membership = getActiveMembership()
@@ -30,6 +38,13 @@ export function canAccessSubjectsModule() {
   if (membership.role === 'STUDENT') return false
   if (membership.workspace?.kind === 'INSTITUTION' && membership.role === 'TEACHER') return false
   return true
+}
+
+export function canAccessMembersModule() {
+  const membership = getActiveMembership()
+  if (!membership) return false
+  if (membership.role === 'STUDENT') return false
+  return membership.is_owner || membership.role === 'ADMIN'
 }
 
 export function canCreateSubject() {
@@ -68,6 +83,14 @@ export function canAccessExams() {
 
 export function canCreateExam() {
   return canAccessExams()
+}
+
+export function isInstitutionOwner(membership = getActiveMembership()) {
+  return membership?.workspace?.kind === 'INSTITUTION' && Boolean(membership?.is_owner)
+}
+
+export function isSoloTeacher(membership = getActiveMembership()) {
+  return membership?.workspace?.kind === 'SOLO'
 }
 
 export function canManageSubjectTopics() {

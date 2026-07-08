@@ -5,11 +5,7 @@ import {
   formatBankQuestionsCount,
   ownedQuestionBankCardClassName,
 } from '../../lib/questionBanks'
-
-const cardShadow =
-  'shadow-[0_1px_3px_rgba(16,24,40,0.06),0_1px_2px_rgba(16,24,40,0.04)]'
-const cardShadowHover =
-  'hover:shadow-[0_4px_12px_rgba(16,24,40,0.08),0_2px_4px_rgba(16,24,40,0.04)]'
+import { shellCardInteractiveClass } from '../../lib/shellUi'
 
 function QuestionBankCard({ bank, canManage = false, onEdit, onDelete, onOpenEditor }) {
   const [menuOpen, setMenuOpen] = useState(false)
@@ -45,10 +41,10 @@ function QuestionBankCard({ bank, canManage = false, onEdit, onDelete, onOpenEdi
           onOpenEditor(bank)
         }
       }}
-      className={`flex cursor-pointer flex-col overflow-hidden rounded-xl bg-white transition active:scale-[0.995] ${ownedQuestionBankCardClassName} ${cardShadow} ${cardShadowHover}`}
+      className={`flex cursor-pointer flex-col overflow-hidden transition active:scale-[0.995] ${ownedQuestionBankCardClassName} ${shellCardInteractiveClass}`}
     >
       <div
-        className="h-1 bg-gradient-to-r from-[#A7E3DA] to-[#22C1A3]"
+        className="h-3 shrink-0 bg-gradient-to-r from-[#A7E3DA] to-[#22C1A3]"
         aria-hidden="true"
       />
 

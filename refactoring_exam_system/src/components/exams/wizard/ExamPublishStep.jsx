@@ -1,6 +1,5 @@
 import { useMemo, useState } from 'react'
 import {
-  ArrowLeft,
   ArrowRight,
   CalendarClock,
   Copy,
@@ -9,7 +8,9 @@ import {
   Search,
   Users,
 } from 'lucide-react'
-import { getTestId } from '../../../lib/testModel'
+import ExamWizardFooter from '../ExamWizardFooter'
+import WizardSection from '../WizardSection'
+import { getExamShareLink } from '../../../lib/testDisplay'
 import { useToastStore } from '../../../store/toastStore'
 
 const inputClassName =
@@ -21,28 +22,6 @@ const PLACEHOLDER_GROUPS = [
   { id: 'science-b', name: 'قسم العلمي - شعبة ب', students: 38 },
   { id: 'late', name: 'الطلاب المتأخرين', students: 8 },
 ]
-
-function getExamShareLink(test) {
-  if (test?.share_url) return test.share_url
-  if (test?.public_url) return test.public_url
-
-  const testId = getTestId(test)
-  const slug = test?.slug
-  const path = slug ? `/exams/${slug}` : testId ? `/exams/${testId}` : '/exams'
-  return `${window.location.origin}${path}`
-}
-
-function PublishSection({ icon: Icon, title, children }) {
-  return (
-    <section className="rounded-2xl bg-white p-6 ring-1 ring-[#E5E9EB]">
-      <div className="mb-5 flex items-center gap-2">
-        {Icon ? <Icon className="h-5 w-5 text-[#2AA8A2]" strokeWidth={2.2} /> : null}
-        <h3 className="text-base font-extrabold text-[#2A3433]">{title}</h3>
-      </div>
-      {children}
-    </section>
-  )
-}
 
 function GroupCard({ group, checked, onToggle }) {
   return (
@@ -137,7 +116,7 @@ function ExamPublishStep({
         </p>
       </header>
 
-      <PublishSection icon={CalendarClock} title="جدولة النشر">
+      <WizardSection icon={CalendarClock} title="جدولة النشر">
         <p className="text-sm leading-7 text-[#64748B]">
           سيتم إرسال رابط الاختبار إلى الطلاب عبر الإيميل بالوقت الذي تحدده.
         </p>
@@ -164,9 +143,9 @@ function ExamPublishStep({
         </div>
 
         <p className="mt-3 text-xs text-[#94A3B8]">* اترك الحقول فارغة للنشر الفوري.</p>
-      </PublishSection>
+      </WizardSection>
 
-      <PublishSection icon={Link2} title="خيارات المشاركة">
+      <WizardSection icon={Link2} title="خيارات المشاركة">
         <label className="mb-2 block text-xs font-semibold text-[#94A3B8]">
           رابط مباشر للاختبار
         </label>
@@ -186,9 +165,9 @@ function ExamPublishStep({
             نسخ
           </button>
         </div>
-      </PublishSection>
+      </WizardSection>
 
-      <PublishSection icon={Users} title="إرسال للمجموعات">
+      <WizardSection icon={Users} title="إرسال للمجموعات">
         <div className="relative mb-4">
           <Search className="pointer-events-none absolute right-4 top-1/2 h-4 w-4 -translate-y-1/2 text-[#94A3B8]" />
           <input
@@ -210,9 +189,9 @@ function ExamPublishStep({
             />
           ))}
         </div>
-      </PublishSection>
+      </WizardSection>
 
-      <div className="sticky bottom-0 z-10 -mx-1 rounded-2xl border border-[#E5E9EB] bg-white/95 px-4 py-4 shadow-[0_-10px_30px_rgba(15,23,42,0.08)] backdrop-blur">
+      <ExamWizardFooter className="-mx-1">
         <div className="flex flex-wrap items-center justify-between gap-3">
           <button
             type="button"
@@ -241,7 +220,7 @@ function ExamPublishStep({
             <Rocket className="h-4 w-4" />
           </button>
         </div>
-      </div>
+      </ExamWizardFooter>
     </form>
   )
 }

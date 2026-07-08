@@ -10,6 +10,7 @@ import QuestionBuilderForm from '../../components/question-banks/editor/Question
 import QuestionsList from '../../components/question-banks/editor/QuestionsList'
 import { parseApiError } from '../../lib/apiError'
 import { ROUTES } from '../../constants/routes'
+import { extractTopicsList } from '../../lib/subjectTopics'
 import { canAccessQuestionBanks, canEditQuestionBank, isQuestionBankOwner } from '../../lib/workspaceContext'
 import { isRichTextEmpty } from '../../lib/richText'
 import {
@@ -61,18 +62,6 @@ function normalizeQuestionForApi(question) {
   }
 
   return payload
-}
-
-function extractTopicsList(payload) {
-  if (Array.isArray(payload)) return payload
-  if (!payload || typeof payload !== 'object') return []
-
-  if (Array.isArray(payload.topics)) return payload.topics
-  if (Array.isArray(payload.subject_topics)) return payload.subject_topics
-  if (Array.isArray(payload.data)) return payload.data
-  if (Array.isArray(payload.items)) return payload.items
-
-  return []
 }
 
 function QuestionBankEditorPage() {

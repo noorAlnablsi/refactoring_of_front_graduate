@@ -1,4 +1,10 @@
 import { AlertTriangle } from 'lucide-react'
+import {
+  shellBodyTextClass,
+  shellModalOverlayClass,
+  shellModalPanelClass,
+  shellPageTitleClass,
+} from '../../lib/shellUi'
 
 function SoftDeleteConfirmDialog({
   open,
@@ -11,28 +17,32 @@ function SoftDeleteConfirmDialog({
   if (!open) return null
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/45 p-4">
-      <div dir="rtl" className="w-full max-w-md rounded-2xl bg-white p-6 shadow-xl">
+    <div className={shellModalOverlayClass}>
+      <div dir="rtl" className={`max-w-md ${shellModalPanelClass}`}>
         <div className="flex items-start gap-3">
-          <span className="mt-1 rounded-full bg-red-50 p-2 text-red-600">
+          <span className="mt-1 rounded-full bg-[var(--shell-danger-bg)] p-2 text-[var(--shell-danger-text)]">
             <AlertTriangle className="h-5 w-5" />
           </span>
           <div>
-            <h3 className="text-lg font-extrabold text-[#2A3433]">تأكيد الحذف</h3>
-            <p className="mt-2 text-sm leading-7 text-[#374151]">هل أنت متأكد من الحذف؟</p>
+            <h3 className={`text-lg ${shellPageTitleClass}`}>تأكيد الحذف</h3>
+            <p className={`mt-2 text-sm leading-7 ${shellBodyTextClass}`}>هل أنت متأكد من الحذف؟</p>
             {itemName ? (
-              <p className="mt-2 text-sm leading-7 text-[#64748B]">
-                {itemLabel}: <span className="font-bold text-[#2A3433]">{itemName}</span>
+              <p className={`mt-2 text-sm leading-7 ${shellBodyTextClass}`}>
+                {itemLabel}: <span className={`font-bold ${shellPageTitleClass}`}>{itemName}</span>
               </p>
             ) : null}
-            <p className="mt-3 rounded-xl bg-[#F8FAFB] px-3 py-2 text-xs leading-6 text-[#64748B]">
+            <p className={`mt-3 rounded-xl bg-[var(--shell-input-bg)] px-3 py-2 text-xs leading-6 ${shellBodyTextClass}`}>
               يمكن استعادة البيانات المحذوفة عند التواصل مع خدمة العملاء.
             </p>
           </div>
         </div>
 
         <div className="mt-7 flex items-center justify-end gap-3">
-          <button type="button" onClick={onClose} className="text-sm font-bold text-[#2AA8A2]">
+          <button
+            type="button"
+            onClick={onClose}
+            className="text-sm font-bold text-[var(--shell-accent)]"
+          >
             إلغاء
           </button>
           <button

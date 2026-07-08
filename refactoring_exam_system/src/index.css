@@ -1,6 +1,58 @@
 @import 'tailwindcss';
 
+@custom-variant dark (&:where(.dark, .dark *));
+
 @layer base {
+  :root {
+    --shell-bg: #f6f8f9;
+    --shell-surface: #ffffff;
+    --shell-border: #e5e9eb;
+    --shell-text: #1f2533;
+    --shell-text-muted: #64748b;
+    --shell-text-subtle: #94a3b8;
+    --shell-hover: #eef2f3;
+    --shell-accent-bg: #e8f7f6;
+    --shell-accent-bg-strong: #d4f3ef;
+    --shell-accent: #2aa8a2;
+    --shell-input-bg: #f6f8f9;
+    --shell-search-bg: #f1f5f9;
+    --shell-elevated: #ffffff;
+    --shell-brand-bg: #d1fae5;
+    --shell-shadow-sm: 0 1px 3px rgba(16, 24, 40, 0.06), 0 1px 2px rgba(16, 24, 40, 0.04);
+    --shell-shadow: 0 8px 24px rgba(15, 23, 42, 0.08);
+    --shell-shadow-accent: 0 8px 16px rgba(42, 168, 162, 0.22);
+    --shell-danger-bg: #fef2f2;
+    --shell-danger-text: #dc2626;
+    --shell-info-bg: #eff6ff;
+    --shell-info-text: #3b82f6;
+    --shell-accent-contrast: #ffffff;
+  }
+
+  .dark {
+    --shell-bg: #0a0e14;
+    --shell-surface: #111827;
+    --shell-border: #1f2937;
+    --shell-text: #f9fafb;
+    --shell-text-muted: #9ca3af;
+    --shell-text-subtle: #6b7280;
+    --shell-hover: #1f2937;
+    --shell-accent-bg: rgba(45, 212, 191, 0.12);
+    --shell-accent-bg-strong: rgba(45, 212, 191, 0.2);
+    --shell-accent: #2dd4bf;
+    --shell-input-bg: #1a2230;
+    --shell-search-bg: #0f1724;
+    --shell-elevated: #1a2230;
+    --shell-brand-bg: rgba(45, 212, 191, 0.16);
+    --shell-shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.45), 0 0 0 1px rgba(255, 255, 255, 0.04);
+    --shell-shadow: 0 16px 48px rgba(0, 0, 0, 0.55);
+    --shell-shadow-accent: 0 10px 28px rgba(45, 212, 191, 0.2);
+    --shell-danger-bg: #451a1a;
+    --shell-danger-text: #fca5a5;
+    --shell-info-bg: rgba(59, 130, 246, 0.14);
+    --shell-info-text: #93c5fd;
+    --shell-accent-contrast: #0f172a;
+  }
+
   html {
     font-family: 'Cairo', 'Tajawal', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI',
       sans-serif;
@@ -9,10 +61,19 @@
 
   body {
     margin: 0;
-    background-color: #f3f5f6;
+    background-color: var(--shell-bg);
+    color: var(--shell-text);
   }
 
   * {
     box-sizing: border-box;
   }
 }
+
+@layer components {
+  [data-app-shell='dashboard'] .shell-skeleton {
+    background-color: var(--shell-hover);
+  }
+}
+
+@import './styles/dashboard-dark.css';

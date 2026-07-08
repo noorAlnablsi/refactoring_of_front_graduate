@@ -1,4 +1,5 @@
 import { TEST_STATUS, TEST_TABS } from '../constants/tests'
+import { getTestId } from './testModel'
 
 export const TEST_STATUS_LABELS = {
   [TEST_STATUS.DRAFT]: 'مسودة',
@@ -91,4 +92,14 @@ export function getSourceTypeLabel(sourceType) {
     RANDOM_FROM_BANK: 'عشوائي من بنك',
   }
   return map[sourceType] || sourceType || '—'
+}
+
+export function getExamShareLink(test) {
+  if (test?.share_url) return test.share_url
+  if (test?.public_url) return test.public_url
+
+  const testId = getTestId(test)
+  const slug = test?.slug
+  const path = slug ? `/exams/${slug}` : testId ? `/exams/${testId}` : '/exams'
+  return `${window.location.origin}${path}`
 }

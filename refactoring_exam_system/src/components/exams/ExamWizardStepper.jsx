@@ -13,23 +13,27 @@ function ExamWizardStepper({ currentStep }) {
             <div
               className={`flex h-8 w-8 items-center justify-center rounded-full text-xs font-bold ${
                 isActive
-                  ? 'bg-[#2AA8A2] text-white'
+                  ? 'bg-[var(--shell-accent)] text-[#0f172a]'
                   : isDone
-                    ? 'bg-[#E8F7F6] text-[#2AA8A2]'
-                    : 'bg-[#F1F5F9] text-[#94A3B8]'
+                    ? 'bg-[var(--shell-accent-bg)] text-[var(--shell-accent)]'
+                    : 'bg-[var(--shell-hover)] text-[var(--shell-text-subtle)]'
               }`}
             >
               {step}
             </div>
             <span
               className={`hidden text-sm font-semibold sm:inline ${
-                isActive ? 'text-[#2AA8A2]' : isDone ? 'text-[#2A3433]' : 'text-[#94A3B8]'
+                isActive
+                  ? 'text-[var(--shell-accent)]'
+                  : isDone
+                    ? 'text-[var(--shell-text)]'
+                    : 'text-[var(--shell-text-subtle)]'
               }`}
             >
               {label}
             </span>
             {step < TEST_WIZARD_STEP_LABELS.length ? (
-              <span className="mx-1 hidden h-px w-6 bg-[#E5E9EB] md:block" />
+              <span className="mx-1 hidden h-px w-6 bg-[var(--shell-border)] md:block" />
             ) : null}
           </div>
         )

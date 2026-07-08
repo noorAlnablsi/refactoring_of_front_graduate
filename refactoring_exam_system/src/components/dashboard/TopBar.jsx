@@ -10,17 +10,17 @@ function TopBar({ searchPlaceholder = 'البحث في المنصة...' }) {
   const roleLabel = getMembershipShortLabel(membership)
 
   return (
-    <header className="flex h-16 shrink-0 items-center bg-white px-[37px]">
+    <header className="flex h-16 shrink-0 items-center bg-[var(--shell-surface)] px-[37px]">
       <div dir="ltr" className="flex w-full items-center gap-6">
         <div className="flex shrink-0 items-center gap-4">
           <div className="flex items-center gap-2">
             <UserAvatar user={user} size="xs" rounded />
             <div className="text-left">
-              <p className="truncate text-sm font-medium leading-tight text-[#2AA8A2]">
+              <p className="truncate text-sm font-medium leading-tight text-[var(--shell-accent)]">
                 {user?.full_name || 'مستخدم'}
               </p>
               {roleLabel ? (
-                <p className="mt-0.5 truncate text-xs font-normal leading-tight text-[#6B7280]">
+                <p className="mt-0.5 truncate text-xs font-normal leading-tight text-[var(--shell-text-muted)]">
                   {roleLabel}
                 </p>
               ) : null}
@@ -29,7 +29,7 @@ function TopBar({ searchPlaceholder = 'البحث في المنصة...' }) {
 
           <button
             type="button"
-            className="relative flex shrink-0 items-center justify-center text-[#6B7280]"
+            className="relative flex shrink-0 items-center justify-center text-[var(--shell-text-muted)]"
             aria-label="مساعدة"
           >
             <HelpCircle className="h-[18px] w-[18px]" strokeWidth={1.9} />
@@ -37,7 +37,7 @@ function TopBar({ searchPlaceholder = 'البحث في المنصة...' }) {
 
           <button
             type="button"
-            className="relative flex shrink-0 items-center justify-center text-[#6B7280]"
+            className="relative flex shrink-0 items-center justify-center text-[var(--shell-text-muted)]"
             aria-label="إشعارات"
           >
             <Bell className="h-[18px] w-[18px]" strokeWidth={1.9} />
@@ -48,14 +48,14 @@ function TopBar({ searchPlaceholder = 'البحث في المنصة...' }) {
         <div className="flex min-w-0 flex-1 justify-end">
           <div className="relative w-full max-w-[609px]">
             <Search
-              className="pointer-events-none absolute right-3 top-1/2 h-4 w-4 -translate-y-1/2 text-[#9CA3AF]"
+              className="pointer-events-none absolute right-3 top-1/2 h-4 w-4 -translate-y-1/2 text-[var(--shell-text-subtle)]"
               strokeWidth={2}
             />
             <input
               type="search"
               dir="rtl"
               placeholder={searchPlaceholder}
-              className="h-9 w-full rounded-full border-0 bg-[#F1F5F9] pt-[3px] pr-10 pb-1 pl-4 text-sm text-[#374151] outline-none placeholder:text-sm placeholder:text-[#9CA3AF] focus:ring-2 focus:ring-[#2AA8A2]/25"
+              className="h-9 w-full rounded-full border-0 bg-[var(--shell-search-bg)] pt-[3px] pr-10 pb-1 pl-4 text-sm text-[var(--shell-text)] outline-none placeholder:text-sm placeholder:text-[var(--shell-text-subtle)] focus:ring-2 focus:ring-[var(--shell-accent)]/25"
             />
           </div>
         </div>

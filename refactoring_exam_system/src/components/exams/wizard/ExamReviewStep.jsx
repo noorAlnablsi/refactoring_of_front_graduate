@@ -1,4 +1,5 @@
 import { ArrowLeft, ArrowRight, ClipboardList } from 'lucide-react'
+import ExamWizardFooter from '../ExamWizardFooter'
 import { getTestQuestionsCount, getTestTotalPoints } from '../../../lib/testDisplay'
 import { getTestName } from '../../../lib/testModel'
 import ExamRandomGeneratedQuestionsPanel from '../ExamRandomGeneratedQuestionsPanel'
@@ -58,7 +59,7 @@ function ExamReviewStep({ test, onNext, onBack, onSaveDraft, savingDraft = false
           savingDraft={savingDraft}
         />
       ) : (
-        <div className="sticky bottom-0 z-10 rounded-2xl border border-[#E5E9EB] bg-white/95 px-4 py-4 shadow-[0_-10px_30px_rgba(15,23,42,0.08)] backdrop-blur">
+        <ExamWizardFooter>
           <div className="flex flex-wrap items-center justify-between gap-3">
             <button
               type="button"
@@ -85,7 +86,7 @@ function ExamReviewStep({ test, onNext, onBack, onSaveDraft, savingDraft = false
               <ArrowLeft className="h-4 w-4" />
             </button>
           </div>
-        </div>
+        </ExamWizardFooter>
       )}
     </div>
   )

@@ -14,7 +14,7 @@ import QuestionBanksSkeleton from '../../components/question-banks/QuestionBanks
 import { ROUTES } from '../../constants/routes'
 import { useCommunityBanksView } from '../../hooks/question-banks/useCommunityBanksView'
 import { useQuestionBanks } from '../../hooks/question-banks/useQuestionBanks'
-import { getQuestionBanksListPath, parseQuestionBanksTab, QUESTION_BANK_TABS } from '../../lib/questionBanks'
+import { parseQuestionBanksTab, QUESTION_BANK_TABS } from '../../lib/questionBanks'
 import {
   canAccessQuestionBanks,
   canEditQuestionBank,
@@ -23,6 +23,17 @@ import {
 } from '../../lib/workspaceContext'
 import { archiveQuestionBank } from '../../services/questionBanks.service'
 import { useToastStore } from '../../store/toastStore'
+import {
+  shellAccentButtonClass,
+  shellBodyTextClass,
+  shellCardClass,
+  shellPageEyebrowClass,
+  shellPageTitleClass,
+  shellSearchInputClass,
+  shellTabButtonClass,
+  shellTabIndicatorClass,
+  shellTabsBarClass,
+} from '../../lib/shellUi'
 
 const TABS = [
   { id: QUESTION_BANK_TABS.MY, label: 'بنوكي' },
@@ -115,54 +126,50 @@ function QuestionBanksPage() {
     <div className="space-y-6">
       <div className="flex flex-wrap items-start justify-between gap-4">
         <div>
-          <p className="text-sm font-bold text-[#2AA8A2]">المشروع الأكاديمي</p>
-          <h1 className="mt-1 text-4xl font-extrabold text-[#2A3433]">بنوك الأسئلة</h1>
-          <p className="mt-2 text-sm text-[#64748B]">
+          <p className={shellPageEyebrowClass}>المشروع الأكاديمي</p>
+          <h1 className={`mt-1 text-4xl ${shellPageTitleClass}`}>بنوك الأسئلة</h1>
+          <p className={`mt-2 ${shellBodyTextClass}`}>
             قم ببناء مستودع أكاديمي شامل من خلال تحديد المعلومات الأساسية وإضافة أسئلة متنوعة لتقييم طلابك.
           </p>
         </div>
         <button
           type="button"
           onClick={() => setCreateOpen(true)}
-          className="inline-flex items-center gap-2 rounded-xl bg-[#2AA8A2] px-5 py-3 text-sm font-bold text-white shadow-[0_8px_16px_rgba(42,168,162,0.22)]"
+          className={shellAccentButtonClass}
         >
           <Plus className="h-4 w-4" />
           إضافة بنك جديد
         </button>
       </div>
 
-      <div className="flex items-center gap-6 border-b border-[#E5E9EB]">
+      <div className={shellTabsBarClass}>
         {visibleTabs.map((tab) => (
           <button
             key={tab.id}
             type="button"
             onClick={() => handleTabChange(tab.id)}
-            className={`relative pb-3 text-sm font-bold ${
-              activeTab === tab.id ? 'text-[#2AA8A2]' : 'text-[#64748B]'
-            }`}
+            className={shellTabButtonClass(activeTab === tab.id)}
           >
             {tab.label}
             {activeTab === tab.id && !loading ? (
-              <span className="mr-2 rounded-full bg-[#E8F7F6] px-2 py-0.5 text-xs text-[#2AA8A2]">
+              <span className="mr-2 rounded-full bg-[var(--shell-accent-bg)] px-2 py-0.5 text-xs text-[var(--shell-accent)]">
                 {banks.length}
               </span>
             ) : null}
-            {activeTab === tab.id ? (
-              <span className="absolute inset-x-0 bottom-0 h-0.5 rounded-full bg-[#2AA8A2]" />
-            ) : null}
+            {activeTab === tab.id ? <span className={shellTabIndicatorClass} /> : null}
           </button>
         ))}
       </div>
 
-      <div className="flex flex-wrap items-center justify-between gap-3 rounded-2xl bg-white p-4 ring-1 ring-[#E5E9EB]">
+      <div className={`p-4 ${shellCardClass}`}>
         <div className="relative w-full max-w-md">
-          <Search className="absolute right-3 top-1/2 h-4 w-4 -translate-y-1/2 text-[#94A3B8]" />
+          <Search className="pointer-events-none absolute right-3 top-1/2 h-4 w-4 -translate-y-1/2 text-[var(--shell-text-subtle)]" />
           <input
             type="search"
             value={search}
             onChange={(event) => setSearch(event.target.value)}
             placeholder="البحث في البنوك..."
-            className="h-11 w-full rounded-xl bg-[#F6F8F9] pr-10 pl-4 text-sm text-[#374151] outline-none placeholder:text-[#94A3B8] focus:ring-2 focus:ring-[#2AA8A2]/30"
+            className={shellSearchInputClass}
           />
         </div>
       </div>

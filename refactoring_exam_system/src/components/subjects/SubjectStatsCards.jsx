@@ -1,16 +1,14 @@
 import { BookOpen, ClipboardList, Users } from 'lucide-react'
 import { formatStatValue } from '../../lib/subjectDisplay'
 import { isInstitutionWorkspace } from '../../lib/workspaceContext'
+import { shellBodyTextClass, shellCardClass, shellPageTitleClass } from '../../lib/shellUi'
 
-const CARD_CLASS =
-  'relative flex h-[178px] w-full flex-col overflow-hidden rounded-2xl bg-white shadow-[0_1px_3px_rgba(16,24,40,0.06),0_1px_2px_rgba(16,24,40,0.04)] ring-1 ring-[#E5E9EB]/80'
-
-function StatCard({ label, value, icon: Icon, iconBg, badge, badgeClassName, accentClassName }) {
+function StatCard({ label, value, icon: Icon, iconWrapClass, badge, badgeClassName, accentClassName }) {
   return (
-    <div className={CARD_CLASS}>
+    <div className={`relative flex h-[178px] w-full flex-col overflow-hidden ${shellCardClass}`}>
       <div className="flex flex-1 flex-col px-4 pb-3 pt-3.5">
         <div className="flex items-start justify-between gap-2">
-          <span className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-xl ${iconBg}`}>
+          <span className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-xl ${iconWrapClass}`}>
             <Icon className="h-[18px] w-[18px]" strokeWidth={2} />
           </span>
           {badge ? (
@@ -25,10 +23,8 @@ function StatCard({ label, value, icon: Icon, iconBg, badge, badgeClassName, acc
         </div>
 
         <div className="mt-auto text-right">
-          <p className="text-[13px] font-medium leading-5 text-[#64748B]">{label}</p>
-          <p className="mt-1 text-[28px] font-extrabold leading-none tracking-tight text-[#2A3433]">
-            {value}
-          </p>
+          <p className={`text-[13px] font-medium leading-5 ${shellBodyTextClass}`}>{label}</p>
+          <p className={`mt-1 text-[28px] leading-none tracking-tight ${shellPageTitleClass}`}>{value}</p>
         </div>
       </div>
 
@@ -52,28 +48,28 @@ function SubjectStatsCards({ subjectsCount, teachersCount, teachersLoading }) {
         label="إجمالي المواد"
         value={formatStatValue(subjectsCount)}
         icon={BookOpen}
-        iconBg="bg-[#E8F7F6] text-[#2AA8A2]"
+        iconWrapClass="bg-[var(--shell-accent-bg)] text-[var(--shell-accent)]"
         badge="+12%"
-        badgeClassName="bg-[#E8F7F6] text-[#2AA8A2]"
-        accentClassName="bg-[#2AA8A2]"
+        badgeClassName="bg-[var(--shell-accent-bg)] text-[var(--shell-accent)]"
+        accentClassName="bg-[var(--shell-accent)]"
       />
       <StatCard
         label="المعلمون المعينون"
         value={teachersValue}
         icon={Users}
-        iconBg="bg-[#EFF6FF] text-[#3B82F6]"
+        iconWrapClass="bg-[var(--shell-info-bg)] text-[var(--shell-info-text)]"
         badge={isInstitutionWorkspace() ? '+4 جديد' : undefined}
-        badgeClassName="bg-[#EFF6FF] text-[#3B82F6]"
-        accentClassName="bg-[#3B82F6]"
+        badgeClassName="bg-[var(--shell-info-bg)] text-[var(--shell-info-text)]"
+        accentClassName="bg-[var(--shell-info-text)]"
       />
       <StatCard
         label="إجمالي الاختبارات"
         value="—"
         icon={ClipboardList}
-        iconBg="bg-[#F1F5F9] text-[#94A3B8]"
+        iconWrapClass="bg-[var(--shell-hover)] text-[var(--shell-text-subtle)]"
         badge="قريباً"
-        badgeClassName="bg-[#F1F5F9] text-[#64748B]"
-        accentClassName="bg-[#CBD5E1]"
+        badgeClassName="bg-[var(--shell-hover)] text-[var(--shell-text-muted)]"
+        accentClassName="bg-[var(--shell-border)]"
       />
     </div>
   )

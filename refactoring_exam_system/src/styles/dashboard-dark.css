@@ -1,0 +1,153 @@
+/* Unlayered rules — must win over Tailwind utilities for legacy hex classes. */
+.dark [data-app-shell='dashboard'] {
+  color-scheme: dark;
+}
+
+.dark [data-app-shell='dashboard'] .bg-white,
+.dark [data-app-shell='dashboard'] .bg-white\/95 {
+  background-color: var(--shell-surface) !important;
+}
+
+.dark [data-app-shell='dashboard'] .bg-\[\#F6F8F9\],
+.dark [data-app-shell='dashboard'] .bg-\[\#F8FAFB\],
+.dark [data-app-shell='dashboard'] .bg-\[\#FAFBFC\] {
+  background-color: var(--shell-input-bg) !important;
+}
+
+.dark [data-app-shell='dashboard'] .bg-\[\#F1F5F9\],
+.dark [data-app-shell='dashboard'] .bg-\[\#EEF2F3\],
+.dark [data-app-shell='dashboard'] .bg-\[\#EEF2F3\] {
+  background-color: var(--shell-hover) !important;
+}
+
+.dark [data-app-shell='dashboard'] .bg-\[\#F8FDFC\],
+.dark [data-app-shell='dashboard'] .bg-\[\#F3FBFA\],
+.dark [data-app-shell='dashboard'] .bg-\[\#E8F7F6\] {
+  background-color: var(--shell-accent-bg) !important;
+}
+
+.dark [data-app-shell='dashboard'] .bg-\[\#E5E9EB\] {
+  background-color: var(--shell-border) !important;
+}
+
+.dark [data-app-shell='dashboard'] .bg-\[\#2AA8A2\],
+.dark [data-app-shell='dashboard'] .hover\:bg-\[\#259690\]:hover {
+  background-color: var(--shell-accent) !important;
+}
+
+.dark [data-app-shell='dashboard'] .bg-\[\#EFF6FF\] {
+  background-color: var(--shell-info-bg) !important;
+}
+
+.dark [data-app-shell='dashboard'] .bg-\[\#FFF1F2\],
+.dark [data-app-shell='dashboard'] .bg-\[\#FEF2F2\] {
+  background-color: var(--shell-danger-bg) !important;
+}
+
+.dark [data-app-shell='dashboard'] .bg-red-50 {
+  background-color: var(--shell-danger-bg) !important;
+}
+
+.dark [data-app-shell='dashboard'] .text-\[\#2A3433\],
+.dark [data-app-shell='dashboard'] .text-\[\#374151\] {
+  color: var(--shell-text) !important;
+}
+
+.dark [data-app-shell='dashboard'] .text-\[\#64748B\],
+.dark [data-app-shell='dashboard'] .text-\[\#6B7280\] {
+  color: var(--shell-text-muted) !important;
+}
+
+.dark [data-app-shell='dashboard'] .text-\[\#94A3B8\],
+.dark [data-app-shell='dashboard'] .text-\[\#9CA3AF\],
+.dark [data-app-shell='dashboard'] .text-\[\#CBD5E1\] {
+  color: var(--shell-text-subtle) !important;
+}
+
+.dark [data-app-shell='dashboard'] .text-\[\#2AA8A2\] {
+  color: var(--shell-accent) !important;
+}
+
+.dark [data-app-shell='dashboard'] .text-\[\#3B82F6\] {
+  color: var(--shell-info-text) !important;
+}
+
+.dark [data-app-shell='dashboard'] .text-\[\#F43F5E\],
+.dark [data-app-shell='dashboard'] .text-\[\#DC2626\] {
+  color: var(--shell-danger-text) !important;
+}
+
+.dark [data-app-shell='dashboard'] .border-\[\#E5E9EB\],
+.dark [data-app-shell='dashboard'] .border-\[\#F1F5F9\] {
+  border-color: var(--shell-border) !important;
+}
+
+.dark [data-app-shell='dashboard'] .border-\[\#2AA8A2\],
+.dark [data-app-shell='dashboard'] .hover\:border-\[\#2AA8A2\]:hover,
+.dark [data-app-shell='dashboard'] .border-\[\#B8E8E4\] {
+  border-color: color-mix(in srgb, var(--shell-accent) 55%, var(--shell-border)) !important;
+}
+
+.dark [data-app-shell='dashboard'] .ring-\[\#E5E9EB\],
+.dark [data-app-shell='dashboard'] .ring-\[\#E5E9EB\]\/80,
+.dark [data-app-shell='dashboard'] .ring-\[\#CFECE9\],
+.dark [data-app-shell='dashboard'] .ring-\[\#E3F3F1\],
+.dark [data-app-shell='dashboard'] .ring-\[\#EEF2F3\] {
+  --tw-ring-color: var(--shell-border) !important;
+}
+
+.dark [data-app-shell='dashboard'] .ring-white {
+  --tw-ring-color: var(--shell-surface) !important;
+}
+
+.dark [data-app-shell='dashboard'] .divide-\[\#E5E9EB\] > :not([hidden]) ~ :not([hidden]) {
+  border-color: var(--shell-border) !important;
+}
+
+.dark [data-app-shell='dashboard'] .hover\:bg-\[\#F6F8F9\]:hover,
+.dark [data-app-shell='dashboard'] .hover\:bg-\[\#F8FAFB\]:hover,
+.dark [data-app-shell='dashboard'] .hover\:bg-\[\#EEF2F3\]:hover,
+.dark [data-app-shell='dashboard'] .hover\:bg-\[\#FAFBFC\]:hover,
+.dark [data-app-shell='dashboard'] .hover\:bg-\[\#F8FDFC\]:hover,
+.dark [data-app-shell='dashboard'] .hover\:bg-\[\#EEFAF9\]:hover,
+.dark [data-app-shell='dashboard'] .hover\:bg-red-50:hover {
+  background-color: var(--shell-hover) !important;
+}
+
+.dark [data-app-shell='dashboard'] .hover\:text-\[\#374151\]:hover,
+.dark [data-app-shell='dashboard'] .hover\:text-\[\#64748B\]:hover {
+  color: var(--shell-text) !important;
+}
+
+.dark [data-app-shell='dashboard'] .placeholder\:text-\[\#94A3B8\]::placeholder {
+  color: var(--shell-text-subtle) !important;
+}
+
+.dark [data-app-shell='dashboard'] .bg-\[\#CBD5E1\] {
+  background-color: var(--shell-border) !important;
+}
+
+.dark [data-app-shell='dashboard'] .shadow-\[0_2px_12px_rgba\(15\,23\,42\,0\.04\)\],
+.dark [data-app-shell='dashboard'] .shadow-\[0_1px_3px_rgba\(16\,24\,40\,0\.06\)\],
+.dark [data-app-shell='dashboard'] .shadow-\[0_1px_3px_rgba\(16\,24\,40\,0\.06\)\,0_1px_2px_rgba\(16\,24\,40\,0\.04\)\],
+.dark [data-app-shell='dashboard'] .shadow-sm,
+.dark [data-app-shell='dashboard'] .shadow-md,
+.dark [data-app-shell='dashboard'] .shadow-xl {
+  box-shadow: var(--shell-shadow-sm) !important;
+}
+
+.dark [data-app-shell='dashboard'] .shadow-\[0_8px_24px_rgba\(15\,23\,42\,0\.12\)\],
+.dark [data-app-shell='dashboard'] .shadow-\[0_8px_16px_rgba\(42\,168\,162\,0\.22\)\],
+.dark [data-app-shell='dashboard'] .shadow-\[0_8px_16px_rgba\(42\,168\,162\,0\.2\)\],
+.dark [data-app-shell='dashboard'] .shadow-\[0_10px_20px_rgba\(42\,168\,162\,0\.28\)\],
+.dark [data-app-shell='dashboard'] .shadow-\[0_2px_8px_rgba\(42\,168\,162\,0\.28\)\],
+.dark [data-app-shell='dashboard'] .shadow-\[0_2px_6px_rgba\(42\,168\,162\,0\.14\)\] {
+  box-shadow: var(--shell-shadow-accent) !important;
+}
+
+.dark [data-app-shell='dashboard'] .focus\:ring-\[\#2AA8A2\]\/30:focus,
+.dark [data-app-shell='dashboard'] .focus\:ring-\[\#2AA8A2\]\/40:focus,
+.dark [data-app-shell='dashboard'] .focus\:ring-\[\#2AA8A2\]\/25:focus,
+.dark [data-app-shell='dashboard'] .focus\:ring-\[\#2AA8A2\]\/20:focus {
+  --tw-ring-color: color-mix(in srgb, var(--shell-accent) 35%, transparent) !important;
+}

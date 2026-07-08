@@ -3,6 +3,10 @@ import { getMyTests } from '../../services/tests.service'
 import { filterTestsByTab } from '../../lib/testDisplay'
 import { getTestName } from '../../lib/testModel'
 
+function normalizeTestsResponse(data) {
+  return data.tests || data.items || []
+}
+
 export function useTests(activeTab) {
   const [tests, setTests] = useState([])
   const [loading, setLoading] = useState(true)
@@ -14,7 +18,7 @@ export function useTests(activeTab) {
     setError('')
     try {
       const data = await getMyTests()
-      setTests(data.tests || data.items || [])
+      setTests(normalizeTestsResponse(data))
     } catch (err) {
       setError(err.message)
     } finally {
@@ -27,7 +31,7 @@ export function useTests(activeTab) {
     getMyTests()
       .then((data) => {
         if (cancelled) return
-        setTests(data.tests || data.items || [])
+        setTests(normalizeTestsResponse(data))
       })
       .catch((err) => {
         if (cancelled) return

@@ -1,5 +1,6 @@
 import { ChevronLeft, ChevronRight } from 'lucide-react'
 import { formatStatValue } from '../../lib/subjectDisplay'
+import { shellCardClass } from '../../lib/shellUi'
 
 function PageButton({ children, active, disabled, onClick, ariaLabel }) {
   return (
@@ -11,8 +12,8 @@ function PageButton({ children, active, disabled, onClick, ariaLabel }) {
       aria-current={active ? 'page' : undefined}
       className={`flex h-9 min-w-9 items-center justify-center px-3 text-sm font-bold transition ${
         active
-          ? 'rounded-full bg-[#2AA8A2] text-white shadow-[0_2px_8px_rgba(42,168,162,0.28)]'
-          : 'rounded-lg bg-white text-[#64748B] ring-1 ring-[#E5E9EB] hover:bg-[#F8FAFB] disabled:cursor-not-allowed disabled:opacity-50'
+          ? 'rounded-full bg-[var(--shell-accent)] text-[var(--shell-accent-contrast)] shadow-[var(--shell-shadow-accent)]'
+          : `rounded-lg text-[var(--shell-text-muted)] hover:bg-[var(--shell-hover)] disabled:cursor-not-allowed disabled:opacity-50 ${shellCardClass}`
       }`}
     >
       {children}

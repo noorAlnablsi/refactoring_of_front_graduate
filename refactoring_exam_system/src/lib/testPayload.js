@@ -6,7 +6,7 @@ function buildTestCoreFields(form) {
     description: form.description?.trim() || undefined,
     duration_minutes: Number(form.duration_minutes) || 60,
     total_score: Number(form.total_score) || 100,
-    passing_score: Number(form.passing_score) ?? 60,
+    passing_score: Number(form.passing_score) || 60,
   }
 }
 
@@ -45,7 +45,9 @@ export function buildUpdateTestInfoPayload(form) {
 }
 
 export function buildUpdateTestInfoPayloadFromStep1({ create, scoring_config }) {
-  const { subject_id, auto_distribute_scores, ...fields } = create
+  const fields = { ...create }
+  delete fields.subject_id
+  delete fields.auto_distribute_scores
   return {
     ...fields,
     scoring_config,

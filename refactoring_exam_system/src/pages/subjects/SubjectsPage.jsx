@@ -11,6 +11,7 @@ import { useSubjectsListView } from '../../hooks/subjects/useSubjectsListView'
 import { useWorkspaceTeachersCount } from '../../hooks/subjects/useWorkspaceTeachersCount'
 import { deleteSubject } from '../../services/subjects.service'
 import { useToastStore } from '../../store/toastStore'
+import { shellAccentButtonClass, shellPageSubtitleClass, shellPageTitleClass } from '../../lib/shellUi'
 
 function SubjectsPage() {
   const showToast = useToastStore((s) => s.showToast)
@@ -59,8 +60,8 @@ function SubjectsPage() {
     <div className="space-y-6">
       <div className="flex flex-wrap items-start justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-extrabold text-[#2A3433] md:text-[28px]">المواد الدراسية</h1>
-          <p className="mt-2 max-w-2xl text-sm leading-7 text-[#64748B]">
+          <h1 className={`text-2xl md:text-[28px] ${shellPageTitleClass}`}>المواد الدراسية</h1>
+          <p className={`mt-2 max-w-2xl ${shellPageSubtitleClass}`}>
             إدارة المواد الدراسية وتحديد المعلمين المسؤولين عنها داخل المؤسسة التعليمية بكفاءة
             واحترافية.
           </p>
@@ -69,7 +70,7 @@ function SubjectsPage() {
           <button
             type="button"
             onClick={() => setCreateOpen(true)}
-            className="inline-flex items-center gap-2 rounded-xl bg-[#2AA8A2] px-5 py-3 text-sm font-bold text-white shadow-[0_8px_16px_rgba(42,168,162,0.22)]"
+            className={shellAccentButtonClass}
           >
             <Plus className="h-4 w-4" strokeWidth={2.5} />
             إضافة مادة جديدة

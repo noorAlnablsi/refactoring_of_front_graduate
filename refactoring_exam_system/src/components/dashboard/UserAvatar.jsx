@@ -1,3 +1,5 @@
+import { getUserInitials } from '../../lib/userDisplay'
+
 function UserAvatar({ user, size = 'md', rounded = false }) {
   const name = user?.full_name?.trim() || 'مستخدم'
   const avatarUrl = user?.avatar_url || null
@@ -21,9 +23,9 @@ function UserAvatar({ user, size = 'md', rounded = false }) {
 
   return (
     <span
-      className={`${sizes[size]} flex shrink-0 items-center justify-center bg-[#E8F7F6] font-bold text-[#2AA8A2] ${radius}`}
+      className={`${sizes[size]} flex shrink-0 items-center justify-center bg-[var(--shell-accent-bg)] font-bold text-[var(--shell-accent)] ${radius}`}
     >
-      {name.charAt(0)}
+      {getUserInitials(name)}
     </span>
   )
 }

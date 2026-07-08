@@ -8,7 +8,9 @@ function Toast() {
   if (!visible || !message) return null
 
   const bgClass =
-    type === 'error' ? 'bg-red-50 text-red-700 ring-red-200' : 'bg-[#E8F7F6] text-[#2AA8A2] ring-[#2AA8A2]/30'
+    type === 'error'
+      ? 'bg-red-50 text-red-700 ring-red-200 dark:bg-[#3f1d1d] dark:text-[#fca5a5] dark:ring-[#7f1d1d]'
+      : 'bg-[var(--shell-accent-bg)] text-[var(--shell-accent)] ring-[var(--shell-accent)]/30'
 
   return (
     <div className="pointer-events-none fixed bottom-6 left-1/2 z-[100] -translate-x-1/2">
