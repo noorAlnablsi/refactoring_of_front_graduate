@@ -1,7 +1,9 @@
 import { useEffect, useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import { useNavigate } from 'react-router-dom'
 import { WORKSPACE_KIND } from '../constants/auth'
 import { ROUTES } from '../constants/routes'
+import { translateBackendMessage } from '../i18n/translateBackendMessage'
 import { resolveWorkspaceDescription, resolveWorkspaceName } from '../lib/workspaceName'
 import { uploadImage } from '../services/uploads.service'
 import { updateMyProfile } from '../services/users.service'
@@ -10,6 +12,7 @@ import { useAuthStore } from '../store/authStore'
 import { useToastStore } from '../store/toastStore'
 
 export function useCreateWorkspace() {
+  const { t } = useTranslation('settings')
   const navigate = useNavigate()
   const user = useAuthStore((state) => state.user)
   const appendMembership = useAuthStore((state) => state.appendMembership)
@@ -73,12 +76,16 @@ export function useCreateWorkspace() {
     const trimmedDescription = resolveWorkspaceDescription({ description })
 
     if (!trimmedName) {
-      setError(kind === WORKSPACE_KIND.INSTITUTION ? 'اسم المنصة مطلوب' : 'اسم المعلم مطلوب')
+      setError(
+        kind === WORKSPACE_KIND.INSTITUTION
+          ? t('createWorkspace.errors.institutionNameRequired')
+          : t('createWorkspace.errors.teacherNameRequired'),
+      )
       return
     }
 
     if (kind === WORKSPACE_KIND.SOLO && !trimmedDescription) {
-      setError('نبذة عنك مطلوبة')
+      setError(t('createWorkspace.errors.bioRequired'))
       return
     }
 
@@ -123,10 +130,10 @@ export function useCreateWorkspace() {
         },
       })
 
-      showToast('تم إنشاء مساحة العمل بنجاح')
+      showToast(t('createWorkspace.success'))
       navigate(ROUTES.PATH_SELECTION, { replace: true })
     } catch (err) {
-      setError(err.message || 'تعذر إنشاء مساحة العمل')
+      setError(translateBackendMessage(err.message) || t('createWorkspace.errors.failed'))
     } finally {
       setLoading(false)
     }

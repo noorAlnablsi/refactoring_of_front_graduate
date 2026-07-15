@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import { Eye, EyeOff } from 'lucide-react'
 import { shellInputClass } from '../../lib/shellUi'
 
@@ -10,6 +11,7 @@ function SettingsPasswordField({
   icon: Icon,
   autoComplete = 'current-password',
 }) {
+  const { t } = useTranslation('forms')
   const [showPassword, setShowPassword] = useState(false)
 
   return (
@@ -28,7 +30,7 @@ function SettingsPasswordField({
           type="button"
           onClick={() => setShowPassword((prev) => !prev)}
           className="absolute left-3 top-1/2 -translate-y-1/2 text-[var(--shell-text-subtle)] transition hover:text-[var(--shell-text-muted)]"
-          aria-label={showPassword ? 'إخفاء كلمة المرور' : 'إظهار كلمة المرور'}
+          aria-label={showPassword ? t('aria.hidePassword') : t('aria.showPassword')}
         >
           {showPassword ? <Eye className="h-5 w-5" /> : <EyeOff className="h-5 w-5" />}
         </button>

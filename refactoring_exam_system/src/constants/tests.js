@@ -27,10 +27,4 @@ export const TEST_SOURCE_TYPE = {
   RANDOM_FROM_BANK: 'RANDOM_FROM_BANK',
 }
 
-export const TEST_WIZARD_STEP_LABELS = [
-  'المعلومات',
-  'إضافة الأسئلة',
-  'الإعدادات',
-  'المراجعة',
-  'النشر',
-]
+export const TEST_WIZARD_STEP_KEYS = ['info', 'questions', 'settings', 'review', 'publish']

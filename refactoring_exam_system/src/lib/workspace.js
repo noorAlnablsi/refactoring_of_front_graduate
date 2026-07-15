@@ -1,3 +1,5 @@
+import i18n from '../i18n'
+
 export function normalizeWorkspace(payload) {
   const workspace = payload?.workspace || payload?.data || payload || {}
 
@@ -22,8 +24,8 @@ export function getInstitutionTypeLabel(workspace) {
   }
 
   if (workspace?.kind === 'INSTITUTION') {
-    return 'أكاديمية'
+    return i18n.t('fallback.academy', { ns: 'common' })
   }
 
-  return '—'
+  return i18n.t('fallback.dash', { ns: 'common' })
 }

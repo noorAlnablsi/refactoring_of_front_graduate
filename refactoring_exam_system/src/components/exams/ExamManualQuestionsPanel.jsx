@@ -1,7 +1,9 @@
 import { useEffect, useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import { ArrowRight } from 'lucide-react'
 import QuestionBuilderForm from '../question-banks/editor/QuestionBuilderForm'
 import ExamWizardFooter from './ExamWizardFooter'
+import { showAppToast } from '../../lib/appToast'
 import {
   createDefaultExamQuestion,
   normalizeManualQuestionForApi,
@@ -21,12 +23,13 @@ function ExamManualQuestionsPanel({
   onViewQuestions,
   savingDraft = false,
 }) {
+  const { t } = useTranslation(['exams', 'common'])
   const showToast = useToastStore((s) => s.showToast)
   const [draft, setDraft] = useState(createDefaultExamQuestion)
   const [topics, setTopics] = useState([])
   const [submitting, setSubmitting] = useState(false)
 
-  const examName = test?.title || test?.name || 'الامتحان'
+  const examName = test?.title || test?.name || t('wizard.manual.defaultExamName')
 
   useEffect(() => {
     if (!test?.subject_id) return undefined
@@ -64,7 +67,7 @@ function ExamManualQuestionsPanel({
       await addManualQuestions(testId, {
         questions: [normalizeManualQuestionForApi(draft)],
       })
-      showToast('تمت إضافة السؤال')
+      showAppToast('wizard.manual.questionAdded', 'success', { ns: 'exams' })
       if (resetAfter) {
         setDraft(createDefaultExamQuestion())
       }
@@ -79,13 +82,12 @@ function ExamManualQuestionsPanel({
   return (
     <div className="space-y-6 pb-24">
       <header className="text-right">
-        <p className="text-sm font-bold text-[#2AA8A2]">إنشاء يدوي</p>
+        <p className="text-sm font-bold text-[#2AA8A2]">{t('wizard.manual.eyebrow')}</p>
         <h2 className="mt-2 text-[28px] font-extrabold leading-tight text-[#2A3433] md:text-[32px]">
-          كتابة أسئلة الامتحان
+          {t('wizard.manual.title')}
         </h2>
         <p className="mt-3 max-w-3xl text-sm leading-8 text-[#64748B]">
-          أنشئ أسئلة جديدة خاصة بـ «{examName}». الأسئلة اليدوية تُضاف للامتحان فقط ولا تُحفظ في
-          بنك الأسئلة.
+          {t('wizard.manual.subtitle', { name: examName })}
         </p>
       </header>
 
@@ -105,7 +107,7 @@ function ExamManualQuestionsPanel({
             className="inline-flex items-center gap-2 rounded-xl bg-[#F6F8F9] px-6 py-3 text-sm font-bold text-[#64748B]"
           >
             <ArrowRight className="h-4 w-4" />
-            رجوع
+            {t('wizard.questions.review.back')}
           </button>
 
           <div className="flex flex-wrap items-center gap-4">
@@ -115,7 +117,7 @@ function ExamManualQuestionsPanel({
               disabled={savingDraft}
               className="text-sm font-bold text-[#64748B] hover:text-[#374151] disabled:opacity-50"
             >
-              {savingDraft ? 'جاري الحفظ...' : 'حفظ كمسودة'}
+              {savingDraft ? t('wizard.basicInfo.savingDraft') : t('wizard.basicInfo.saveDraft')}
             </button>
             {onViewQuestions ? (
               <button
@@ -123,7 +125,7 @@ function ExamManualQuestionsPanel({
                 onClick={onViewQuestions}
                 className="rounded-xl bg-[#2AA8A2] px-7 py-3 text-sm font-bold text-white shadow-[0_10px_20px_rgba(42,168,162,0.28)]"
               >
-                عرض أسئلة الامتحان
+                {t('wizard.manual.viewExamQuestions')}
               </button>
             ) : null}
           </div>
@@ -131,7 +133,7 @@ function ExamManualQuestionsPanel({
       </ExamWizardFooter>
 
       {submitting ? (
-        <p className="text-xs text-[#94A3B8]">جاري الحفظ...</p>
+        <p className="text-xs text-[#94A3B8]">{t('common:loading.saving')}</p>
       ) : null}
     </div>
   )

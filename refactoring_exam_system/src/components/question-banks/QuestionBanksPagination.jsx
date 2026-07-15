@@ -1,3 +1,4 @@
+import { useTranslation } from 'react-i18next'
 import { ChevronLeft, ChevronRight } from 'lucide-react'
 import { getPaginationItems } from '../../lib/pagination'
 
@@ -21,6 +22,8 @@ function PageButton({ children, active, disabled, onClick, ariaLabel }) {
 }
 
 function QuestionBanksPagination({ page, totalPages, onPageChange }) {
+  const { t } = useTranslation('common')
+
   if (totalPages <= 1) return null
 
   const items = getPaginationItems(page, totalPages)
@@ -28,7 +31,7 @@ function QuestionBanksPagination({ page, totalPages, onPageChange }) {
   return (
     <div className="flex items-center justify-center gap-2">
       <PageButton
-        ariaLabel="الصفحة السابقة"
+        ariaLabel={t('pagination.previousPage')}
         disabled={page <= 1}
         onClick={() => onPageChange(page - 1)}
       >
@@ -44,7 +47,7 @@ function QuestionBanksPagination({ page, totalPages, onPageChange }) {
           <PageButton
             key={item.value}
             active={item.value === page}
-            ariaLabel={`الصفحة ${item.value}`}
+            ariaLabel={t('pagination.page', { number: item.value })}
             onClick={() => onPageChange(item.value)}
           >
             {item.value}
@@ -53,7 +56,7 @@ function QuestionBanksPagination({ page, totalPages, onPageChange }) {
       )}
 
       <PageButton
-        ariaLabel="الصفحة التالية"
+        ariaLabel={t('pagination.nextPage')}
         disabled={page >= totalPages}
         onClick={() => onPageChange(page + 1)}
       >

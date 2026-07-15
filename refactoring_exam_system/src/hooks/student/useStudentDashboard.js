@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import {
   getCalendarEventDays,
   normalizeAvailableTestsResponse,
@@ -47,6 +48,7 @@ async function loadStudentDashboardData() {
 }
 
 export function useStudentDashboard() {
+  const { t } = useTranslation('student')
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState('')
   const [stats, setStats] = useState({
@@ -75,11 +77,11 @@ export function useStudentDashboard() {
       const dashboard = await loadStudentDashboardData()
       applyDashboard(dashboard)
     } catch (err) {
-      setError(err.message || 'تعذر تحميل لوحة الطالب')
+      setError(err.message || t('dashboard.loadError'))
     } finally {
       setLoading(false)
     }
-  }, [applyDashboard])
+  }, [applyDashboard, t])
 
   useEffect(() => {
     let cancelled = false
@@ -92,7 +94,7 @@ export function useStudentDashboard() {
       })
       .catch((err) => {
         if (cancelled) return
-        setError(err.message || 'تعذر تحميل لوحة الطالب')
+        setError(err.message || t('dashboard.loadError'))
       })
       .finally(() => {
         if (cancelled) return
@@ -102,7 +104,7 @@ export function useStudentDashboard() {
     return () => {
       cancelled = true
     }
-  }, [applyDashboard])
+  }, [applyDashboard, t])
 
   const getEventDaysForMonth = useCallback(
     (year, month) => getCalendarEventDays(calendarEvents, year, month),

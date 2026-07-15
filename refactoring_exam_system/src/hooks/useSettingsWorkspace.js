@@ -1,9 +1,12 @@
 import { useEffect, useState } from 'react'
+import { useTranslation } from 'react-i18next'
+import { translateBackendMessage } from '../i18n/translateBackendMessage'
 import { getWorkspace } from '../services/workspaces.service'
 import { getWorkspaceId, isInstitutionOwner } from '../lib/workspaceContext'
 import { useAuthStore } from '../store/authStore'
 
 export function useSettingsWorkspace() {
+  const { t } = useTranslation('settings')
   const workspaceId = getWorkspaceId()
   const updateMembershipWorkspace = useAuthStore((state) => state.updateMembershipWorkspace)
   const cachedWorkspace = useAuthStore((state) => {
@@ -41,7 +44,7 @@ export function useSettingsWorkspace() {
         updateMembershipWorkspace(workspaceId, data)
       } catch (err) {
         if (!cancelled) {
-          setError(err.message || 'تعذر تحميل بيانات المؤسسة')
+          setError(translateBackendMessage(err.message) || t('errors.loadInstitution'))
         }
       } finally {
         if (!cancelled) {
@@ -55,7 +58,7 @@ export function useSettingsWorkspace() {
     return () => {
       cancelled = true
     }
-  }, [workspaceId, updateMembershipWorkspace])
+  }, [workspaceId, updateMembershipWorkspace, t])
 
   return { workspace, loading, error }
 }

@@ -1,8 +1,11 @@
 import { Link } from 'react-router-dom'
+import { useTranslation } from 'react-i18next'
 import { ArrowRight, HelpCircle } from 'lucide-react'
 import { ROUTES } from '../../constants/routes'
 
 function CreateWorkspaceShell({ children }) {
+  const { t } = useTranslation('settings')
+
   return (
     <main dir="rtl" className="flex min-h-screen flex-col bg-[#F6F8F9] font-sans text-[#1F2533]">
       <header className="border-b border-[#E5E7EB] bg-white px-4 py-4 md:px-10">
@@ -13,8 +16,8 @@ function CreateWorkspaceShell({ children }) {
           >
             <ArrowRight className="h-5 w-5 shrink-0" strokeWidth={2.2} />
             <span>
-              <span className="block text-base font-extrabold">إنشاء مساحة عمل</span>
-              <span className="block text-xs font-semibold text-[#9CA3AF]">أكاديميك هب</span>
+              <span className="block text-base font-extrabold">{t('createWorkspace.shellTitle')}</span>
+              <span className="block text-xs font-semibold text-[#9CA3AF]">{t('createWorkspace.shellSubtitle')}</span>
             </span>
           </Link>
 
@@ -23,7 +26,7 @@ function CreateWorkspaceShell({ children }) {
             className="inline-flex items-center gap-1.5 text-sm font-semibold text-[#6B7280] transition hover:text-[#2AA8A2]"
           >
             <HelpCircle className="h-4 w-4" />
-            المساعدة
+            {t('createWorkspace.help')}
           </button>
         </div>
       </header>
@@ -35,19 +38,19 @@ function CreateWorkspaceShell({ children }) {
       <footer className="border-t border-[#E5E7EB] bg-white px-4 py-6 md:px-10">
         <div className="mx-auto flex max-w-[960px] flex-col gap-4 text-xs text-[#6B7280] md:flex-row md:items-center md:justify-between">
           <div className="text-right">
-            <p className="text-sm font-extrabold text-[#2AA8A2]">منصة الملاذ الأكاديمي</p>
-            <p className="mt-1">© 2024 منصة الملاذ الأكاديمي، جميع الحقوق محفوظة.</p>
+            <p className="text-sm font-extrabold text-[#2AA8A2]">{t('createWorkspace.platformName')}</p>
+            <p className="mt-1">{t('createWorkspace.copyright')}</p>
           </div>
 
           <div className="flex flex-wrap items-center gap-5">
             <a href="#" className="transition hover:text-[#2AA8A2]">
-              شروط الخدمة
+              {t('createWorkspace.terms')}
             </a>
             <a href="#" className="transition hover:text-[#2AA8A2]">
-              سياسة الخصوصية
+              {t('createWorkspace.privacy')}
             </a>
             <a href="#" className="transition hover:text-[#2AA8A2]">
-              اتصل بالدعم
+              {t('createWorkspace.support')}
             </a>
           </div>
         </div>

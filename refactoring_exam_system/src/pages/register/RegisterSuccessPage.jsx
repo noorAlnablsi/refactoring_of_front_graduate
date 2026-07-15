@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useRef } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
+import { useTranslation } from 'react-i18next'
 import AuthShell from '../../components/auth/AuthShell'
 import RegisterProgress from '../../components/auth/RegisterProgress'
 import { ROUTES } from '../../constants/routes'
@@ -10,6 +11,7 @@ import registerHeroSuccess from '../../assets/auth/register-hero-success.png'
 import successCheckIcon from '../../assets/auth/success-check.png'
 
 function RegisterSuccessPage() {
+  const { t } = useTranslation('auth')
   const navigate = useNavigate()
   const verifyResult = useRegistrationStore((s) => s.verifyResult)
   const workspace_kind = useRegistrationStore((s) => s.workspace_kind)
@@ -71,38 +73,42 @@ function RegisterSuccessPage() {
   const institutionRejected = isInstitution && approvalStatus === 'rejected'
 
   const title = institutionApproved
-    ? 'تمت الموافقة على طلبك !'
+    ? t('register.success.institutionApproved')
     : institutionRejected
-      ? 'تم رفض طلب التسجيل'
+      ? t('register.success.institutionRejected')
       : isInstitution
-        ? 'تم إرسال طلب التسجيل بنجاح'
-        : 'تم إنشاء حسابك بنجاح !'
+        ? t('register.success.institutionSubmitted')
+        : t('register.success.accountCreated')
 
   const subtitle = institutionApproved
-    ? 'جاري تحويلك إلى صفحة تسجيل الدخول...'
+    ? t('register.success.institutionApprovedSubtitle')
     : institutionRejected
       ? rejectionMessage
       : isInstitution
-        ? 'طلبك قيد المراجعة من قبل الإدارة. سيتم تحديث هذه الصفحة تلقائياً عند الموافقة.'
-        : 'يمكنك الآن تسجيل الدخول والبدء باستخدام المنصة.'
+        ? t('register.success.institutionPendingSubtitle')
+        : t('register.success.accountCreatedSubtitle')
 
   return (
-    <AuthShell heroImage={registerHeroSuccess} heroAlt="احصل على نتائج وتحليلات واضحة">
+    <AuthShell heroImage={registerHeroSuccess} heroAlt={t('register.success.heroAlt')}>
       <RegisterProgress activeStep={3} />
 
       <div className="flex flex-col items-center text-center">
-        <img src={successCheckIcon} alt="نجاح" className="mb-6 h-28 w-28" />
+        <img src={successCheckIcon} alt="" className="mb-6 h-28 w-28" />
         <h1 className="text-3xl font-extrabold text-[#2A3433] md:text-4xl">{title}</h1>
         <p className="mt-4 max-w-md text-base leading-8 text-[#6B7280]">{subtitle}</p>
 
         {isInstitution && !institutionApproved && !institutionRejected ? (
           <p className="mt-3 text-sm font-semibold text-[#2AA8A2]">
-            {checking ? 'جاري التحقق من حالة الموافقة...' : 'بانتظار موافقة الإدارة'}
+            {checking
+              ? t('register.success.checkingApproval')
+              : t('register.success.awaitingApproval')}
           </p>
         ) : null}
 
         {institutionApproved ? (
-          <p className="mt-3 text-sm font-semibold text-[#2AA8A2]">يمكنك تسجيل الدخول الآن</p>
+          <p className="mt-3 text-sm font-semibold text-[#2AA8A2]">
+            {t('register.success.canLoginNow')}
+          </p>
         ) : null}
       </div>
 
@@ -113,7 +119,7 @@ function RegisterSuccessPage() {
             onClick={handleGoHome}
             className="mt-10 h-12 w-full rounded-xl bg-[#2AA8A2] text-base font-bold text-white shadow-[0_12px_20px_rgba(42,168,162,0.22)] transition hover:opacity-95 md:w-[448px]"
           >
-            العودة للرئيسية
+            {t('register.success.goHome')}
           </button>
         ) : institutionApproved ? (
           <button
@@ -121,7 +127,7 @@ function RegisterSuccessPage() {
             onClick={() => handleGoLogin({ institutionApproved: true })}
             className="mt-10 h-12 w-full rounded-xl bg-[#2AA8A2] text-base font-bold text-white shadow-[0_12px_20px_rgba(42,168,162,0.22)] transition hover:opacity-95 md:w-[448px]"
           >
-            الانتقال لتسجيل الدخول
+            {t('register.success.goToLogin')}
           </button>
         ) : (
           <button
@@ -129,7 +135,7 @@ function RegisterSuccessPage() {
             onClick={handleGoHome}
             className="mt-10 h-12 w-full rounded-xl bg-[#2AA8A2] text-base font-bold text-white shadow-[0_12px_20px_rgba(42,168,162,0.22)] transition hover:opacity-95 md:w-[448px]"
           >
-            العودة للرئيسية
+            {t('register.success.goHome')}
           </button>
         )
       ) : (
@@ -139,11 +145,11 @@ function RegisterSuccessPage() {
             onClick={() => handleGoLogin()}
             className="mt-10 h-12 w-full rounded-xl bg-[#2AA8A2] text-base font-bold text-white shadow-[0_12px_20px_rgba(42,168,162,0.22)] transition hover:opacity-95 md:w-[448px]"
           >
-            الانتقال لتسجيل الدخول
+            {t('register.success.goToLogin')}
           </button>
 
           <p className="mt-5 text-center text-sm text-[#6B7280]">
-            أو{' '}
+            {t('register.success.orGoHome')}{' '}
             <Link
               to={ROUTES.HOME}
               onClick={(e) => {
@@ -152,7 +158,7 @@ function RegisterSuccessPage() {
               }}
               className="font-bold text-[#2AA8A2]"
             >
-              العودة للرئيسية
+              {t('register.success.goHome')}
             </Link>
           </p>
         </>

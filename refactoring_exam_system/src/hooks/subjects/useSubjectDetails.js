@@ -1,4 +1,6 @@
 import { useCallback, useEffect, useState } from 'react'
+import { useTranslation } from 'react-i18next'
+import { translateBackendMessage } from '../../i18n/translateBackendMessage'
 import {
   getSubjectById,
   getSubjectQuestionBanks,
@@ -8,6 +10,7 @@ import {
 } from '../../services/subjects.service'
 
 export function useSubjectDetails(subjectId) {
+  const { t } = useTranslation('subjects')
   const [subject, setSubject] = useState(null)
   const [teachers, setTeachers] = useState([])
   const [questionBanks, setQuestionBanks] = useState([])
@@ -38,11 +41,11 @@ export function useSubjectDetails(subjectId) {
       setTopicsCount(topicsData.count ?? topicsData.topics?.length ?? 0)
       setStudentsCount(studentsData.count ?? 0)
     } catch (err) {
-      setError(err.message)
+      setError(translateBackendMessage(err.message) || t('errors.loadDetailsFailed'))
     } finally {
       setLoading(false)
     }
-  }, [subjectId])
+  }, [subjectId, t])
 
   useEffect(() => {
     if (!subjectId) return undefined
@@ -68,7 +71,7 @@ export function useSubjectDetails(subjectId) {
       })
       .catch((err) => {
         if (cancelled) return
-        setError(err.message)
+        setError(translateBackendMessage(err.message) || t('errors.loadDetailsFailed'))
       })
       .finally(() => {
         if (cancelled) return
@@ -78,7 +81,7 @@ export function useSubjectDetails(subjectId) {
     return () => {
       cancelled = true
     }
-  }, [subjectId])
+  }, [subjectId, t])
 
   return {
     subject,

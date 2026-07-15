@@ -1,0 +1,176 @@
+{
+  "page": {
+    "eyebrow": "المشروع الأكاديمي",
+    "title": "بنوك الأسئلة",
+    "subtitle": "قم ببناء مستودع أكاديمي شامل من خلال تحديد المعلومات الأساسية وإضافة أسئلة متنوعة لتقييم طلابك.",
+    "addBank": "إضافة بنك جديد",
+    "searchPlaceholder": "البحث في البنوك...",
+    "deleteSuccess": "تم حذف بنك الأسئلة",
+    "cannotEdit": "لا يمكنك التعديل على هذا البنك",
+    "cannotDelete": "لا يمكنك حذف هذا البنك",
+    "itemLabel": "البنك"
+  },
+  "tabs": {
+    "my": "بنوكي",
+    "workspace": "بنوك ضمن المؤسسة",
+    "community": "مجتمع"
+  },
+  "display": {
+    "defaultName": "بنك أسئلة"
+  },
+  "visibility": {
+    "private": "خاص",
+    "workspace": "ضمن المؤسسة",
+    "community": "مجتمع QuizHub"
+  },
+  "empty": {
+    "noSearchResults": "لا توجد نتائج مطابقة للبحث",
+    "my": {
+      "title": "لا توجد بنوك خاصة بعد",
+      "description": "أنشئ بنك أسئلة خاصاً لاستخدامه في اختباراتك.",
+      "createFirst": "إنشاء أول بنك أسئلة"
+    },
+    "workspace": {
+      "title": "لا توجد بنوك ضمن المؤسسة",
+      "description": "ستظهر هنا بنوك المواد المشتركة التي أنشأها زملاؤك أو أنت."
+    },
+    "community": {
+      "title": "لا توجد بنوك مجتمع بعد",
+      "description": "ستظهر هنا البنوك العامة المنشورة على مستوى المنصة."
+    }
+  },
+  "modals": {
+    "create": {
+      "title": "إنشاء بنك أسئلة",
+      "titleLabel": "اسم بنك الأسئلة",
+      "titlePlaceholder": "مثال: بنك أسئلة الكيمياء دورة 2023",
+      "descriptionLabel": "وصف",
+      "descriptionPlaceholder": "وصف مختصر لبنك الأسئلة",
+      "loadingSubjects": "جاري تحميل المواد...",
+      "done": "تم"
+    },
+    "edit": {
+      "title": "تعديل بنك الأسئلة",
+      "nameLabel": "اسم البنك",
+      "descriptionLabel": "الوصف",
+      "privacyLabel": "الخصوصية"
+    }
+  },
+  "toast": {
+    "created": "تم إنشاء بنك الأسئلة",
+    "updated": "تم تحديث بنك الأسئلة",
+    "titleRequired": "اسم البنك مطلوب",
+    "bankNotFound": "بنك الأسئلة غير موجود",
+    "questionSavedLocally": "تم حفظ السؤال محلياً",
+    "published": "تم نشر بنك الأسئلة بنجاح",
+    "questionUpdated": "تم تعديل السؤال بنجاح",
+    "minOneQuestion": "أضف سؤالاً واحداً على الأقل قبل النشر"
+  },
+  "validation": {
+    "titleRequired": "اسم بنك الأسئلة مطلوب",
+    "subjectRequired": "يرجى اختيار المادة",
+    "questionTextRequired": "نص السؤال مطلوب",
+    "pointsRequired": "العلامة يجب أن تكون أكبر من 0",
+    "addChoices": "أضف خيارات للإجابة",
+    "allChoicesRequired": "جميع الخيارات يجب أن تكون مكتملة",
+    "topicRequired": "اختر المحور للسؤال",
+    "multiSelectMinCorrect": "خيارات متعددة: حدد إجابتين صحيحتين على الأقل",
+    "singleSelectOneCorrect": "اختيار واحد: حدد إجابة صحيحة واحدة فقط"
+  },
+  "types": {
+    "mcq": "اختيار واحد",
+    "trueFalse": "صح / خطأ",
+    "multiSelect": "خيارات متعددة",
+    "essay": "مقالي"
+  },
+  "difficulty": {
+    "easy": "سهل",
+    "medium": "متوسط",
+    "hard": "صعب"
+  },
+  "choices": {
+    "true": "صح",
+    "false": "خطأ",
+    "placeholder": "الخيار {{number}}",
+    "addNew": "إضافة خيار جديد"
+  },
+  "counts": {
+    "questions": "{{count}} سؤال",
+    "questionsAccusative": "{{count}} سؤالاً",
+    "usage": "{{count}} استخدام",
+    "points": "{{count}} علامة"
+  },
+  "author": {
+    "default": "مؤلف البنك"
+  },
+  "card": {
+    "menuAria": "خيارات البنك",
+    "generalSubject": "عام",
+    "noDescription": "لا يوجد وصف لهذا البنك بعد.",
+    "communityDefaultDescription": "بنك أسئلة مجتمعي يغطي محتوى المادة الدراسية.",
+    "ratingAria": "التقييم {{rating}} من 5",
+    "unknownInitial": "؟"
+  },
+  "createCard": {
+    "title": "إضافة بنك جديد",
+    "subtitle": "إنشاء من الصفر أو باستخدام قالب"
+  },
+  "labels": {
+    "difficulty": "الصعوبة",
+    "questionText": "نص السؤال",
+    "points": "العلامة",
+    "answers": "الإجابات",
+    "topic": "الموضوع",
+    "bankName": "اسم البنك",
+    "subject": "المادة",
+    "currentPrivacy": "الخصوصية الحالية"
+  },
+  "editor": {
+    "previewQuestions": "معاينة الأسئلة",
+    "publishBank": "رفع بنك الأسئلة",
+    "loadError": "لم يتم تحميل الأسئلة بسبب خطأ من الخادم.",
+    "noQuestionsCommunity": "لا توجد أسئلة في هذا البنك.",
+    "bankInfoTitle": "إنشاء بنك أسئلة جديد",
+    "questionBuilderTitle": "منشئ الأسئلة",
+    "editQuestionTitle": "تعديل السؤال",
+    "saveQuestion": "حفظ السؤال",
+    "addAnotherQuestion": "إضافة سؤال جديد",
+    "saveEdit": "حفظ التعديل",
+    "noTopicsWarning": "لا توجد محاور لهذه المادة. أضف محاوراً من تفاصيل المادة أولاً.",
+    "bankQuestionsTitle": "أسئلة البنك",
+    "addedQuestionsPreview": "معاينة الأسئلة المضافة",
+    "noSessionQuestions": "لا توجد أسئلة محفوظة في هذه الجلسة",
+    "copyAll": "نسخ الكل",
+    "editQuestionAria": "تعديل السؤال {{number}}",
+    "copyQuestionAria": "نسخ السؤال {{number}}",
+    "essayNoChoices": "سؤال مقالي بدون خيارات.",
+    "questionNumber": "سؤال {{number}}",
+    "noTopic": "بدون محور",
+    "topicNumber": "محور #{{id}}",
+    "publishPrivacyTitle": "إعدادات الخصوصية",
+    "publishPrivacyDescription": "اختر من يمكنه رؤية بنك الأسئلة بعد نشره.",
+    "loadQuestionsError": "تعذّر تحميل أسئلة البنك",
+    "loadQuestionsDiagnostic": "التشخيص:",
+    "loadQuestionsHint": "تحقق من تسجيل الدخول ومن إرسال رأس X-Workspace-Id مع الطلب.",
+    "toolbar": {
+      "questionTypeAria": "نوع السؤال",
+      "topicAria": "الموضوع",
+      "underline": "تسطير",
+      "bold": "غامق",
+      "italic": "مائل",
+      "bulletList": "قائمة نقطية",
+      "insertMath": "إدراج رمز رياضي",
+      "paragraphRtl": "اتجاه الفقرة: من اليمين لليسار (عربي)",
+      "paragraphLtr": "اتجاه الفقرة: من اليسار لليمين (إنجليزي)",
+      "questionBodyAria": "نص السؤال",
+      "questionBodyPlaceholder": "اكتب سؤالك هنا..."
+    }
+  },
+  "copy": {
+    "noText": "لا يوجد نص للنسخ",
+    "failed": "تعذّر النسخ إلى الحافظة",
+    "questionSuccess": "تم نسخ السؤال {{number}}",
+    "allSuccess": "تم نسخ جميع الأسئلة",
+    "questionHeader": "السؤال {{number}}:"
+  }
+}

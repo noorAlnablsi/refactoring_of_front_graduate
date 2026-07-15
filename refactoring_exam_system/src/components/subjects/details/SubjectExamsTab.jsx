@@ -1,17 +1,20 @@
+import { useTranslation } from 'react-i18next'
 import { ClipboardList } from 'lucide-react'
 
 const placeholderExams = [
-  { id: 1, name: 'اختبار الميكانيكا', status: 'completed' },
-  { id: 2, name: 'الديناميكا الحرارية', status: 'active' },
-  { id: 3, name: 'اختبار الكهرومغناطيسية', status: 'completed' },
+  { id: 1, name: 'Mechanics exam', status: 'completed' },
+  { id: 2, name: 'Thermodynamics', status: 'active' },
+  { id: 3, name: 'Electromagnetism exam', status: 'completed' },
 ]
 
 function SubjectExamsTab() {
+  const { t } = useTranslation('subjects')
+
   return (
     <div className="rounded-2xl bg-white p-6 shadow-[0_2px_12px_rgba(15,23,42,0.04)] ring-1 ring-[#E5E9EB]">
       <div className="mb-5 flex items-center gap-2">
         <ClipboardList className="h-5 w-5 text-[#94A3B8]" />
-        <h2 className="text-lg font-bold text-[#2A3433]">اختبارات المادة</h2>
+        <h2 className="text-lg font-bold text-[#2A3433]">{t('details.exams.title')}</h2>
       </div>
       <div className="space-y-3">
         {placeholderExams.map((exam) => (
@@ -27,14 +30,14 @@ function SubjectExamsTab() {
                   : 'bg-[#F1F5F9] text-[#64748B]'
               }`}
             >
-              {exam.status === 'active' ? 'نشط' : 'مكتمل'}
+              {exam.status === 'active'
+                ? t('details.examStatus.active')
+                : t('details.examStatus.completed')}
             </span>
           </div>
         ))}
       </div>
-      <p className="mt-5 text-center text-xs text-[#94A3B8]">
-        سيتم ربط الاختبارات عند توفر API
-      </p>
+      <p className="mt-5 text-center text-xs text-[#94A3B8]">{t('details.exams.apiNote')}</p>
     </div>
   )
 }

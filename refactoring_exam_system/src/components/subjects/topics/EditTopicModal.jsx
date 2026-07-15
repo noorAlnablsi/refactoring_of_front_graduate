@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import { X } from 'lucide-react'
 import { updateSubjectTopic } from '../../../services/subjects.service'
 import { useToastStore } from '../../../store/toastStore'
@@ -7,6 +8,7 @@ const inputClassName =
   'w-full rounded-xl bg-[#F6F8F9] px-4 py-3 text-sm text-[#374151] outline-none placeholder:text-[#94A3B8] focus:ring-2 focus:ring-[#2AA8A2]/40'
 
 function EditTopicModal({ open, subjectId, topic, onClose, onSuccess }) {
+  const { t } = useTranslation(['subjects', 'common', 'forms'])
   const showToast = useToastStore((s) => s.showToast)
   const [name, setName] = useState('')
   const [description, setDescription] = useState('')
@@ -24,7 +26,7 @@ function EditTopicModal({ open, subjectId, topic, onClose, onSuccess }) {
 
   const validate = () => {
     const next = {}
-    if (!name.trim()) next.name = 'اسم المحور مطلوب'
+    if (!name.trim()) next.name = t('validation.topicNameRequired', { ns: 'forms' })
     setErrors(next)
     return Object.keys(next).length === 0
   }
@@ -37,7 +39,7 @@ function EditTopicModal({ open, subjectId, topic, onClose, onSuccess }) {
         name: name.trim(),
         description: description.trim() || undefined,
       })
-      showToast('تم تحديث المحور')
+      showToast(t('toasts.topicUpdated'))
       onSuccess?.()
       onClose()
     } catch (err) {
@@ -51,7 +53,7 @@ function EditTopicModal({ open, subjectId, topic, onClose, onSuccess }) {
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 p-4">
       <div dir="rtl" className="w-full max-w-lg rounded-2xl bg-white p-6 shadow-xl">
         <div className="mb-6 flex items-center justify-between">
-          <h2 className="text-xl font-extrabold text-[#2AA8A2]">تعديل المحور</h2>
+          <h2 className="text-xl font-extrabold text-[#2AA8A2]">{t('topics.editTitle')}</h2>
           <button type="button" onClick={onClose} className="text-[#94A3B8]">
             <X className="h-5 w-5" />
           </button>
@@ -59,13 +61,13 @@ function EditTopicModal({ open, subjectId, topic, onClose, onSuccess }) {
 
         <div className="space-y-4">
           <div className="space-y-2">
-            <label className="text-sm font-semibold text-[#374151]">اسم المحور</label>
+            <label className="text-sm font-semibold text-[#374151]">{t('topics.nameLabel')}</label>
             <input value={name} onChange={(e) => setName(e.target.value)} className={inputClassName} />
             {errors.name ? <p className="text-sm text-red-600">{errors.name}</p> : null}
           </div>
 
           <div className="space-y-2">
-            <label className="text-sm font-semibold text-[#374151]">الوصف</label>
+            <label className="text-sm font-semibold text-[#374151]">{t('topics.descriptionLabel')}</label>
             <textarea
               rows={3}
               value={description}
@@ -77,7 +79,7 @@ function EditTopicModal({ open, subjectId, topic, onClose, onSuccess }) {
 
         <div className="mt-7 flex items-center justify-end gap-3">
           <button type="button" onClick={onClose} className="text-sm font-bold text-[#2AA8A2]">
-            إلغاء
+            {t('cancel', { ns: 'common' })}
           </button>
           <button
             type="button"
@@ -85,7 +87,7 @@ function EditTopicModal({ open, subjectId, topic, onClose, onSuccess }) {
             disabled={loading}
             className="rounded-xl bg-[#2AA8A2] px-8 py-3 text-sm font-bold text-white disabled:opacity-70"
           >
-            {loading ? 'جاري الحفظ...' : 'حفظ التعديلات'}
+            {loading ? t('topics.submitting') : t('topics.editSubmit')}
           </button>
         </div>
       </div>

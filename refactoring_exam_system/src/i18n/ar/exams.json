@@ -1,0 +1,435 @@
+{
+  "page": {
+    "eyebrow": "المشروع الأكاديمي",
+    "title": "الامتحانات",
+    "subtitle": "أنشئ وادِر امتحاناتك الإلكترونية من المسودة حتى النشر والتصحيح.",
+    "createExam": "إنشاء امتحان جديد",
+    "searchPlaceholder": "البحث في الامتحانات...",
+    "processing": "جاري المعالجة...",
+    "empty": "لا توجد امتحانات",
+    "emptySearch": "لا توجد نتائج مطابقة للبحث.",
+    "emptyHint": "ابدأ بإنشاء امتحانك الأول."
+  },
+  "tabs": {
+    "all": "الكل",
+    "published": "المنشورة",
+    "corrected": "المصححة",
+    "drafts": "المسودات"
+  },
+  "card": {
+    "untitled": "بدون عنوان",
+    "questions": "{{count}} سؤال",
+    "points": "{{count}} درجة",
+    "minutes": "{{count}} دقيقة",
+    "startsAt": "يبدأ: {{date}}",
+    "continueEditing": "متابعة التحرير",
+    "edit": "تعديل",
+    "closeExam": "إغلاق الامتحان",
+    "delete": "حذف",
+    "archive": "أرشفة"
+  },
+  "confirm": {
+    "archive": "أرشفة الامتحان \"{{name}}\"؟",
+    "close": "إغلاق الامتحان \"{{name}}\"؟",
+    "delete": "حذف الامتحان \"{{name}}\" نهائياً؟"
+  },
+  "toast": {
+    "archived": "تمت أرشفة الامتحان",
+    "closed": "تم إغلاق الامتحان",
+    "deleted": "تم حذف الامتحان",
+    "draftSaved": "تم حفظ المسودة",
+    "created": "تم إنشاء الامتحان",
+    "infoSaved": "تم حفظ المعلومات",
+    "settingsSaved": "تم حفظ الإعدادات",
+    "published": "تم نشر الامتحان بنجاح",
+    "scheduled": "تمت جدولة نشر الامتحان"
+  },
+  "wizard": {
+    "createTitle": "إنشاء امتحان جديد",
+    "editTitle": "تحرير الامتحان",
+    "restoringDraft": "جاري استعادة مسودة الامتحان...",
+    "loadingExam": "جاري تحميل الامتحان...",
+    "header": {
+      "eyebrow": "معالج إنشاء الامتحان"
+    },
+    "steps": {
+      "info": "المعلومات",
+      "questions": "إضافة الأسئلة",
+      "settings": "الإعدادات",
+      "review": "المراجعة",
+      "publish": "النشر"
+    },
+    "basicInfo": {
+      "title": "البيانات الأساسية للامتحان",
+      "subtitle": "أدخل المعلومات الأساسية التي ستظهر للطلاب عند بدء الاختبار.",
+      "nameLabel": "اسم الاختبار",
+      "namePlaceholder": "مثال: منتصف الفصل الدراسي الأول - فيزياء",
+      "descriptionLabel": "وصف الاختبار",
+      "descriptionPlaceholder": "اكتب وصفاً مختصراً يظهر للطلاب قبل بدء الاختبار...",
+      "subjectLabel": "المادة",
+      "subjectPlaceholder": "اختر المادة الدراسية",
+      "subjectOptionalHint": "اختياري للمعلم المستقل.",
+      "durationLabel": "مدة الاختبار",
+      "minutesUnit": "دقيقة",
+      "totalScoreLabel": "الدرجة الكلية",
+      "passingScoreLabel": "علامة النجاح",
+      "autoDistribute": "تفعيل التوزيع التلقائي للعلامات",
+      "saveDraft": "حفظ كمسودة",
+      "savingDraft": "جاري الحفظ...",
+      "continueToQuestions": "المتابعة لإضافة الأسئلة",
+      "saving": "جاري الحفظ..."
+    },
+    "questions": {
+      "title": "إضافة الأسئلة",
+      "subtitle": "اختر طريقة إضافة الأسئلة من البطاقات أدناه، ثم أكمل الإضافة. زر الإعدادات يتفعّل بعد وجود سؤال واحد على الأقل.",
+      "emptyHint": "لا توجد أسئلة في هذا الامتحان بعد — اختر طريقة إضافة ثم أكملها لتفعيل «التالي — الإعدادات».",
+      "addedHint": "تم إضافة {{count}} سؤال — يمكنك المتابعة للإعدادات.",
+      "minOneError": "أضف سؤالاً واحداً على الأقل قبل الانتقال للإعدادات",
+      "minOneTitle": "أضف سؤالاً واحداً على الأقل",
+      "previous": "السابق",
+      "nextSettings": "التالي — الإعدادات",
+      "comingSoon": "قريباً",
+      "methods": {
+        "questionBank": {
+          "title": "من بنك الأسئلة",
+          "description": "اختر أسئلة محددة من بنك واحد"
+        },
+        "random": {
+          "title": "عشوائي من البنوك",
+          "description": "اختر أسئلة عشوائية من بنك أو أكثر"
+        },
+        "manual": {
+          "title": "إنشاء يدوي",
+          "description": "أنشئ أسئلة جديدة خاصة بهذا الامتحان"
+        },
+        "csv": {
+          "title": "استيراد CSV",
+          "description": "استيراد أسئلة من ملف CSV"
+        },
+        "ai": {
+          "title": "توليد بالذكاء الاصطناعي",
+          "description": "توليد أسئلة للمراجعة ثم استيرادها"
+        }
+      },
+      "review": {
+        "back": "رجوع",
+        "noTopic": "بدون محور",
+        "difficulty": "صعوبة:",
+        "points": "نقطة",
+        "pointsPlural": "نقاط",
+        "deleteQuestion": "حذف",
+        "deleting": "جاري الحذف...",
+        "deleteConfirm": "حذف هذا السؤال من الامتحان؟",
+        "questionDeleted": "تم حذف السؤال",
+        "questionUpdated": "تم تحديث السؤال",
+        "pointsLabel": "النقاط",
+        "difficultyLabel": "الصعوبة",
+        "saveEdit": "حفظ التعديل",
+        "savingEdit": "جاري الحفظ..."
+      },
+      "reviewSources": {
+        "random": {
+          "eyebrow": "بناء المعايير الأكاديمية",
+          "title": "مخطط الاختبار (Blueprint)",
+          "description": "تم اختيار الأسئلة عشوائياً وفق النسب التي حددتها. راجعها ثم تابع.",
+          "sectionTitle": "تكوين بنوك الأسئلة المختارة"
+        },
+        "fromBank": {
+          "eyebrow": "من بنك الأسئلة",
+          "title": "أسئلة الامتحان المختارة",
+          "description": "راجع الأسئلة التي اخترتها من البنك قبل المتابعة إلى الإعدادات.",
+          "sectionTitle": "الأسئلة المضافة للامتحان"
+        },
+        "manual": {
+          "eyebrow": "إنشاء يدوي",
+          "title": "أسئلة الامتحان",
+          "description": "راجع الأسئلة التي أنشأتها يدوياً قبل المتابعة إلى الإعدادات.",
+          "sectionTitle": "الأسئلة المضافة للامتحان"
+        },
+        "exam": {
+          "eyebrow": "إضافة الأسئلة",
+          "title": "أسئلة الامتحان",
+          "description": "راجع أسئلة الامتحان قبل المتابعة إلى الإعدادات.",
+          "sectionTitle": "الأسئلة المضافة للامتحان"
+        }
+      }
+    },
+    "ai": {
+      "eyebrow": "توليد بالذكاء الاصطناعي",
+      "title": "إنشاء أسئلة للمراجعة",
+      "subtitle": "ولّد أسئلة للمراجعة أولاً، عدّلها إن لزم، ثم استورد المختار منها إلى الامتحان.",
+      "countLabel": "عدد الأسئلة",
+      "difficultyLabel": "الصعوبة",
+      "typeLabel": "نوع السؤال",
+      "topicsLabel": "المحاور",
+      "instructionsLabel": "تعليمات إضافية",
+      "instructionsPlaceholder": "اختياري...",
+      "generate": "توليد الأسئلة",
+      "generating": "جاري التوليد...",
+      "refreshReview": "تحديث المراجعة",
+      "reviewTitle": "أسئلة للمراجعة",
+      "defaultTopic": "محور",
+      "deleteAria": "حذف",
+      "selectTopicsError": "اختر محوراً واحداً على الأقل",
+      "generated": "تم توليد {{count}} سؤال للمراجعة",
+      "deleted": "تم حذف السؤال المولّد",
+      "selectToImportError": "اختر أسئلة لاستيرادها",
+      "imported": "تم استيراد {{count}} سؤال",
+      "importing": "جاري الاستيراد...",
+      "importSelected": "استيراد المختار ({{count}})"
+    },
+    "csv": {
+      "eyebrow": "استيراد CSV",
+      "title": "رفع أسئلة من ملف",
+      "subtitle": "حمّل القالب الرسمي، عبّئه في Excel أو Google Sheets، ثم ارفعه هنا. الأعمدة تشمل: Question والصورة الاختيارية image_url.",
+      "templateTitle": "القالب الرسمي لأسئلة الامتحان",
+      "downloadTemplate": "تحميل قالب CSV",
+      "downloading": "جاري التحميل...",
+      "templateDownloaded": "تم تحميل قالب CSV",
+      "selectFile": "اختر ملف CSV للاستيراد",
+      "chooseFile": "اختيار ملف",
+      "selectCsvError": "يرجى اختيار ملف CSV",
+      "imported": "تم استيراد {{count}} سؤال من CSV",
+      "importedWithFailures": "تم استيراد {{count}} سؤال مع فشل {{failed}} صف",
+      "importing": "جاري الاستيراد...",
+      "importQuestions": "استيراد الأسئلة"
+    },
+    "publish": {
+      "eyebrow": "الخطوة الأخيرة",
+      "title": "النشر",
+      "subtitle": "حدّد الطلاب المسموح لهم، ثم انشر فوراً أو اختر موعد نشر مجدول.",
+      "scheduleTitle": "جدولة النشر",
+      "scheduleHint": "اترك الحقول فارغة للنشر الفوري، أو حدّد تاريخاً ووقتاً محلياً لجدولة النشر.",
+      "publishDateLabel": "تاريخ النشر",
+      "publishTimeLabel": "وقت النشر",
+      "immediateHint": "* اترك الحقول فارغة للنشر الفوري.",
+      "shareTitle": "خيارات المشاركة",
+      "directLink": "رابط مباشر للاختبار",
+      "copy": "نسخ",
+      "linkCopied": "تم نسخ الرابط",
+      "linkCopyFailed": "تعذر نسخ الرابط",
+      "studentsTitle": "الطلاب المسموح لهم",
+      "searchStudentPlaceholder": "بحث عن طالب...",
+      "loadingStudents": "جاري تحميل طلاب المادة...",
+      "noStudents": "لا يوجد طلاب مسجّلون في مادة هذا الامتحان بعد.",
+      "selectedCount": "تم تحديد {{count}} طالب — يجب أن يكون الطالب مسجّلاً في مادة الامتحان.",
+      "scheduleBothRequired": "أدخل تاريخ ووقت النشر معاً، أو اترك الحقول فارغة للنشر الفوري",
+      "invalidSchedule": "تاريخ أو وقت النشر غير صالح",
+      "publishing": "جاري النشر...",
+      "publishNow": "نشر الاختبار الآن"
+    },
+    "summary": {
+      "settingsTitle": "ملخص الإعدادات",
+      "examName": "اسم الامتحان",
+      "questionsCount": "عدد الأسئلة",
+      "totalScore": "إجمالي الدرجات",
+      "monitoring": "نظام المراقبة",
+      "monitoringActive": "مفعل",
+      "monitoringInactive": "معطّل",
+      "copyPasteTip": "منع النسخ واللصق يقلل فرص تسريب الأسئلة بنسبة 40% وفقاً لإحصائيات المنصة.",
+      "aiSecurity": "تأمين الذكاء الاصطناعي",
+      "monitoringActiveBadge": "نظام مراقبة نشط",
+      "finalTitle": "ملخص نهائي",
+      "readyToPublish": "جاهز للنشر",
+      "totalQuestions": "إجمالي الأسئلة",
+      "totalPoints": "مجموع الدرجات",
+      "subject": "المادة الدراسية",
+      "monitoringStatus": "حالة المراقبة",
+      "active": "نشط",
+      "inactive": "معطّل",
+      "allGood": "كل شيء يبدو رائعاً!",
+      "reviewComplete": "تمت مراجعة جميع الإعدادات والتأكد من صحة الأسئلة. يمكنك الآن مشاركة الرابط مع طلابك.",
+      "questionsValue": "{{count}} سؤال",
+      "pointsValue": "{{count}} نقطة",
+      "scoreValue": "{{count}} درجة"
+    },
+    "manual": {
+      "eyebrow": "إنشاء يدوي",
+      "title": "كتابة أسئلة الامتحان",
+      "subtitle": "أنشئ أسئلة جديدة خاصة بـ «{{name}}». الأسئلة اليدوية تُضاف للامتحان فقط ولا تُحفظ في بنك الأسئلة.",
+      "questionAdded": "تمت إضافة السؤال",
+      "viewExamQuestions": "عرض أسئلة الامتحان",
+      "defaultExamName": "الامتحان"
+    },
+    "pickBank": {
+      "breadcrumb": "بنوك الأسئلة",
+      "subtitle": "تصفّح أسئلة البنك وحدّد ما تريد إضافته إلى «{{name}}».",
+      "questionsCount": "({{count}}) سؤال",
+      "searchPlaceholder": "البحث عن سؤال...",
+      "selectAllVisible": "تحديد المعروض",
+      "deselectAllVisible": "إلغاء تحديد المعروض",
+      "loading": "جاري تحميل الأسئلة...",
+      "emptyBank": "لا توجد أسئلة في هذا البنك.",
+      "emptySearch": "لا توجد نتائج للبحث.",
+      "minOneError": "اختر سؤالاً واحداً على الأقل",
+      "added": "تمت إضافة {{count}} سؤال",
+      "selectedCount": "{{count}} أسئلة محددة",
+      "totalPoints": "إجمالي النقاط: {{count}}",
+      "adding": "جاري الإضافة...",
+      "addToExam": "الإضافة للاختبار",
+      "difficulty": "صعوبة:",
+      "noTopic": "بدون محور",
+      "defaultExamName": "الامتحان"
+    },
+    "review": {
+      "eyebrow": "المراجعة النهائية",
+      "title": "مراجعة الامتحان",
+      "subtitle": "راجع تفاصيل الامتحان والأسئلة قبل الانتقال إلى خطوة النشر.",
+      "summaryTitle": "ملخص الامتحان",
+      "examName": "اسم الامتحان",
+      "questionsCount": "عدد الأسئلة",
+      "totalPoints": "مجموع الدرجات",
+      "duration": "المدة",
+      "durationMinutes": "{{count}} دقيقة",
+      "questionList": "قائمة الأسئلة",
+      "nextPublish": "التالي — النشر"
+    },
+    "settings": {
+      "eyebrow": "إعدادات الامتحان والتحكم",
+      "title": "الإعدادات",
+      "subtitle": "اضبط سلوك الامتحان أثناء أداء الطلاب، وفعّل خيارات المراقبة الذكية عند الحاجة.",
+      "continueToReview": "المتابعة للمعاينة"
+    }
+  },
+  "status": {
+    "DRAFT": "مسودة",
+    "SCHEDULED": "مجدول",
+    "PUBLISHED": "منشور",
+    "CLOSED": "مصحح",
+    "ARCHIVED": "مؤرشف"
+  },
+  "sourceType": {
+    "QUESTION_BANK": "من بنك الأسئلة",
+    "MANUAL": "يدوي",
+    "RANDOM_FROM_BANK": "عشوائي من بنك"
+  },
+  "errors": {
+    "testNotFound": "الامتحان غير موجود",
+    "editDraftOnly": "لا يمكن تعديل الامتحان إلا وهو في حالة مسودة",
+    "editTooCloseToStart": "لا يمكن تعديل الامتحان قبل أقل من 30 دقيقة من وقت البدء"
+  },
+  "sidebar": {
+    "examSummary": "ملخص الامتحان",
+    "questionsCount": "عدد الأسئلة",
+    "totalScore": "الدرجة الكلية",
+    "estimatedTime": "الوقت المقدر",
+    "examName": "اسم الاختبار",
+    "minutes": "{{count}} دقيقة",
+    "minutesDash": "— دقيقة",
+    "stepOf": "الخطوة {{current}} من {{total}}"
+  },
+  "banksModal": {
+    "title": "اختر بنك الأسئلة",
+    "myBanks": "بنوكي",
+    "workspace": "ضمن مؤسسة",
+    "community": "المجتمع",
+    "empty": "لا توجد بنوك في هذا القسم.",
+    "done": "تم",
+    "selectOne": "اختر بنكاً واحداً",
+    "selectAtLeastOne": "اختر بنكاً واحداً على الأقل",
+    "errors": {
+      "loadMy": "تعذر تحميل بنوكي",
+      "loadWorkspace": "تعذر تحميل بنوك المؤسسة",
+      "loadCommunity": "تعذر تحميل بنوك المجتمع"
+    }
+  },
+  "bankCard": {
+    "generalSubject": "عام",
+    "noDescription": "لا يوجد وصف لهذا البنك بعد."
+  },
+  "choiceLetters": ["أ", "ب", "ج", "د", "هـ", "و"],
+  "topicOrdinals": ["الأول", "الثاني", "الثالث", "الرابع", "الخامس", "السادس", "السابع", "الثامن", "التاسع", "العاشر"],
+  "settings": {
+    "severity": {
+      "actionDefault": "إنهاء محاولة الامتحان فوراً عند اكتشاف وجه إضافي أو تبديل النافذة 3 مرات.",
+      "warningDefault": "إظهار رسالة تحذيرية للطالب عند الكشف عن صوت مرتفع في المحيط.",
+      "actionTitle": "إجراء صارم (Action)",
+      "warningTitle": "تحذير (Warning)",
+      "edit": "تعديل"
+    },
+    "proctoring": {
+      "title": "المراقبة الذكية المدعومة بالذكاء الاصطناعي",
+      "subtitle": "تأمين بيئة الامتحان ومنع الغش باستخدام تقنيات التتبع المتقدمة.",
+      "faceTracking": "تتبع بصمة الوجه",
+      "faceTrackingDesc": "التحقق من هوية الطالب طوال فترة الامتحان",
+      "ambientSound": "رصد الأصوات المحيطة",
+      "ambientSoundDesc": "تنبيه عند اكتشاف أصوات غريبة أو كلام",
+      "browserTracking": "تتبع نوافذ المتصفح",
+      "browserTrackingDesc": "التنبيه عند مغادرة صفحة الامتحان",
+      "preventCopyPaste": "منع النسخ واللصق",
+      "preventCopyPasteDesc": "تعطيل اختصارات لوحة المفاتيح والماوس",
+      "severityPolicy": "سياسة المخالفات (Severity Policy)"
+    },
+    "sections": {
+      "attempt": "إعدادات المحاولة",
+      "durationMinutes": "الزمن المحدد (بالدقائق)",
+      "maxAttempts": "عدد المحاولات المسموحة",
+      "navigation": "إعدادات التنقل",
+      "forceSequential": "فرض التنقل المتسلسل",
+      "allowBack": "السماح بالعودة للأسئلة السابقة",
+      "answerRules": "قواعد الإجابة",
+      "requireAll": "إلزامية الإجابة على كل الأسئلة",
+      "allowSkip": "السماح بتخطي الأسئلة",
+      "display": "عرض الأسئلة",
+      "shuffleQuestions": "ترتيب عشوائي للأسئلة",
+      "shuffleChoices": "ترتيب عشوائي للخيارات"
+    }
+  },
+  "questionTypes": {
+    "MCQ": "اختيار من متعدد",
+    "TRUE_FALSE": "صح / خطأ",
+    "MULTI_SELECT": "اختيار متعدد",
+    "ESSAY": "مقالي"
+  },
+  "difficulty": {
+    "EASY": "سهل",
+    "MEDIUM": "متوسط",
+    "HARD": "صعب"
+  },
+  "validation": {
+    "questionTextRequired": "نص السؤال مطلوب",
+    "pointsRequired": "العلامة يجب أن تكون أكبر من 0",
+    "allChoicesRequired": "جميع الخيارات مطلوبة",
+    "topicRequired": "اختر المحور للسؤال",
+    "nameRequired": "اسم الاختبار مطلوب",
+    "nameRequiredForDraft": "اسم الاختبار مطلوب لحفظ المسودة",
+    "subjectRequired": "المادة مطلوبة",
+    "durationRequired": "مدة الاختبار مطلوبة",
+    "totalScoreRequired": "الدرجة الكلية مطلوبة",
+    "passingScoreRequired": "علامة النجاح مطلوبة",
+    "passingScoreExceedsTotal": "علامة النجاح لا يمكن أن تتجاوز الدرجة الكلية"
+  },
+  "blueprint": {
+    "eyebrow": "بناء المعايير الأكاديمية",
+    "title": "مخطط الاختبار (Blueprint)",
+    "subtitle": "قم بتحديد توزيع الأسئلة عبر بنوك المعرفة المختلفة. سيتم حساب الأوزان النسبية وتوزيع مستويات الصعوبة بشكل آلي لضمان توازن التقييم.",
+    "loading": "جاري تحميل مخطط الاختبار...",
+    "generating": "جاري التوليد...",
+    "generateExam": "توليد الاختبار",
+    "sectionTitle": "تكوين بنوك الأسئلة المختارة",
+    "availableQuestions": "إجمالي الأسئلة المتاحة: {{count}} سؤال",
+    "availableQuestionsDash": "إجمالي الأسئلة المتاحة: —",
+    "questionCountLabel": "عدد الأسئلة",
+    "noTopics": "لا توجد محاور في هذا البنك. أزل البنك أو اختر بنكاً يحتوي أسئلة بمحاور.",
+    "topicLabel": "الموضوع {{ordinal}}:",
+    "percentageLabel": "النسبة المئوية",
+    "easyPercent": "سهل (%)",
+    "mediumPercent": "متوسط (%)",
+    "hardPercent": "صعب (%)",
+    "addBank": "إضافة بنك أسئلة إضافي",
+    "healthTitle": "مؤشرات صحة المخطط",
+    "weightsComplete": "توزيع الأوزان مكتمل (%100)",
+    "difficultyBalanced": "توازن مستويات الصعوبة (%100)",
+    "defaultTopic": "محور {{id}}",
+    "errors": {
+      "loadBankTopics": "تعذر تحميل محاور البنوك"
+    },
+    "validation": {
+      "completeDistribution": "أكمل توزيع المحاور ومستويات الصعوبة قبل التوليد",
+      "selectTopicPerBank": "حدد محوراً واحداً على الأقل لكل بنك بنسبة أكبر من صفر"
+    },
+    "toast": {
+      "generated": "تم توليد {{count}} سؤال بنجاح"
+    }
+  }
+}

@@ -1,11 +1,14 @@
 import { useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import { useNavigate } from 'react-router-dom'
 import { ROUTES } from '../constants/routes'
+import { translateBackendMessage } from '../i18n/translateBackendMessage'
 import { changePassword } from '../services/auth.service'
 import { useToastStore } from '../store/toastStore'
 import { validatePassword, validatePasswordMatch } from './usePasswordValidation'
 
 export function useChangePassword() {
+  const { t } = useTranslation(['settings', 'forms'])
   const navigate = useNavigate()
   const showToast = useToastStore((state) => state.showToast)
   const [currentPassword, setCurrentPassword] = useState('')
@@ -18,7 +21,7 @@ export function useChangePassword() {
     event?.preventDefault()
 
     if (!currentPassword.trim()) {
-      setError('يرجى إدخال كلمة المرور الحالية')
+      setError(t('changePassword.errors.currentRequired'))
       return
     }
 
@@ -35,7 +38,7 @@ export function useChangePassword() {
     }
 
     if (currentPassword === newPassword) {
-      setError('كلمة المرور الجديدة يجب أن تكون مختلفة عن الحالية')
+      setError(t('changePassword.errors.sameAsCurrent'))
       return
     }
 
@@ -47,10 +50,10 @@ export function useChangePassword() {
         current_password: currentPassword,
         new_password: newPassword,
       })
-      showToast('تم تغيير كلمة المرور بنجاح')
+      showToast(t('changePassword.success'))
       navigate(ROUTES.SETTINGS, { replace: true })
     } catch (err) {
-      setError(err.message || 'تعذر تغيير كلمة المرور')
+      setError(translateBackendMessage(err.message) || t('changePassword.errors.failed'))
     } finally {
       setLoading(false)
     }

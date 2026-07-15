@@ -1,3 +1,4 @@
+import { useTranslation } from 'react-i18next'
 import { ClipboardList, FileQuestion, UserCheck, Users } from 'lucide-react'
 import { formatStatValue } from '../../../lib/subjectDisplay'
 
@@ -38,38 +39,40 @@ function StatCard({ label, value, icon: Icon, iconWrapClass, badge, badgeTone })
 }
 
 function SubjectDetailsStats({ teachersCount, questionBanksCount, studentsCount }) {
+  const { t } = useTranslation('subjects')
+
   return (
     <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
       <StatCard
-        label="عدد المعلمين"
+        label={t('details.stats.teachers')}
         value={teachersCount}
         icon={Users}
         iconWrapClass="bg-[#E8F7F6] text-[#2AA8A2]"
-        badge="+12% هذا الشهر"
+        badge={t('details.stats.teachersBadge')}
         badgeTone="teal"
       />
       <StatCard
-        label="بنوك الأسئلة"
+        label={t('details.stats.banks')}
         value={questionBanksCount}
         icon={FileQuestion}
         iconWrapClass="bg-[#F1F5F9] text-[#64748B]"
-        badge="محدث اليوم"
+        badge={t('details.stats.banksBadge')}
         badgeTone="gray"
       />
       <StatCard
-        label="عدد الاختبارات"
+        label={t('details.stats.exams')}
         value="—"
         icon={ClipboardList}
         iconWrapClass="bg-[#EFF6FF] text-[#3B82F6]"
-        badge="5 اختبارات نشطة"
+        badge={t('details.stats.examsBadge')}
         badgeTone="blue"
       />
       <StatCard
-        label="الطلاب الذين تم تقييمهم"
+        label={t('details.stats.evaluatedStudents')}
         value={studentsCount > 0 ? studentsCount : '—'}
         icon={UserCheck}
         iconWrapClass="bg-[#FFF1F2] text-[#F43F5E]"
-        badge="نسبة نجاح 88%"
+        badge={t('details.stats.successRateBadge')}
         badgeTone="rose"
       />
     </div>

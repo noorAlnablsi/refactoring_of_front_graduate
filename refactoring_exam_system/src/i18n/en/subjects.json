@@ -1,0 +1,119 @@
+{
+  "pageTitle": "Academic subjects",
+  "pageSubtitle": "Manage subjects and assign responsible teachers within your institution efficiently and professionally.",
+  "addSubject": "Add new subject",
+  "toasts": {
+    "deleted": "Subject deleted"
+  },
+  "stats": {
+    "totalSubjects": "Total subjects",
+    "growthBadge": "+4 new",
+    "assignedTeachers": "Assigned teachers",
+    "newTeachersBadge": "+1 new",
+    "totalExams": "Total exams"
+  },
+  "table": {
+    "empty": "No academic subjects yet",
+    "name": "Name",
+    "teachersCount": "Teachers",
+    "questionBanks": "Question banks",
+    "examsCount": "Exams",
+    "actions": "Actions",
+    "view": "View",
+    "edit": "Edit",
+    "delete": "Delete",
+    "pagination": "Showing {{from}}–{{to}} of {{total}} subjects"
+  },
+  "page": {
+    "title": "Academic subjects",
+    "subtitle": "Manage subjects and assign responsible teachers within your institution efficiently and professionally.",
+    "addSubject": "Add new subject",
+    "deleteSuccess": "Subject deleted",
+    "itemLabel": "Subject"
+  },
+  "topics": {
+    "title": "Subject topics",
+    "description": "Define educational topics for this subject — used later when adding questions to question banks.",
+    "addTopic": "Add topic",
+    "empty": "No topics for this subject yet.",
+    "emptyHint": "Add topics to organize content and classify questions.",
+    "addFirstTopic": "Add first topic",
+    "deleteConfirm": "Delete topic \"{{name}}\"?",
+    "deleteSuccess": "Topic deleted",
+    "editAria": "Edit topic",
+    "deleteAria": "Delete topic"
+  },
+  "display": {
+    "defaultSummary": "This subject covers foundational and advanced concepts within the institution's curriculum.",
+    "defaultSubtitle": "Academic subject within the curriculum",
+    "membershipId": "Membership #{{id}}",
+    "subjectTeacher": "Subject teacher",
+    "subjectSpecialty": "Subject specialty",
+    "assignedToSubject": "Assigned to subject",
+    "assignedToSubjectWithRole": "{{role}} — assigned to subject",
+    "teachersCount": "{{count}} teachers",
+    "banksCount": "{{count}} banks",
+    "testsCount": "{{count}} exams"
+  },
+  "assignTeacher": {
+    "title": "Assign teacher",
+    "loading": "Loading teachers...",
+    "allAssigned": "All teachers are already assigned to this subject",
+    "noneAvailable": "No teachers available for assignment",
+    "membershipWarning": "Could not load teacher membership IDs — ensure the API returns membership_id",
+    "selectTeacherError": "Please select a teacher",
+    "membershipError": "Could not assign this teacher — membership ID unavailable",
+    "success": "Teacher assigned successfully",
+    "assigning": "Assigning...",
+    "assign": "Assign"
+  },
+  "sort": {
+    "label": "Sort by:",
+    "aria": "Sort subjects display",
+    "name": "Name",
+    "oldest": "Oldest",
+    "newest": "Newest"
+  },
+  "details": {
+    "tabs": {
+      "overview": "Overview",
+      "teachers": "Teachers",
+      "banks": "Question banks",
+      "exams": "Exams"
+    },
+    "overview": {
+      "descriptionTitle": "Subject description",
+      "noDescription": "No detailed description for this subject yet. You can add one explaining goals and learning outcomes by editing the subject.",
+      "recentTeachers": "Recently assigned teachers",
+      "noTeachers": "No teachers assigned to this subject yet",
+      "recentExams": "Latest exams",
+      "recentBanks": "Latest question banks",
+      "noBanks": "No linked question banks yet"
+    },
+    "teachers": {
+      "empty": "No teachers assigned to this subject",
+      "remove": "Remove"
+    },
+    "banks": {
+      "empty": "No question banks linked to this subject"
+    },
+    "exams": {
+      "title": "Subject exams",
+      "apiNote": "Exams will be linked when the API is available"
+    },
+    "examStatus": {
+      "active": "Active",
+      "completed": "Completed"
+    },
+    "stats": {
+      "teachers": "Teachers",
+      "teachersBadge": "+12% this month",
+      "banks": "Question banks",
+      "banksBadge": "Updated today",
+      "exams": "Exams",
+      "examsBadge": "5 active exams",
+      "evaluatedStudents": "Evaluated students",
+      "successRateBadge": "88% pass rate"
+    }
+  }
+}

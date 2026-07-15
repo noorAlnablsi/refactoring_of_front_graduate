@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import { Bookmark, FileText, MoreVertical, Pencil, RotateCcw, Star, Trash2 } from 'lucide-react'
 import {
   communityQuestionBankCardClassName,
@@ -16,11 +17,11 @@ const cardShadow =
 const cardShadowHover =
   'hover:shadow-[0_4px_12px_rgba(16,24,40,0.08),0_2px_4px_rgba(16,24,40,0.04)]'
 
-function StarRating({ value }) {
+function StarRating({ value, ariaLabel }) {
   const rounded = Math.round(value)
 
   return (
-    <div className="flex items-center gap-0.5" aria-label={`التقييم ${rounded} من 5`}>
+    <div className="flex items-center gap-0.5" aria-label={ariaLabel}>
       {Array.from({ length: 5 }, (_, index) => (
         <Star
           key={index}
@@ -34,7 +35,7 @@ function StarRating({ value }) {
   )
 }
 
-function AuthorAvatar({ name, avatarUrl, accent }) {
+function AuthorAvatar({ name, avatarUrl, accent, unknownInitial }) {
   if (avatarUrl) {
     return (
       <img
@@ -45,7 +46,7 @@ function AuthorAvatar({ name, avatarUrl, accent }) {
     )
   }
 
-  const initial = name?.trim()?.charAt(0) || '؟'
+  const initial = name?.trim()?.charAt(0) || unknownInitial
 
   return (
     <span
@@ -59,6 +60,7 @@ function AuthorAvatar({ name, avatarUrl, accent }) {
 }
 
 function CommunityQuestionBankCard({ bank, onEdit, onDelete, onOpenEditor }) {
+  const { t } = useTranslation(['questionBanks', 'common'])
   const [menuOpen, setMenuOpen] = useState(false)
   const menuRef = useRef(null)
   const canManage = isQuestionBankOwner(bank)
@@ -109,7 +111,7 @@ function CommunityQuestionBankCard({ bank, onEdit, onDelete, onOpenEditor }) {
                 type="button"
                 onClick={() => setMenuOpen((open) => !open)}
                 className="flex h-10 w-10 items-center justify-center rounded-xl text-[#64748B] transition hover:bg-[#F6F8F9] hover:text-[#374151]"
-                aria-label="خيارات البنك"
+                aria-label={t('card.menuAria')}
                 aria-expanded={menuOpen}
               >
                 <MoreVertical className="h-5 w-5" strokeWidth={2} />
@@ -126,7 +128,7 @@ function CommunityQuestionBankCard({ bank, onEdit, onDelete, onOpenEditor }) {
                     className="flex w-full items-center gap-2 px-4 py-2.5 text-sm font-medium text-[#374151] hover:bg-[#F8FAFB]"
                   >
                     <Pencil className="h-4 w-4 text-[#64748B]" />
-                    تعديل
+                    {t('actions.edit', { ns: 'common' })}
                   </button>
                   <button
                     type="button"
@@ -137,7 +139,7 @@ function CommunityQuestionBankCard({ bank, onEdit, onDelete, onOpenEditor }) {
                     className="flex w-full items-center gap-2 px-4 py-2.5 text-sm font-medium text-red-600 hover:bg-red-50"
                   >
                     <Trash2 className="h-4 w-4" />
-                    حذف
+                    {t('actions.delete', { ns: 'common' })}
                   </button>
                 </div>
               ) : null}
@@ -150,23 +152,28 @@ function CommunityQuestionBankCard({ bank, onEdit, onDelete, onOpenEditor }) {
             className="max-w-[70%] truncate rounded-full px-3 py-1 text-xs font-medium"
             style={{ backgroundColor: theme.badgeBg, color: theme.badgeText }}
           >
-            {bank.subject_name || 'عام'}
+            {bank.subject_name || t('card.generalSubject')}
           </span>
         </div>
 
         <div className="mt-4 flex flex-1 flex-col">
           <h3 className="line-clamp-2 text-base font-bold leading-7 text-[#111827]">{bank.title}</h3>
           <p className="mt-2 line-clamp-2 text-[13px] leading-6 text-[#6B7280]">
-            {bank.description || 'بنك أسئلة مجتمعي يغطي محتوى المادة الدراسية.'}
+            {bank.description || t('card.communityDefaultDescription')}
           </p>
         </div>
 
         <div className="mt-4 flex items-center justify-between gap-3">
           <div className="flex min-w-0 items-center gap-2">
-            <AuthorAvatar name={authorName} avatarUrl={authorAvatar} accent={theme.accent} />
+            <AuthorAvatar
+              name={authorName}
+              avatarUrl={authorAvatar}
+              accent={theme.accent}
+              unknownInitial={t('card.unknownInitial')}
+            />
             <span className="truncate text-xs font-medium text-[#374151]">{authorName}</span>
           </div>
-          <StarRating value={rating} />
+          <StarRating value={rating} ariaLabel={t('card.ratingAria', { rating: Math.round(rating) })} />
         </div>
 
         <div className="mt-4 flex items-center justify-between gap-3 border-t border-[#F1F5F9] pt-4">

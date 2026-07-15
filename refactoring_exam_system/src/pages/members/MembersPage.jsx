@@ -1,4 +1,5 @@
 import { Navigate } from 'react-router-dom'
+import { useTranslation } from 'react-i18next'
 import MembersLatestList from '../../components/members/MembersLatestList'
 import MembersStatsCards from '../../components/members/MembersStatsCards'
 import { ROUTES } from '../../constants/routes'
@@ -7,6 +8,7 @@ import { canAccessMembersModule } from '../../lib/workspaceContext'
 import { shellPageSubtitleClass, shellPageTitleClass } from '../../lib/shellUi'
 
 function MembersPage() {
+  const { t } = useTranslation('members')
   const { studentsTotal, teachersTotal, latestMembers, loading, error, isInstitution } =
     useMembersOverview()
 
@@ -17,10 +19,8 @@ function MembersPage() {
   return (
     <div className="space-y-6">
       <div>
-        <h1 className={`text-2xl md:text-[28px] ${shellPageTitleClass}`}>إدارة الأعضاء</h1>
-        <p className={`mt-2 max-w-2xl ${shellPageSubtitleClass}`}>
-          إدارة جميع الطلاب والمعلمين داخل المؤسسة.
-        </p>
+        <h1 className={`text-2xl md:text-[28px] ${shellPageTitleClass}`}>{t('pageTitle')}</h1>
+        <p className={`mt-2 max-w-2xl ${shellPageSubtitleClass}`}>{t('pageSubtitle')}</p>
       </div>
 
       {error ? (

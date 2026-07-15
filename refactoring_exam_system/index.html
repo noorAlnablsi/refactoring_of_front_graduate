@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="en">
+<html lang="ar" dir="rtl">
   <head>
     <meta charset="UTF-8" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
@@ -9,9 +9,21 @@
       ;(function () {
         try {
           var stored = localStorage.getItem('quizhub-theme')
-          if (!stored) return
-          var mode = JSON.parse(stored).state && JSON.parse(stored).state.mode
-          if (mode === 'dark') document.documentElement.classList.add('dark')
+          if (stored) {
+            var mode = JSON.parse(stored).state && JSON.parse(stored).state.mode
+            if (mode === 'dark') document.documentElement.classList.add('dark')
+          }
+        } catch (e) {}
+
+        try {
+          var languageStored = localStorage.getItem('quizhub-language')
+          var language = 'ar'
+          if (languageStored) {
+            var parsedLanguage = JSON.parse(languageStored).state && JSON.parse(languageStored).state.language
+            if (parsedLanguage === 'en') language = 'en'
+          }
+          document.documentElement.lang = language
+          document.documentElement.dir = language === 'en' ? 'ltr' : 'rtl'
         } catch (e) {}
       })()
     </script>

@@ -1,15 +1,11 @@
 import { useEffect, useMemo, useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import { ArrowRight, Check, Plus, Search } from 'lucide-react'
 import ExamWizardFooter from './ExamWizardFooter'
-import {
-  getDifficultyLabel,
-  getQuestionTypeLabel,
-} from '../../lib/questionBanks'
+import { showAppToast } from '../../lib/appToast'
 import { getQuestionBankQuestions } from '../../services/questionBanks.service'
 import { addQuestionsFromBank } from '../../services/tests.service'
 import { useToastStore } from '../../store/toastStore'
-
-const CHOICE_LETTERS = ['أ', 'ب', 'ج', 'د', 'هـ', 'و']
 
 function getDifficultyBadgeClass(difficulty) {
   if (difficulty === 'HARD') return 'bg-[#FEE2E2] text-[#DC2626]'
@@ -17,20 +13,16 @@ function getDifficultyBadgeClass(difficulty) {
   return 'bg-[#FEF3C7] text-[#D97706]'
 }
 
-function resolveTopicName(question) {
-  return (
+function SelectableBankQuestionCard({ question, selected, onToggle, t, choiceLetters }) {
+  const choices = Array.isArray(question.choices) ? question.choices : []
+  const points = question.points ?? 0
+  const isTrueFalse = question.type_code === 'TRUE_FALSE'
+  const topicName =
     question?.topic_name ||
     question?.topic?.name ||
     question?.topic_title ||
     question?.topic_label ||
-    'بدون محور'
-  )
-}
-
-function SelectableBankQuestionCard({ question, selected, onToggle }) {
-  const choices = Array.isArray(question.choices) ? question.choices : []
-  const points = question.points ?? 0
-  const isTrueFalse = question.type_code === 'TRUE_FALSE'
+    t('wizard.pickBank.noTopic')
 
   return (
     <article
@@ -41,18 +33,19 @@ function SelectableBankQuestionCard({ question, selected, onToggle }) {
       <div className="flex items-start justify-between gap-4">
         <div className="flex flex-1 flex-wrap items-center justify-start gap-2">
           <span className="rounded-full bg-[#E8F7F6] px-3 py-1 text-xs font-bold text-[#2AA8A2]">
-            {resolveTopicName(question)}
+            {topicName}
           </span>
           <span
             className={`rounded-full px-3 py-1 text-xs font-bold ${getDifficultyBadgeClass(question.difficulty)}`}
           >
-            صعوبة: {getDifficultyLabel(question.difficulty)}
+            {t('wizard.pickBank.difficulty')} {t(`difficulty.${question.difficulty}`, { defaultValue: question.difficulty })}
           </span>
           <span className="rounded-full bg-[#DBEAFE] px-3 py-1 text-xs font-bold text-[#2563EB]">
-            {getQuestionTypeLabel(question.type_code)}
+            {t(`questionTypes.${question.type_code}`, { defaultValue: question.type_code })}
           </span>
           <span className="rounded-full bg-[#E8F7F6] px-3 py-1 text-xs font-bold text-[#2AA8A2]">
-            {points} {points === 1 ? 'نقطة' : 'نقاط'}
+            {points}{' '}
+            {points === 1 ? t('wizard.questions.review.points') : t('wizard.questions.review.pointsPlural')}
           </span>
         </div>
 
@@ -78,7 +71,7 @@ function SelectableBankQuestionCard({ question, selected, onToggle }) {
       {choices.length > 0 ? (
         <ul className="mt-5 space-y-3">
           {choices.map((choice, choiceIndex) => {
-            const letter = CHOICE_LETTERS[choiceIndex] || String(choiceIndex + 1)
+            const letter = choiceLetters[choiceIndex] || String(choiceIndex + 1)
             const isCorrect = Boolean(choice.is_correct)
 
             return (
@@ -116,12 +109,15 @@ function ExamPickBankQuestionsPanel({
   onSuccess,
   savingDraft = false,
 }) {
+  const { t } = useTranslation(['exams', 'common'])
   const showToast = useToastStore((s) => s.showToast)
   const [questions, setQuestions] = useState([])
   const [selectedIds, setSelectedIds] = useState(initialSelectedIds)
   const [search, setSearch] = useState('')
   const [loading, setLoading] = useState(true)
   const [submitting, setSubmitting] = useState(false)
+
+  const choiceLetters = useMemo(() => t('choiceLetters', { returnObjects: true }), [t])
 
   useEffect(() => {
     if (!bank?.id) return undefined
@@ -186,7 +182,7 @@ function ExamPickBankQuestionsPanel({
 
   const handleSubmit = async () => {
     if (!selectedIds.length) {
-      showToast('اختر سؤالاً واحداً على الأقل', 'error')
+      showAppToast('wizard.pickBank.minOneError', 'error', { ns: 'exams' })
       return
     }
 
@@ -196,7 +192,7 @@ function ExamPickBankQuestionsPanel({
         bank_id: bank.id,
         question_ids: selectedIds,
       })
-      showToast(`تمت إضافة ${selectedIds.length} سؤال`)
+      showAppToast('wizard.pickBank.added', 'success', { ns: 'exams', count: selectedIds.length })
       onSuccess?.()
     } catch (err) {
       showToast(err.message, 'error')
@@ -205,13 +201,13 @@ function ExamPickBankQuestionsPanel({
     }
   }
 
-  const examName = test?.title || test?.name || 'الامتحان'
+  const examName = test?.title || test?.name || t('wizard.pickBank.defaultExamName')
 
   return (
     <div className="space-y-6 pb-4">
       <header className="text-right">
         <p className="text-sm font-semibold text-[#94A3B8]">
-          بنوك الأسئلة <span className="mx-1">›</span> {bank.title}
+          {t('wizard.pickBank.breadcrumb')} <span className="mx-1">›</span> {bank.title}
         </p>
         <div className="mt-3 flex flex-wrap items-start justify-between gap-4">
           <div>
@@ -219,11 +215,11 @@ function ExamPickBankQuestionsPanel({
               {bank.title}
             </h2>
             <p className="mt-2 max-w-2xl text-sm leading-7 text-[#64748B]">
-              تصفّح أسئلة البنك وحدّد ما تريد إضافته إلى «{examName}».
+              {t('wizard.pickBank.subtitle', { name: examName })}
             </p>
           </div>
           <span className="rounded-full bg-[#E8F7F6] px-4 py-2 text-sm font-bold text-[#2AA8A2]">
-            ({questions.length}) سؤال
+            {t('wizard.pickBank.questionsCount', { count: questions.length })}
           </span>
         </div>
       </header>
@@ -235,7 +231,7 @@ function ExamPickBankQuestionsPanel({
             type="search"
             value={search}
             onChange={(event) => setSearch(event.target.value)}
-            placeholder="البحث عن سؤال..."
+            placeholder={t('wizard.pickBank.searchPlaceholder')}
             className="w-full rounded-xl bg-white py-3 pr-11 pl-4 text-sm text-[#374151] outline-none ring-1 ring-[#E5E9EB] focus:ring-2 focus:ring-[#2AA8A2]/30"
           />
         </div>
@@ -247,20 +243,20 @@ function ExamPickBankQuestionsPanel({
             className="text-sm font-bold text-[#2AA8A2]"
           >
             {filteredQuestions.every((question) => selectedIds.includes(question.id))
-              ? 'إلغاء تحديد المعروض'
-              : 'تحديد المعروض'}
+              ? t('wizard.pickBank.deselectAllVisible')
+              : t('wizard.pickBank.selectAllVisible')}
           </button>
         ) : null}
       </div>
 
       {loading ? (
         <div className="flex min-h-[320px] items-center justify-center rounded-2xl bg-white ring-1 ring-[#E5E9EB]">
-          <p className="text-sm text-[#94A3B8]">جاري تحميل الأسئلة...</p>
+          <p className="text-sm text-[#94A3B8]">{t('wizard.pickBank.loading')}</p>
         </div>
       ) : filteredQuestions.length === 0 ? (
         <div className="flex min-h-[320px] items-center justify-center rounded-2xl bg-white ring-1 ring-[#E5E9EB]">
           <p className="text-sm text-[#94A3B8]">
-            {questions.length === 0 ? 'لا توجد أسئلة في هذا البنك.' : 'لا توجد نتائج للبحث.'}
+            {questions.length === 0 ? t('wizard.pickBank.emptyBank') : t('wizard.pickBank.emptySearch')}
           </p>
         </div>
       ) : (
@@ -271,6 +267,8 @@ function ExamPickBankQuestionsPanel({
               question={question}
               selected={selectedIds.includes(question.id)}
               onToggle={() => toggleQuestion(question.id)}
+              t={t}
+              choiceLetters={choiceLetters}
             />
           ))}
         </div>
@@ -284,13 +282,13 @@ function ExamPickBankQuestionsPanel({
             className="inline-flex items-center gap-2 rounded-xl bg-[#F6F8F9] px-6 py-3 text-sm font-bold text-[#64748B]"
           >
             <ArrowRight className="h-4 w-4" />
-            رجوع
+            {t('wizard.questions.review.back')}
           </button>
 
           <div className="flex flex-wrap items-center gap-4 text-sm font-bold text-[#374151]">
-            <span>{selectedIds.length} أسئلة محددة</span>
+            <span>{t('wizard.pickBank.selectedCount', { count: selectedIds.length })}</span>
             <span className="text-[#94A3B8]">·</span>
-            <span>إجمالي النقاط: {totalSelectedPoints}</span>
+            <span>{t('wizard.pickBank.totalPoints', { count: totalSelectedPoints })}</span>
           </div>
 
           <div className="flex flex-wrap items-center gap-4">
@@ -300,7 +298,7 @@ function ExamPickBankQuestionsPanel({
               disabled={savingDraft || !onSaveDraft}
               className="text-sm font-bold text-[#64748B] hover:text-[#374151] disabled:opacity-50"
             >
-              {savingDraft ? 'جاري الحفظ...' : 'حفظ كمسودة'}
+              {savingDraft ? t('wizard.basicInfo.savingDraft') : t('wizard.basicInfo.saveDraft')}
             </button>
             <button
               type="button"
@@ -309,7 +307,7 @@ function ExamPickBankQuestionsPanel({
               className="inline-flex items-center gap-2 rounded-xl bg-[#2AA8A2] px-7 py-3 text-sm font-bold text-white shadow-[0_10px_20px_rgba(42,168,162,0.28)] disabled:opacity-50"
             >
               <Plus className="h-4 w-4" />
-              {submitting ? 'جاري الإضافة...' : 'الإضافة للاختبار'}
+              {submitting ? t('wizard.pickBank.adding') : t('wizard.pickBank.addToExam')}
             </button>
           </div>
         </div>

@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
+import { useTranslation } from 'react-i18next'
 import AuthShell from '../../components/auth/AuthShell'
 import { ROUTES } from '../../constants/routes'
 import { useStudentJoinCodeGuard } from '../../hooks/useStudentRegisterFlow'
@@ -11,6 +12,7 @@ const inputClassName =
   'h-12 w-full rounded-xl bg-[#EEF2F3] px-4 text-sm text-[#374151] outline-none placeholder:text-[#9CA3AF] focus:ring-2 focus:ring-[#2AA8A2]/40 md:w-[448px]'
 
 function StudentJoinCodePage() {
+  const { t } = useTranslation(['auth', 'forms'])
   useStudentJoinCodeGuard()
   const navigate = useNavigate()
   const store = useRegistrationStore()
@@ -20,7 +22,7 @@ function StudentJoinCodePage() {
 
   const handleSubmit = async () => {
     if (!store.join_code.trim()) {
-      setError('كود الانضمام مطلوب')
+      setError(t('validation.joinCodeRequired', { ns: 'forms' }))
       return
     }
 
@@ -49,18 +51,22 @@ function StudentJoinCodePage() {
   }
 
   return (
-    <AuthShell heroImage={loginHero} heroAlt="إصقل تقييمك الأكاديمي">
-      <h1 className="text-right text-3xl font-extrabold text-[#2A3433] md:text-4xl">أهلاً بك في كويزهاب</h1>
+    <AuthShell heroImage={loginHero} heroAlt={t('studentRegister.heroAlt')}>
+      <h1 className="text-right text-3xl font-extrabold text-[#2A3433] md:text-4xl">
+        {t('studentRegister.title')}
+      </h1>
       <p className="mt-3 text-right text-sm leading-7 text-[#6B7280] md:text-base">
-        أدخل كود الانضمام المقدم من مؤسستك التعليمية
+        {t('studentRegister.joinCodeSubtitle')}
       </p>
 
       <div className="mt-8 space-y-2">
-        <label className="block text-right text-sm font-semibold text-[#374151]">كود الانضمام</label>
+        <label className="block text-right text-sm font-semibold text-[#374151]">
+          {t('studentRegister.joinCodeLabel')}
+        </label>
         <input
           value={store.join_code}
           onChange={(e) => updateFields({ join_code: e.target.value.toUpperCase() })}
-          placeholder="M3YOV311"
+          placeholder={t('studentRegister.joinCodePlaceholder')}
           className={inputClassName}
         />
         {error ? <p className="text-sm text-red-600">{error}</p> : null}
@@ -72,13 +78,13 @@ function StudentJoinCodePage() {
         disabled={loading}
         className="mt-8 h-12 w-full rounded-xl bg-[#2AA8A2] text-base font-bold text-white shadow-[0_12px_20px_rgba(42,168,162,0.22)] transition hover:opacity-95 disabled:opacity-70 md:w-[448px]"
       >
-        {loading ? 'جاري التسجيل...' : 'دخول'}
+        {loading ? t('studentRegister.submitting') : t('studentRegister.submit')}
       </button>
 
       <p className="mt-5 text-center text-sm text-[#6B7280]">
-        لديك حساب بالفعل؟{' '}
+        {t('welcome.hasAccount')}{' '}
         <Link to={ROUTES.LOGIN} className="font-bold text-[#2AA8A2]">
-          تسجيل دخول
+          {t('welcome.loginLink')}
         </Link>
       </p>
     </AuthShell>

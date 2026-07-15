@@ -2,6 +2,7 @@ import { useCallback, useEffect, useRef, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { OTP_LENGTH, OTP_RESEND_COOLDOWN_SEC, REGISTRATION_FLOW } from '../constants/auth'
 import { ROUTES } from '../constants/routes'
+import { tUI } from '../lib/appToast'
 import { resendOtp, verifyOtp } from '../services/auth.service'
 import { useRegistrationStore } from '../store/registrationStore'
 
@@ -63,7 +64,7 @@ export function useOtpVerification() {
   const verify = useCallback(
     async (otpCode = otpValue) => {
       if (otpCode.length !== OTP_LENGTH) {
-        setError('يرجى إدخال رمز التحقق المكوّن من 6 أرقام')
+        setError(tUI('otp.required', { ns: 'auth' }))
         return
       }
 
@@ -74,7 +75,7 @@ export function useOtpVerification() {
       try {
         const result = await verifyOtp({ email, otp: otpCode })
         setVerifyResult(result)
-        setSuccessMessage('تم التحقق بنجاح')
+        setSuccessMessage(tUI('otp.verified', { ns: 'auth' }))
 
         if (isStudentFlow || isInviteFlow) {
           const registeredEmail = email
@@ -96,7 +97,7 @@ export function useOtpVerification() {
         const match = err.message.match(/(\d+)\s*attempts?\s*remaining/i)
         if (match) {
           setOtpAttemptsRemaining(Number(match[1]))
-          setError(`رمز التحقق غير صحيح - ${match[1]} محاولات متبقية`)
+          setError(tUI('otp.invalidWithAttempts', { ns: 'auth', count: match[1] }))
         } else {
           setError(err.message)
         }
@@ -133,7 +134,7 @@ export function useOtpVerification() {
     try {
       const result = await resendOtp({ email })
       updateFields({ dev_otp: result.dev_otp || '' })
-      setSuccessMessage('تم إرسال رمز تحقق جديد إلى بريدك الإلكتروني')
+      setSuccessMessage(tUI('otp.resent', { ns: 'auth' }))
       setCooldown(OTP_RESEND_COOLDOWN_SEC)
       setDigits(Array(OTP_LENGTH).fill(''))
       lastSubmittedOtp.current = ''

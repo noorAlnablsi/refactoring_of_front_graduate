@@ -1,0 +1,107 @@
+{
+  "page": {
+    "title": "الإعدادات",
+    "home": "الرئيسية"
+  },
+  "profile": {
+    "title": "الملف الشخصي",
+    "defaultUser": "مستخدم",
+    "institutionOwner": "مدير مؤسسة \"{{workspace}}\"",
+    "soloTeacher": "معلم مستقل",
+    "uploadingAvatar": "جاري رفع الصورة...",
+    "avatarHint": "اضغط على أيقونة الكاميرا لتحديث صورتك",
+    "emailLabel": "البريد الإلكتروني",
+    "workspaceLabel": "مساحة العمل",
+    "defaultWorkspace": "مساحة تعليمية",
+    "editProfile": "تعديل الملف الشخصي",
+    "avatarUpdateError": "تعذر تحديث الصورة الشخصية"
+  },
+  "workspaces": {
+    "title": "مساحات العمل",
+    "activeBadge": "{{count}} نشطة",
+    "currentWorkspace": "مساحة العمل الحالية",
+    "role": "الدور: {{role}}",
+    "createNew": "إنشاء مساحة عمل جديدة"
+  },
+  "institution": {
+    "title": "إعدادات المؤسسة",
+    "description": "تظهر هذه البيانات لجميع أعضاء المؤسسة داخل المنصة.",
+    "nameLabel": "اسم المؤسسة",
+    "typeLabel": "نوع المؤسسة",
+    "descriptionLabel": "الوصف",
+    "noDescription": "لم تُضف نبذة عن المؤسسة بعد.",
+    "edit": "تعديل بيانات المؤسسة",
+    "loadError": "تعذر تحميل بيانات المؤسسة",
+    "defaultType": "أكاديمية"
+  },
+  "appearance": {
+    "changePassword": "تغيير كلمة المرور",
+    "theme": "النمط",
+    "lightMode": "الوضع الفاتح",
+    "darkMode": "الوضع الداكن"
+  },
+  "privacy": {
+    "title": "الخصوصية والبيانات",
+    "logoutAll": "تسجيل خروج من المنصة",
+    "loggingOut": "جاري الخروج...",
+    "deleteAccount": "حذف الحساب نهائياً"
+  },
+  "changePassword": {
+    "title": "إعادة تعيين كلمة المرور",
+    "currentLabel": "كلمة المرور الحالية",
+    "currentPlaceholder": "أدخل كلمة المرور الحالية",
+    "newLabel": "كلمة المرور الجديدة",
+    "newPlaceholder": "أدخل كلمة المرور الجديدة",
+    "confirmLabel": "تأكيد كلمة المرور الجديدة",
+    "confirmPlaceholder": "أعد إدخال كلمة المرور الجديدة",
+    "submit": "تحديث كلمة المرور",
+    "submitting": "جاري التحديث...",
+    "securityTitle": "حرصاً على أمان بياناتك",
+    "securityDescription": "كلمة المرور هي مفتاح الوصول إلى بياناتك الأكاديمية. ننصحك باختيار كلمة مرور قوية تحتوي على مزيج من الأحرف والأرقام والرموز.",
+    "tips": {
+      "length": "{{count}} أحرف على الأقل",
+      "letters": "مزيج من الحروف (A, a)",
+      "symbols": "رموز خاصة (!@#)"
+    }
+  },
+  "createWorkspace": {
+    "shellTitle": "إنشاء مساحة عمل",
+    "shellSubtitle": "أكاديميك هب",
+    "help": "المساعدة",
+    "platformName": "منصة الملاذ الأكاديمي",
+    "copyright": "© 2024 منصة الملاذ الأكاديمي، جميع الحقوق محفوظة.",
+    "terms": "شروط الخدمة",
+    "privacy": "سياسة الخصوصية",
+    "support": "اتصل بالدعم",
+    "title": "خطوة واحدة لبدء رحلتك الأكاديمية",
+    "subtitle": "أنشئ مساحة عمل جديدة لتنظيم اختباراتك، متابعة أداء الطلاب، وبناء تجربة تعليمية متكاملة تحت حسابك الحالي.",
+    "accountNotice": "تنبيه هام حول الحساب:",
+    "accountNoticeBody": "سيتم إنشاء مساحة العمل الجديدة تحت حسابك الحالي، لن تحتاج إلى بيانات تسجيل دخول جديدة للوصول إليها.",
+    "kindLabel": "نوع المساحة",
+    "institutionPlatform": "منصة تعليمية",
+    "soloTeacher": "معلم مستقل",
+    "logoLabelInstitution": "شعار مؤسستك (اختياري)",
+    "logoLabelSolo": "صورتك الشخصية (اختياري)",
+    "uploadLogoInstitution": "رفع الشعار",
+    "uploadLogoSolo": "رفع الصورة",
+    "logoPreviewAlt": "معاينة الشعار",
+    "removeLogoAria": "إزالة الشعار",
+    "nameLabelInstitution": "اسم المؤسسة التعليمية",
+    "nameLabelSolo": "اسم المعلم",
+    "namePlaceholderInstitution": "مثلاً: أكاديمية النخبة للعلوم",
+    "namePlaceholderSolo": "مثلاً: رنا العطار",
+    "bioLabelInstitution": "نبذة عن المؤسسة",
+    "bioLabelSolo": "نبذة عنك",
+    "bioPlaceholderInstitution": "اكتب نبذة قصيرة عن أهداف المؤسسة أو القسم...",
+    "bioPlaceholderSolo": "اكتب نبذة قصيرة عنك كمعلم وخبراتك التعليمية...",
+    "submit": "إنشاء مساحة العمل",
+    "submitting": "جاري الإنشاء...",
+    "termsAgreement": "بالنقر على \"إنشاء مساحة العمل\"، فإنك توافق على",
+    "and": "و",
+    "success": "تم إنشاء مساحة العمل بنجاح",
+    "nameRequiredInstitution": "اسم المنصة مطلوب",
+    "nameRequiredSolo": "اسم المعلم مطلوب",
+    "bioRequired": "نبذة عنك مطلوبة",
+    "createError": "تعذر إنشاء مساحة العمل"
+  }
+}

@@ -1,0 +1,79 @@
+{
+  "header": {
+    "login": "Sign in",
+    "home": "Home",
+    "solutions": "Solutions",
+    "services": "Services",
+    "about": "About us"
+  },
+  "hero": {
+    "badge": "Platform principle",
+    "titleLine1": "Flexible exams,",
+    "titleLine2": "better security",
+    "subtitle": "Empowering educational institutions with flexible exam creation, deep analytics, and robust security features. Streamline your academic workflow while ensuring integrity.",
+    "cta": "Get started!",
+    "socialProof": "Over 500 institutions worldwide have joined us",
+    "imageAlt": "Virtual exam meeting",
+    "statValue": "2.4M+",
+    "statLabel": "Users served"
+  },
+  "trusted": {
+    "title": "Trusted by the following educational institutions and academies"
+  },
+  "features": {
+    "titleLine1": "Precision tools",
+    "titleLine2": "for modern educators",
+    "subtitle": "Every feature is designed to reduce administrative burden and enhance the learning experience.",
+    "aiGeneration": {
+      "title": "Automatic exam generation",
+      "description": "Let AI build balanced, non-repetitive exams based on curriculum weights and difficulty criteria.",
+      "readMore": "Read more"
+    },
+    "questionBank": {
+      "title": "Question bank creation",
+      "description": "Organize academic assets with smart tags — import and manage thousands of questions across departments with ease.",
+      "tags": {
+        "smartImport": "Smart import",
+        "tagEngine": "Tag engine"
+      }
+    },
+    "integrity": {
+      "title": "Academic integrity suite",
+      "description": "Advanced proctoring, random question shuffling, and dynamic display to ensure the highest exam security standards.",
+      "link": "Security whitepaper",
+      "imageAlt": "Exam security"
+    },
+    "analytics": {
+      "title": "Student analytics",
+      "description": "Dive into performance metrics with psychometric analysis and cohort progress tracking."
+    }
+  },
+  "cta": {
+    "title": "Ready to elevate your institution?",
+    "subtitle": "Join hundreds of universities and schools transforming their assessment strategy with EduAssess.",
+    "button": "Create institution account"
+  },
+  "footer": {
+    "tagline": "We provide the infrastructure for the next generation of academic excellence.",
+    "platform": "Platform",
+    "company": "Company",
+    "contact": "Contact us",
+    "platformLinks": {
+      "assessmentEngine": "Assessment engine",
+      "questionBanks": "Question banks",
+      "aiGenerator": "AI generator",
+      "analyticsPortal": "Analytics portal"
+    },
+    "companyLinks": {
+      "about": "About us",
+      "caseStudies": "Case studies",
+      "partners": "Partner program",
+      "privacy": "Privacy policy"
+    },
+    "supportEmail": "support@eduassess.com",
+    "security": "Security",
+    "cookies": "Cookies",
+    "terms": "Terms of service",
+    "copyright": "© EduAssess 2024. All rights reserved."
+  }
+}

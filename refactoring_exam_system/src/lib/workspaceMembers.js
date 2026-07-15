@@ -1,10 +1,16 @@
+import i18n from '../i18n'
 import { normalizeWorkspaceTeacher } from './workspaceTeachers'
+import { normalizeWorkspaceStudent as normalizeStudent } from './workspaceStudents'
+
+function tMembers(key, options = {}) {
+  return i18n.t(key, { ns: 'members', ...options })
+}
 
 export function normalizeWorkspaceStudent(student) {
   if (!student || typeof student !== 'object') return student
 
   return {
-    ...student,
+    ...normalizeStudent(student),
     memberKind: 'STUDENT',
   }
 }
@@ -37,15 +43,15 @@ export function formatRelativeTimeAr(dateString) {
   const diffMs = Date.now() - date.getTime()
   const minutes = Math.floor(diffMs / 60000)
 
-  if (minutes < 1) return 'الآن'
-  if (minutes < 60) return `منذ ${minutes} دقيقة`
+  if (minutes < 1) return tMembers('relativeTime.now')
+  if (minutes < 60) return tMembers('relativeTime.minutesAgo', { count: minutes })
 
   const hours = Math.floor(minutes / 60)
-  if (hours < 24) return `منذ ${hours} ساعة`
+  if (hours < 24) return tMembers('relativeTime.hoursAgo', { count: hours })
 
   const days = Math.floor(hours / 24)
-  if (days === 1) return 'أمس'
-  return `منذ ${days} يوم`
+  if (days === 1) return tMembers('relativeTime.yesterday')
+  return tMembers('relativeTime.daysAgo', { count: days })
 }
 
 export function getMemberSubtitle(member) {
@@ -56,26 +62,47 @@ export function getMemberSubtitle(member) {
 
   if (isTeacher) {
     const count = member.assigned_subjects_count
-    if (count != null) return `معلم • ${count} مواد`
-    return 'معلم'
+    if (count != null) return tMembers('roles.teacherWithSubjects', { count })
+    return tMembers('roles.teacher')
   }
 
   const count = member.enrolled_subjects_count
-  if (count != null) return `طالب • ${count} مواد`
-  return 'طالب'
+  if (count != null) return tMembers('roles.studentWithSubjects', { count })
+  return tMembers('roles.student')
 }
 
-const STATUS_BADGES = {
-  ACTIVE: {
-    label: 'نشط',
-    className: 'bg-[var(--shell-accent-bg)] text-[var(--shell-accent)]',
-  },
-  PENDING: {
-    label: 'قيد الانتظار',
-    className: 'bg-[var(--shell-hover)] text-[var(--shell-text-muted)]',
-  },
+const STATUS_BADGE_CLASSES = {
+  ACTIVE: 'bg-[var(--shell-accent-bg)] text-[var(--shell-accent)]',
+  PENDING: 'bg-[var(--shell-hover)] text-[var(--shell-text-muted)]',
+  SUSPENDED: 'bg-[var(--shell-hover)] text-[var(--shell-text-muted)]',
+}
+
+function getStatusBadge(status, statusKey) {
+  const className = STATUS_BADGE_CLASSES[status] || STATUS_BADGE_CLASSES.PENDING
+  const label = tMembers(`status.${statusKey}`, {
+    defaultValue: tMembers('status.pending'),
+  })
+
+  return { label, className }
+}
+
+const MEMBER_STATUS_KEYS = {
+  ACTIVE: 'active',
+  PENDING: 'pending',
+}
+
+const TEACHER_STATUS_KEYS = {
+  ACTIVE: 'active',
+  PENDING: 'pending',
+  SUSPENDED: 'suspended',
 }
 
 export function getMemberStatusBadge(status) {
-  return STATUS_BADGES[status] || STATUS_BADGES.PENDING
+  const statusKey = MEMBER_STATUS_KEYS[status] || 'pending'
+  return getStatusBadge(status, statusKey)
+}
+
+export function getTeacherStatusBadge(status) {
+  const statusKey = TEACHER_STATUS_KEYS[status] || 'pending'
+  return getStatusBadge(status, statusKey)
 }

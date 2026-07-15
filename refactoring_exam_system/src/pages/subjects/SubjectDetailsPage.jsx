@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { useParams } from 'react-router-dom'
+import { useTranslation } from 'react-i18next'
 import AssignTeacherModal from '../../components/subjects/AssignTeacherModal'
 import SubjectDetailsBreadcrumb from '../../components/subjects/details/SubjectDetailsBreadcrumb'
 import SubjectDetailsHeader from '../../components/subjects/details/SubjectDetailsHeader'
@@ -31,6 +32,7 @@ function SubjectDetailsSkeleton() {
 }
 
 function SubjectDetailsPage() {
+  const { t } = useTranslation('subjects')
   const { id } = useParams()
   const showToast = useToastStore((s) => s.showToast)
   const {
@@ -48,12 +50,12 @@ function SubjectDetailsPage() {
   const [editOpen, setEditOpen] = useState(false)
   const [assignOpen, setAssignOpen] = useState(false)
 
-  const assignedIds = teachers.map((t) => t.membership_id).filter(Boolean)
+  const assignedIds = teachers.map((teacher) => teacher.membership_id).filter(Boolean)
 
   const handleRemoveTeacher = async (membershipId) => {
     try {
       await removeTeacherFromSubject(id, membershipId)
-      showToast('تم إزالة المعلم من المادة')
+      showToast(t('toasts.teacherRemoved'))
       refetch()
     } catch (err) {
       showToast(err.message, 'error')
@@ -63,7 +65,7 @@ function SubjectDetailsPage() {
   if (loading) return <SubjectDetailsSkeleton />
 
   if (error || !subject) {
-    return <p className="text-red-600">{error || 'المادة غير موجودة'}</p>
+    return <p className="text-red-600">{error || t('notFound')}</p>
   }
 
   return (

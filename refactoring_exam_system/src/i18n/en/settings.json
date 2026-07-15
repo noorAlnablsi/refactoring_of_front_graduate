@@ -1,0 +1,107 @@
+{
+  "page": {
+    "title": "Settings",
+    "home": "Home"
+  },
+  "profile": {
+    "title": "Profile",
+    "defaultUser": "User",
+    "institutionOwner": "Institution owner — \"{{workspace}}\"",
+    "soloTeacher": "Independent teacher",
+    "uploadingAvatar": "Uploading photo...",
+    "avatarHint": "Tap the camera icon to update your photo",
+    "emailLabel": "Email",
+    "workspaceLabel": "Workspace",
+    "defaultWorkspace": "Educational workspace",
+    "editProfile": "Edit profile",
+    "avatarUpdateError": "Could not update profile photo"
+  },
+  "workspaces": {
+    "title": "Workspaces",
+    "activeBadge": "{{count}} active",
+    "currentWorkspace": "Current workspace",
+    "role": "Role: {{role}}",
+    "createNew": "Create new workspace"
+  },
+  "institution": {
+    "title": "Institution settings",
+    "description": "This information is visible to all institution members on the platform.",
+    "nameLabel": "Institution name",
+    "typeLabel": "Institution type",
+    "descriptionLabel": "Description",
+    "noDescription": "No institution description added yet.",
+    "edit": "Edit institution details",
+    "loadError": "Could not load institution data",
+    "defaultType": "Academy"
+  },
+  "appearance": {
+    "changePassword": "Change password",
+    "theme": "Theme",
+    "lightMode": "Light mode",
+    "darkMode": "Dark mode"
+  },
+  "privacy": {
+    "title": "Privacy & data",
+    "logoutAll": "Sign out of platform",
+    "loggingOut": "Signing out...",
+    "deleteAccount": "Permanently delete account"
+  },
+  "changePassword": {
+    "title": "Reset password",
+    "currentLabel": "Current password",
+    "currentPlaceholder": "Enter your current password",
+    "newLabel": "New password",
+    "newPlaceholder": "Enter your new password",
+    "confirmLabel": "Confirm new password",
+    "confirmPlaceholder": "Re-enter your new password",
+    "submit": "Update password",
+    "submitting": "Updating...",
+    "securityTitle": "Protecting your data",
+    "securityDescription": "Your password is the key to your academic data. Choose a strong password with a mix of letters, numbers, and symbols.",
+    "tips": {
+      "length": "At least {{count}} characters",
+      "letters": "Mix of letters (A, a)",
+      "symbols": "Special characters (!@#)"
+    }
+  },
+  "createWorkspace": {
+    "shellTitle": "Create workspace",
+    "shellSubtitle": "Academic Hub",
+    "help": "Help",
+    "platformName": "Academic Sanctuary Platform",
+    "copyright": "© 2024 Academic Sanctuary Platform. All rights reserved.",
+    "terms": "Terms of service",
+    "privacy": "Privacy policy",
+    "support": "Contact support",
+    "title": "One step to start your academic journey",
+    "subtitle": "Create a new workspace to organize exams, track student performance, and build an integrated learning experience under your current account.",
+    "accountNotice": "Important account notice:",
+    "accountNoticeBody": "The new workspace will be created under your current account — you won't need new sign-in credentials to access it.",
+    "kindLabel": "Workspace type",
+    "institutionPlatform": "Educational platform",
+    "soloTeacher": "Independent teacher",
+    "logoLabelInstitution": "Institution logo (optional)",
+    "logoLabelSolo": "Profile photo (optional)",
+    "uploadLogoInstitution": "Upload logo",
+    "uploadLogoSolo": "Upload photo",
+    "logoPreviewAlt": "Logo preview",
+    "removeLogoAria": "Remove logo",
+    "nameLabelInstitution": "Institution name",
+    "nameLabelSolo": "Teacher name",
+    "namePlaceholderInstitution": "e.g. Elite Science Academy",
+    "namePlaceholderSolo": "e.g. Rana Al-Attar",
+    "bioLabelInstitution": "About the institution",
+    "bioLabelSolo": "About you",
+    "bioPlaceholderInstitution": "Write a short description of the institution or department goals...",
+    "bioPlaceholderSolo": "Write a short bio about yourself as a teacher and your experience...",
+    "submit": "Create workspace",
+    "submitting": "Creating...",
+    "termsAgreement": "By clicking \"Create workspace\", you agree to the",
+    "and": "and",
+    "success": "Workspace created successfully",
+    "nameRequiredInstitution": "Platform name is required",
+    "nameRequiredSolo": "Teacher name is required",
+    "bioRequired": "Bio is required",
+    "createError": "Could not create workspace"
+  }
+}

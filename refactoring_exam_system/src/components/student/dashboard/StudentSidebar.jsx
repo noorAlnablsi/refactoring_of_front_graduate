@@ -1,4 +1,5 @@
 import { NavLink } from 'react-router-dom'
+import { useTranslation } from 'react-i18next'
 import {
   ClipboardList,
   GraduationCap,
@@ -10,16 +11,17 @@ import SidebarSessionLogout from '../../auth/SidebarSessionLogout'
 import { ROUTES } from '../../../constants/routes'
 import { getActiveMembership } from '../../../lib/workspaceContext'
 
-const navItems = [
-  { to: ROUTES.STUDENT_DASHBOARD, label: 'الرئيسية', icon: LayoutGrid, end: true },
-  { to: ROUTES.STUDENT_EXAMS, label: 'الاختبارات', icon: ClipboardList, end: false },
-  { to: ROUTES.STUDENT_RESULTS, label: 'النتائج', icon: Star, end: false },
-  { to: ROUTES.STUDENT_SETTINGS, label: 'الإعدادات', icon: Settings, end: false },
-]
-
 function StudentSidebar() {
+  const { t } = useTranslation(['student', 'auth'])
   const membership = getActiveMembership()
-  const workspaceName = membership?.workspace?.name || 'QuizHub'
+  const workspaceName = membership?.workspace?.name || t('brand.quizHub', { ns: 'auth' })
+
+  const navItems = [
+    { to: ROUTES.STUDENT_DASHBOARD, labelKey: 'sidebar.home', icon: LayoutGrid, end: true },
+    { to: ROUTES.STUDENT_EXAMS, labelKey: 'sidebar.exams', icon: ClipboardList, end: false },
+    { to: ROUTES.STUDENT_RESULTS, labelKey: 'sidebar.results', icon: Star, end: false },
+    { to: ROUTES.STUDENT_SETTINGS, labelKey: 'sidebar.settings', icon: Settings, end: false },
+  ]
 
   return (
     <aside className="sticky top-0 hidden h-screen w-[260px] shrink-0 flex-col border-l border-[#E5E9EB] bg-white lg:flex">
@@ -32,13 +34,13 @@ function StudentSidebar() {
           <GraduationCap className="h-4 w-4 text-[#2AA8A2]" strokeWidth={2.2} />
         </span>
         <div>
-          <p className="text-base font-semibold leading-tight text-[#2AA8A2]">بوابة الطالب</p>
+          <p className="text-base font-semibold leading-tight text-[#2AA8A2]">{t('portal.title')}</p>
           <p className="mt-0.5 text-[11px] font-normal leading-tight text-[#6B7280]">{workspaceName}</p>
         </div>
       </div>
 
       <nav className="min-h-0 flex-1 space-y-2 overflow-y-auto px-4 py-6">
-        {navItems.map(({ to, label, icon: Icon, end }) => (
+        {navItems.map(({ to, labelKey, icon: Icon, end }) => (
           <NavLink
             key={to}
             to={to}
@@ -55,7 +57,7 @@ function StudentSidebar() {
                   <span className="absolute inset-y-2.5 right-0 w-1 rounded-full bg-[#2AA8A2]" />
                 ) : null}
                 <Icon className="h-5 w-5" />
-                {label}
+                {t(labelKey)}
               </>
             )}
           </NavLink>

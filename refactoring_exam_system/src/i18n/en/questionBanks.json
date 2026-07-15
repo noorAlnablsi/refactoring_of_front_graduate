@@ -1,0 +1,176 @@
+{
+  "page": {
+    "eyebrow": "Academic project",
+    "title": "Question banks",
+    "subtitle": "Build a comprehensive academic repository by defining core information and adding diverse questions to assess your students.",
+    "addBank": "Add new bank",
+    "searchPlaceholder": "Search banks...",
+    "deleteSuccess": "Question bank deleted",
+    "cannotEdit": "You cannot edit this bank",
+    "cannotDelete": "You cannot delete this bank",
+    "itemLabel": "Bank"
+  },
+  "tabs": {
+    "my": "My banks",
+    "workspace": "Institution banks",
+    "community": "Community"
+  },
+  "display": {
+    "defaultName": "Question bank"
+  },
+  "visibility": {
+    "private": "Private",
+    "workspace": "Institution",
+    "community": "QuizHub community"
+  },
+  "empty": {
+    "noSearchResults": "No matching search results",
+    "my": {
+      "title": "No personal banks yet",
+      "description": "Create a private question bank to use in your exams.",
+      "createFirst": "Create your first question bank"
+    },
+    "workspace": {
+      "title": "No institution banks",
+      "description": "Shared subject banks created by you or colleagues will appear here."
+    },
+    "community": {
+      "title": "No community banks yet",
+      "description": "Public banks published platform-wide will appear here."
+    }
+  },
+  "modals": {
+    "create": {
+      "title": "Create question bank",
+      "titleLabel": "Question bank name",
+      "titlePlaceholder": "e.g. Chemistry bank 2023",
+      "descriptionLabel": "Description",
+      "descriptionPlaceholder": "Brief description of the question bank",
+      "loadingSubjects": "Loading subjects...",
+      "done": "Done"
+    },
+    "edit": {
+      "title": "Edit question bank",
+      "nameLabel": "Bank name",
+      "descriptionLabel": "Description",
+      "privacyLabel": "Privacy"
+    }
+  },
+  "toast": {
+    "created": "Question bank created",
+    "updated": "Question bank updated",
+    "titleRequired": "Bank name is required",
+    "bankNotFound": "Question bank not found",
+    "questionSavedLocally": "Question saved locally",
+    "published": "Question bank published successfully",
+    "questionUpdated": "Question updated successfully",
+    "minOneQuestion": "Add at least one question before publishing"
+  },
+  "validation": {
+    "titleRequired": "Question bank name is required",
+    "subjectRequired": "Please select a subject",
+    "questionTextRequired": "Question text is required",
+    "pointsRequired": "Points must be greater than 0",
+    "addChoices": "Add answer choices",
+    "allChoicesRequired": "All choices must be filled in",
+    "topicRequired": "Select a topic for the question",
+    "multiSelectMinCorrect": "Multiple select: choose at least two correct answers",
+    "singleSelectOneCorrect": "Single select: choose exactly one correct answer"
+  },
+  "types": {
+    "mcq": "Single choice",
+    "trueFalse": "True / false",
+    "multiSelect": "Multiple select",
+    "essay": "Essay"
+  },
+  "difficulty": {
+    "easy": "Easy",
+    "medium": "Medium",
+    "hard": "Hard"
+  },
+  "choices": {
+    "true": "True",
+    "false": "False",
+    "placeholder": "Choice {{number}}",
+    "addNew": "Add new choice"
+  },
+  "counts": {
+    "questions": "{{count}} questions",
+    "questionsAccusative": "{{count}} questions",
+    "usage": "{{count}} uses",
+    "points": "{{count}} pts"
+  },
+  "author": {
+    "default": "Bank author"
+  },
+  "card": {
+    "menuAria": "Bank options",
+    "generalSubject": "General",
+    "noDescription": "No description for this bank yet.",
+    "communityDefaultDescription": "Community question bank covering subject content.",
+    "ratingAria": "Rating {{rating}} out of 5",
+    "unknownInitial": "?"
+  },
+  "createCard": {
+    "title": "Add new bank",
+    "subtitle": "Create from scratch or use a template"
+  },
+  "labels": {
+    "difficulty": "Difficulty",
+    "questionText": "Question text",
+    "points": "Points",
+    "answers": "Answers",
+    "topic": "Topic",
+    "bankName": "Bank name",
+    "subject": "Subject",
+    "currentPrivacy": "Current privacy"
+  },
+  "editor": {
+    "previewQuestions": "Preview questions",
+    "publishBank": "Publish question bank",
+    "loadError": "Questions could not be loaded due to a server error.",
+    "noQuestionsCommunity": "No questions in this bank.",
+    "bankInfoTitle": "Create new question bank",
+    "questionBuilderTitle": "Question builder",
+    "editQuestionTitle": "Edit question",
+    "saveQuestion": "Save question",
+    "addAnotherQuestion": "Add another question",
+    "saveEdit": "Save changes",
+    "noTopicsWarning": "No topics for this subject. Add topics from subject details first.",
+    "bankQuestionsTitle": "Bank questions",
+    "addedQuestionsPreview": "Added questions preview",
+    "noSessionQuestions": "No questions saved in this session",
+    "copyAll": "Copy all",
+    "editQuestionAria": "Edit question {{number}}",
+    "copyQuestionAria": "Copy question {{number}}",
+    "essayNoChoices": "Essay question with no choices.",
+    "questionNumber": "Question {{number}}",
+    "noTopic": "No topic",
+    "topicNumber": "Topic #{{id}}",
+    "publishPrivacyTitle": "Privacy settings",
+    "publishPrivacyDescription": "Choose who can see the question bank after publishing.",
+    "loadQuestionsError": "Could not load bank questions",
+    "loadQuestionsDiagnostic": "Diagnostic:",
+    "loadQuestionsHint": "Check that you are signed in and that the X-Workspace-Id header is sent with the request.",
+    "toolbar": {
+      "questionTypeAria": "Question type",
+      "topicAria": "Topic",
+      "underline": "Underline",
+      "bold": "Bold",
+      "italic": "Italic",
+      "bulletList": "Bullet list",
+      "insertMath": "Insert math symbol",
+      "paragraphRtl": "Paragraph direction: right to left (Arabic)",
+      "paragraphLtr": "Paragraph direction: left to right (English)",
+      "questionBodyAria": "Question text",
+      "questionBodyPlaceholder": "Write your question here..."
+    }
+  },
+  "copy": {
+    "noText": "No text to copy",
+    "failed": "Could not copy to clipboard",
+    "questionSuccess": "Question {{number}} copied",
+    "allSuccess": "All questions copied",
+    "questionHeader": "Question {{number}}:"
+  }
+}

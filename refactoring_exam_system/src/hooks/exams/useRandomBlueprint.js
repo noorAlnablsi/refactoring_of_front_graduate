@@ -6,6 +6,7 @@ import {
   validateBlueprintHealth,
 } from '../../lib/examBlueprint'
 import { addRandomQuestionsFromBanks } from '../../services/tests.service'
+import { showAppToast, tUI } from '../../lib/appToast'
 import { useToastStore } from '../../store/toastStore'
 import { loadBlueprintsForBanks } from '../../components/exams/blueprint/blueprintBankTopics'
 
@@ -33,7 +34,7 @@ export function useRandomBlueprint({ banks, initialBlueprints, testId, onSuccess
           )
         })
       } catch (err) {
-        if (!cancelled) showToast(err.message || 'تعذر تحميل محاور البنوك', 'error')
+        if (!cancelled) showToast(err.message || tUI('blueprint.errors.loadBankTopics', { ns: 'exams' }), 'error')
       } finally {
         if (!cancelled) setLoading(false)
       }
@@ -92,7 +93,7 @@ export function useRandomBlueprint({ banks, initialBlueprints, testId, onSuccess
 
   const handleGenerate = useCallback(async () => {
     if (!health.isValid) {
-      showToast('أكمل توزيع المحاور ومستويات الصعوبة قبل التوليد', 'error')
+      showAppToast('blueprint.validation.completeDistribution', 'error', { ns: 'exams' })
       return
     }
 
@@ -100,7 +101,7 @@ export function useRandomBlueprint({ banks, initialBlueprints, testId, onSuccess
       (bank) => getActiveBlueprintTopics(bank.topics).length === 0,
     )
     if (banksWithoutActiveTopics.length > 0) {
-      showToast('حدد محوراً واحداً على الأقل لكل بنك بنسبة أكبر من صفر', 'error')
+      showAppToast('blueprint.validation.selectTopicPerBank', 'error', { ns: 'exams' })
       return
     }
 
@@ -109,7 +110,7 @@ export function useRandomBlueprint({ banks, initialBlueprints, testId, onSuccess
       const payload = buildRandomFromBanksPayload(blueprints)
       const result = await addRandomQuestionsFromBanks(testId, payload)
       const added = result?.count ?? health.totalQuestions
-      showToast(`تم توليد ${added} سؤال بنجاح`)
+      showAppToast('blueprint.toast.generated', 'success', { ns: 'exams', count: added })
       onSuccess?.(result?.questions || [])
     } catch (err) {
       showToast(err.message, 'error')

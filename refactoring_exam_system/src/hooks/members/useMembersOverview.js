@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react'
+import { tUI } from '../../lib/appToast'
 import { buildLatestMembers } from '../../lib/workspaceMembers'
 import { isInstitutionWorkspace } from '../../lib/workspaceContext'
 import { getWorkspaceStudents, getWorkspaceTeachers } from '../../services/workspaces.service'
@@ -39,7 +40,7 @@ export function useMembersOverview() {
         )
       } catch (err) {
         if (!cancelled) {
-          setError(err.message || 'تعذّر تحميل بيانات الأعضاء')
+          setError(err.message || tUI('errors.loadOverview', { ns: 'members' }))
         }
       } finally {
         if (!cancelled) setLoading(false)

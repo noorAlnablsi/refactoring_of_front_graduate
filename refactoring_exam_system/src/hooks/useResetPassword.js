@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { PASSWORD_RULES } from '../constants/auth'
 import { ROUTES } from '../constants/routes'
+import { tUI } from '../lib/appToast'
 import { resetPassword } from '../services/auth.service'
 import { usePasswordResetStore } from '../store/passwordResetStore'
 
@@ -36,12 +37,12 @@ export function useResetPassword() {
     event?.preventDefault()
 
     if (password.length < PASSWORD_RULES.minLength) {
-      setError(PASSWORD_RULES.message)
+      setError(tUI('passwordRules.minLength', { ns: 'forms', count: PASSWORD_RULES.minLength }))
       return
     }
 
     if (password !== confirmPassword) {
-      setError('كلمتا المرور غير متطابقتين')
+      setError(tUI('validation.passwordMismatch', { ns: 'forms' }))
       return
     }
 

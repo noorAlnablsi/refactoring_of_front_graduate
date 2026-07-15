@@ -1,4 +1,5 @@
 import { useMemo, useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import { Plus } from 'lucide-react'
 import SoftDeleteConfirmDialog from '../../components/common/SoftDeleteConfirmDialog'
 import CreateSubjectModal from '../../components/subjects/CreateSubjectModal'
@@ -14,6 +15,7 @@ import { useToastStore } from '../../store/toastStore'
 import { shellAccentButtonClass, shellPageSubtitleClass, shellPageTitleClass } from '../../lib/shellUi'
 
 function SubjectsPage() {
+  const { t } = useTranslation('subjects')
   const showToast = useToastStore((s) => s.showToast)
   const { subjects, loading, error, refetch } = useSubjects()
   const activeSubjects = useMemo(
@@ -46,7 +48,7 @@ function SubjectsPage() {
     setDeleteLoading(true)
     try {
       await deleteSubject(deleteSubjectItem.id)
-      showToast('تم حذف المادة')
+      showToast(t('toasts.deleted'))
       setDeleteSubjectItem(null)
       refetch()
     } catch (err) {
@@ -60,11 +62,8 @@ function SubjectsPage() {
     <div className="space-y-6">
       <div className="flex flex-wrap items-start justify-between gap-4">
         <div>
-          <h1 className={`text-2xl md:text-[28px] ${shellPageTitleClass}`}>المواد الدراسية</h1>
-          <p className={`mt-2 max-w-2xl ${shellPageSubtitleClass}`}>
-            إدارة المواد الدراسية وتحديد المعلمين المسؤولين عنها داخل المؤسسة التعليمية بكفاءة
-            واحترافية.
-          </p>
+          <h1 className={`text-2xl md:text-[28px] ${shellPageTitleClass}`}>{t('pageTitle')}</h1>
+          <p className={`mt-2 max-w-2xl ${shellPageSubtitleClass}`}>{t('pageSubtitle')}</p>
         </div>
         {canCreateSubject() ? (
           <button
@@ -73,7 +72,7 @@ function SubjectsPage() {
             className={shellAccentButtonClass}
           >
             <Plus className="h-4 w-4" strokeWidth={2.5} />
-            إضافة مادة جديدة
+            {t('addSubject')}
           </button>
         ) : null}
       </div>
@@ -113,7 +112,7 @@ function SubjectsPage() {
 
       <SoftDeleteConfirmDialog
         open={Boolean(deleteSubjectItem)}
-        itemLabel="المادة"
+        itemLabel={t('deleteItemLabel')}
         itemName={deleteSubjectItem?.name}
         loading={deleteLoading}
         onClose={() => setDeleteSubjectItem(null)}

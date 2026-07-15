@@ -1,0 +1,36 @@
+{
+  "title": "لوحة التحكم",
+  "greeting": "مرحباً {{name}}",
+  "greetingWithWorkspace": "مرحباً {{name}} — {{workspace}}",
+  "defaultUser": "مستخدم",
+  "defaultUserName": "مستخدم",
+  "subjects": {
+    "title": "إدارة المواد",
+    "description": "إنشاء وإدارة المواد الدراسية"
+  },
+  "invite": {
+    "title": "إرسال دعوة",
+    "description": "دعوة طالب أو معلم أو مدير عبر البريد"
+  },
+  "otherModules": {
+    "title": "وحدات أخرى",
+    "comingSoon": "قريباً"
+  },
+  "cards": {
+    "subjects": {
+      "title": "إدارة المواد",
+      "description": "إنشاء وإدارة المواد الدراسية"
+    },
+    "invite": {
+      "title": "إرسال دعوة",
+      "description": "دعوة طالب أو معلم أو مدير عبر البريد"
+    },
+    "otherModules": {
+      "title": "وحدات أخرى",
+      "description": "قريباً"
+    }
+  },
+  "sidebar": {
+    "brandSubtitle": "Admin Dashboard"
+  }
+}

@@ -1,3 +1,4 @@
+import { useTranslation } from 'react-i18next'
 import { Camera, X } from 'lucide-react'
 
 const ACCEPTED_TYPES = 'image/jpeg,image/jpg,image/png,image/webp'
@@ -7,18 +8,22 @@ function CreateWorkspaceLogoField({
   onChange,
   onClear,
   disabled = false,
-  label = 'شعار مؤسستك',
-  uploadLabel = 'رفع الشعار',
+  label,
+  uploadLabel,
 }) {
+  const { t } = useTranslation(['settings', 'forms'])
+  const resolvedLabel = label || t('createWorkspace.logoLabelInstitution')
+  const resolvedUploadLabel = uploadLabel || t('createWorkspace.uploadLogoInstitution')
+
   return (
     <div className="space-y-2">
-      <span className="block text-sm font-bold text-[#374151]">{label}</span>
+      <span className="block text-sm font-bold text-[#374151]">{resolvedLabel}</span>
 
       {preview ? (
         <div className="relative inline-flex">
           <img
             src={preview}
-            alt="معاينة الشعار"
+            alt={t('createWorkspace.logoPreviewAlt')}
             className="h-28 w-28 rounded-2xl object-cover ring-1 ring-[#E5E7EB]"
           />
           <button
@@ -26,7 +31,7 @@ function CreateWorkspaceLogoField({
             onClick={onClear}
             disabled={disabled}
             className="absolute -left-2 -top-2 flex h-7 w-7 items-center justify-center rounded-full bg-white text-[#6B7280] shadow ring-1 ring-[#E5E7EB] transition hover:text-red-500"
-            aria-label="إزالة الشعار"
+            aria-label={t('createWorkspace.removeLogoAria')}
           >
             <X className="h-4 w-4" />
           </button>
@@ -48,7 +53,7 @@ function CreateWorkspaceLogoField({
           <span className="relative flex h-10 w-10 items-center justify-center rounded-full bg-[#E6F7F6] text-[#2AA8A2]">
             <Camera className="h-5 w-5" strokeWidth={2} />
           </span>
-          <span className="relative text-xs font-bold text-[#2AA8A2]">{uploadLabel}</span>
+          <span className="relative text-xs font-bold text-[#2AA8A2]">{resolvedUploadLabel}</span>
           <input
             type="file"
             accept={ACCEPTED_TYPES}

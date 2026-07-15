@@ -1,4 +1,5 @@
 import { Link } from 'react-router-dom'
+import { useTranslation } from 'react-i18next'
 import { ChevronLeft, Settings } from 'lucide-react'
 import { ROUTES } from '../../constants/routes'
 import {
@@ -14,6 +15,7 @@ import { useSettingsWorkspace } from '../../hooks/useSettingsWorkspace'
 import { getActiveMembership, isInstitutionOwner } from '../../lib/workspaceContext'
 
 function SettingsPage() {
+  const { t } = useTranslation(['settings', 'navigation'])
   const membership = getActiveMembership()
   const showInstitutionSettings = isInstitutionOwner(membership)
   const { workspace, loading: workspaceLoading } = useSettingsWorkspace()
@@ -27,17 +29,17 @@ function SettingsPage() {
       <div>
         <nav className="mb-3 flex items-center gap-2 text-sm text-[var(--shell-text-muted)]">
           <Link to={ROUTES.DASHBOARD} className="transition hover:text-[var(--shell-accent)]">
-            الرئيسية
+            {t('breadcrumb.home', { ns: 'navigation' })}
           </Link>
           <ChevronLeft className="h-4 w-4" aria-hidden="true" />
-          <span className="font-semibold text-[var(--shell-accent)]">الإعدادات</span>
+          <span className="font-semibold text-[var(--shell-accent)]">{t('pageTitle')}</span>
         </nav>
 
         <div className="flex items-center gap-3">
           <span className="flex h-11 w-11 items-center justify-center rounded-xl bg-[var(--shell-accent-bg)] text-[var(--shell-accent)]">
             <Settings className="h-5 w-5" strokeWidth={2.2} />
           </span>
-          <h1 className="text-2xl font-extrabold text-[var(--shell-text)] md:text-3xl">الإعدادات</h1>
+          <h1 className="text-2xl font-extrabold text-[var(--shell-text)] md:text-3xl">{t('pageTitle')}</h1>
         </div>
       </div>
 

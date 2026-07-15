@@ -24,3 +24,15 @@ export async function getWorkspaceTeachers(params = {}) {
   const teachers = (data.teachers || data.data || []).map(normalizeWorkspaceTeacher)
   return { ...data, teachers }
 }
+
+export async function removeWorkspaceTeacher(membershipId) {
+  const { data } = await api.delete('/workspaces/teachers', {
+    params: { membership_id: membershipId },
+  })
+  return data
+}
+
+export async function updateWorkspaceMember(membershipId, payload) {
+  const { data } = await api.patch(`/workspaces/members/${membershipId}`, payload)
+  return data
+}

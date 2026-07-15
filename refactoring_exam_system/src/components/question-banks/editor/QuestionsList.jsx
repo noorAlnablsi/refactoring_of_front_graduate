@@ -1,14 +1,16 @@
 import { Copy, Pencil } from 'lucide-react'
+import { useTranslation } from 'react-i18next'
 import {
   formatQuestionForCopy,
   getDifficultyLabel,
+  getQuestionTopicLabel,
   getQuestionTypeLabel,
 } from '../../../lib/questionBanks'
 import { useToastStore } from '../../../store/toastStore'
 
-async function copyText(text, showToast, successMessage) {
+async function copyText(text, showToast, successMessage, errorMessages) {
   if (!text?.trim()) {
-    showToast('لا يوجد نص للنسخ', 'error')
+    showToast(errorMessages.noText, 'error')
     return
   }
 
@@ -16,23 +18,8 @@ async function copyText(text, showToast, successMessage) {
     await navigator.clipboard.writeText(text)
     showToast(successMessage)
   } catch {
-    showToast('تعذّر النسخ إلى الحافظة', 'error')
+    showToast(errorMessages.failed, 'error')
   }
-}
-
-function getQuestionTopicLabel(question, topics = []) {
-  if (question?.topic_name || question?.topic?.name || question?.topic_title || question?.topic_label) {
-    return question.topic_name || question.topic?.name || question.topic_title || question.topic_label
-  }
-
-  if (question?.topic_id != null && topics.length) {
-    const topic = topics.find(
-      (item) => String(item.id ?? item.topic_id ?? item.value) === String(question.topic_id),
-    )
-    if (topic?.name) return topic.name
-  }
-
-  return question?.topic_id ? `محور #${question.topic_id}` : 'بدون محور'
 }
 
 function QuestionsList({
@@ -43,24 +30,36 @@ function QuestionsList({
   canEdit = false,
   onEditQuestion,
 }) {
+  const { t } = useTranslation('questionBanks')
   const showToast = useToastStore((s) => s.showToast)
+  const copyErrors = {
+    noText: t('copy.noText'),
+    failed: t('copy.failed'),
+  }
 
   const handleCopyQuestion = (question, index) => {
-    copyText(formatQuestionForCopy(question), showToast, `تم نسخ السؤال ${index + 1}`)
+    copyText(
+      formatQuestionForCopy(question),
+      showToast,
+      t('copy.questionSuccess', { number: index + 1 }),
+      copyErrors,
+    )
   }
 
   const handleCopyAll = () => {
     const text = questions
-      .map((question, index) => `السؤال ${index + 1}:\n${formatQuestionForCopy(question)}`)
+      .map((question, index) =>
+        `${t('copy.questionHeader', { number: index + 1 })}\n${formatQuestionForCopy(question)}`,
+      )
       .join('\n\n')
-    copyText(text, showToast, 'تم نسخ جميع الأسئلة')
+    copyText(text, showToast, t('copy.allSuccess'), copyErrors)
   }
 
   if (!questions.length) {
     return (
       <div className="rounded-2xl bg-white p-8 text-center shadow-[0_2px_12px_rgba(15,23,42,0.04)] ring-1 ring-[#E5E9EB]">
         <p className="text-sm text-[#64748B]">
-          {emptyMessage || 'لا توجد أسئلة محفوظة في هذه الجلسة'}
+          {emptyMessage || t('editor.noSessionQuestions')}
         </p>
       </div>
     )
@@ -70,7 +69,7 @@ function QuestionsList({
     <section className="rounded-2xl bg-white p-6 shadow-[0_2px_12px_rgba(15,23,42,0.04)] ring-1 ring-[#E5E9EB]">
       <div className="mb-5 flex flex-wrap items-center justify-between gap-3">
         <h3 className="text-lg font-extrabold text-[#2A3433]">
-          {readOnly ? 'أسئلة البنك' : 'معاينة الأسئلة المضافة'} ({questions.length})
+          {readOnly ? t('editor.bankQuestionsTitle') : t('editor.addedQuestionsPreview')} ({questions.length})
         </h3>
         {readOnly ? (
           <button
@@ -79,7 +78,7 @@ function QuestionsList({
             className="inline-flex items-center gap-1.5 rounded-lg bg-[#E8F7F6] px-3 py-1.5 text-xs font-bold text-[#2AA8A2] hover:bg-[#DDF3F1]"
           >
             <Copy className="h-3.5 w-3.5" />
-            نسخ الكل
+            {t('editor.copyAll')}
           </button>
         ) : null}
       </div>
@@ -97,7 +96,7 @@ function QuestionsList({
                   <span>•</span>
                   <span>{getDifficultyLabel(question.difficulty)}</span>
                   <span>•</span>
-                  <span>{question.points} علامة</span>
+                  <span>{t('counts.points', { count: question.points })}</span>
                   <span>•</span>
                   <span>{getQuestionTopicLabel(question, topics)}</span>
                 </div>
@@ -106,7 +105,7 @@ function QuestionsList({
                     type="button"
                     onClick={() => onEditQuestion?.(question)}
                     className="rounded-lg p-1.5 text-[#64748B] hover:bg-white hover:text-[#2AA8A2]"
-                    aria-label={`تعديل السؤال ${index + 1}`}
+                    aria-label={t('editor.editQuestionAria', { number: index + 1 })}
                   >
                     <Pencil className="h-4 w-4" />
                   </button>
@@ -116,7 +115,7 @@ function QuestionsList({
                     type="button"
                     onClick={() => handleCopyQuestion(question, index)}
                     className="rounded-lg p-1.5 text-[#64748B] hover:bg-white hover:text-[#2AA8A2]"
-                    aria-label={`نسخ السؤال ${index + 1}`}
+                    aria-label={t('editor.copyQuestionAria', { number: index + 1 })}
                   >
                     <Copy className="h-4 w-4" />
                   </button>

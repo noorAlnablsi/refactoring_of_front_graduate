@@ -1,5 +1,6 @@
 import { isRichTextEmpty } from './richText'
 import { validateQuestionChoiceRules } from './questionBanks'
+import { tUI } from './appToast'
 
 export const DEFAULT_EXAM_QUESTION_CHOICES = [
   { body: '', is_correct: true },
@@ -23,6 +24,8 @@ export function normalizeManualQuestionForApi(question) {
     type_code: question.type_code,
     difficulty: question.difficulty,
     points: Number(question.points) || 1,
+    explanation: question.explanation?.trim() || '',
+    image_path: question.image_path || question.image_url || '',
   }
 
   if (question.type_code !== 'ESSAY') {
@@ -30,6 +33,8 @@ export function normalizeManualQuestionForApi(question) {
       body: choice.body.trim(),
       is_correct: Boolean(choice.is_correct),
     }))
+  } else {
+    payload.choices = []
   }
 
   if (question.topic_id) {
@@ -41,17 +46,17 @@ export function normalizeManualQuestionForApi(question) {
 
 export function validateManualQuestionForExam(question, { requireTopic = false } = {}) {
   if (isRichTextEmpty(question.body)) {
-    return 'نص السؤال مطلوب'
+    return tUI('validation.questionTextRequired', { ns: 'exams' })
   }
 
   if (!question.points || Number(question.points) < 1) {
-    return 'العلامة يجب أن تكون أكبر من 0'
+    return tUI('validation.pointsRequired', { ns: 'exams' })
   }
 
   if (question.type_code !== 'ESSAY') {
     const hasEmptyChoice = question.choices.some((choice) => !choice.body.trim())
     if (hasEmptyChoice) {
-      return 'جميع الخيارات مطلوبة'
+      return tUI('validation.allChoicesRequired', { ns: 'exams' })
     }
 
     const choiceError = validateQuestionChoiceRules(question.type_code, question.choices)
@@ -61,7 +66,7 @@ export function validateManualQuestionForExam(question, { requireTopic = false }
   }
 
   if (requireTopic && !question.topic_id) {
-    return 'اختر المحور للسؤال'
+    return tUI('validation.topicRequired', { ns: 'exams' })
   }
 
   return null

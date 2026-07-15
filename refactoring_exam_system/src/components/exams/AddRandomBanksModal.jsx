@@ -1,6 +1,8 @@
 import { useEffect, useMemo, useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import { Globe, X } from 'lucide-react'
 import { QUESTION_BANK_TABS } from '../../lib/questionBanks'
+import { showAppToast } from '../../lib/appToast'
 import {
   getWorkspaceQuestionBanks,
   getCommunityQuestionBanks,
@@ -27,6 +29,7 @@ function AddRandomBanksModal({
   onClose,
   onBanksSelected,
 }) {
+  const { t } = useTranslation(['exams', 'questionBanks'])
   const showToast = useToastStore((s) => s.showToast)
   const showWorkspaceTab = isInstitutionWorkspace()
   const [activeTab, setActiveTab] = useState(PICKER_TABS.MY)
@@ -103,12 +106,14 @@ function AddRandomBanksModal({
         setWorkspaceBanks(workspace.filter(matchesSubject))
         setCommunityBanks(community.filter(matchesSubject))
 
-        if (mineResult.status === 'rejected') showToast(mineResult.reason?.message || 'تعذر تحميل بنوكي', 'error')
+        if (mineResult.status === 'rejected') {
+          showToast(mineResult.reason?.message || t('banksModal.errors.loadMy'), 'error')
+        }
         if (workspaceResult.status === 'rejected') {
-          showToast(workspaceResult.reason?.message || 'تعذر تحميل بنوك المؤسسة', 'error')
+          showToast(workspaceResult.reason?.message || t('banksModal.errors.loadWorkspace'), 'error')
         }
         if (communityResult.status === 'rejected') {
-          showToast(communityResult.reason?.message || 'تعذر تحميل بنوك المجتمع', 'error')
+          showToast(communityResult.reason?.message || t('banksModal.errors.loadCommunity'), 'error')
         }
       })
       .finally(() => {
@@ -118,7 +123,7 @@ function AddRandomBanksModal({
     return () => {
       cancelled = true
     }
-  }, [open, showToast, subjectId, showWorkspaceTab])
+  }, [open, showToast, subjectId, showWorkspaceTab, t])
 
   const banksForTab =
     activeTab === PICKER_TABS.MY
@@ -159,9 +164,10 @@ function AddRandomBanksModal({
 
   const handlePickDone = () => {
     if (!selectedBankIds.length) {
-      showToast(
-        selectionMode === 'single' ? 'اختر بنكاً واحداً' : 'اختر بنكاً واحداً على الأقل',
+      showAppToast(
+        selectionMode === 'single' ? 'banksModal.selectOne' : 'banksModal.selectAtLeastOne',
         'error',
+        { ns: 'exams' },
       )
       return
     }
@@ -183,7 +189,7 @@ function AddRandomBanksModal({
           <button type="button" onClick={onClose} className="text-[#94A3B8] hover:text-[#64748B]">
             <X className="h-5 w-5" />
           </button>
-          <h2 className="text-[44px] font-extrabold leading-[1.2] text-[#2A3433]">اختر بنك الأسئلة</h2>
+          <h2 className="text-[44px] font-extrabold leading-[1.2] text-[#2A3433]">{t('banksModal.title')}</h2>
         </div>
 
         <div className="border-b border-[#E5E9EB] px-6 pt-5">
@@ -195,7 +201,7 @@ function AddRandomBanksModal({
                 activeTab === PICKER_TABS.MY ? 'text-[#2AA8A2]' : 'text-[#64748B]'
               }`}
             >
-              بنوكي
+              {t('banksModal.myBanks')}
               {!loading ? (
                 <span className="mr-2 rounded-full bg-[#E8F7F6] px-2 py-0.5 text-xs text-[#2AA8A2]">
                   {myBanks.length}
@@ -214,7 +220,7 @@ function AddRandomBanksModal({
                   activeTab === QUESTION_BANK_TABS.WORKSPACE ? 'text-[#2AA8A2]' : 'text-[#64748B]'
                 }`}
               >
-                ضمن مؤسسة
+                {t('banksModal.workspace')}
                 {!loading ? (
                   <span className="mr-2 rounded-full bg-[#E8F7F6] px-2 py-0.5 text-xs text-[#2AA8A2]">
                     {workspaceBanks.length}
@@ -233,7 +239,7 @@ function AddRandomBanksModal({
               }`}
             >
               <Globe className="h-4 w-4" />
-              المجتمع
+              {t('banksModal.community')}
               {!loading ? (
                 <span className="rounded-full bg-[#E8F7F6] px-2 py-0.5 text-xs text-[#2AA8A2]">
                   {communityBanks.length}
@@ -254,7 +260,7 @@ function AddRandomBanksModal({
               ))}
             </div>
           ) : paginatedBanks.length === 0 ? (
-            <p className="py-16 text-center text-sm text-[#94A3B8]">لا توجد بنوك في هذا القسم.</p>
+            <p className="py-16 text-center text-sm text-[#94A3B8]">{t('banksModal.empty')}</p>
           ) : (
             <div className="flex justify-center gap-4">
               {paginatedBanks.map((bank) => (
@@ -280,7 +286,7 @@ function AddRandomBanksModal({
               disabled={!selectedBankIds.length}
               className="min-w-[126px] rounded-xl bg-[#2AA8A2] px-8 py-3 text-base font-bold text-white shadow-[0_8px_16px_rgba(42,168,162,0.2)] disabled:opacity-50"
             >
-              تم
+              {t('banksModal.done')}
             </button>
           </div>
         </div>

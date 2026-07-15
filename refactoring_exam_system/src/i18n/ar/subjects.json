@@ -1,0 +1,119 @@
+{
+  "pageTitle": "المواد الدراسية",
+  "pageSubtitle": "إدارة المواد الدراسية وتحديد المعلمين المسؤولين عنها داخل المؤسسة التعليمية بكفاءة واحترافية.",
+  "addSubject": "إضافة مادة جديدة",
+  "toasts": {
+    "deleted": "تم حذف المادة"
+  },
+  "stats": {
+    "totalSubjects": "إجمالي المواد",
+    "growthBadge": "+4 جديد",
+    "assignedTeachers": "المعلمون المسندون",
+    "newTeachersBadge": "+1 جديد",
+    "totalExams": "إجمالي الامتحانات"
+  },
+  "table": {
+    "empty": "لا توجد مواد دراسية بعد",
+    "name": "الاسم",
+    "teachersCount": "المعلمون",
+    "questionBanks": "بنوك الأسئلة",
+    "examsCount": "الامتحانات",
+    "actions": "الإجراءات",
+    "view": "عرض",
+    "edit": "تعديل",
+    "delete": "حذف",
+    "pagination": "عرض {{from}}–{{to}} من أصل {{total}} مادة"
+  },
+  "page": {
+    "title": "المواد الدراسية",
+    "subtitle": "إدارة المواد الدراسية وتحديد المعلمين المسؤولين عنها داخل المؤسسة التعليمية بكفاءة واحترافية.",
+    "addSubject": "إضافة مادة جديدة",
+    "deleteSuccess": "تم حذف المادة",
+    "itemLabel": "المادة"
+  },
+  "topics": {
+    "title": "محاور المادة",
+    "description": "حدّد المحاور التعليمية للمادة — تُستخدم لاحقاً عند إضافة أسئلة في بنوك الأسئلة.",
+    "addTopic": "إضافة محور",
+    "empty": "لا توجد محاور لهذه المادة بعد.",
+    "emptyHint": "أضف محاوراً لتنظيم المحتوى وتصنيف الأسئلة.",
+    "addFirstTopic": "إضافة أول محور",
+    "deleteConfirm": "حذف المحور \"{{name}}\"؟",
+    "deleteSuccess": "تم حذف المحور",
+    "editAria": "تعديل المحور",
+    "deleteAria": "حذف المحور"
+  },
+  "display": {
+    "defaultSummary": "تغطي هذه المادة المفاهيم الأساسية والمتقدمة ضمن المنهج التعليمي للمؤسسة.",
+    "defaultSubtitle": "مادة دراسية ضمن المنهج التعليمي",
+    "membershipId": "عضوية #{{id}}",
+    "subjectTeacher": "معلم مادة",
+    "subjectSpecialty": "تخصص مادة دراسية",
+    "assignedToSubject": "مسند للمادة",
+    "assignedToSubjectWithRole": "{{role}} — مسند للمادة",
+    "teachersCount": "{{count}} معلم",
+    "banksCount": "{{count}} بنك",
+    "testsCount": "{{count}} اختبار"
+  },
+  "assignTeacher": {
+    "title": "إسناد معلم",
+    "loading": "جاري تحميل المعلمين...",
+    "allAssigned": "جميع المعلمين مسندون لهذه المادة",
+    "noneAvailable": "لا يوجد معلمون متاحون للإسناد",
+    "membershipWarning": "تعذّر تحميل معرّفات العضوية للمعلمين — تأكد أن API يُرجع membership_id",
+    "selectTeacherError": "يرجى اختيار معلم",
+    "membershipError": "تعذّر إسناد هذا المعلم — معرّف العضوية غير متوفر",
+    "success": "تم إسناد المعلم بنجاح",
+    "assigning": "جاري الإسناد...",
+    "assign": "إسناد"
+  },
+  "sort": {
+    "label": "ترتيب حسب:",
+    "aria": "ترتيب عرض المواد",
+    "name": "الاسم",
+    "oldest": "الأقدم",
+    "newest": "الأحدث"
+  },
+  "details": {
+    "tabs": {
+      "overview": "نظرة عامة",
+      "teachers": "المعلمون",
+      "banks": "بنوك الأسئلة",
+      "exams": "الاختبارات"
+    },
+    "overview": {
+      "descriptionTitle": "وصف المادة",
+      "noDescription": "لا يوجد وصف مفصل لهذه المادة حالياً. يمكنك إضافة وصف يوضح أهداف المادة ومخرجاتها التعليمية من خلال تعديل المادة.",
+      "recentTeachers": "المعلمون المرتبطون حديثاً",
+      "noTeachers": "لا يوجد معلمون مسندون لهذه المادة بعد",
+      "recentExams": "آخر الاختبارات",
+      "recentBanks": "أحدث بنوك الأسئلة",
+      "noBanks": "لا توجد بنوك أسئلة مرتبطة بعد"
+    },
+    "teachers": {
+      "empty": "لا يوجد معلمون مسندون لهذه المادة",
+      "remove": "إزالة"
+    },
+    "banks": {
+      "empty": "لا توجد بنوك أسئلة مرتبطة بهذه المادة"
+    },
+    "exams": {
+      "title": "اختبارات المادة",
+      "apiNote": "سيتم ربط الاختبارات عند توفر API"
+    },
+    "examStatus": {
+      "active": "نشط",
+      "completed": "مكتمل"
+    },
+    "stats": {
+      "teachers": "عدد المعلمين",
+      "teachersBadge": "+12% هذا الشهر",
+      "banks": "بنوك الأسئلة",
+      "banksBadge": "محدث اليوم",
+      "exams": "عدد الاختبارات",
+      "examsBadge": "5 اختبارات نشطة",
+      "evaluatedStudents": "الطلاب الذين تم تقييمهم",
+      "successRateBadge": "نسبة نجاح 88%"
+    }
+  }
+}

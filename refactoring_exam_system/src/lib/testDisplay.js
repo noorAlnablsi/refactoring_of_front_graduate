@@ -1,13 +1,6 @@
 import { TEST_STATUS, TEST_TABS } from '../constants/tests'
+import { tUI } from './appToast'
 import { getTestId } from './testModel'
-
-export const TEST_STATUS_LABELS = {
-  [TEST_STATUS.DRAFT]: 'مسودة',
-  [TEST_STATUS.SCHEDULED]: 'مجدول',
-  [TEST_STATUS.PUBLISHED]: 'منشور',
-  [TEST_STATUS.CLOSED]: 'مصحح',
-  [TEST_STATUS.ARCHIVED]: 'مؤرشف',
-}
 
 export const TEST_STATUS_STYLES = {
   [TEST_STATUS.DRAFT]: 'bg-[#F1F5F9] text-[#64748B]',
@@ -18,7 +11,8 @@ export const TEST_STATUS_STYLES = {
 }
 
 export function getTestStatusLabel(status) {
-  return TEST_STATUS_LABELS[status] || status || '—'
+  if (!status) return '—'
+  return tUI(`status.${status}`, { ns: 'exams', defaultValue: status })
 }
 
 export function filterTestsByTab(tests = [], tab) {
@@ -71,27 +65,23 @@ export function canEditTest(test) {
 }
 
 export function getEditBlockedMessage(test) {
-  if (!test) return 'الامتحان غير موجود'
+  if (!test) return tUI('errors.testNotFound', { ns: 'exams' })
   if (test.status !== TEST_STATUS.DRAFT) {
-    return 'لا يمكن تعديل الامتحان إلا وهو في حالة مسودة'
+    return tUI('errors.editDraftOnly', { ns: 'exams' })
   }
   if (test.starts_at) {
     const startsAt = new Date(test.starts_at).getTime()
     const thirtyMinutesMs = 30 * 60 * 1000
     if (!Number.isNaN(startsAt) && startsAt - Date.now() < thirtyMinutesMs) {
-      return 'لا يمكن تعديل الامتحان قبل أقل من 30 دقيقة من وقت البدء'
+      return tUI('errors.editTooCloseToStart', { ns: 'exams' })
     }
   }
   return ''
 }
 
 export function getSourceTypeLabel(sourceType) {
-  const map = {
-    QUESTION_BANK: 'من بنك الأسئلة',
-    MANUAL: 'يدوي',
-    RANDOM_FROM_BANK: 'عشوائي من بنك',
-  }
-  return map[sourceType] || sourceType || '—'
+  if (!sourceType) return '—'
+  return tUI(`sourceType.${sourceType}`, { ns: 'exams', defaultValue: sourceType })
 }
 
 export function getExamShareLink(test) {

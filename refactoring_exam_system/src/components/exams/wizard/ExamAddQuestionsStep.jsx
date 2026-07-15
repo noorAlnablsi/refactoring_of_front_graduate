@@ -1,13 +1,16 @@
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
+import { useCallback, useEffect, useMemo, useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import { EXAM_QUESTIONS_VIEWS } from '../../../lib/examWizardProgress'
 import { getTestId } from '../../../lib/testModel'
 import AddRandomBanksModal from '../AddRandomBanksModal'
+import ExamAiGeneratePanel from '../ExamAiGeneratePanel'
+import ExamCsvImportPanel from '../ExamCsvImportPanel'
 import ExamManualQuestionsPanel from '../ExamManualQuestionsPanel'
 import ExamPickBankQuestionsPanel from '../ExamPickBankQuestionsPanel'
 import ExamRandomBlueprintPanel from '../ExamRandomBlueprintPanel'
 import ExamRandomGeneratedQuestionsPanel from '../ExamRandomGeneratedQuestionsPanel'
 import ExamQuestionsMethodPicker from './addQuestions/ExamQuestionsMethodPicker'
-import { EXAM_QUESTIONS_REVIEW_COPY } from './addQuestions/examAddQuestionsConstants'
+import { getExamQuestionsReviewSourceKey } from './addQuestions/examAddQuestionsConstants'
 import { restoreExamQuestionsProgress } from './addQuestions/restoreExamQuestionsProgress'
 
 function ExamAddQuestionsStep({
@@ -19,19 +22,21 @@ function ExamAddQuestionsStep({
   onSaveDraftProgress,
   savingDraft = false,
 }) {
+  const { t } = useTranslation('exams')
   const [activeMethod, setActiveMethod] = useState(null)
   const [fromBankOpen, setFromBankOpen] = useState(false)
   const [randomOpen, setRandomOpen] = useState(false)
   const [selectedFromBank, setSelectedFromBank] = useState(null)
   const [fromBankSelectedIds, setFromBankSelectedIds] = useState([])
   const [showManualView, setShowManualView] = useState(false)
+  const [showCsvView, setShowCsvView] = useState(false)
+  const [showAiView, setShowAiView] = useState(false)
   const [blueprintBanks, setBlueprintBanks] = useState(null)
   const [restoredBlueprints, setRestoredBlueprints] = useState(null)
   const [generatedQuestions, setGeneratedQuestions] = useState(null)
   const [showGeneratedView, setShowGeneratedView] = useState(false)
   const [reviewSource, setReviewSource] = useState('exam')
   const [restoring, setRestoring] = useState(true)
-  const restoredRef = useRef(false)
   const testId = getTestId(test)
   const questions = test?.questions || []
   const blueprintBankIds = useMemo(
@@ -43,6 +48,8 @@ function ExamAddQuestionsStep({
     Boolean(blueprintBanks?.length) ||
     Boolean(selectedFromBank) ||
     showManualView ||
+    showCsvView ||
+    showAiView ||
     showGeneratedView
 
   const saveQuestionsProgress = useCallback(
@@ -56,47 +63,54 @@ function ExamAddQuestionsStep({
     if (activeMethod === 'from-bank' && !selectedFromBank) setFromBankOpen(true)
     if (activeMethod === 'random' && !blueprintBanks) setRandomOpen(true)
     if (activeMethod === 'manual') setShowManualView(true)
+    if (activeMethod === 'csv') setShowCsvView(true)
+    if (activeMethod === 'ai') setShowAiView(true)
   }, [activeMethod, blueprintBanks, selectedFromBank])
 
   useEffect(() => {
-    if (restoredRef.current) return undefined
-    restoredRef.current = true
-
     let cancelled = false
+    setRestoring(true)
 
     const applyRestore = async () => {
-      const result = await restoreExamQuestionsProgress({
-        testId,
-        hasQuestions: questions.length > 0,
-      })
+      try {
+        const result = await restoreExamQuestionsProgress({
+          testId,
+          hasQuestions: (questions?.length || 0) > 0,
+        })
 
-      if (cancelled) return
+        if (cancelled) return
 
-      switch (result.kind) {
-        case 'review':
-          setReviewSource(result.reviewSource)
-          setShowGeneratedView(true)
-          break
-        case 'from-bank':
-          setSelectedFromBank(result.bank)
-          setFromBankSelectedIds(result.selectedQuestionIds)
-          setActiveMethod('from-bank')
-          break
-        case 'manual':
-          setShowManualView(true)
-          setActiveMethod('manual')
-          break
-        case 'random-blueprint':
-          setBlueprintBanks(result.banks)
-          setRestoredBlueprints(result.blueprints)
-          setActiveMethod('random')
-          break
-        case 'idle':
-        default:
-          break
+        switch (result.kind) {
+          case 'review':
+            setReviewSource(result.reviewSource)
+            setShowGeneratedView(true)
+            break
+          case 'from-bank':
+            setSelectedFromBank(result.bank)
+            setFromBankSelectedIds(result.selectedQuestionIds)
+            setActiveMethod('from-bank')
+            break
+          case 'manual':
+            setShowManualView(true)
+            setActiveMethod('manual')
+            break
+          case 'random-blueprint':
+            setBlueprintBanks(result.banks)
+            setRestoredBlueprints(result.blueprints)
+            setActiveMethod('random')
+            break
+          case 'idle':
+          default:
+            break
+        }
+      } catch {
+        if (!cancelled) {
+          setShowGeneratedView(false)
+          setActiveMethod(null)
+        }
+      } finally {
+        if (!cancelled) setRestoring(false)
       }
-
-      setRestoring(false)
     }
 
     applyRestore()
@@ -104,7 +118,9 @@ function ExamAddQuestionsStep({
     return () => {
       cancelled = true
     }
-  }, [questions.length, testId])
+    // Only re-run when the exam identity changes — not on every questions length flicker.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [testId])
 
   useEffect(() => {
     onBlueprintActiveChange?.(subFlowActive)
@@ -129,8 +145,10 @@ function ExamAddQuestionsStep({
     setShowGeneratedView(true)
     setSelectedFromBank(null)
     setFromBankSelectedIds([])
-    setShowManualView(false)
-    setBlueprintBanks(null)
+        setShowManualView(false)
+        setShowCsvView(false)
+        setShowAiView(false)
+        setBlueprintBanks(null)
     setRestoredBlueprints(null)
     setActiveMethod(null)
   }
@@ -162,12 +180,21 @@ function ExamAddQuestionsStep({
     })
   }
 
-  const reviewCopy = EXAM_QUESTIONS_REVIEW_COPY[reviewSource] || EXAM_QUESTIONS_REVIEW_COPY.exam
+  const reviewSourceKey = getExamQuestionsReviewSourceKey(reviewSource)
+  const reviewCopy = useMemo(
+    () => ({
+      eyebrow: t(`wizard.questions.reviewSources.${reviewSourceKey}.eyebrow`),
+      title: t(`wizard.questions.reviewSources.${reviewSourceKey}.title`),
+      description: t(`wizard.questions.reviewSources.${reviewSourceKey}.description`),
+      sectionTitle: t(`wizard.questions.reviewSources.${reviewSourceKey}.sectionTitle`),
+    }),
+    [reviewSourceKey, t],
+  )
 
   if (restoring) {
     return (
       <div className="flex min-h-[320px] items-center justify-center rounded-2xl bg-white ring-1 ring-[#E5E9EB]">
-        <p className="text-sm text-[#94A3B8]">جاري استعادة مسودة الامتحان...</p>
+        <p className="text-sm text-[#94A3B8]">{t('wizard.restoringDraft')}</p>
       </div>
     )
   }
@@ -176,6 +203,7 @@ function ExamAddQuestionsStep({
     return (
       <ExamRandomGeneratedQuestionsPanel
         questions={generatedQuestions?.length ? generatedQuestions : questions}
+        testId={testId}
         eyebrow={reviewCopy.eyebrow}
         title={reviewCopy.title}
         description={reviewCopy.description}
@@ -192,6 +220,9 @@ function ExamAddQuestionsStep({
           })
         }
         onContinue={handleNext}
+        onQuestionsChange={async () => {
+          await onRefresh?.()
+        }}
       />
     )
   }
@@ -243,6 +274,53 @@ function ExamAddQuestionsStep({
         onViewQuestions={async () => {
           await onRefresh?.()
           openGeneratedReview('manual')
+        }}
+      />
+    )
+  }
+
+  if (showCsvView) {
+    return (
+      <ExamCsvImportPanel
+        testId={testId}
+        savingDraft={savingDraft}
+        onBack={() => {
+          setShowCsvView(false)
+          setActiveMethod(null)
+        }}
+        onSaveDraft={() =>
+          saveQuestionsProgress({
+            view: EXAM_QUESTIONS_VIEWS.REVIEW,
+            reviewSource: 'exam',
+          })
+        }
+        onSuccess={async () => {
+          await onRefresh?.()
+          openGeneratedReview('exam')
+        }}
+      />
+    )
+  }
+
+  if (showAiView) {
+    return (
+      <ExamAiGeneratePanel
+        test={test}
+        testId={testId}
+        savingDraft={savingDraft}
+        onBack={() => {
+          setShowAiView(false)
+          setActiveMethod(null)
+        }}
+        onSaveDraft={() =>
+          saveQuestionsProgress({
+            view: EXAM_QUESTIONS_VIEWS.REVIEW,
+            reviewSource: 'exam',
+          })
+        }
+        onSuccess={async () => {
+          await onRefresh?.()
+          openGeneratedReview('exam')
         }}
       />
     )

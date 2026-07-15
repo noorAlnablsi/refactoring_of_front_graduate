@@ -1,8 +1,10 @@
+import { useTranslation } from 'react-i18next'
 import { Moon, Sun } from 'lucide-react'
 import { THEME_MODE } from '../../constants/theme'
 import { useThemeStore } from '../../store/themeStore'
 
 function ThemeModeToggle() {
+  const { t } = useTranslation('settings')
   const mode = useThemeStore((state) => state.mode)
   const setMode = useThemeStore((state) => state.setMode)
 
@@ -12,7 +14,7 @@ function ThemeModeToggle() {
     <div
       className="inline-flex rounded-xl bg-[var(--shell-input-bg)] p-1"
       role="group"
-      aria-label="النمط"
+      aria-label={t('appearance.theme')}
     >
       <button
         type="button"
@@ -25,7 +27,7 @@ function ThemeModeToggle() {
         }`}
       >
         <Sun className="h-4 w-4" strokeWidth={2} />
-        <span className="sr-only">الوضع الفاتح</span>
+        <span className="sr-only">{t('appearance.lightMode')}</span>
       </button>
       <button
         type="button"
@@ -38,7 +40,7 @@ function ThemeModeToggle() {
         }`}
       >
         <Moon className="h-4 w-4" strokeWidth={2} />
-        <span className="sr-only">الوضع الداكن</span>
+        <span className="sr-only">{t('appearance.darkMode')}</span>
       </button>
     </div>
   )

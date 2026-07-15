@@ -1,18 +1,37 @@
-const MEMBERSHIP_ROLE_LABELS = {
-  ADMIN: 'مدير',
-  TEACHER: 'معلم',
-  OWNER: 'مالك',
+import i18n from '../i18n'
+
+function tCommon(key, options = {}) {
+  return i18n.t(key, { ns: 'common', ...options })
 }
 
-const VISIBILITY_LABELS = {
-  PRIVATE: 'خاص',
-  WORKSPACE: 'المؤسسة',
-  COMMUNITY: 'المجتمع',
+function tSubjects(key, options = {}) {
+  return i18n.t(key, { ns: 'subjects', ...options })
+}
+
+function tQuestionBanks(key, options = {}) {
+  return i18n.t(key, { ns: 'questionBanks', ...options })
+}
+
+const MEMBERSHIP_ROLE_KEYS = {
+  ADMIN: 'admin',
+  TEACHER: 'teacher',
+  OWNER: 'owner',
+}
+
+const VISIBILITY_KEYS = {
+  PRIVATE: 'private',
+  WORKSPACE: 'workspace',
+  COMMUNITY: 'community',
+}
+
+function getMembershipRoleLabel(role) {
+  const key = MEMBERSHIP_ROLE_KEYS[role]
+  return key ? tCommon(`roles.${key}`) : role
 }
 
 export function getSubjectSummary(description, maxLength = 120) {
   if (!description?.trim()) {
-    return 'تغطي هذه المادة المفاهيم الأساسية والمتقدمة ضمن المنهج التعليمي للمؤسسة.'
+    return tSubjects('display.defaultSummary')
   }
   const text = description.trim()
   if (text.length <= maxLength) return text
@@ -23,10 +42,12 @@ export function getTeacherName(teacher) {
   if (teacher?.full_name) return teacher.full_name
   if (teacher?.name) return teacher.name
   if (teacher?.membership_role) {
-    return MEMBERSHIP_ROLE_LABELS[teacher.membership_role] || teacher.membership_role
+    return getMembershipRoleLabel(teacher.membership_role)
   }
-  if (teacher?.membership_id) return `عضوية #${teacher.membership_id}`
-  return 'معلم'
+  if (teacher?.membership_id) {
+    return tSubjects('display.membershipId', { id: teacher.membership_id })
+  }
+  return tCommon('roles.teacher')
 }
 
 export function getTeacherSpecialty(teacher) {
@@ -34,13 +55,15 @@ export function getTeacherSpecialty(teacher) {
     return teacher.specialty || teacher.subject_specialty
   }
   if (teacher?.email) return teacher.email
-  if (teacher?.subject_role === 'TEACHER') return 'معلم مادة'
-  if (teacher?.membership_role === 'TEACHER') return 'تخصص مادة دراسية'
+  if (teacher?.subject_role === 'TEACHER') return tSubjects('display.subjectTeacher')
+  if (teacher?.membership_role === 'TEACHER') return tSubjects('display.subjectSpecialty')
   if (teacher?.membership_role) {
-    const label = MEMBERSHIP_ROLE_LABELS[teacher.membership_role]
-    return label ? `${label} — مسند للمادة` : 'مسند للمادة'
+    const label = getMembershipRoleLabel(teacher.membership_role)
+    return label
+      ? tSubjects('display.assignedToSubjectWithRole', { role: label })
+      : tSubjects('display.assignedToSubject')
   }
-  return 'مسند للمادة'
+  return tSubjects('display.assignedToSubject')
 }
 
 export function getTeacherAvatarUrl(teacher) {
@@ -48,16 +71,22 @@ export function getTeacherAvatarUrl(teacher) {
 }
 
 export function getQuestionBankName(bank) {
-  return bank?.title || bank?.name || 'بنك أسئلة'
+  return bank?.title || bank?.name || tQuestionBanks('display.defaultName')
 }
 
 export function getQuestionBankVisibilityLabel(bank) {
-  return VISIBILITY_LABELS[bank?.visibility] || bank?.visibility || ''
+  const visibility = bank?.visibility
+  const key = VISIBILITY_KEYS[visibility]
+  if (key) return tQuestionBanks(`visibility.${key}`)
+  return visibility || ''
 }
 
 export function formatStatValue(value) {
   if (value === null || value === undefined || value === '—') return '—'
-  if (typeof value === 'number') return value.toLocaleString('ar-EG')
+  if (typeof value === 'number') {
+    const locale = i18n.language === 'ar' ? 'ar-EG' : 'en-US'
+    return value.toLocaleString(locale)
+  }
   return value
 }
 
@@ -114,19 +143,19 @@ export function formatSubjectStatCount(value) {
 export function formatSubjectTeachersLabel(subject) {
   const count = getSubjectTeachersCount(subject)
   if (count === null || count === undefined) return '—'
-  return `${formatStatValue(count)} معلم`
+  return tSubjects('display.teachersCount', { count: formatStatValue(count) })
 }
 
 export function formatSubjectBanksLabel(subject) {
   const count = getSubjectQuestionBanksCount(subject)
   if (count === null || count === undefined) return '—'
-  return `${formatStatValue(count)} بنك`
+  return tSubjects('display.banksCount', { count: formatStatValue(count) })
 }
 
 export function formatSubjectTestsLabel(subject) {
   const count = getSubjectTestsCount(subject)
   if (count === null || count === undefined) return '—'
-  return `${formatStatValue(count)} اختبار`
+  return tSubjects('display.testsCount', { count: formatStatValue(count) })
 }
 
 export function getSubjectTableSubtitle(subject) {
@@ -136,7 +165,7 @@ export function getSubjectTableSubtitle(subject) {
   if (subject?.department?.trim()) {
     return subject.department.trim()
   }
-  return 'مادة دراسية ضمن المنهج التعليمي'
+  return tSubjects('display.defaultSubtitle')
 }
 
 export function sortByRecentDate(items, dateKeys = ['assigned_at', 'created_at', 'updated_at']) {
@@ -159,7 +188,8 @@ export function sortSubjects(subjects = [], sortKey = 'newest') {
   const list = [...subjects]
 
   if (sortKey === 'name') {
-    return list.sort((a, b) => (a.name || '').localeCompare(b.name || '', 'ar'))
+    const locale = i18n.language === 'ar' ? 'ar' : 'en'
+    return list.sort((a, b) => (a.name || '').localeCompare(b.name || '', locale))
   }
 
   if (sortKey === 'oldest') {

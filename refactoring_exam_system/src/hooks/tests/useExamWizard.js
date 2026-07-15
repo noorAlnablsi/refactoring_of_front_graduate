@@ -6,6 +6,7 @@ import { saveExamWizardProgress } from '../../lib/examWizardProgress'
 import { canEditTest, getEditBlockedMessage } from '../../lib/testDisplay'
 import { getTestId, getTestName, mergeTestPreservingQuestions } from '../../lib/testModel'
 import { buildUpdateTestInfoPayloadFromStep1 } from '../../lib/testPayload'
+import { normalizeSettingsConfig } from '../../lib/testSettings'
 import {
   createTest,
   getTestById,
@@ -13,6 +14,7 @@ import {
   scheduleTestPublication,
   updateTest,
 } from '../../services/tests.service'
+import { showAppToast } from '../../lib/appToast'
 import { useToastStore } from '../../store/toastStore'
 
 function parseStep(value) {
@@ -21,8 +23,10 @@ function parseStep(value) {
   return TEST_WIZARD_STEPS.INFO
 }
 
-async function persistNewTest({ create }) {
-  const data = await createTest(create)
+async function persistNewTest(payload) {
+  const body = { ...(payload?.create || payload || {}) }
+  delete body.scoring_config
+  const data = await createTest(body)
   return data.test || data
 }
 
@@ -68,7 +72,7 @@ export function useExamWizard({ isNew = false } = {}) {
       setSavingDraft(true)
       try {
         saveExamWizardProgress(testId, { step, questions: null, ...extra })
-        showToast('تم حفظ المسودة')
+        showAppToast('toast.draftSaved', 'success', { ns: 'exams' })
         navigate(ROUTES.EXAMS)
       } finally {
         setSavingDraft(false)
@@ -87,7 +91,7 @@ export function useExamWizard({ isNew = false } = {}) {
         const data = await updateTest(testId, payload)
         setTest((prev) => mergeTestPreservingQuestions(prev, data.test || data))
         saveExamWizardProgress(testId, { step: TEST_WIZARD_STEPS.SETTINGS, questions: null })
-        showToast('تم حفظ المسودة')
+        showAppToast('toast.draftSaved', 'success', { ns: 'exams' })
         navigate(ROUTES.EXAMS)
       } catch (err) {
         showToast(err.message, 'error')
@@ -109,7 +113,7 @@ export function useExamWizard({ isNew = false } = {}) {
           step: currentStep,
           ...progressSlice,
         })
-        showToast('تم حفظ المسودة')
+        showAppToast('toast.draftSaved', 'success', { ns: 'exams' })
         navigate(ROUTES.EXAMS)
       } finally {
         setSavingDraft(false)
@@ -152,7 +156,7 @@ export function useExamWizard({ isNew = false } = {}) {
       setSubmitting(true)
       try {
         const created = await persistNewTest(payload)
-        showToast('تم إنشاء الامتحان')
+        showAppToast('toast.created', 'success', { ns: 'exams' })
         navigate(ROUTES.EXAM_EDIT.replace(':id', getTestId(created)) + '?step=2', { replace: true })
       } catch (err) {
         showToast(err.message, 'error')
@@ -170,7 +174,7 @@ export function useExamWizard({ isNew = false } = {}) {
         if (isNew) {
           const created = await persistNewTest(payload)
           saveExamWizardProgress(getTestId(created), { step: TEST_WIZARD_STEPS.INFO })
-          showToast('تم حفظ المسودة')
+          showAppToast('toast.draftSaved', 'success', { ns: 'exams' })
           navigate(ROUTES.EXAM_EDIT.replace(':id', getTestId(created)), { replace: true })
           return
         }
@@ -179,7 +183,7 @@ export function useExamWizard({ isNew = false } = {}) {
         const data = await updateTest(testId, buildUpdateTestInfoPayloadFromStep1(payload))
         setTest((prev) => mergeTestPreservingQuestions(prev, data.test || data))
         saveExamWizardProgress(testId, { step: currentStep })
-        showToast('تم حفظ المسودة')
+        showAppToast('toast.draftSaved', 'success', { ns: 'exams' })
       } catch (err) {
         showToast(err.message, 'error')
       } finally {
@@ -197,7 +201,7 @@ export function useExamWizard({ isNew = false } = {}) {
       try {
         const data = await updateTest(testId, buildUpdateTestInfoPayloadFromStep1(payload))
         setTest((prev) => mergeTestPreservingQuestions(prev, data.test || data))
-        showToast('تم حفظ المعلومات')
+        showAppToast('toast.infoSaved', 'success', { ns: 'exams' })
         goToStep(TEST_WIZARD_STEPS.QUESTIONS)
       } catch (err) {
         showToast(err.message, 'error')
@@ -217,7 +221,7 @@ export function useExamWizard({ isNew = false } = {}) {
         const data = await updateTest(testId, payload)
         setTest((prev) => mergeTestPreservingQuestions(prev, data.test || data))
         saveExamWizardProgress(testId, { step: TEST_WIZARD_STEPS.REVIEW, questions: null })
-        showToast('تم حفظ الإعدادات')
+        showAppToast('toast.settingsSaved', 'success', { ns: 'exams' })
         goToStep(TEST_WIZARD_STEPS.REVIEW)
       } catch (err) {
         showToast(err.message, 'error')
@@ -234,7 +238,7 @@ export function useExamWizard({ isNew = false } = {}) {
     setPublishing(true)
     try {
       await publishTestNow(testId)
-      showToast('تم نشر الامتحان بنجاح')
+      showAppToast('toast.published', 'success', { ns: 'exams' })
       navigate(ROUTES.EXAMS)
     } catch (err) {
       showToast(err.message, 'error')
@@ -250,7 +254,7 @@ export function useExamWizard({ isNew = false } = {}) {
       setPublishing(true)
       try {
         await scheduleTestPublication(testId, payload)
-        showToast('تمت جدولة نشر الامتحان')
+        showAppToast('toast.scheduled', 'success', { ns: 'exams' })
         navigate(ROUTES.EXAMS)
       } catch (err) {
         showToast(err.message, 'error')
@@ -281,10 +285,12 @@ export function useExamWizard({ isNew = false } = {}) {
 
   const settingsSidebarConfig = useMemo(() => {
     if (currentStep === TEST_WIZARD_STEPS.SETTINGS) {
-      return settingsPreview || test?.settings_config
+      return settingsPreview
+        ? normalizeSettingsConfig(settingsPreview)
+        : normalizeSettingsConfig(test?.settings_config || {})
     }
     if (currentStep === TEST_WIZARD_STEPS.PUBLISH) {
-      return test?.settings_config
+      return normalizeSettingsConfig(test?.settings_config || {})
     }
     return null
   }, [currentStep, settingsPreview, test?.settings_config])

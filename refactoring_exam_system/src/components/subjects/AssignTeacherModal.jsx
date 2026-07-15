@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import { X } from 'lucide-react'
 import { assignTeacherToSubject } from '../../services/subjects.service'
 import { getWorkspaceTeachers } from '../../services/workspaces.service'
@@ -10,6 +11,7 @@ import {
 } from '../../lib/workspaceTeachers'
 
 function AssignTeacherModalContent({ subjectId, assignedIds, onClose, onSuccess }) {
+  const { t } = useTranslation(['subjects', 'common'])
   const showToast = useToastStore((s) => s.showToast)
   const [teachers, setTeachers] = useState([])
   const [selectedTeacher, setSelectedTeacher] = useState(null)
@@ -49,19 +51,19 @@ function AssignTeacherModalContent({ subjectId, assignedIds, onClose, onSuccess 
 
   const handleAssign = async () => {
     if (!selectedTeacher) {
-      showToast('يرجى اختيار معلم', 'error')
+      showToast(t('assignTeacher.selectTeacherError'), 'error')
       return
     }
 
     if (!canAssignWorkspaceTeacher(selectedTeacher)) {
-      showToast('تعذّر إسناد هذا المعلم — معرّف العضوية غير متوفر', 'error')
+      showToast(t('assignTeacher.membershipError'), 'error')
       return
     }
 
     setLoading(true)
     try {
       await assignTeacherToSubject(subjectId, selectedTeacher)
-      showToast('تم إسناد المعلم بنجاح')
+      showToast(t('assignTeacher.success'))
       onSuccess()
       onClose()
     } catch (err) {
@@ -75,26 +77,22 @@ function AssignTeacherModalContent({ subjectId, assignedIds, onClose, onSuccess 
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 p-4">
       <div dir="rtl" className="w-full max-w-lg rounded-2xl bg-white p-6 shadow-xl">
         <div className="mb-6 flex items-center justify-between">
-          <h2 className="text-xl font-extrabold text-[#2AA8A2]">إسناد معلم</h2>
+          <h2 className="text-xl font-extrabold text-[#2AA8A2]">{t('assignTeacher.title')}</h2>
           <button type="button" onClick={onClose} className="text-[#94A3B8]">
             <X className="h-5 w-5" />
           </button>
         </div>
 
         {fetching ? (
-          <p className="text-sm text-[#64748B]">جاري تحميل المعلمين...</p>
+          <p className="text-sm text-[#64748B]">{t('assignTeacher.loading')}</p>
         ) : availableTeachers.length === 0 ? (
           <p className="text-sm text-[#64748B]">
-            {teachers.length > 0
-              ? 'جميع المعلمين مسندون لهذه المادة'
-              : 'لا يوجد معلمون متاحون للإسناد'}
+            {teachers.length > 0 ? t('assignTeacher.allAssigned') : t('assignTeacher.noneAvailable')}
           </p>
         ) : (
           <>
             {missingMembershipIds && assignableTeachers.length === 0 ? (
-              <p className="mb-3 text-sm text-amber-700">
-                تعذّر تحميل معرّفات العضوية للمعلمين — تأكد أن API يُرجع membership_id
-              </p>
+              <p className="mb-3 text-sm text-amber-700">{t('assignTeacher.membershipWarning')}</p>
             ) : null}
             <div className="max-h-64 space-y-2 overflow-y-auto">
               {availableTeachers.map((teacher) => {
@@ -127,7 +125,7 @@ function AssignTeacherModalContent({ subjectId, assignedIds, onClose, onSuccess 
 
         <div className="mt-8 flex items-center justify-end gap-3">
           <button type="button" onClick={onClose} className="text-sm font-bold text-[#2AA8A2]">
-            إلغاء
+            {t('actions.cancel', { ns: 'common' })}
           </button>
           <button
             type="button"
@@ -135,7 +133,7 @@ function AssignTeacherModalContent({ subjectId, assignedIds, onClose, onSuccess 
             disabled={loading || !selectedTeacher || !canAssignWorkspaceTeacher(selectedTeacher)}
             className="rounded-xl bg-[#2AA8A2] px-6 py-3 text-sm font-bold text-white disabled:opacity-70"
           >
-            {loading ? 'جاري الإسناد...' : 'إسناد'}
+            {loading ? t('assignTeacher.assigning') : t('assignTeacher.assign')}
           </button>
         </div>
       </div>

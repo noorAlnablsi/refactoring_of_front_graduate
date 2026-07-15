@@ -1,5 +1,10 @@
+import { tUI } from './appToast'
 
 const DEFAULT_DIFFICULTY = { easy: 30, medium: 50, hard: 20 }
+
+function defaultTopicName(topicId) {
+  return tUI('blueprint.defaultTopic', { ns: 'exams', id: topicId })
+}
 
 export function resolveBankSubjectId(bank) {
   return bank?.subject_id ?? bank?.subject?.id ?? bank?.subject?.subject_id ?? bank?.subjectId ?? null
@@ -16,7 +21,7 @@ export function extractTopicsFromQuestions(questions = []) {
       question?.topic_name ??
       question?.snapshot_topic_name ??
       question?.topic?.name ??
-      `محور ${topicId}`
+      defaultTopicName(topicId)
 
     if (!map.has(topicId)) {
       map.set(topicId, { topic_id: topicId, name })
@@ -29,7 +34,7 @@ export function extractTopicsFromQuestions(questions = []) {
 export function mapSubjectTopicsToBlueprint(topics = []) {
   return (topics || []).map((topic) => ({
     topic_id: topic.id ?? topic.topic_id,
-    name: topic.name ?? topic.title ?? `محور ${topic.id}`,
+    name: topic.name ?? topic.title ?? defaultTopicName(topic.id),
   }))
 }
 

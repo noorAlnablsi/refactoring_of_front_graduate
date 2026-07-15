@@ -6,9 +6,11 @@ import PasswordResetIcon from '../../components/auth/password-reset/PasswordRese
 import PasswordResetShell from '../../components/auth/password-reset/PasswordResetShell'
 import PasswordResetTitle from '../../components/auth/password-reset/PasswordResetTitle'
 import { ROUTES } from '../../constants/routes'
+import { useAppTranslation } from '../../hooks/useAppTranslation'
 import { usePasswordResetStore } from '../../store/passwordResetStore'
 
 function ResetPasswordSuccessPage() {
+  const { t } = useAppTranslation('auth')
   const navigate = useNavigate()
   const resetCompleted = usePasswordResetStore((s) => s.resetCompleted)
   const reset = usePasswordResetStore((s) => s.reset)
@@ -29,9 +31,9 @@ function ResetPasswordSuccessPage() {
   return (
     <PasswordResetShell cardClassName="pb-16 md:pb-20">
       <PasswordResetIcon />
-      <PasswordResetTitle>إعادة تعيين كلمة المرور</PasswordResetTitle>
+      <PasswordResetTitle>{t('passwordReset.title')}</PasswordResetTitle>
       <p className="mt-4 text-center text-sm font-medium text-[#6B7280] md:text-[15px]">
-        تم تغيير كلمة المرور بنجاح !
+        {t('passwordReset.successMessage')}
       </p>
 
       <div className="mx-auto mt-12 flex h-[148px] w-[148px] items-center justify-center rounded-full bg-[#2AA8A2] shadow-[0_16px_40px_rgba(42,168,162,0.32)]">

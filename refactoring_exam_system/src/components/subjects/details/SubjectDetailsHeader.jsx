@@ -1,8 +1,10 @@
+import { useTranslation } from 'react-i18next'
 import { FlaskConical, Pencil, UserPlus } from 'lucide-react'
 import { getSubjectSummary } from '../../../lib/subjectDisplay'
 import { canAssignTeachers, canEditSubject } from '../../../lib/workspaceContext'
 
 function SubjectDetailsHeader({ subject, onAssign, onEdit }) {
+  const { t } = useTranslation('subjects')
   const showAssign = canAssignTeachers()
   const showEdit = canEditSubject()
 
@@ -29,7 +31,7 @@ function SubjectDetailsHeader({ subject, onAssign, onEdit }) {
               className="inline-flex items-center gap-2 rounded-xl bg-[#2AA8A2] px-5 py-3 text-sm font-bold text-white shadow-[0_8px_16px_rgba(42,168,162,0.22)] transition hover:opacity-95"
             >
               <UserPlus className="h-4 w-4" />
-              إسناد معلم
+              {t('details.assignTeacher')}
             </button>
           ) : null}
           {showEdit ? (
@@ -39,7 +41,7 @@ function SubjectDetailsHeader({ subject, onAssign, onEdit }) {
               className="inline-flex items-center gap-2 rounded-xl bg-[#EEF2F3] px-5 py-3 text-sm font-bold text-[#374151] transition hover:bg-[#E5E9EB]"
             >
               <Pencil className="h-4 w-4" />
-              تعديل المادة
+              {t('details.editSubject')}
             </button>
           ) : null}
         </div>

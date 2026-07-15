@@ -1,25 +1,24 @@
-const tabs = [
-  { id: 'overview', label: 'نظرة عامة' },
-  { id: 'teachers', label: 'المعلمون' },
-  { id: 'banks', label: 'بنوك الأسئلة' },
-  { id: 'exams', label: 'الاختبارات' },
-]
+import { useTranslation } from 'react-i18next'
+
+const TAB_IDS = ['overview', 'teachers', 'banks', 'exams']
 
 function SubjectDetailsTabs({ activeTab, onChange }) {
+  const { t } = useTranslation('subjects')
+
   return (
     <div className="border-b border-[#E5E9EB]">
       <div className="flex gap-10 overflow-x-auto">
-        {tabs.map((tab) => (
+        {TAB_IDS.map((tabId) => (
           <button
-            key={tab.id}
+            key={tabId}
             type="button"
-            onClick={() => onChange(tab.id)}
+            onClick={() => onChange(tabId)}
             className={`relative shrink-0 pb-4 text-sm font-bold transition ${
-              activeTab === tab.id ? 'text-[#2AA8A2]' : 'text-[#64748B] hover:text-[#374151]'
+              activeTab === tabId ? 'text-[#2AA8A2]' : 'text-[#64748B] hover:text-[#374151]'
             }`}
           >
-            {tab.label}
-            {activeTab === tab.id ? (
+            {t(`details.tabs.${tabId}`)}
+            {activeTab === tabId ? (
               <span className="absolute inset-x-0 bottom-0 h-0.5 rounded-full bg-[#2AA8A2]" />
             ) : null}
           </button>

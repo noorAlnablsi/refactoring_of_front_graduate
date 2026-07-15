@@ -1,22 +1,6 @@
 import { useMemo, useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import { ChevronLeft, ChevronRight } from 'lucide-react'
-
-const WEEKDAYS_AR = ['أحد', 'إثن', 'ثلا', 'أرب', 'خمي', 'جمع', 'سبت']
-
-const MONTHS_AR = [
-  'يناير',
-  'فبراير',
-  'مارس',
-  'أبريل',
-  'مايو',
-  'يونيو',
-  'يوليو',
-  'أغسطس',
-  'سبتمبر',
-  'أكتوبر',
-  'نوفمبر',
-  'ديسمبر',
-]
 
 function buildMonthGrid(year, month) {
   const firstDay = new Date(year, month, 1).getDay()
@@ -35,6 +19,9 @@ function buildMonthGrid(year, month) {
 }
 
 function StudentCalendarCard({ getEventDaysForMonth }) {
+  const { t } = useTranslation('student')
+  const weekdays = t('calendar.weekdays', { returnObjects: true })
+  const months = t('calendar.months', { returnObjects: true })
   const today = new Date()
   const [viewDate, setViewDate] = useState(() => new Date(today.getFullYear(), today.getMonth(), 1))
 
@@ -59,27 +46,27 @@ function StudentCalendarCard({ getEventDaysForMonth }) {
           type="button"
           onClick={() => shiftMonth(-1)}
           className="flex h-7 w-7 items-center justify-center rounded-lg text-[#94A3B8] transition hover:bg-[#F6F8F9] hover:text-[#64748B]"
-          aria-label="الشهر السابق"
+          aria-label={t('calendar.prevMonthAria')}
         >
           <ChevronRight className="h-4 w-4" />
         </button>
 
         <h2 className="text-center text-sm font-extrabold text-[#2A3433]">
-          {MONTHS_AR[month]} {year}
+          {months[month]} {year}
         </h2>
 
         <button
           type="button"
           onClick={() => shiftMonth(1)}
           className="flex h-7 w-7 items-center justify-center rounded-lg text-[#94A3B8] transition hover:bg-[#F6F8F9] hover:text-[#64748B]"
-          aria-label="الشهر التالي"
+          aria-label={t('calendar.nextMonthAria')}
         >
           <ChevronLeft className="h-4 w-4" />
         </button>
       </div>
 
       <div className="grid grid-cols-7 gap-0.5 text-center text-[10px] font-semibold text-[#94A3B8]">
-        {WEEKDAYS_AR.map((day) => (
+        {weekdays.map((day) => (
           <span key={day} className="py-1">
             {day}
           </span>

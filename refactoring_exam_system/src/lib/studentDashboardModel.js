@@ -1,22 +1,42 @@
+import i18n from '../i18n'
+
+function tStudent(key, options = {}) {
+  return i18n.t(key, { ns: 'student', ...options })
+}
+
+function getDateLocale() {
+  return i18n.language === 'ar' ? 'ar-EG' : 'en-US'
+}
+
 function formatAvailabilityLabel(test) {
   if (test.starts_at) {
     const startsAt = new Date(test.starts_at)
     if (!Number.isNaN(startsAt.getTime())) {
-      return `يبدأ: ${startsAt.toLocaleString('ar-EG', { dateStyle: 'medium', timeStyle: 'short' })}`
+      return tStudent('availability.startsAt', {
+        datetime: startsAt.toLocaleString(getDateLocale(), {
+          dateStyle: 'medium',
+          timeStyle: 'short',
+        }),
+      })
     }
   }
 
   if (test.published_at) {
-    return 'متاح الآن'
+    return tStudent('availability.availableNow')
   }
 
   return '—'
 }
 
+function formatSubjectFallback(subjectId) {
+  if (!subjectId) return '—'
+  return tStudent('subjectFallback', { id: subjectId })
+}
+
 export function normalizeAvailableTestFromApi(test) {
   return {
     id: test.test_id ?? test.id,
-    subject: test.subject_name || (test.subject_id ? `مادة #${test.subject_id}` : '—'),
+    subject: test.subject_name || formatSubjectFallback(test.subject_id),
     title: test.name || test.title || '—',
     teacher: test.teacher_name || test.teacher || '—',
     durationMinutes: test.duration_minutes ?? 0,
@@ -37,7 +57,8 @@ export function normalizeAvailableTestsResponse(data) {
 
 /**
  * Normalizes GET /student/dashboard response for UI components.
- */export function normalizeStudentDashboard(data) {
+ */
+export function normalizeStudentDashboard(data) {
   const payload = data?.dashboard || data || {}
 
   return {
@@ -70,6 +91,7 @@ function normalizeAvailableExam(exam) {
     proctored: Boolean(exam.proctored ?? exam.is_proctored),
   }
 }
+
 function normalizeUpcomingExam(exam) {
   return {
     id: exam.id,

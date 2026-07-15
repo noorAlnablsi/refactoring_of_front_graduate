@@ -1,3 +1,4 @@
+import { useTranslation } from 'react-i18next'
 import { ClipboardList, FolderOpen } from 'lucide-react'
 import {
   getQuestionBankName,
@@ -9,8 +10,8 @@ import TeacherAvatar from './TeacherAvatar'
 import SubjectTopicsSection from './SubjectTopicsSection'
 
 const placeholderExams = [
-  { id: 1, name: 'اختبار الميكانيكا', status: 'completed' },
-  { id: 2, name: 'الديناميكا الحرارية', status: 'active' },
+  { id: 1, name: 'Mechanics exam', status: 'completed' },
+  { id: 2, name: 'Thermodynamics', status: 'active' },
 ]
 
 function SubjectOverviewTab({
@@ -21,6 +22,7 @@ function SubjectOverviewTab({
   onViewAllTeachers,
   onRefreshTopics,
 }) {
+  const { t } = useTranslation(['subjects', 'common'])
   const recentTeachers = sortByRecentDate(teachers).slice(0, 2)
   const recentBanks = sortByRecentDate(questionBanks).slice(0, 3)
 
@@ -28,10 +30,9 @@ function SubjectOverviewTab({
     <div className="grid gap-6 xl:grid-cols-[minmax(0,1fr)_300px]">
       <div className="space-y-6">
         <section className="rounded-2xl bg-white p-6 shadow-[0_2px_12px_rgba(15,23,42,0.04)] ring-1 ring-[#E5E9EB]">
-          <h2 className="text-lg font-bold text-[#2A3433]">وصف المادة</h2>
+          <h2 className="text-lg font-bold text-[#2A3433]">{t('details.overview.descriptionTitle')}</h2>
           <p className="mt-4 whitespace-pre-line text-sm leading-8 text-[#64748B]">
-            {subject.description?.trim() ||
-              'لا يوجد وصف مفصل لهذه المادة حالياً. يمكنك إضافة وصف يوضح أهداف المادة ومخرجاتها التعليمية من خلال تعديل المادة.'}
+            {subject.description?.trim() || t('details.overview.noDescription')}
           </p>
         </section>
 
@@ -43,19 +44,20 @@ function SubjectOverviewTab({
 
         <section className="rounded-2xl bg-white p-6 shadow-[0_2px_12px_rgba(15,23,42,0.04)] ring-1 ring-[#E5E9EB]">
           <div className="mb-5 flex items-center justify-between gap-3">
-            <h2 className="text-lg font-bold text-[#2A3433]">المعلمون المرتبطون حديثاً</h2>
+            <h2 className="text-lg font-bold text-[#2A3433]">{t('details.overview.recentTeachers')}</h2>
             {teachers.length > 0 ? (
               <button
                 type="button"
                 onClick={onViewAllTeachers}
                 className="text-sm font-bold text-[#2AA8A2] transition hover:opacity-80"
               >
-                عرض الكل
+                {t('actions.viewAll', { ns: 'common' })}
               </button>
             ) : null}
           </div>
 
-          {recentTeachers.length === 0 ? (            <p className="text-sm text-[#94A3B8]">لا يوجد معلمون مسندون لهذه المادة بعد</p>
+          {recentTeachers.length === 0 ? (
+            <p className="text-sm text-[#94A3B8]">{t('details.overview.noTeachers')}</p>
           ) : (
             <div className="grid gap-4 sm:grid-cols-2">
               {recentTeachers.map((teacher) => (
@@ -81,7 +83,7 @@ function SubjectOverviewTab({
         <section className="rounded-2xl bg-white p-5 shadow-[0_2px_12px_rgba(15,23,42,0.04)] ring-1 ring-[#E5E9EB]">
           <div className="mb-4 flex items-center gap-2">
             <ClipboardList className="h-4 w-4 text-[#94A3B8]" />
-            <h2 className="text-base font-bold text-[#2A3433]">آخر الاختبارات</h2>
+            <h2 className="text-base font-bold text-[#2A3433]">{t('details.overview.recentExams')}</h2>
           </div>
           <div className="space-y-3">
             {placeholderExams.map((exam) => (
@@ -97,7 +99,9 @@ function SubjectOverviewTab({
                       : 'bg-[#F1F5F9] text-[#64748B]'
                   }`}
                 >
-                  {exam.status === 'active' ? 'نشط' : 'مكتمل'}
+                  {exam.status === 'active'
+                    ? t('details.examStatus.active')
+                    : t('details.examStatus.completed')}
                 </span>
               </div>
             ))}
@@ -107,10 +111,10 @@ function SubjectOverviewTab({
         <section className="rounded-2xl bg-white p-5 shadow-[0_2px_12px_rgba(15,23,42,0.04)] ring-1 ring-[#E5E9EB]">
           <div className="mb-4 flex items-center gap-2">
             <FolderOpen className="h-4 w-4 text-[#94A3B8]" />
-            <h2 className="text-base font-bold text-[#2A3433]">أحدث بنوك الأسئلة</h2>
+            <h2 className="text-base font-bold text-[#2A3433]">{t('details.overview.recentBanks')}</h2>
           </div>
           {recentBanks.length === 0 ? (
-            <p className="text-sm text-[#94A3B8]">لا توجد بنوك أسئلة مرتبطة بعد</p>
+            <p className="text-sm text-[#94A3B8]">{t('details.overview.noBanks')}</p>
           ) : (
             <ul className="space-y-3">
               {recentBanks.map((bank) => (

@@ -1,3 +1,4 @@
+import { useTranslation } from 'react-i18next'
 import { ChevronLeft, ChevronRight } from 'lucide-react'
 import { formatStatValue } from '../../lib/subjectDisplay'
 import { shellCardClass } from '../../lib/shellUi'
@@ -22,12 +23,14 @@ function PageButton({ children, active, disabled, onClick, ariaLabel }) {
 }
 
 function SubjectsPagination({ page, totalPages, onPageChange }) {
+  const { t } = useTranslation('common')
+
   if (totalPages <= 1) return null
 
   return (
     <div className="flex items-center gap-2">
       <PageButton
-        ariaLabel="الصفحة السابقة"
+        ariaLabel={t('pagination.previousPage')}
         disabled={page <= 1}
         onClick={() => onPageChange(page - 1)}
       >
@@ -38,7 +41,7 @@ function SubjectsPagination({ page, totalPages, onPageChange }) {
         <PageButton
           key={pageNumber}
           active={pageNumber === page}
-          ariaLabel={`الصفحة ${pageNumber}`}
+          ariaLabel={t('pagination.page', { number: pageNumber })}
           onClick={() => onPageChange(pageNumber)}
         >
           {formatStatValue(pageNumber)}
@@ -46,7 +49,7 @@ function SubjectsPagination({ page, totalPages, onPageChange }) {
       ))}
 
       <PageButton
-        ariaLabel="الصفحة التالية"
+        ariaLabel={t('pagination.nextPage')}
         disabled={page >= totalPages}
         onClick={() => onPageChange(page + 1)}
       >

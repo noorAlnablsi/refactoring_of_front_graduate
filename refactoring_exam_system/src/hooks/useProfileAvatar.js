@@ -1,10 +1,12 @@
 import { useEffect, useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import { getMyProfile, updateMyProfile } from '../services/users.service'
 import { uploadImage } from '../services/uploads.service'
 import { isSoloTeacher } from '../lib/workspaceContext'
 import { useAuthStore } from '../store/authStore'
 
 export function useProfileAvatar() {
+  const { t } = useTranslation('settings')
   const user = useAuthStore((state) => state.user)
   const updateUser = useAuthStore((state) => state.updateUser)
   const [uploading, setUploading] = useState(false)
@@ -52,7 +54,7 @@ export function useProfileAvatar() {
       updateUser(data.user)
       return data.user
     } catch (err) {
-      setError(err.message || 'تعذر تحديث الصورة الشخصية')
+      setError(err.message || t('profile.avatarUpdateError'))
       throw err
     } finally {
       setUploading(false)

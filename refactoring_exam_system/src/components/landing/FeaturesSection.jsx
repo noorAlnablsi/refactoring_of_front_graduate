@@ -1,19 +1,20 @@
 import { BookOpenCheck, ChartNoAxesColumn, Sparkles } from 'lucide-react'
+import { useTranslation } from 'react-i18next'
 import safeBoxImage from '../../assets/landing/safe-box.png'
 
 function FeaturesSection() {
+  const { t } = useTranslation('landing')
+
   return (
     <section className="bg-white px-4 py-16 md:px-8 lg:py-20">
       <div className="mx-auto w-full max-w-6xl">
         <div className="mb-12 text-center lg:text-right">
           <h2 className="text-4xl font-black leading-tight text-[#202636] md:text-5xl">
-            أدوات دقيقة
+            {t('features.titleLine1')}
             <br />
-            <span className="text-[#2AA8A2]">للمعلمين المعاصرين</span>
+            <span className="text-[#2AA8A2]">{t('features.titleLine2')}</span>
           </h2>
-          <p className="mt-4 text-lg text-[#666D7C] md:text-xl">
-            تم تصميم كل ميزة لتقليل العبء الإداري وتعزيز التجربة التعليمية.
-          </p>
+          <p className="mt-4 text-lg text-[#666D7C] md:text-xl">{t('features.subtitle')}</p>
         </div>
 
         <div className="grid gap-6" dir="ltr">
@@ -24,13 +25,13 @@ function FeaturesSection() {
             >
               <Sparkles className="mb-6 h-7 w-7" />
               <h3 className="mb-3 text-3xl font-extrabold leading-tight md:text-4xl">
-                توليد تلقائي للاختبارات
+                {t('features.aiGeneration.title')}
               </h3>
               <p className="mb-8 text-base leading-8 text-white/95 md:text-lg">
-                دع الذكاء الاصطناعي يبني اختبارات متوازنة وغير متكررة بناءً على أوزان المنهج ومعايير الصعوبة.
+                {t('features.aiGeneration.description')}
               </p>
               <a href="#" className="text-xl font-bold md:text-2xl">
-                اقرأ المزيد
+                {t('features.aiGeneration.readMore')}
               </a>
             </article>
 
@@ -39,16 +40,18 @@ function FeaturesSection() {
               className="rounded-[24px] border-r-4 border-[#2AA8A2] bg-white p-8 text-right shadow-[0_2px_16px_rgba(0,0,0,0.06)]"
             >
               <BookOpenCheck className="mb-6 h-7 w-7 text-[#2AA8A2]" />
-              <h3 className="mb-3 text-3xl font-extrabold text-[#202636] md:text-4xl">إنشاء بنك الأسئلة</h3>
+              <h3 className="mb-3 text-3xl font-extrabold text-[#202636] md:text-4xl">
+                {t('features.questionBank.title')}
+              </h3>
               <p className="mb-8 text-base leading-8 text-[#676E7C] md:text-lg">
-                نظم أصولك الأكاديمية باستخدام وسوم ذكية، قم باستيراد وإدارة آلاف الأسئلة عبر الأقسام بسهولة.
+                {t('features.questionBank.description')}
               </p>
               <div dir="rtl" className="flex w-full flex-wrap justify-start gap-3 text-right">
                 <span className="rounded-full bg-[#E5E9EB] px-4 py-2 text-sm font-medium text-[#5F6675]">
-                  استيراد ذكي
+                  {t('features.questionBank.tags.smartImport')}
                 </span>
                 <span className="rounded-full bg-[#E5E9EB] px-4 py-2 text-sm font-medium text-[#5F6675]">
-                  محرك الوسوم
+                  {t('features.questionBank.tags.tagEngine')}
                 </span>
               </div>
             </article>
@@ -60,19 +63,19 @@ function FeaturesSection() {
                 <div className="overflow-hidden rounded-2xl">
                   <img
                     src={safeBoxImage}
-                    alt="أمان الاختبارات"
+                    alt={t('features.integrity.imageAlt')}
                     className="h-[220px] w-full object-cover md:h-[240px]"
                   />
                 </div>
                 <div dir="rtl" className="px-1 py-2 text-right md:px-3">
                   <h3 className="mb-3 text-2xl font-extrabold text-[#202636] md:text-3xl">
-                    جناح النزاهة الأكاديمية
+                    {t('features.integrity.title')}
                   </h3>
                   <p className="mb-5 text-base leading-8 text-[#5F6675] md:text-lg">
-                    مراقبة متقدمة، وتبديل عشوائي للأسئلة، وعرض ديناميكي لضمان أعلى معايير أمان الامتحانات.
+                    {t('features.integrity.description')}
                   </p>
                   <a href="#" className="text-lg font-bold text-[#2AA8A2] md:text-xl">
-                    ورقة العمل الأمنية
+                    {t('features.integrity.link')}
                   </a>
                 </div>
               </div>
@@ -82,9 +85,11 @@ function FeaturesSection() {
               <div className="mb-6 ml-auto flex h-12 w-12 items-center justify-center rounded-xl bg-[#2AA8A2]/15">
                 <ChartNoAxesColumn className="h-6 w-6 text-[#2AA8A2]" strokeWidth={2.25} />
               </div>
-              <h3 className="mb-3 text-2xl font-extrabold text-[#202636] md:text-3xl">تحليلات الطلاب</h3>
+              <h3 className="mb-3 text-2xl font-extrabold text-[#202636] md:text-3xl">
+                {t('features.analytics.title')}
+              </h3>
               <p className="mb-10 max-w-sm text-base leading-8 text-[#5F6675] md:text-lg">
-                تعمق في مقاييس الأداء مع التحليل النفسي وتتبع تقدم المجموعات.
+                {t('features.analytics.description')}
               </p>
               <div dir="ltr" className="mt-auto h-2.5 w-full overflow-hidden rounded-full bg-[#CDD3D8]">
                 <div className="ml-auto h-full w-[75%] rounded-full bg-[#2AA8A2]" />
@@ -98,4 +103,3 @@ function FeaturesSection() {
 }
 
 export default FeaturesSection
-

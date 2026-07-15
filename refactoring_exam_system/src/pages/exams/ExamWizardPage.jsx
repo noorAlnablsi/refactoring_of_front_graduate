@@ -1,5 +1,6 @@
 import { ArrowRight } from 'lucide-react'
 import { Navigate } from 'react-router-dom'
+import { useTranslation } from 'react-i18next'
 import ExamSummarySidebar from '../../components/exams/ExamSummarySidebar'
 import ExamPublishSummarySidebar from '../../components/exams/ExamPublishSummarySidebar'
 import ExamSettingsSummarySidebar from '../../components/exams/ExamSettingsSummarySidebar'
@@ -21,6 +22,7 @@ import {
 } from '../../lib/shellUi'
 
 function ExamWizardPage({ isNew = false }) {
+  const { t } = useTranslation('exams')
   const wizard = useExamWizard({ isNew })
 
   if (!canAccessExams() || !canCreateExam()) {
@@ -30,7 +32,7 @@ function ExamWizardPage({ isNew = false }) {
   if (isNew) {
     return (
       <div className="space-y-6">
-        <WizardHeader onBack={wizard.exitToExams} title="إنشاء امتحان جديد" />
+        <WizardHeader onBack={wizard.exitToExams} title={t('wizard.createTitle')} />
         <ExamWizardStepper currentStep={TEST_WIZARD_STEPS.INFO} />
         <div className="grid gap-6 lg:grid-cols-[1fr_300px]">
           <ExamBasicInfoStep
@@ -49,7 +51,7 @@ function ExamWizardPage({ isNew = false }) {
   if (wizard.loading) {
     return (
       <div className="flex min-h-[40vh] items-center justify-center">
-        <p className="text-sm text-[#94A3B8]">جاري تحميل الامتحان...</p>
+        <p className="text-sm text-[#94A3B8]">{t('wizard.loadingExam')}</p>
       </div>
     )
   }
@@ -66,7 +68,7 @@ function ExamWizardPage({ isNew = false }) {
         <>
           <WizardHeader
             onBack={wizard.exitToExams}
-            title={getTestName(test) || 'تحرير الامتحان'}
+            title={getTestName(test) || t('wizard.editTitle')}
           />
           <ExamWizardStepper currentStep={currentStep} />
         </>
@@ -146,6 +148,8 @@ function ExamWizardPage({ isNew = false }) {
 }
 
 function WizardHeader({ title, onBack }) {
+  const { t } = useTranslation('exams')
+
   return (
     <div className="flex items-center gap-4">
       <button
@@ -156,7 +160,7 @@ function WizardHeader({ title, onBack }) {
         <ArrowRight className="h-5 w-5" />
       </button>
       <div>
-        <p className={shellPageEyebrowClass}>معالج إنشاء الامتحان</p>
+        <p className={shellPageEyebrowClass}>{t('wizard.header.eyebrow')}</p>
         <h1 className={`text-2xl ${shellPageTitleClass}`}>{title}</h1>
       </div>
     </div>

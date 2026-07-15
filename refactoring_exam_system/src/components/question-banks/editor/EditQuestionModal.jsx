@@ -1,6 +1,12 @@
 import { useEffect, useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import { Plus, Trash2, X } from 'lucide-react'
-import { DIFFICULTY_OPTIONS, getQuestionTypeLabel, validateQuestionChoiceRules } from '../../../lib/questionBanks'
+import {
+  DIFFICULTY_OPTIONS,
+  getQuestionTypeLabel,
+  getTrueFalseChoices,
+  validateQuestionChoiceRules,
+} from '../../../lib/questionBanks'
 import { isRichTextEmpty } from '../../../lib/richText'
 import QuestionBodyEditor from './QuestionBodyEditor'
 
@@ -51,6 +57,7 @@ function toApiPayload(form) {
 }
 
 function EditQuestionModal({ open, question, topics = [], submitting = false, onClose, onSubmit }) {
+  const { t } = useTranslation(['questionBanks', 'common'])
   const [form, setForm] = useState(() => normalizeForForm(question))
   const [error, setError] = useState('')
 
@@ -78,10 +85,7 @@ function EditQuestionModal({ open, question, topics = [], submitting = false, on
     if (typeCode === 'ESSAY') {
       nextChoices = []
     } else if (typeCode === 'TRUE_FALSE') {
-      nextChoices = [
-        { body: 'صح', is_correct: true },
-        { body: 'خطأ', is_correct: false },
-      ]
+      nextChoices = getTrueFalseChoices()
     } else if (!form.choices.length || form.type_code === 'ESSAY' || form.type_code === 'TRUE_FALSE') {
       nextChoices = [
         { body: '', is_correct: true },
@@ -127,17 +131,17 @@ function EditQuestionModal({ open, question, topics = [], submitting = false, on
   }
 
   const validate = () => {
-    if (isRichTextEmpty(form.body)) return 'نص السؤال مطلوب'
-    if (!form.points || Number(form.points) < 1) return 'العلامة يجب أن تكون أكبر من 0'
+    if (isRichTextEmpty(form.body)) return t('validation.questionTextRequired')
+    if (!form.points || Number(form.points) < 1) return t('validation.pointsRequired')
 
     if (form.type_code !== 'ESSAY') {
-      if (!form.choices.length) return 'أضف خيارات للإجابة'
-      if (form.choices.some((choice) => !choice.body.trim())) return 'جميع الخيارات يجب أن تكون مكتملة'
+      if (!form.choices.length) return t('validation.addChoices')
+      if (form.choices.some((choice) => !choice.body.trim())) return t('validation.allChoicesRequired')
       const choiceError = validateQuestionChoiceRules(form.type_code, form.choices)
       if (choiceError) return choiceError
     }
 
-    if (topics.length > 0 && !form.topic_id) return 'اختر المحور للسؤال'
+    if (topics.length > 0 && !form.topic_id) return t('validation.topicRequired')
     return ''
   }
 
@@ -155,7 +159,7 @@ function EditQuestionModal({ open, question, topics = [], submitting = false, on
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/45 p-4">
       <div dir="rtl" className="max-h-[90vh] w-full max-w-3xl overflow-y-auto rounded-2xl bg-white p-6 shadow-xl">
         <div className="mb-5 flex items-center justify-between">
-          <h2 className="text-xl font-extrabold text-[#2A3433]">تعديل السؤال</h2>
+          <h2 className="text-xl font-extrabold text-[#2A3433]">{t('editor.editQuestionTitle')}</h2>
           <button type="button" onClick={onClose} className="text-[#94A3B8]">
             <X className="h-5 w-5" />
           </button>
@@ -165,7 +169,7 @@ function EditQuestionModal({ open, question, topics = [], submitting = false, on
           <div className="text-xs font-semibold text-[#94A3B8]">{getQuestionTypeLabel(form.type_code)}</div>
 
           <div className="space-y-2">
-            <label className="text-sm font-semibold text-[#374151]">الصعوبة</label>
+            <label className="text-sm font-semibold text-[#374151]">{t('labels.difficulty')}</label>
             <select
               value={form.difficulty}
               onChange={(event) => setField('difficulty', event.target.value)}
@@ -180,7 +184,7 @@ function EditQuestionModal({ open, question, topics = [], submitting = false, on
           </div>
 
           <div className="space-y-2">
-            <label className="text-sm font-semibold text-[#374151]">نص السؤال</label>
+            <label className="text-sm font-semibold text-[#374151]">{t('labels.questionText')}</label>
             <QuestionBodyEditor
               value={form.body}
               typeCode={form.type_code}
@@ -193,7 +197,7 @@ function EditQuestionModal({ open, question, topics = [], submitting = false, on
           </div>
 
           <div className="space-y-2">
-            <label className="text-sm font-semibold text-[#374151]">العلامة</label>
+            <label className="text-sm font-semibold text-[#374151]">{t('labels.points')}</label>
             <input
               type="number"
               min="1"
@@ -205,7 +209,7 @@ function EditQuestionModal({ open, question, topics = [], submitting = false, on
 
           {!isEssay ? (
             <div className="space-y-3">
-              <p className="text-sm font-semibold text-[#374151]">الإجابات</p>
+              <p className="text-sm font-semibold text-[#374151]">{t('labels.answers')}</p>
               {form.choices.map((choice, index) => (
                 <div key={choice.id || index} className="flex items-center gap-3">
                   <input
@@ -218,7 +222,7 @@ function EditQuestionModal({ open, question, topics = [], submitting = false, on
                   <input
                     value={choice.body}
                     onChange={(event) => updateChoice(index, 'body', event.target.value)}
-                    placeholder={`الخيار ${index + 1}`}
+                    placeholder={t('choices.placeholder', { number: index + 1 })}
                     className={inputClassName}
                   />
                   {!isTrueFalse && form.choices.length > 2 ? (
@@ -235,7 +239,7 @@ function EditQuestionModal({ open, question, topics = [], submitting = false, on
                   className="inline-flex items-center gap-2 text-sm font-bold text-[#2AA8A2]"
                 >
                   <Plus className="h-4 w-4" />
-                  إضافة خيار جديد
+                  {t('choices.addNew')}
                 </button>
               ) : null}
             </div>
@@ -250,7 +254,7 @@ function EditQuestionModal({ open, question, topics = [], submitting = false, on
             onClick={onClose}
             className="rounded-xl bg-[#EEF2F3] px-5 py-2.5 text-sm font-bold text-[#374151]"
           >
-            إلغاء
+            {t('actions.cancel', { ns: 'common' })}
           </button>
           <button
             type="button"
@@ -258,7 +262,7 @@ function EditQuestionModal({ open, question, topics = [], submitting = false, on
             disabled={submitting}
             className="rounded-xl bg-[#2AA8A2] px-6 py-2.5 text-sm font-bold text-white disabled:opacity-60"
           >
-            {submitting ? 'جاري الحفظ...' : 'حفظ التعديل'}
+            {submitting ? t('loading.saving', { ns: 'common' }) : t('editor.saveEdit')}
           </button>
         </div>
       </div>

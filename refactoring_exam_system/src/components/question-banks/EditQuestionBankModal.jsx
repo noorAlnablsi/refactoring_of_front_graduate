@@ -1,14 +1,23 @@
 import { useMemo, useState } from 'react'
 import { X } from 'lucide-react'
+import { useTranslation } from 'react-i18next'
 import { getVisibilityOptionsForWorkspace } from '../../lib/questionBanks'
 import { isInstitutionWorkspace } from '../../lib/workspaceContext'
 import { updateQuestionBank } from '../../services/questionBanks.service'
+import { showAppToast } from '../../lib/appToast'
 import { useToastStore } from '../../store/toastStore'
 
 const inputClassName =
   'w-full rounded-xl bg-[#F6F8F9] px-4 py-3 text-sm text-[#374151] outline-none placeholder:text-[#94A3B8] focus:ring-2 focus:ring-[#2AA8A2]/40'
 
+const VISIBILITY_LABEL_KEYS = {
+  PRIVATE: 'visibility.private',
+  WORKSPACE: 'visibility.workspace',
+  COMMUNITY: 'visibility.community',
+}
+
 function EditQuestionBankModal({ open, bank, onClose, onUpdated }) {
+  const { t } = useTranslation(['questionBanks', 'common'])
   const showToast = useToastStore((s) => s.showToast)
   const initial = useMemo(
     () => ({
@@ -29,7 +38,7 @@ function EditQuestionBankModal({ open, bank, onClose, onUpdated }) {
 
   const handleSubmit = async () => {
     if (!title.trim()) {
-      showToast('اسم البنك مطلوب', 'error')
+      showAppToast('toast.titleRequired', 'error', { ns: 'questionBanks' })
       return
     }
     setLoading(true)
@@ -39,7 +48,7 @@ function EditQuestionBankModal({ open, bank, onClose, onUpdated }) {
         description: description.trim(),
         visibility,
       })
-      showToast('تم تحديث بنك الأسئلة')
+      showAppToast('toast.updated', 'success', { ns: 'questionBanks' })
       onUpdated()
       onClose()
     } catch (err) {
@@ -53,18 +62,24 @@ function EditQuestionBankModal({ open, bank, onClose, onUpdated }) {
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/45 p-4">
       <div dir="rtl" className="w-full max-w-xl rounded-2xl bg-white p-6 shadow-xl">
         <div className="mb-6 flex items-center justify-between">
-          <h2 className="text-xl font-extrabold text-[#2A3433]">تعديل بنك الأسئلة</h2>
+          <h2 className="text-xl font-extrabold text-[#2A3433]">
+            {t('modals.edit.title', { ns: 'questionBanks' })}
+          </h2>
           <button type="button" onClick={onClose} className="text-[#94A3B8]">
             <X className="h-5 w-5" />
           </button>
         </div>
         <div className="space-y-4">
           <div className="space-y-2">
-            <label className="text-sm font-semibold text-[#374151]">اسم البنك</label>
+            <label className="text-sm font-semibold text-[#374151]">
+              {t('modals.edit.nameLabel', { ns: 'questionBanks' })}
+            </label>
             <input value={title} onChange={(event) => setTitle(event.target.value)} className={inputClassName} />
           </div>
           <div className="space-y-2">
-            <label className="text-sm font-semibold text-[#374151]">الوصف</label>
+            <label className="text-sm font-semibold text-[#374151]">
+              {t('modals.edit.descriptionLabel', { ns: 'questionBanks' })}
+            </label>
             <textarea
               value={description}
               onChange={(event) => setDescription(event.target.value)}
@@ -73,11 +88,13 @@ function EditQuestionBankModal({ open, bank, onClose, onUpdated }) {
             />
           </div>
           <div className="space-y-2">
-            <label className="text-sm font-semibold text-[#374151]">الخصوصية</label>
+            <label className="text-sm font-semibold text-[#374151]">
+              {t('modals.edit.privacyLabel', { ns: 'questionBanks' })}
+            </label>
             <select value={visibility} onChange={(event) => setVisibility(event.target.value)} className={inputClassName}>
               {visibilityOptions.map((option) => (
                 <option key={option.value} value={option.value}>
-                  {option.label}
+                  {t(VISIBILITY_LABEL_KEYS[option.value] || 'visibility.private', { ns: 'questionBanks' })}
                 </option>
               ))}
             </select>
@@ -85,7 +102,7 @@ function EditQuestionBankModal({ open, bank, onClose, onUpdated }) {
         </div>
         <div className="mt-7 flex items-center justify-end gap-3">
           <button type="button" onClick={onClose} className="text-sm font-bold text-[#2AA8A2]">
-            إلغاء
+            {t('actions.cancel', { ns: 'common' })}
           </button>
           <button
             type="button"
@@ -93,7 +110,7 @@ function EditQuestionBankModal({ open, bank, onClose, onUpdated }) {
             disabled={loading}
             className="rounded-xl bg-[#2AA8A2] px-8 py-3 text-sm font-bold text-white disabled:opacity-70"
           >
-            {loading ? 'جاري الحفظ...' : 'حفظ'}
+            {loading ? t('loading.saving', { ns: 'common' }) : t('actions.save', { ns: 'common' })}
           </button>
         </div>
       </div>

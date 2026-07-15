@@ -1,6 +1,9 @@
 import { AlertCircle } from 'lucide-react'
+import { useAppTranslation } from '../../hooks/useAppTranslation'
 
 function AlertNoticeDialog({ open, message, onClose }) {
+  const { t } = useAppTranslation('common')
+
   if (!open) return null
 
   return (
@@ -11,7 +14,7 @@ function AlertNoticeDialog({ open, message, onClose }) {
             <AlertCircle className="h-5 w-5" />
           </span>
           <div>
-            <h3 className="text-lg font-extrabold text-[#2A3433]">تنبيه</h3>
+            <h3 className="text-lg font-extrabold text-[#2A3433]">{t('alert.title')}</h3>
             <p className="mt-2 text-sm leading-7 text-[#64748B]">{message}</p>
           </div>
         </div>
@@ -22,7 +25,7 @@ function AlertNoticeDialog({ open, message, onClose }) {
             onClick={onClose}
             className="rounded-xl bg-[#2AA8A2] px-6 py-2.5 text-sm font-bold text-white"
           >
-            حسناً
+            {t('actions.ok')}
           </button>
         </div>
       </div>

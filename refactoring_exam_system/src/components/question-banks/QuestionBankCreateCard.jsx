@@ -1,7 +1,10 @@
+import { useTranslation } from 'react-i18next'
 import { Plus } from 'lucide-react'
 import { ownedQuestionBankCardClassName } from '../../lib/questionBanks'
 
 function QuestionBankCreateCard({ onClick }) {
+  const { t } = useTranslation('questionBanks')
+
   return (
     <button
       type="button"
@@ -12,10 +15,8 @@ function QuestionBankCreateCard({ onClick }) {
       <span className="flex h-14 w-14 items-center justify-center rounded-full bg-[#E8F7F3] text-[#0EA896]">
         <Plus className="h-7 w-7" strokeWidth={2} />
       </span>
-      <p className="mt-4 text-base font-bold text-[#111827]">إضافة بنك جديد</p>
-      <p className="mt-2 max-w-[220px] text-[13px] leading-6 text-[#6B7280]">
-        إنشاء من الصفر أو باستخدام قالب
-      </p>
+      <p className="mt-4 text-base font-bold text-[#111827]">{t('createCard.title')}</p>
+      <p className="mt-2 max-w-[220px] text-[13px] leading-6 text-[#6B7280]">{t('createCard.subtitle')}</p>
     </button>
   )
 }

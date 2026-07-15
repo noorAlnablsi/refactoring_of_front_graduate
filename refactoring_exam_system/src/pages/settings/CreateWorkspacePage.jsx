@@ -1,5 +1,6 @@
 import { useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
+import { useTranslation } from 'react-i18next'
 import { Info } from 'lucide-react'
 import CreateWorkspaceKindToggle from '../../components/settings/CreateWorkspaceKindToggle'
 import CreateWorkspaceLogoField from '../../components/settings/CreateWorkspaceLogoField'
@@ -13,6 +14,7 @@ const inputClassName =
   'w-full rounded-xl border border-transparent bg-[#EEF2F3] px-4 py-3.5 text-sm text-[#374151] outline-none placeholder:text-[#9CA3AF] focus:border-[#2AA8A2]/30 focus:ring-2 focus:ring-[#2AA8A2]/20'
 
 function CreateWorkspacePage() {
+  const { t } = useTranslation('settings')
   const navigate = useNavigate()
   const access_token = useAuthStore((state) => state.access_token)
 
@@ -49,11 +51,10 @@ function CreateWorkspacePage() {
     <CreateWorkspaceShell>
       <div className="text-right">
         <h1 className="text-2xl font-extrabold text-[#2A3433] md:text-[2rem] md:leading-tight">
-          خطوة واحدة لبدء رحلتك الأكاديمية
+          {t('createWorkspace.title')}
         </h1>
         <p className="mt-3 text-sm leading-7 text-[#6B7280] md:text-base">
-          أنشئ مساحة عمل جديدة لتنظيم اختباراتك، متابعة أداء الطلاب، وبناء تجربة تعليمية
-          متكاملة تحت حسابك الحالي.
+          {t('createWorkspace.subtitle')}
         </p>
       </div>
 
@@ -62,14 +63,14 @@ function CreateWorkspacePage() {
           <Info className="h-4 w-4" strokeWidth={2.2} />
         </span>
         <p className="text-sm leading-7 text-[#4B5563]">
-          <span className="font-bold text-[#2A3433]">تنبيه هام حول الحساب:</span> سيتم إنشاء
-          مساحة العمل الجديدة تحت حسابك الحالي، لن تحتاج إلى بيانات تسجيل دخول جديدة للوصول إليها.
+          <span className="font-bold text-[#2A3433]">{t('createWorkspace.accountNoticeTitle')}</span>{' '}
+          {t('createWorkspace.accountNotice')}
         </p>
       </div>
 
       <form className="mt-8 space-y-6" onSubmit={submit}>
         <div className="space-y-2">
-          <span className="block text-sm font-bold text-[#374151]">نوع المساحة</span>
+          <span className="block text-sm font-bold text-[#374151]">{t('createWorkspace.kindLabel')}</span>
           <CreateWorkspaceKindToggle selected={kind} onSelect={handleKindChange} />
         </div>
 
@@ -78,34 +79,38 @@ function CreateWorkspacePage() {
           onChange={handleImageChange}
           onClear={clearImage}
           disabled={loading}
-          label={isSolo ? 'صورتك الشخصية (اختياري)' : 'شعار مؤسستك (اختياري)'}
-          uploadLabel={isSolo ? 'رفع الصورة' : 'رفع الشعار'}
+          label={isSolo ? t('createWorkspace.logoSolo') : t('createWorkspace.logoInstitution')}
+          uploadLabel={isSolo ? t('createWorkspace.uploadSolo') : t('createWorkspace.uploadInstitution')}
         />
 
         <label className="block space-y-2 text-right">
           <span className="text-sm font-bold text-[#374151]">
-            {isInstitution ? 'اسم المؤسسة التعليمية' : 'اسم المعلم'}
+            {isInstitution ? t('createWorkspace.nameInstitution') : t('createWorkspace.nameSolo')}
           </span>
           <input
             type="text"
             value={name}
             onChange={(event) => setName(event.target.value)}
-            placeholder={isInstitution ? 'مثلاً: أكاديمية النخبة للعلوم' : 'مثلاً: رنا العطار'}
+            placeholder={
+              isInstitution
+                ? t('createWorkspace.nameInstitutionPlaceholder')
+                : t('createWorkspace.nameSoloPlaceholder')
+            }
             className={inputClassName}
           />
         </label>
 
         <label className="block space-y-2 text-right">
           <span className="text-sm font-bold text-[#374151]">
-            {isInstitution ? 'نبذة عن المؤسسة' : 'نبذة عنك'}
+            {isInstitution ? t('createWorkspace.descriptionInstitution') : t('createWorkspace.descriptionSolo')}
           </span>
           <textarea
             value={description}
             onChange={(event) => setDescription(event.target.value)}
             placeholder={
               isInstitution
-                ? 'اكتب نبذة قصيرة عن أهداف المؤسسة أو القسم...'
-                : 'اكتب نبذة قصيرة عنك كمعلم وخبراتك التعليمية...'
+                ? t('createWorkspace.descriptionInstitutionPlaceholder')
+                : t('createWorkspace.descriptionSoloPlaceholder')
             }
             rows={4}
             className={`${inputClassName} resize-none leading-7`}
@@ -124,17 +129,17 @@ function CreateWorkspacePage() {
             disabled={loading}
             className="h-12 w-full rounded-xl bg-[#2AA8A2] text-base font-bold text-white shadow-[0_12px_20px_rgba(42,168,162,0.22)] transition hover:opacity-95 disabled:opacity-70"
           >
-            {loading ? 'جاري الإنشاء...' : 'إنشاء مساحة العمل'}
+            {loading ? t('createWorkspace.submitting') : t('createWorkspace.submit')}
           </button>
 
           <p className="text-center text-xs leading-6 text-[#9CA3AF]">
-            بالنقر على &quot;إنشاء مساحة العمل&quot;، فإنك توافق على{' '}
+            {t('createWorkspace.termsPrefix')}{' '}
             <a href="#" className="font-semibold text-[#2AA8A2] hover:underline">
-              شروط الخدمة
+              {t('createWorkspace.termsOfService')}
             </a>{' '}
-            و{' '}
+            {t('createWorkspace.and')}{' '}
             <a href="#" className="font-semibold text-[#2AA8A2] hover:underline">
-              سياسة الخصوصية
+              {t('createWorkspace.privacyPolicy')}
             </a>
             .
           </p>

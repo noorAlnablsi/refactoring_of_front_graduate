@@ -1,0 +1,36 @@
+{
+  "title": "Dashboard",
+  "greeting": "Hello {{name}}",
+  "greetingWithWorkspace": "Hello {{name}} — {{workspace}}",
+  "defaultUser": "User",
+  "defaultUserName": "User",
+  "subjects": {
+    "title": "Subject management",
+    "description": "Create and manage academic subjects"
+  },
+  "invite": {
+    "title": "Send invite",
+    "description": "Invite a student, teacher, or admin by email"
+  },
+  "otherModules": {
+    "title": "Other modules",
+    "comingSoon": "Coming soon"
+  },
+  "cards": {
+    "subjects": {
+      "title": "Subject management",
+      "description": "Create and manage academic subjects"
+    },
+    "invite": {
+      "title": "Send invite",
+      "description": "Invite a student, teacher, or admin by email"
+    },
+    "otherModules": {
+      "title": "Other modules",
+      "description": "Coming soon"
+    }
+  },
+  "sidebar": {
+    "brandSubtitle": "Admin Dashboard"
+  }
+}

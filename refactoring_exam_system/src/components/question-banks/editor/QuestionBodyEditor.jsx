@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import { Bold, ChevronDown, Italic, List, Pilcrow, Sigma, Underline } from 'lucide-react'
 import { applyParagraphDirection, applyRichTextCommand, getRichTextActiveFormats } from '../../../lib/richText'
 import { QUESTION_TYPE_OPTIONS } from '../../../lib/questionBanks'
@@ -49,6 +50,7 @@ function QuestionBodyEditor({
   topicId = '',
   onTopicChange,
 }) {
+  const { t } = useTranslation('questionBanks')
   const editorRef = useRef(null)
   const lastSyncedHtml = useRef(value)
   const [activeFormats, setActiveFormats] = useState(defaultActiveFormats)
@@ -112,7 +114,7 @@ function QuestionBodyEditor({
               value={typeCode}
               onChange={(event) => onTypeChange(event.target.value)}
               className={toolbarSelectClassName}
-              aria-label="نوع السؤال"
+              aria-label={t('editor.toolbar.questionTypeAria')}
             >
               {QUESTION_TYPE_OPTIONS.map((option) => (
                 <option key={option.value} value={option.value}>
@@ -133,9 +135,9 @@ function QuestionBodyEditor({
               className={`${toolbarSelectClassName} ${
                 topics.length === 0 ? 'cursor-not-allowed opacity-80' : ''
               }`}
-              aria-label="الموضوع"
+              aria-label={t('editor.toolbar.topicAria')}
             >
-              <option value="">الموضوع</option>
+              <option value="">{t('labels.topic')}</option>
               {topics.map((topic) => (
                 <option key={topic.id} value={topic.id}>
                   {topic.name}
@@ -148,20 +150,28 @@ function QuestionBodyEditor({
 
         <div className="flex flex-wrap items-center">
           <FormatButton
-            label="تسطير"
+            label={t('editor.toolbar.underline')}
             active={activeFormats.underline}
             onAction={() => runCommand('underline')}
           >
             <Underline className="h-4 w-4" strokeWidth={2.2} />
           </FormatButton>
-          <FormatButton label="غامق" active={activeFormats.bold} onAction={() => runCommand('bold')}>
+          <FormatButton
+            label={t('editor.toolbar.bold')}
+            active={activeFormats.bold}
+            onAction={() => runCommand('bold')}
+          >
             <Bold className="h-4 w-4" strokeWidth={2.4} />
           </FormatButton>
-          <FormatButton label="مائل" active={activeFormats.italic} onAction={() => runCommand('italic')}>
+          <FormatButton
+            label={t('editor.toolbar.italic')}
+            active={activeFormats.italic}
+            onAction={() => runCommand('italic')}
+          >
             <Italic className="h-4 w-4" strokeWidth={2.2} />
           </FormatButton>
           <FormatButton
-            label="قائمة نقطية"
+            label={t('editor.toolbar.bulletList')}
             active={activeFormats.unorderedList}
             onAction={() => runCommand('insertUnorderedList')}
           >
@@ -170,14 +180,14 @@ function QuestionBodyEditor({
 
           <ToolbarDivider />
 
-          <FormatButton label="إدراج رمز رياضي" onAction={() => insertSymbol('Σ')}>
+          <FormatButton label={t('editor.toolbar.insertMath')} onAction={() => insertSymbol('Σ')}>
             <Sigma className="h-4 w-4" strokeWidth={2.2} />
           </FormatButton>
 
           <ToolbarDivider />
 
           <FormatButton
-            label="اتجاه الفقرة: من اليمين لليسار (عربي)"
+            label={t('editor.toolbar.paragraphRtl')}
             active={activeFormats.paragraphRtl}
             onAction={() => applyDirection('rtl')}
           >
@@ -187,7 +197,7 @@ function QuestionBodyEditor({
             </span>
           </FormatButton>
           <FormatButton
-            label="اتجاه الفقرة: من اليسار لليمين (إنجليزي)"
+            label={t('editor.toolbar.paragraphLtr')}
             active={activeFormats.paragraphLtr}
             onAction={() => applyDirection('ltr')}
           >
@@ -206,8 +216,8 @@ function QuestionBodyEditor({
         suppressContentEditableWarning
         role="textbox"
         aria-multiline="true"
-        aria-label="نص السؤال"
-        data-placeholder="اكتب سؤالك هنا..."
+        aria-label={t('editor.toolbar.questionBodyAria')}
+        data-placeholder={t('editor.toolbar.questionBodyPlaceholder')}
         onInput={syncHtml}
         onBlur={syncHtml}
         onKeyUp={refreshActiveFormats}

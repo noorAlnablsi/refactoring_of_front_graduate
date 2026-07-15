@@ -1,0 +1,435 @@
+{
+  "page": {
+    "eyebrow": "Academic project",
+    "title": "Exams",
+    "subtitle": "Create and manage your online exams from DRAFT through publishing and grading.",
+    "createExam": "Create new exam",
+    "searchPlaceholder": "Search exams...",
+    "processing": "Processing...",
+    "empty": "No exams",
+    "emptySearch": "No matching search results.",
+    "emptyHint": "Start by creating your first exam."
+  },
+  "tabs": {
+    "all": "All",
+    "published": "Published",
+    "corrected": "Graded",
+    "drafts": "DRAFTs"
+  },
+  "card": {
+    "untitled": "Untitled",
+    "questions": "{{count}} questions",
+    "points": "{{count}} points",
+    "minutes": "{{count}} minutes",
+    "startsAt": "Starts: {{date}}",
+    "continueEditing": "Continue editing",
+    "edit": "Edit",
+    "closeExam": "Close exam",
+    "delete": "Delete",
+    "archive": "Archive"
+  },
+  "confirm": {
+    "archive": "Archive exam \"{{name}}\"?",
+    "close": "Close exam \"{{name}}\"?",
+    "delete": "Permanently delete exam \"{{name}}\"?"
+  },
+  "toast": {
+    "archived": "Exam archived",
+    "closed": "Exam closed",
+    "deleted": "Exam deleted",
+    "draftSaved": "DRAFT saved",
+    "created": "Exam created",
+    "infoSaved": "Information saved",
+    "settingsSaved": "Settings saved",
+    "published": "Exam published successfully",
+    "scheduled": "Exam publish scheduled"
+  },
+  "wizard": {
+    "createTitle": "Create new exam",
+    "editTitle": "Edit exam",
+    "restoringDraft": "Restoring exam DRAFT...",
+    "loadingExam": "Loading exam...",
+    "header": {
+      "eyebrow": "Exam creation wizard"
+    },
+    "steps": {
+      "info": "Information",
+      "questions": "Add questions",
+      "settings": "Settings",
+      "review": "Review",
+      "publish": "Publish"
+    },
+    "basicInfo": {
+      "title": "Exam basic information",
+      "subtitle": "Enter the core information students will see when starting the exam.",
+      "nameLabel": "Exam name",
+      "namePlaceholder": "e.g. Midterm 1 — Physics",
+      "descriptionLabel": "Exam description",
+      "descriptionPlaceholder": "Write a brief description shown to students before the exam starts...",
+      "subjectLabel": "Subject",
+      "subjectPlaceholder": "Select a subject",
+      "subjectOptionalHint": "Optional for independent teachers.",
+      "durationLabel": "Exam duration",
+      "minutesUnit": "minutes",
+      "totalScoreLabel": "Total score",
+      "passingScoreLabel": "Passing score",
+      "autoDistribute": "Enable automatic score distribution",
+      "saveDraft": "Save as DRAFT",
+      "savingDraft": "Saving...",
+      "continueToQuestions": "Continue to add questions",
+      "saving": "Saving..."
+    },
+    "questions": {
+      "title": "Add questions",
+      "subtitle": "Choose how to add questions from the cards below, then complete the addition. Settings unlocks after at least one question is added.",
+      "emptyHint": "No questions in this exam yet — choose an add method and complete it to enable \"Next — Settings\".",
+      "addedHint": "{{count}} questions added — you can continue to settings.",
+      "minOneError": "Add at least one question before moving to settings",
+      "minOneTitle": "Add at least one question",
+      "previous": "Previous",
+      "nextSettings": "Next — Settings",
+      "comingSoon": "Coming soon",
+      "methods": {
+        "questionBank": {
+          "title": "From question bank",
+          "description": "Select specific questions from one bank"
+        },
+        "random": {
+          "title": "Random from banks",
+          "description": "Pick random questions from one or more banks"
+        },
+        "manual": {
+          "title": "Manual creation",
+          "description": "Create new questions specific to this exam"
+        },
+        "csv": {
+          "title": "Import CSV",
+          "description": "Import questions from a CSV file"
+        },
+        "ai": {
+          "title": "AI generation",
+          "description": "Generate questions for review then import them"
+        }
+      },
+      "review": {
+        "back": "Back",
+        "noTopic": "No topic",
+        "difficulty": "Difficulty:",
+        "points": "point",
+        "pointsPlural": "points",
+        "deleteQuestion": "Delete",
+        "deleting": "Deleting...",
+        "deleteConfirm": "Delete this question from the exam?",
+        "questionDeleted": "Question deleted",
+        "questionUpdated": "Question updated",
+        "pointsLabel": "Points",
+        "difficultyLabel": "Difficulty",
+        "saveEdit": "Save changes",
+        "savingEdit": "Saving..."
+      },
+      "reviewSources": {
+        "random": {
+          "eyebrow": "Academic blueprint",
+          "title": "Exam blueprint",
+          "description": "Questions were selected randomly according to the ratios you set. Review them before continuing.",
+          "sectionTitle": "Selected question banks composition"
+        },
+        "fromBank": {
+          "eyebrow": "From question bank",
+          "title": "Selected exam questions",
+          "description": "Review the questions you selected from the bank before continuing to settings.",
+          "sectionTitle": "Questions added to the exam"
+        },
+        "manual": {
+          "eyebrow": "Manual creation",
+          "title": "Exam questions",
+          "description": "Review the questions you created manually before continuing to settings.",
+          "sectionTitle": "Questions added to the exam"
+        },
+        "exam": {
+          "eyebrow": "Add questions",
+          "title": "Exam questions",
+          "description": "Review exam questions before continuing to settings.",
+          "sectionTitle": "Questions added to the exam"
+        }
+      }
+    },
+    "ai": {
+      "eyebrow": "AI generation",
+      "title": "Generate questions for review",
+      "subtitle": "Generate questions for review first, edit if needed, then import selected ones into the exam.",
+      "countLabel": "Question count",
+      "difficultyLabel": "Difficulty",
+      "typeLabel": "Question type",
+      "topicsLabel": "Topics",
+      "instructionsLabel": "Additional instructions",
+      "instructionsPlaceholder": "Optional...",
+      "generate": "Generate questions",
+      "generating": "Generating...",
+      "refreshReview": "Refresh review",
+      "reviewTitle": "Questions for review",
+      "defaultTopic": "Topic",
+      "deleteAria": "Delete",
+      "selectTopicsError": "Select at least one topic",
+      "generated": "Generated {{count}} questions for review",
+      "deleted": "Generated question deleted",
+      "selectToImportError": "Select questions to import",
+      "imported": "Imported {{count}} questions",
+      "importing": "Importing...",
+      "importSelected": "Import selected ({{count}})"
+    },
+    "csv": {
+      "eyebrow": "Import CSV",
+      "title": "Upload questions from file",
+      "subtitle": "Download the official template, fill it in Excel or Google Sheets, then upload it here. Columns include Question and optional image_url.",
+      "templateTitle": "Official exam questions template",
+      "downloadTemplate": "Download CSV template",
+      "downloading": "Downloading...",
+      "templateDownloaded": "CSV template downloaded",
+      "selectFile": "Select a CSV file to import",
+      "chooseFile": "Choose file",
+      "selectCsvError": "Please select a CSV file",
+      "imported": "Imported {{count}} questions from CSV",
+      "importedWithFailures": "Imported {{count}} questions with {{failed}} failed rows",
+      "importing": "Importing...",
+      "importQuestions": "Import questions"
+    },
+    "publish": {
+      "eyebrow": "Final step",
+      "title": "Publish",
+      "subtitle": "Select allowed students, then publish immediately or schedule a publish time.",
+      "scheduleTitle": "Publish schedule",
+      "scheduleHint": "Leave fields empty for immediate publish, or set a local date and time to schedule.",
+      "publishDateLabel": "Publish date",
+      "publishTimeLabel": "Publish time",
+      "immediateHint": "* Leave fields empty for immediate publish.",
+      "shareTitle": "Sharing options",
+      "directLink": "Direct exam link",
+      "copy": "Copy",
+      "linkCopied": "Link copied",
+      "linkCopyFailed": "Could not copy link",
+      "studentsTitle": "Allowed students",
+      "searchStudentPlaceholder": "Search for a student...",
+      "loadingStudents": "Loading subject students...",
+      "noStudents": "No students enrolled in this exam's subject yet.",
+      "selectedCount": "{{count}} students selected — each must be enrolled in the exam subject.",
+      "scheduleBothRequired": "Enter both publish date and time, or leave fields empty for immediate publish",
+      "invalidSchedule": "Invalid publish date or time",
+      "publishing": "Publishing...",
+      "publishNow": "Publish exam now"
+    },
+    "summary": {
+      "settingsTitle": "Settings summary",
+      "examName": "Exam name",
+      "questionsCount": "Question count",
+      "totalScore": "Total score",
+      "monitoring": "Proctoring system",
+      "monitoringActive": "Enabled",
+      "monitoringInactive": "Disabled",
+      "copyPasteTip": "Blocking copy/paste reduces question leakage by 40% according to platform statistics.",
+      "aiSecurity": "AI security",
+      "monitoringActiveBadge": "Active proctoring",
+      "finalTitle": "Final summary",
+      "readyToPublish": "Ready to publish",
+      "totalQuestions": "Total questions",
+      "totalPoints": "Total points",
+      "subject": "Subject",
+      "monitoringStatus": "Proctoring status",
+      "active": "Active",
+      "inactive": "Disabled",
+      "allGood": "Everything looks great!",
+      "reviewComplete": "All settings and questions have been reviewed. You can now share the link with your students.",
+      "questionsValue": "{{count}} questions",
+      "pointsValue": "{{count}} points",
+      "scoreValue": "{{count}} points"
+    },
+    "manual": {
+      "eyebrow": "Manual creation",
+      "title": "Write exam questions",
+      "subtitle": "Create new questions specific to \"{{name}}\". Manual questions are added to the exam only and are not saved to a question bank.",
+      "questionAdded": "Question added",
+      "viewExamQuestions": "View exam questions",
+      "defaultExamName": "Exam"
+    },
+    "pickBank": {
+      "breadcrumb": "Question banks",
+      "subtitle": "Browse bank questions and select what to add to \"{{name}}\".",
+      "questionsCount": "({{count}}) questions",
+      "searchPlaceholder": "Search questions...",
+      "selectAllVisible": "Select visible",
+      "deselectAllVisible": "Deselect visible",
+      "loading": "Loading questions...",
+      "emptyBank": "No questions in this bank.",
+      "emptySearch": "No search results.",
+      "minOneError": "Select at least one question",
+      "added": "Added {{count}} questions",
+      "selectedCount": "{{count}} questions selected",
+      "totalPoints": "Total points: {{count}}",
+      "adding": "Adding...",
+      "addToExam": "Add to exam",
+      "difficulty": "Difficulty:",
+      "noTopic": "No topic",
+      "defaultExamName": "Exam"
+    },
+    "review": {
+      "eyebrow": "Final review",
+      "title": "Review exam",
+      "subtitle": "Review exam details and questions before moving to publish.",
+      "summaryTitle": "Exam summary",
+      "examName": "Exam name",
+      "questionsCount": "Question count",
+      "totalPoints": "Total points",
+      "duration": "Duration",
+      "durationMinutes": "{{count}} minutes",
+      "questionList": "Question list",
+      "nextPublish": "Next — Publish"
+    },
+    "settings": {
+      "eyebrow": "Exam settings & controls",
+      "title": "Settings",
+      "subtitle": "Configure exam behavior during student attempts, and enable smart proctoring when needed.",
+      "continueToReview": "Continue to preview"
+    }
+  },
+  "status": {
+    "DRAFT": "DRAFT",
+    "SCHEDULED": "Scheduled",
+    "PUBLISHED": "Published",
+    "CLOSED": "Graded",
+    "ARCHIVED": "Archived"
+  },
+  "sourceType": {
+    "QUESTION_BANK": "From question bank",
+    "MANUAL": "Manual",
+    "RANDOM_FROM_BANK": "Random from bank"
+  },
+  "errors": {
+    "testNotFound": "Exam not found",
+    "editDraftOnly": "Exam can only be edited while in DRAFT status",
+    "editTooCloseToStart": "Exam cannot be edited less than 30 minutes before start time"
+  },
+  "sidebar": {
+    "examSummary": "Exam summary",
+    "questionsCount": "Question count",
+    "totalScore": "Total score",
+    "estimatedTime": "Estimated time",
+    "examName": "Exam name",
+    "minutes": "{{count}} minutes",
+    "minutesDash": "— minutes",
+    "stepOf": "Step {{current}} of {{total}}"
+  },
+  "banksModal": {
+    "title": "Choose question bank",
+    "myBanks": "My banks",
+    "workspace": "Institution",
+    "community": "Community",
+    "empty": "No banks in this section.",
+    "done": "Done",
+    "selectOne": "Select one bank",
+    "selectAtLeastOne": "Select at least one bank",
+    "errors": {
+      "loadMy": "Could not load my banks",
+      "loadWorkspace": "Could not load institution banks",
+      "loadCommunity": "Could not load community banks"
+    }
+  },
+  "bankCard": {
+    "generalSubject": "General",
+    "noDescription": "No description for this bank yet."
+  },
+  "choiceLetters": ["A", "B", "C", "D", "E", "F"],
+  "topicOrdinals": ["First", "Second", "Third", "Fourth", "Fifth", "Sixth", "Seventh", "Eighth", "Ninth", "Tenth"],
+  "settings": {
+    "severity": {
+      "actionDefault": "Immediately end the exam attempt when an extra face is detected or the window is switched 3 times.",
+      "warningDefault": "Show a warning message to the student when loud ambient sound is detected.",
+      "actionTitle": "Strict action (Action)",
+      "warningTitle": "Warning",
+      "edit": "Edit"
+    },
+    "proctoring": {
+      "title": "AI-powered smart proctoring",
+      "subtitle": "Secure the exam environment and prevent cheating using advanced tracking.",
+      "faceTracking": "Face tracking",
+      "faceTrackingDesc": "Verify student identity throughout the exam",
+      "ambientSound": "Ambient sound monitoring",
+      "ambientSoundDesc": "Alert when unusual sounds or speech are detected",
+      "browserTracking": "Browser window tracking",
+      "browserTrackingDesc": "Alert when leaving the exam page",
+      "preventCopyPaste": "Prevent copy & paste",
+      "preventCopyPasteDesc": "Disable keyboard and mouse shortcuts",
+      "severityPolicy": "Violation policy (Severity Policy)"
+    },
+    "sections": {
+      "attempt": "Attempt settings",
+      "durationMinutes": "Time limit (minutes)",
+      "maxAttempts": "Allowed attempts",
+      "navigation": "Navigation settings",
+      "forceSequential": "Force sequential navigation",
+      "allowBack": "Allow returning to previous questions",
+      "answerRules": "Answer rules",
+      "requireAll": "Require answering all questions",
+      "allowSkip": "Allow skipping questions",
+      "display": "Question display",
+      "shuffleQuestions": "Randomize question order",
+      "shuffleChoices": "Randomize choice order"
+    }
+  },
+  "questionTypes": {
+    "MCQ": "MCQ",
+    "TRUE_FALSE": "True / False",
+    "MULTI_SELECT": "Multi-select",
+    "ESSAY": "Essay"
+  },
+  "difficulty": {
+    "EASY": "Easy",
+    "MEDIUM": "Medium",
+    "HARD": "Hard"
+  },
+  "validation": {
+    "questionTextRequired": "Question text is required",
+    "pointsRequired": "Points must be greater than 0",
+    "allChoicesRequired": "All choices are required",
+    "topicRequired": "Select a topic for the question",
+    "nameRequired": "Exam name is required",
+    "nameRequiredForDraft": "Exam name is required to save DRAFT",
+    "subjectRequired": "Subject is required",
+    "durationRequired": "Exam duration is required",
+    "totalScoreRequired": "Total score is required",
+    "passingScoreRequired": "Passing score is required",
+    "passingScoreExceedsTotal": "Passing score cannot exceed total score"
+  },
+  "blueprint": {
+    "eyebrow": "Academic blueprint",
+    "title": "Exam blueprint",
+    "subtitle": "Set question distribution across selected knowledge banks. Relative weights and difficulty levels are calculated automatically to balance assessment.",
+    "loading": "Loading exam blueprint...",
+    "generating": "Generating...",
+    "generateExam": "Generate exam",
+    "sectionTitle": "Selected question banks composition",
+    "availableQuestions": "Total available questions: {{count}}",
+    "availableQuestionsDash": "Total available questions: —",
+    "questionCountLabel": "Question count",
+    "noTopics": "No topics in this bank. Remove the bank or choose one with topic-tagged questions.",
+    "topicLabel": "Topic {{ordinal}}:",
+    "percentageLabel": "Percentage",
+    "easyPercent": "Easy (%)",
+    "mediumPercent": "Medium (%)",
+    "hardPercent": "Hard (%)",
+    "addBank": "Add another question bank",
+    "healthTitle": "Blueprint health indicators",
+    "weightsComplete": "Weight distribution complete (100%)",
+    "difficultyBalanced": "Difficulty levels balanced (100%)",
+    "defaultTopic": "Topic {{id}}",
+    "errors": {
+      "loadBankTopics": "Could not load bank topics"
+    },
+    "validation": {
+      "completeDistribution": "Complete topic distribution and difficulty levels before generating",
+      "selectTopicPerBank": "Select at least one topic per bank with a ratio greater than zero"
+    },
+    "toast": {
+      "generated": "Generated {{count}} questions successfully"
+    }
+  }
+}

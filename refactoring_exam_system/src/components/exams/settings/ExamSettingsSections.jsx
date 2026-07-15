@@ -1,4 +1,5 @@
 import { ClipboardList, Lock, Navigation, Shuffle } from 'lucide-react'
+import { useTranslation } from 'react-i18next'
 import WizardSection from '../WizardSection'
 import { SettingsRadio, SettingsSwitch } from './SettingsControls'
 
@@ -6,12 +7,14 @@ const inputClassName =
   'h-12 w-full rounded-xl border border-[#E5E9EB] bg-white px-4 text-center text-lg font-extrabold text-[#2A3433] outline-none focus:border-[#2AA8A2] focus:ring-2 focus:ring-[#2AA8A2]/20'
 
 export function ExamAttemptSettingsSection({ form, onFormChange }) {
+  const { t } = useTranslation('exams')
+
   return (
-    <WizardSection icon={ClipboardList} title="إعدادات المحاولة">
+    <WizardSection icon={ClipboardList} title={t('settings.sections.attempt')}>
       <div className="grid gap-4 md:grid-cols-2">
         <div>
           <label className="mb-2 block text-sm font-bold text-[#374151]">
-            الزمن المحدد (بالدقائق)
+            {t('settings.sections.durationMinutes')}
           </label>
           <input
             type="number"
@@ -25,7 +28,7 @@ export function ExamAttemptSettingsSection({ form, onFormChange }) {
         </div>
         <div>
           <label className="mb-2 block text-sm font-bold text-[#374151]">
-            عدد المحاولات المسموحة
+            {t('settings.sections.maxAttempts')}
           </label>
           <input
             type="number"
@@ -43,19 +46,21 @@ export function ExamAttemptSettingsSection({ form, onFormChange }) {
 }
 
 export function ExamNavigationSettingsSection({ cfg, onSetNavigationMode }) {
+  const { t } = useTranslation('exams')
+
   return (
-    <WizardSection icon={Navigation} title="إعدادات التنقل">
+    <WizardSection icon={Navigation} title={t('settings.sections.navigation')}>
       <div className="space-y-3">
         <div onClick={() => onSetNavigationMode(true)}>
           <SettingsRadio
-            label="فرض التنقل المتسلسل"
+            label={t('settings.sections.forceSequential')}
             checked={cfg.force_sequential_navigation}
             onChange={() => onSetNavigationMode(true)}
           />
         </div>
         <div onClick={() => onSetNavigationMode(false)}>
           <SettingsRadio
-            label="السماح بالعودة للأسئلة السابقة"
+            label={t('settings.sections.allowBack')}
             checked={cfg.allow_back_navigation}
             onChange={() => onSetNavigationMode(false)}
           />
@@ -66,19 +71,21 @@ export function ExamNavigationSettingsSection({ cfg, onSetNavigationMode }) {
 }
 
 export function ExamAnswerRulesSection({ cfg, onSetAnswerRule }) {
+  const { t } = useTranslation('exams')
+
   return (
-    <WizardSection icon={Lock} title="قواعد الإجابة">
+    <WizardSection icon={Lock} title={t('settings.sections.answerRules')}>
       <div className="space-y-3">
         <div onClick={() => onSetAnswerRule(true)}>
           <SettingsRadio
-            label="إلزامية الإجابة على كل الأسئلة"
+            label={t('settings.sections.requireAll')}
             checked={cfg.require_all_answers}
             onChange={() => onSetAnswerRule(true)}
           />
         </div>
         <div onClick={() => onSetAnswerRule(false)}>
           <SettingsRadio
-            label="السماح بتخطي الأسئلة"
+            label={t('settings.sections.allowSkip')}
             checked={cfg.allow_skip_questions}
             onChange={() => onSetAnswerRule(false)}
           />
@@ -89,16 +96,18 @@ export function ExamAnswerRulesSection({ cfg, onSetAnswerRule }) {
 }
 
 export function ExamDisplaySettingsSection({ cfg, onSetSetting }) {
+  const { t } = useTranslation('exams')
+
   return (
-    <WizardSection icon={Shuffle} title="عرض الأسئلة">
+    <WizardSection icon={Shuffle} title={t('settings.sections.display')}>
       <div className="divide-y divide-[#EEF2F4]">
         <SettingsSwitch
-          label="ترتيب عشوائي للأسئلة"
+          label={t('settings.sections.shuffleQuestions')}
           checked={cfg.shuffle_questions}
           onChange={(value) => onSetSetting('shuffle_questions', value)}
         />
         <SettingsSwitch
-          label="ترتيب عشوائي للخيارات"
+          label={t('settings.sections.shuffleChoices')}
           checked={cfg.shuffle_choices}
           onChange={(value) => onSetSetting('shuffle_choices', value)}
         />

@@ -1,4 +1,5 @@
 import { Link } from 'react-router-dom'
+import { useTranslation } from 'react-i18next'
 import AuthShell from '../../components/auth/AuthShell'
 import { ROUTES } from '../../constants/routes'
 import OtpInput from '../../components/auth/OtpInput'
@@ -7,6 +8,7 @@ import { useOtpVerification } from '../../hooks/useOtpVerification'
 import loginHero from '../../assets/auth/login-hero.png'
 
 function RegisterOtpPage() {
+  const { t } = useTranslation('auth')
   const {
     email,
     digits,
@@ -23,12 +25,12 @@ function RegisterOtpPage() {
   } = useOtpVerification()
 
   return (
-    <AuthShell heroImage={loginHero} heroAlt="تحقق من البريد الإلكتروني">
+    <AuthShell heroImage={loginHero} heroAlt={t('register.otp.heroAlt')}>
       {!isStudentFlow ? <RegisterProgress activeStep={3} /> : null}
 
-      <h1 className="text-right text-3xl font-extrabold text-[#2A3433]">تحقق من بريدك الإلكتروني</h1>
+      <h1 className="text-right text-3xl font-extrabold text-[#2A3433]">{t('register.otp.title')}</h1>
       <p className="mt-3 text-right text-sm leading-7 text-[#6B7280] md:text-base">
-        أدخل رمز التحقق المكوّن من 6 أرقام المرسل إلى
+        {t('register.otp.subtitle')}
         <span className="mx-1 font-semibold text-[#2AA8A2]">{email}</span>
       </p>
 
@@ -47,7 +49,7 @@ function RegisterOtpPage() {
         disabled={loading || otpValue.length !== 6}
         className="mt-8 h-12 w-full rounded-xl bg-[#2AA8A2] text-base font-bold text-white shadow-[0_12px_20px_rgba(42,168,162,0.22)] transition hover:opacity-95 disabled:opacity-70 md:w-[448px]"
       >
-        {loading ? 'جاري التحقق...' : 'تأكيد الرمز'}
+        {loading ? t('register.otp.confirming') : t('register.otp.confirm')}
       </button>
 
       <div className="mt-5 text-center">
@@ -58,17 +60,17 @@ function RegisterOtpPage() {
           className="text-sm font-semibold text-[#2AA8A2] disabled:text-[#94A3B8]"
         >
           {resendLoading
-            ? 'جاري الإرسال...'
+            ? t('register.otp.resending')
             : cooldown > 0
-              ? `إعادة الإرسال خلال ${cooldown} ثانية`
-              : 'إعادة إرسال الرمز'}
+              ? t('register.otp.resendCooldown', { cooldown })
+              : t('register.otp.resend')}
         </button>
       </div>
 
       <p className="mt-6 text-center text-sm text-[#6B7280]">
-        لديك حساب بالفعل؟{' '}
+        {t('welcome.hasAccount')}{' '}
         <Link to={ROUTES.LOGIN} className="font-bold text-[#2AA8A2]">
-          تسجيل الدخول
+          {t('welcome.loginLink')}
         </Link>
       </p>
     </AuthShell>

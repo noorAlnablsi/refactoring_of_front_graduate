@@ -1,0 +1,61 @@
+{
+  "send": {
+    "titleInvite": "Send invite",
+    "titleAddTeacher": "Add teacher",
+    "submitInvite": "Send invite",
+    "submitTeacher": "Send teacher invite",
+    "emailLabel": "Email",
+    "emailPlaceholder": "example@email.com",
+    "roleLabel": "Role",
+    "close": "Close",
+    "sending": "Sending...",
+    "success": "Invite sent successfully"
+  },
+  "roles": {
+    "STUDENT": "Student",
+    "TEACHER": "Teacher",
+    "ADMIN": "Admin"
+  },
+  "preview": {
+    "title": "Join invitation",
+    "subtitle": "You have been invited to join an educational space on QuizHub.",
+    "loading": "Loading invite details...",
+    "institution": "Institution:",
+    "invitedEmail": "Invited email:",
+    "role": "Role:",
+    "expiresAt": "Invite expires: {{date}}",
+    "createAccount": "Create new account",
+    "acceptExisting": "I have an account — accept invite",
+    "reject": "Reject invite",
+    "rejecting": "Rejecting...",
+    "rejected": "Invite rejected",
+    "backHome": "Back to home",
+    "heroAlt": "Join invitation"
+  },
+  "accept": {
+    "title": "Accept invite",
+    "subtitle": "You have been invited to join an educational space. Click accept to continue.",
+    "heroAlt": "Accept invite",
+    "loading": "Loading invite details...",
+    "emailMismatch": "You are signed in with a different email ({{email}}). Sign in with the invited email or create a new account.",
+    "emailMismatchError": "You must sign in with the email this invite was sent to.",
+    "accepting": "Accepting...",
+    "accept": "Accept invite",
+    "success": "Invite accepted successfully",
+    "backHome": "Back to home"
+  },
+  "register": {
+    "title": "Complete your registration",
+    "subtitle": "You have been invited to join an educational space. Complete your account details to continue.",
+    "heroAlt": "Complete registration via invite",
+    "loading": "Loading invite details...",
+    "assignedRole": "Assigned role:",
+    "submit": "Create account",
+    "submitting": "Creating account..."
+  },
+  "status": {
+    "accepted": "This invite was already accepted.",
+    "rejected": "This invite was rejected.",
+    "expired": "This invite has expired."
+  }
+}

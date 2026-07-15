@@ -1,5 +1,33 @@
+import i18n from '../i18n'
 import { ROUTES } from '../constants/routes'
 import { getPlainTextFromHtml } from './richText'
+
+function tQB(key, options = {}) {
+  return i18n.t(key, { ns: 'questionBanks', ...options })
+}
+
+function getCountLocale() {
+  return i18n.language === 'ar' ? 'ar-EG' : 'en-US'
+}
+
+const VISIBILITY_KEYS = {
+  PRIVATE: 'private',
+  WORKSPACE: 'workspace',
+  COMMUNITY: 'community',
+}
+
+const QUESTION_TYPE_KEYS = {
+  MCQ: 'mcq',
+  TRUE_FALSE: 'trueFalse',
+  MULTI_SELECT: 'multiSelect',
+  ESSAY: 'essay',
+}
+
+const DIFFICULTY_KEYS = {
+  EASY: 'easy',
+  MEDIUM: 'medium',
+  HARD: 'hard',
+}
 
 export const QUESTION_BANK_TABS = {
   MY: 'my',
@@ -64,7 +92,7 @@ export function getCommunityBankAuthorName(bank) {
     bank?.created_by?.full_name ||
     bank?.creator?.name ||
     bank?.creator_name ||
-    'مؤلف البنك'
+    tQB('author.default')
   )
 }
 
@@ -98,13 +126,13 @@ export function getCommunityBankUsageCount(bank) {
 export function formatCommunityQuestionsCount(bank) {
   const count = getBankQuestionsCount(bank)
   if (count == null || Number.isNaN(count)) return '—'
-  return `${count.toLocaleString('ar-EG')} سؤال`
+  return tQB('counts.questions', { count: count.toLocaleString(getCountLocale()) })
 }
 
 export function formatCommunityUsageCount(bank) {
   const count = getCommunityBankUsageCount(bank)
   if (count == null || Number.isNaN(count)) return '—'
-  return `${count.toLocaleString('ar-EG')} استخدام`
+  return tQB('counts.usage', { count: count.toLocaleString(getCountLocale()) })
 }
 
 export function formatQuestionForCopy(question) {
@@ -121,24 +149,33 @@ export function formatQuestionForCopy(question) {
   return lines.filter(Boolean).join('\n')
 }
 
-export const VISIBILITY_OPTIONS = [
-  { value: 'PRIVATE', label: 'خاص' },
-  { value: 'WORKSPACE', label: 'ضمن المؤسسة' },
-  { value: 'COMMUNITY', label: 'مجتمع QuizHub' },
-]
+export function getTrueFalseChoices() {
+  return [
+    { body: tQB('choices.true'), is_correct: true },
+    { body: tQB('choices.false'), is_correct: false },
+  ]
+}
 
-export const QUESTION_TYPE_OPTIONS = [
-  { value: 'MCQ', label: 'اختيار واحد' },
-  { value: 'TRUE_FALSE', label: 'صح / خطأ' },
-  { value: 'MULTI_SELECT', label: 'خيارات متعددة' },
-  { value: 'ESSAY', label: 'مقالي' },
-]
+export const VISIBILITY_OPTIONS = ['PRIVATE', 'WORKSPACE', 'COMMUNITY'].map((value) => ({
+  value,
+  get label() {
+    return getVisibilityLabel(value)
+  },
+}))
 
-export const DIFFICULTY_OPTIONS = [
-  { value: 'EASY', label: 'سهل' },
-  { value: 'MEDIUM', label: 'متوسط' },
-  { value: 'HARD', label: 'صعب' },
-]
+export const QUESTION_TYPE_OPTIONS = ['MCQ', 'TRUE_FALSE', 'MULTI_SELECT', 'ESSAY'].map((value) => ({
+  value,
+  get label() {
+    return getQuestionTypeLabel(value)
+  },
+}))
+
+export const DIFFICULTY_OPTIONS = ['EASY', 'MEDIUM', 'HARD'].map((value) => ({
+  value,
+  get label() {
+    return getDifficultyLabel(value)
+  },
+}))
 
 export function getVisibilityOptionsForWorkspace(isInstitution) {
   if (isInstitution) return VISIBILITY_OPTIONS
@@ -146,18 +183,41 @@ export function getVisibilityOptionsForWorkspace(isInstitution) {
 }
 
 export function getVisibilityLabel(value) {
-  return VISIBILITY_OPTIONS.find((item) => item.value === value)?.label || value || '—'
+  const key = VISIBILITY_KEYS[value]
+  if (key) return tQB(`visibility.${key}`)
+  return value || '—'
 }
 
 export function getDifficultyLabel(value) {
-  return DIFFICULTY_OPTIONS.find((item) => item.value === value)?.label || value || '—'
+  const key = DIFFICULTY_KEYS[value]
+  if (key) return tQB(`difficulty.${key}`)
+  return value || '—'
 }
 
 export function getQuestionTypeLabel(value) {
-  return QUESTION_TYPE_OPTIONS.find((item) => item.value === value)?.label || value || '—'
+  const key = QUESTION_TYPE_KEYS[value]
+  if (key) return tQB(`types.${key}`)
+  return value || '—'
 }
 
-/** Returns an Arabic error message, or empty string when choice rules are satisfied. */
+export function getQuestionTopicLabel(question, topics = []) {
+  if (question?.topic_name || question?.topic?.name || question?.topic_title || question?.topic_label) {
+    return question.topic_name || question.topic?.name || question.topic_title || question.topic_label
+  }
+
+  if (question?.topic_id != null && topics.length) {
+    const topic = topics.find(
+      (item) => String(item.id ?? item.topic_id ?? item.value) === String(question.topic_id),
+    )
+    if (topic?.name) return topic.name
+  }
+
+  return question?.topic_id
+    ? tQB('editor.topicNumber', { id: question.topic_id })
+    : tQB('editor.noTopic')
+}
+
+/** Returns a localized error message, or empty string when choice rules are satisfied. */
 export function validateQuestionChoiceRules(typeCode, choices = []) {
   if (typeCode === 'ESSAY') return ''
 
@@ -165,14 +225,14 @@ export function validateQuestionChoiceRules(typeCode, choices = []) {
 
   if (typeCode === 'MULTI_SELECT') {
     if (correctCount < 2) {
-      return 'خيارات متعددة: حدد إجابتين صحيحتين على الأقل'
+      return tQB('validation.multiSelectMinCorrect')
     }
     return ''
   }
 
   if (typeCode === 'MCQ' || typeCode === 'TRUE_FALSE') {
     if (correctCount !== 1) {
-      return 'اختيار واحد: حدد إجابة صحيحة واحدة فقط'
+      return tQB('validation.singleSelectOneCorrect')
     }
     return ''
   }
@@ -217,14 +277,14 @@ export function formatDate(dateValue) {
   if (!dateValue) return '—'
   const date = new Date(dateValue)
   if (Number.isNaN(date.getTime())) return '—'
-  return date.toLocaleDateString('ar-EG')
+  return date.toLocaleDateString(getCountLocale())
 }
 
 export function formatBankCardDate(dateValue) {
   if (!dateValue) return '—'
   const date = new Date(dateValue)
   if (Number.isNaN(date.getTime())) return '—'
-  return date.toLocaleDateString('ar-EG', {
+  return date.toLocaleDateString(getCountLocale(), {
     day: 'numeric',
     month: 'long',
     year: 'numeric',
@@ -245,5 +305,5 @@ export function getBankQuestionsCount(bank) {
 export function formatBankQuestionsCount(bank) {
   const count = getBankQuestionsCount(bank)
   if (count == null || Number.isNaN(count)) return '—'
-  return `${count.toLocaleString('ar-EG')} سؤالاً`
+  return tQB('counts.questionsAccusative', { count: count.toLocaleString(getCountLocale()) })
 }

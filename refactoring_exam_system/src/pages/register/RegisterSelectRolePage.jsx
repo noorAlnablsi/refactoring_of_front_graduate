@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
+import { useTranslation } from 'react-i18next'
 import AuthShell from '../../components/auth/AuthShell'
 import RegisterProgress from '../../components/auth/RegisterProgress'
 import RoleSelector from '../../components/auth/RoleSelector'
@@ -12,6 +13,7 @@ const inputClassName =
   'h-12 w-full rounded-xl bg-[#EEF2F3] px-4 text-sm text-[#374151] outline-none placeholder:text-[#9CA3AF] focus:ring-2 focus:ring-[#2AA8A2]/40 md:w-[448px]'
 
 function RegisterSelectRolePage() {
+  const { t } = useTranslation(['auth', 'forms', 'common'])
   const navigate = useNavigate()
   const store = useRegistrationStore()
   const updateFields = useRegistrationStore((s) => s.updateFields)
@@ -33,14 +35,14 @@ function RegisterSelectRolePage() {
     const nextErrors = {}
 
     if (!store.workspace_kind) {
-      nextErrors.workspace_kind = 'يرجى اختيار نوع الحساب'
+      nextErrors.workspace_kind = t('validation.workspaceKindRequired', { ns: 'forms' })
     }
-    if (!store.full_name.trim()) nextErrors.full_name = 'الاسم الكامل مطلوب'
-    if (!store.email.trim()) nextErrors.email = 'البريد الإلكتروني مطلوب'
+    if (!store.full_name.trim()) nextErrors.full_name = t('validation.fullNameRequired', { ns: 'forms' })
+    if (!store.email.trim()) nextErrors.email = t('validation.emailRequired', { ns: 'forms' })
     else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(store.email.trim())) {
-      nextErrors.email = 'صيغة البريد الإلكتروني غير صحيحة'
+      nextErrors.email = t('validation.emailInvalid', { ns: 'forms' })
     }
-    if (!store.phone_number.trim()) nextErrors.phone_number = 'رقم التواصل مطلوب'
+    if (!store.phone_number.trim()) nextErrors.phone_number = t('validation.phoneRequired', { ns: 'forms' })
 
     setErrors(nextErrors)
     return Object.keys(nextErrors).length === 0
@@ -57,7 +59,7 @@ function RegisterSelectRolePage() {
   }
 
   return (
-    <AuthShell heroImage={registerHero} heroAlt="أنشئ اختباراتك بسهولة">
+    <AuthShell heroImage={registerHero} heroAlt={t('register.selectRole.heroAlt')}>
       <RegisterProgress activeStep={1} />
 
       <RoleSelector selected={store.workspace_kind} onSelect={setWorkspaceKind} />
@@ -75,13 +77,15 @@ function RegisterSelectRolePage() {
       >
         <div className="space-y-5">
           <div className="space-y-2">
-            <label className="block text-right text-sm font-semibold text-[#374151]">الاسم الكامل</label>
+            <label className="block text-right text-sm font-semibold text-[#374151]">
+              {t('register.selectRole.fullNameLabel')}
+            </label>
             <input
               type="text"
               name="register-full-name"
               value={store.full_name}
               onChange={(e) => updateFields({ full_name: e.target.value })}
-              placeholder="أدخل اسمك الكامل"
+              placeholder={t('register.selectRole.fullNamePlaceholder')}
               autoComplete="off"
               className={inputClassName}
             />
@@ -89,13 +93,15 @@ function RegisterSelectRolePage() {
           </div>
 
           <div className="space-y-2">
-            <label className="block text-right text-sm font-semibold text-[#374151]">البريد الإلكتروني</label>
+            <label className="block text-right text-sm font-semibold text-[#374151]">
+              {t('register.selectRole.emailLabel')}
+            </label>
             <input
               type="email"
               name="register-email"
               value={store.email}
               onChange={(e) => updateFields({ email: e.target.value })}
-              placeholder="أدخل بريدك الإلكتروني"
+              placeholder={t('register.selectRole.emailPlaceholder')}
               autoComplete="off"
               className={inputClassName}
             />
@@ -103,13 +109,15 @@ function RegisterSelectRolePage() {
           </div>
 
           <div className="space-y-2">
-            <label className="block text-right text-sm font-semibold text-[#374151]">رقم التواصل</label>
+            <label className="block text-right text-sm font-semibold text-[#374151]">
+              {t('register.selectRole.phoneLabel')}
+            </label>
             <input
               type="tel"
               name="register-phone"
               value={store.phone_number}
               onChange={(e) => updateFields({ phone_number: e.target.value })}
-              placeholder="أدخل رقم التواصل"
+              placeholder={t('register.selectRole.phonePlaceholder')}
               autoComplete="off"
               className={inputClassName}
             />
@@ -123,7 +131,7 @@ function RegisterSelectRolePage() {
           type="submit"
           className="mt-8 h-12 w-full rounded-xl bg-[#2AA8A2] text-base font-bold text-white shadow-[0_12px_20px_rgba(42,168,162,0.22)] transition hover:opacity-95 md:w-[448px]"
         >
-          التالي
+          {t('register.selectRole.next')}
         </button>
       </form>
     </AuthShell>

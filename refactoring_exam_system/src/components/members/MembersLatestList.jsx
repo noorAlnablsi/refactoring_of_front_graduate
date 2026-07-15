@@ -1,3 +1,4 @@
+import { useTranslation } from 'react-i18next'
 import UserAvatar from '../dashboard/UserAvatar'
 import {
   formatRelativeTimeAr,
@@ -35,24 +36,26 @@ function MemberLatestRow({ member }) {
 }
 
 function MembersLatestList({ members, loading }) {
+  const { t } = useTranslation(['members', 'common'])
+
   return (
     <section className={shellCardClass}>
       <div className="flex items-center justify-between gap-3 border-b border-[var(--shell-border)] px-5 py-4">
         <button
           type="button"
           disabled
-          title="قريباً"
+          title={t('comingSoon', { ns: 'common' })}
           className="text-sm font-bold text-[var(--shell-accent)] opacity-60"
         >
-          عرض الكل
+          {t('latest.viewAll')}
         </button>
-        <h2 className={shellSectionTitleClass}>أحدث الإضافات</h2>
+        <h2 className={shellSectionTitleClass}>{t('latest.title')}</h2>
       </div>
 
       {loading ? (
-        <p className={`px-5 py-8 text-center text-sm ${shellBodyTextClass}`}>جاري التحميل...</p>
+        <p className={`px-5 py-8 text-center text-sm ${shellBodyTextClass}`}>{t('latest.loading')}</p>
       ) : members.length === 0 ? (
-        <p className={`px-5 py-8 text-center text-sm ${shellBodyTextClass}`}>لا توجد إضافات حديثة بعد.</p>
+        <p className={`px-5 py-8 text-center text-sm ${shellBodyTextClass}`}>{t('latest.empty')}</p>
       ) : (
         <ul>
           {members.map((member) => (

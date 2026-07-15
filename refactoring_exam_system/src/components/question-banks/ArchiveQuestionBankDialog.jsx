@@ -1,6 +1,9 @@
+import { useTranslation } from 'react-i18next'
 import { AlertTriangle } from 'lucide-react'
 
 function ArchiveQuestionBankDialog({ open, bankTitle, loading, onClose, onConfirm }) {
+  const { t } = useTranslation(['common', 'questionBanks'])
+
   if (!open) return null
 
   return (
@@ -11,22 +14,25 @@ function ArchiveQuestionBankDialog({ open, bankTitle, loading, onClose, onConfir
             <AlertTriangle className="h-5 w-5" />
           </span>
           <div>
-            <h3 className="text-lg font-extrabold text-[#2A3433]">تأكيد الحذف</h3>
-            <p className="mt-2 text-sm leading-7 text-[#374151]">هل أنت متأكد من الحذف؟</p>
+            <h3 className="text-lg font-extrabold text-[#2A3433]">{t('dialogs.deleteConfirm.title')}</h3>
+            <p className="mt-2 text-sm leading-7 text-[#374151]">{t('dialogs.deleteConfirm.message')}</p>
             {bankTitle ? (
               <p className="mt-2 text-sm leading-7 text-[#64748B]">
-                البنك: <span className="font-bold text-[#2A3433]">{bankTitle}</span>
+                {t('dialogs.deleteConfirm.itemLabel', {
+                  label: t('page.itemLabel', { ns: 'questionBanks' }),
+                  name: bankTitle,
+                })}
               </p>
             ) : null}
             <p className="mt-3 rounded-xl bg-[#F8FAFB] px-3 py-2 text-xs leading-6 text-[#64748B]">
-              يمكن استعادة البيانات المحذوفة عند التواصل مع خدمة العملاء.
+              {t('dialogs.deleteConfirm.recoveryNote')}
             </p>
           </div>
         </div>
 
         <div className="mt-7 flex items-center justify-end gap-3">
           <button type="button" onClick={onClose} className="text-sm font-bold text-[#2AA8A2]">
-            إلغاء
+            {t('actions.cancel')}
           </button>
           <button
             type="button"
@@ -34,7 +40,7 @@ function ArchiveQuestionBankDialog({ open, bankTitle, loading, onClose, onConfir
             disabled={loading}
             className="rounded-xl bg-red-600 px-5 py-2.5 text-sm font-bold text-white disabled:opacity-70"
           >
-            {loading ? 'جاري الحذف...' : 'حذف'}
+            {loading ? t('dialogs.deleteConfirm.deleting') : t('actions.delete')}
           </button>
         </div>
       </div>

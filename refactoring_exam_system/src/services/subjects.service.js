@@ -3,6 +3,7 @@ import {
   getSubjectQuestionBanksCount,
   getSubjectTeachersCount,
 } from '../lib/subjectDisplay'
+import { getStudentMembershipId } from '../lib/workspaceStudents'
 
 export async function getSubjects() {
   const { data } = await api.get('/subjects')
@@ -104,6 +105,32 @@ export async function getSubjectQuestionBanks(subjectId) {
 
 export async function getSubjectStudents(subjectId) {
   const { data } = await api.get(`/subjects/${subjectId}/students`)
+  return data
+}
+
+export async function assignStudentToSubject(subjectId, studentOrMembershipId) {
+  const membershipId =
+    typeof studentOrMembershipId === 'object'
+      ? getStudentMembershipId(studentOrMembershipId)
+      : Number(studentOrMembershipId)
+
+  if (!membershipId || !Number.isFinite(membershipId)) {
+    throw new Error('تعذّر تحديد الطالب — تأكد أن API يُرجع membership_id')
+  }
+
+  const normalizedSubjectId = Number(subjectId)
+  if (!Number.isFinite(normalizedSubjectId)) {
+    throw new Error('تعذّر تحديد المادة')
+  }
+
+  const { data } = await api.post(`/subjects/${normalizedSubjectId}/students`, {
+    membership_id: membershipId,
+  })
+  return data
+}
+
+export async function removeStudentFromSubject(subjectId, membershipId) {
+  const { data } = await api.delete(`/subjects/${subjectId}/students/${membershipId}`)
   return data
 }
 

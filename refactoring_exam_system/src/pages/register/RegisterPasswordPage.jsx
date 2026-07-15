@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
+import { useTranslation } from 'react-i18next'
 import AuthShell from '../../components/auth/AuthShell'
 import PasswordField from '../../components/auth/PasswordField'
 import RegisterProgress from '../../components/auth/RegisterProgress'
@@ -17,6 +18,7 @@ const inputClassName =
   'h-12 w-full rounded-xl bg-[#EEF2F3] px-4 text-sm text-[#374151] outline-none placeholder:text-[#9CA3AF] focus:ring-2 focus:ring-[#2AA8A2]/40 md:w-[448px]'
 
 function RegisterPasswordPage() {
+  const { t } = useTranslation(['auth', 'forms'])
   const navigate = useNavigate()
   const store = useRegistrationStore()
   const updateFields = useRegistrationStore((s) => s.updateFields)
@@ -36,7 +38,7 @@ function RegisterPasswordPage() {
     const nextErrors = {}
 
     if (isInstitution && !store.workspace_name.trim()) {
-      nextErrors.workspace_name = 'اسم المؤسسة مطلوب'
+      nextErrors.workspace_name = t('validation.workspaceNameRequired', { ns: 'forms' })
     }
 
     const passwordError = validatePassword(store.password)
@@ -61,7 +63,7 @@ function RegisterPasswordPage() {
   }
 
   return (
-    <AuthShell heroImage={registerHeroPassword} heroAlt="راقبها ببيئة آمنة وذكية">
+    <AuthShell heroImage={registerHeroPassword} heroAlt={t('register.password.heroAlt')}>
       <RegisterProgress activeStep={2} />
 
       <form
@@ -74,13 +76,15 @@ function RegisterPasswordPage() {
       >
         {isInstitution ? (
           <div className="mb-5 space-y-2">
-            <label className="block text-right text-sm font-semibold text-[#374151]">اسم المؤسسة</label>
+            <label className="block text-right text-sm font-semibold text-[#374151]">
+              {t('register.password.institutionNameLabel')}
+            </label>
             <input
               type="text"
               name="register-workspace-name"
               value={store.workspace_name}
               onChange={(e) => updateFields({ workspace_name: e.target.value })}
-              placeholder="مثل: معهد الحضارة"
+              placeholder={t('register.password.institutionNamePlaceholder')}
               autoComplete="off"
               className={inputClassName}
             />
@@ -92,18 +96,18 @@ function RegisterPasswordPage() {
 
         <div className="space-y-5">
           <PasswordField
-            label="اختر كلمة سر"
+            label={t('register.password.passwordLabel')}
             name="register-password"
-            placeholder="أدخل كلمة المرور"
+            placeholder={t('placeholders.password', { ns: 'forms' })}
             value={store.password}
             onChange={(e) => updateFields({ password: e.target.value })}
             error={fieldErrors.password}
           />
 
           <PasswordField
-            label="تأكيد كلمة السر"
+            label={t('register.password.confirmPasswordLabel')}
             name="register-confirm-password"
-            placeholder="أعد إدخال كلمة المرور"
+            placeholder={t('placeholders.confirmPassword', { ns: 'forms' })}
             value={store.confirm_password}
             onChange={(e) => updateFields({ confirm_password: e.target.value })}
             error={fieldErrors.confirm_password}
@@ -111,7 +115,7 @@ function RegisterPasswordPage() {
         </div>
 
         <label className="mt-5 flex cursor-pointer items-center justify-end gap-2">
-          <span className="text-sm text-[#6B7280]">خليك فاكرني</span>
+          <span className="text-sm text-[#6B7280]">{t('register.password.rememberMe')}</span>
           <input
             type="checkbox"
             checked={rememberMe}
@@ -127,7 +131,7 @@ function RegisterPasswordPage() {
           disabled={loading}
           className="mt-8 h-12 w-full rounded-xl bg-[#2AA8A2] text-base font-bold text-white shadow-[0_12px_20px_rgba(42,168,162,0.22)] transition hover:opacity-95 disabled:opacity-70 md:w-[448px]"
         >
-          {loading ? 'جاري الإنشاء...' : 'إنشاء حساب'}
+          {loading ? t('register.password.submitting') : t('register.password.submit')}
         </button>
       </form>
     </AuthShell>

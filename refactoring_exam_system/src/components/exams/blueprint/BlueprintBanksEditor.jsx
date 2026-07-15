@@ -1,18 +1,7 @@
+import { useMemo } from 'react'
+import { useTranslation } from 'react-i18next'
 import { ClipboardList, FlaskConical, Plus } from 'lucide-react'
 import { getBankQuestionsCount } from '../../../lib/questionBanks'
-
-const TOPIC_ORDINALS = [
-  'الأول',
-  'الثاني',
-  'الثالث',
-  'الرابع',
-  'الخامس',
-  'السادس',
-  'السابع',
-  'الثامن',
-  'التاسع',
-  'العاشر',
-]
 
 const bankCountInputClassName =
   'h-12 w-full rounded-xl bg-[#E8F7F6] px-3 text-center text-lg font-extrabold text-[#2AA8A2] outline-none focus:ring-2 focus:ring-[#2AA8A2]/30'
@@ -23,20 +12,22 @@ const topicPercentInputClassName =
 const difficultyInputClassName =
   'h-11 w-full rounded-xl border border-[#E5E9EB] bg-white px-3 text-center text-sm font-extrabold text-[#2A3433] outline-none focus:border-[#2AA8A2] focus:ring-2 focus:ring-[#2AA8A2]/20'
 
-function formatAvailableQuestionsLabel(bank) {
-  const count = getBankQuestionsCount(bank)
-  if (count == null || Number.isNaN(count)) return 'إجمالي الأسئلة المتاحة: —'
-  return `إجمالي الأسئلة المتاحة: ${count.toLocaleString('ar-EG')} سؤال`
-}
-
 function BlueprintBanksEditor({ blueprints, onUpdateBank, onUpdateTopic, onUpdateTopicDifficulty, onAddBanks }) {
+  const { t, i18n } = useTranslation('exams')
+  const topicOrdinals = useMemo(() => t('topicOrdinals', { returnObjects: true }), [t])
+
+  const formatAvailableQuestionsLabel = (bank) => {
+    const count = getBankQuestionsCount(bank)
+    if (count == null || Number.isNaN(count)) return t('blueprint.availableQuestionsDash')
+    const locale = i18n.language === 'ar' ? 'ar-EG' : 'en-US'
+    return t('blueprint.availableQuestions', { count: count.toLocaleString(locale) })
+  }
+
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-start gap-2">
         <ClipboardList className="h-5 w-5 text-[#2AA8A2]" strokeWidth={2.2} />
-        <h3 className="text-base font-extrabold text-[#2A3433] md:text-lg">
-          تكوين بنوك الأسئلة المختارة
-        </h3>
+        <h3 className="text-base font-extrabold text-[#2A3433] md:text-lg">{t('blueprint.sectionTitle')}</h3>
       </div>
 
       {blueprints.map((bankBlueprint) => {
@@ -62,7 +53,7 @@ function BlueprintBanksEditor({ blueprints, onUpdateBank, onUpdateTopic, onUpdat
 
               <div className="w-full max-w-[148px] shrink-0">
                 <label className="mb-2 block text-center text-xs font-bold text-[#64748B]">
-                  عدد الأسئلة
+                  {t('blueprint.questionCountLabel')}
                 </label>
                 <input
                   type="number"
@@ -77,9 +68,7 @@ function BlueprintBanksEditor({ blueprints, onUpdateBank, onUpdateTopic, onUpdat
             </div>
 
             {bankBlueprint.topics.length === 0 ? (
-              <p className="border-t border-[#F1F5F9] px-6 py-6 text-sm text-[#94A3B8]">
-                لا توجد محاور في هذا البنك. أزل البنك أو اختر بنكاً يحتوي أسئلة بمحاور.
-              </p>
+              <p className="border-t border-[#F1F5F9] px-6 py-6 text-sm text-[#94A3B8]">{t('blueprint.noTopics')}</p>
             ) : (
               <div className="space-y-4 border-t border-[#F1F5F9] px-6 py-5">
                 {bankBlueprint.topics.map((topic, index) => (
@@ -91,7 +80,9 @@ function BlueprintBanksEditor({ blueprints, onUpdateBank, onUpdateTopic, onUpdat
                       <div className="min-w-0 flex-1 text-right">
                         <p className="text-sm font-extrabold leading-7 text-[#2A3433]">
                           <span className="text-[#64748B]">
-                            الموضوع {TOPIC_ORDINALS[index] || index + 1}:
+                            {t('blueprint.topicLabel', {
+                              ordinal: topicOrdinals[index] || index + 1,
+                            })}
                           </span>{' '}
                           {topic.name}
                         </p>
@@ -99,7 +90,7 @@ function BlueprintBanksEditor({ blueprints, onUpdateBank, onUpdateTopic, onUpdat
 
                       <div className="w-full max-w-[132px] shrink-0">
                         <label className="mb-2 block text-center text-xs font-bold text-[#64748B]">
-                          النسبة المئوية
+                          {t('blueprint.percentageLabel')}
                         </label>
                         <div className="relative">
                           <span className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-sm font-bold text-[#94A3B8]">
@@ -123,9 +114,9 @@ function BlueprintBanksEditor({ blueprints, onUpdateBank, onUpdateTopic, onUpdat
 
                     <div className="mt-5 grid grid-cols-3 gap-3">
                       {[
-                        { key: 'easy', label: 'سهل (%)' },
-                        { key: 'medium', label: 'متوسط (%)' },
-                        { key: 'hard', label: 'صعب (%)' },
+                        { key: 'easy', label: t('blueprint.easyPercent') },
+                        { key: 'medium', label: t('blueprint.mediumPercent') },
+                        { key: 'hard', label: t('blueprint.hardPercent') },
                       ].map(({ key, label }) => (
                         <div key={key}>
                           <label className="mb-2 block text-center text-xs font-bold text-[#64748B]">
@@ -163,7 +154,7 @@ function BlueprintBanksEditor({ blueprints, onUpdateBank, onUpdateTopic, onUpdat
         className="flex w-full items-center justify-center gap-2 rounded-2xl border-2 border-dashed border-[#B8E8E4] bg-[#F8FDFC] px-6 py-10 text-sm font-bold text-[#2AA8A2] transition hover:border-[#2AA8A2] hover:bg-[#EEFAF9]"
       >
         <Plus className="h-5 w-5" strokeWidth={2.2} />
-        إضافة بنك أسئلة إضافي
+        {t('blueprint.addBank')}
       </button>
     </div>
   )

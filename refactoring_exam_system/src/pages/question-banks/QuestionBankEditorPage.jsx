@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useState } from 'react'
 import { Navigate, useLocation, useNavigate, useParams } from 'react-router-dom'
+import { useTranslation } from 'react-i18next'
 import { Eye } from 'lucide-react'
 import BankInfoSummary from '../../components/question-banks/editor/BankInfoSummary'
 import EditQuestionModal from '../../components/question-banks/editor/EditQuestionModal'
@@ -26,6 +27,7 @@ import {
   updateQuestionBank,
 } from '../../services/questionBanks.service'
 import { getSubjectTopics } from '../../services/subjects.service'
+import { showAppToast } from '../../lib/appToast'
 import { useToastStore } from '../../store/toastStore'
 
 function createDefaultQuestion() {
@@ -65,6 +67,7 @@ function normalizeQuestionForApi(question) {
 }
 
 function QuestionBankEditorPage() {
+  const { t } = useTranslation('questionBanks')
   const location = useLocation()
   const navigate = useNavigate()
   const { id } = useParams()
@@ -106,7 +109,7 @@ function QuestionBankEditorPage() {
         if (cancelled) return
 
         if (!selectedBank) {
-          showToast('بنك الأسئلة غير موجود', 'error')
+          showAppToast('toast.bankNotFound', 'error', { ns: 'questionBanks' })
           navigate(banksListPath, { replace: true })
           return
         }
@@ -177,21 +180,21 @@ function QuestionBankEditorPage() {
 
   const validateDraftQuestion = () => {
     if (isRichTextEmpty(draftQuestion.body)) {
-      showToast('نص السؤال مطلوب', 'error')
+      showAppToast('validation.questionTextRequired', 'error', { ns: 'questionBanks' })
       return false
     }
     if (!draftQuestion.points || Number(draftQuestion.points) < 1) {
-      showToast('العلامة يجب أن تكون أكبر من 0', 'error')
+      showAppToast('validation.pointsRequired', 'error', { ns: 'questionBanks' })
       return false
     }
     if (draftQuestion.type_code !== 'ESSAY') {
       if (!draftQuestion.choices.length) {
-        showToast('أضف خيارات للإجابة', 'error')
+        showAppToast('validation.addChoices', 'error', { ns: 'questionBanks' })
         return false
       }
       const hasEmptyChoice = draftQuestion.choices.some((choice) => !choice.body.trim())
       if (hasEmptyChoice) {
-        showToast('جميع الخيارات يجب أن تكون مكتملة', 'error')
+        showAppToast('validation.allChoicesRequired', 'error', { ns: 'questionBanks' })
         return false
       }
       const choiceError = validateQuestionChoiceRules(draftQuestion.type_code, draftQuestion.choices)
@@ -201,7 +204,7 @@ function QuestionBankEditorPage() {
       }
     }
     if (topics.length > 0 && !draftQuestion.topic_id) {
-      showToast('اختر المحور للسؤال', 'error')
+      showAppToast('validation.topicRequired', 'error', { ns: 'questionBanks' })
       return false
     }
     return true
@@ -210,7 +213,7 @@ function QuestionBankEditorPage() {
   const handleSaveQuestion = () => {
     if (!validateDraftQuestion()) return
     setLocalQuestions((prev) => [...prev, normalizeQuestionForApi(draftQuestion)])
-    showToast('تم حفظ السؤال محلياً')
+    showAppToast('toast.questionSavedLocally', 'success', { ns: 'questionBanks' })
   }
 
   const handleAddAnother = () => {
@@ -220,7 +223,7 @@ function QuestionBankEditorPage() {
   const handlePublish = async () => {
     if (!bank) return
     if (allQuestions.length < 1) {
-      showToast('أضف سؤالاً واحداً على الأقل قبل النشر', 'error')
+      showAppToast('toast.minOneQuestion', 'error', { ns: 'questionBanks' })
       return
     }
     setPublishing(true)
@@ -229,7 +232,7 @@ function QuestionBankEditorPage() {
       if (localQuestions.length > 0) {
         await createQuestionBankQuestions(bank.id, localQuestions)
       }
-      showToast('Question Bank Published Successfully')
+      showAppToast('toast.published', 'success', { ns: 'questionBanks' })
       navigate(banksListPath)
     } catch (err) {
       showToast(err.message, 'error')
@@ -248,7 +251,7 @@ function QuestionBankEditorPage() {
         prev.map((question) => (String(question.id) === String(editingQuestion.id) ? updatedQuestion : question)),
       )
       setEditingQuestion(null)
-      showToast('تم تعديل السؤال بنجاح')
+      showAppToast('toast.questionUpdated', 'success', { ns: 'questionBanks' })
     } catch (err) {
       showToast(err.message, 'error')
     } finally {
@@ -284,9 +287,9 @@ function QuestionBankEditorPage() {
         onEditQuestion={setEditingQuestion}
         emptyMessage={
           questionsLoadError
-            ? 'لم يتم تحميل الأسئلة بسبب خطأ من الخادم.'
+            ? t('editor.loadError', { ns: 'questionBanks' })
             : readOnly && sourceTab === QUESTION_BANK_TABS.COMMUNITY
-              ? 'لا توجد أسئلة في هذا البنك.'
+              ? t('editor.noQuestionsCommunity', { ns: 'questionBanks' })
               : undefined
         }
       />
@@ -298,7 +301,7 @@ function QuestionBankEditorPage() {
           className="inline-flex items-center gap-2 rounded-xl bg-[#EEF2F3] px-6 py-3 text-sm font-bold text-[#374151]"
         >
           <Eye className="h-4 w-4" />
-          معاينة الأسئلة
+          {t('editor.previewQuestions', { ns: 'questionBanks' })}
         </button>
         {!readOnly ? (
           <button
@@ -306,7 +309,7 @@ function QuestionBankEditorPage() {
             onClick={() => setPublishOpen(true)}
             className="rounded-xl bg-[#2AA8A2] px-6 py-3 text-sm font-bold text-white"
           >
-            رفع بنك الأسئلة
+            {t('editor.publishBank', { ns: 'questionBanks' })}
           </button>
         ) : null}
       </div>

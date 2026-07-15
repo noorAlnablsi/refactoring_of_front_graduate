@@ -1,16 +1,24 @@
+import { useTranslation } from 'react-i18next'
 import { Building2, GraduationCap, Pencil } from 'lucide-react'
-import { getInstitutionTypeLabel } from '../../lib/workspace'
 import SettingsCard from './SettingsCard'
 
 function SettingsInstitutionCard({ workspace, loading = false }) {
+  const { t } = useTranslation('settings')
   const workspaceName = workspace?.name?.trim() || '—'
   const logoUrl = workspace?.logo_url
-  const description = workspace?.description?.trim() || 'لم تُضف نبذة عن المؤسسة بعد.'
+  const description = workspace?.description?.trim() || t('institution.noDescription')
+
+  const institutionType = (() => {
+    if (workspace?.institution_type?.trim()) return workspace.institution_type.trim()
+    if (workspace?.type?.trim()) return workspace.type.trim()
+    if (workspace?.kind === 'INSTITUTION') return t('institution.defaultType')
+    return '—'
+  })()
 
   return (
-    <SettingsCard title="إعدادات المؤسسة" icon={Building2}>
+    <SettingsCard title={t('institution.title')} icon={Building2}>
       <p className="-mt-2 mb-5 text-xs leading-6 text-[var(--shell-text-muted)]">
-        تظهر هذه البيانات لجميع أعضاء المؤسسة داخل المنصة.
+        {t('institution.description')}
       </p>
 
       <div className="relative mb-6 inline-flex">
@@ -32,21 +40,23 @@ function SettingsInstitutionCard({ workspace, loading = false }) {
 
       <div className="space-y-4">
         <div className="rounded-xl bg-[var(--shell-input-bg)] px-4 py-3 text-right">
-          <p className="mb-1 text-xs font-semibold text-[var(--shell-text-muted)]">اسم المؤسسة</p>
+          <p className="mb-1 text-xs font-semibold text-[var(--shell-text-muted)]">{t('institution.name')}</p>
           <p className="text-sm font-semibold text-[var(--shell-text)]">
             {loading && !workspaceName ? '...' : workspaceName}
           </p>
         </div>
 
         <div className="rounded-xl bg-[var(--shell-input-bg)] px-4 py-3 text-right">
-          <p className="mb-1 text-xs font-semibold text-[var(--shell-text-muted)]">نوع المؤسسة</p>
+          <p className="mb-1 text-xs font-semibold text-[var(--shell-text-muted)]">{t('institution.type')}</p>
           <p className="text-sm font-semibold text-[var(--shell-text)]">
-            {loading ? '...' : getInstitutionTypeLabel(workspace)}
+            {loading ? '...' : institutionType}
           </p>
         </div>
 
         <div className="rounded-xl bg-[var(--shell-input-bg)] px-4 py-3 text-right">
-          <p className="mb-1 text-xs font-semibold text-[var(--shell-text-muted)]">الوصف</p>
+          <p className="mb-1 text-xs font-semibold text-[var(--shell-text-muted)]">
+            {t('institution.descriptionLabel')}
+          </p>
           <p className="text-sm leading-7 text-[var(--shell-text)]">
             {loading && !workspace?.description ? '...' : description}
           </p>
@@ -59,7 +69,7 @@ function SettingsInstitutionCard({ workspace, loading = false }) {
         className="mt-6 inline-flex cursor-not-allowed items-center gap-2 rounded-xl border border-[var(--shell-accent)] px-5 py-2.5 text-sm font-bold text-[var(--shell-accent)] opacity-60"
       >
         <Pencil className="h-4 w-4" />
-        تعديل بيانات المؤسسة
+        {t('institution.edit')}
       </button>
     </SettingsCard>
   )

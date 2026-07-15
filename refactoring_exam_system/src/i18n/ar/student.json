@@ -1,0 +1,92 @@
+{
+  "portal": {
+    "title": "بوابة الطالب",
+    "defaultName": "طالب"
+  },
+  "sidebar": {
+    "home": "الرئيسية",
+    "exams": "الاختبارات",
+    "results": "النتائج",
+    "settings": "الإعدادات"
+  },
+  "topbar": {
+    "searchPlaceholder": "البحث عن الاختبارات، المواد أو النتائج...",
+    "notificationsAria": "إشعارات",
+    "profileLabel": "ملف الطالب"
+  },
+  "dashboard": {
+    "loading": "جاري تحميل لوحة الطالب...",
+    "retry": "إعادة المحاولة",
+    "loadError": "تعذر تحميل لوحة الطالب",
+    "welcome": "مرحباً، {{name}} 👋",
+    "welcomeSubtitle": "نتمنى لك يوماً موفقاً في اختباراتك."
+  },
+  "stats": {
+    "availableExams": "الاختبارات المتاحة",
+    "upcoming": "القادمة",
+    "completed": "المكتملة",
+    "averageScore": "متوسط الدرجات"
+  },
+  "availableExams": {
+    "title": "الاختبارات المتاحة حالياً",
+    "viewAll": "عرض الكل ←",
+    "empty": "لا توجد اختبارات متاحة حالياً."
+  },
+  "upcomingExams": {
+    "title": "الاختبارات القادمة",
+    "empty": "لا توجد اختبارات قادمة حالياً."
+  },
+  "latestResults": {
+    "title": "آخر النتائج",
+    "filterAria": "تصفية النتائج",
+    "columns": {
+      "exam": "الاختبار",
+      "subject": "المادة",
+      "score": "الدرجة",
+      "date": "التاريخ",
+      "status": "الحالة"
+    },
+    "status": {
+      "approved": "معتمد",
+      "pending": "قيد المراجعة"
+    },
+    "empty": "لا توجد نتائج لعرضها بعد."
+  },
+  "examCard": {
+    "proctored": "مراقَب",
+    "regular": "عادي",
+    "meta": "{{minutes}} دقيقة • {{questions}} سؤال",
+    "start": "ابدأ الاختبار"
+  },
+  "calendar": {
+    "prevMonthAria": "الشهر السابق",
+    "nextMonthAria": "الشهر التالي",
+    "weekdays": ["أحد", "إثن", "ثلا", "أرب", "خمي", "جمع", "سبت"],
+    "months": ["يناير", "فبراير", "مارس", "أبريل", "مايو", "يونيو", "يوليو", "أغسطس", "سبتمبر", "أكتوبر", "نوفمبر", "ديسمبر"]
+  },
+  "availability": {
+    "startsAt": "يبدأ: {{datetime}}",
+    "availableNow": "متاح الآن"
+  },
+  "subjectFallback": "مادة #{{id}}",
+  "placeholder": {
+    "comingSoon": "قريباً — جاهز للربط مع الباك اند",
+    "exams": {
+      "title": "الاختبارات",
+      "description": "ستجد هنا جميع اختباراتك المتاحة والقادمة والمكتملة."
+    },
+    "results": {
+      "title": "النتائج",
+      "description": "ستعرض هذه الصفحة نتائج اختباراتك وتفاصيل درجاتك."
+    },
+    "settings": {
+      "title": "الإعدادات",
+      "description": "إعدادات حساب الطالب والتفضيلات ستكون متاحة هنا قريباً."
+    }
+  },
+  "register": {
+    "title": "أهلاً بك في كويزهاب",
+    "subtitle": "املأ بيانات حسابك لتنضم الى مساحة تعليمية",
+    "joinCodeSubtitle": "أدخل كود الانضمام المقدم من مؤسستك التعليمية"
+  }
+}

@@ -1,4 +1,5 @@
 import { AlertTriangle, Bell } from 'lucide-react'
+import { useTranslation } from 'react-i18next'
 
 export function SettingsSwitch({ label, description, checked, onChange }) {
   return (
@@ -43,6 +44,7 @@ export function SettingsRadio({ label, checked, onChange }) {
 }
 
 export function SeverityCard({ tone, title, text }) {
+  const { t } = useTranslation('exams')
   const isAction = tone === 'action'
 
   return (
@@ -73,7 +75,7 @@ export function SeverityCard({ tone, title, text }) {
           type="button"
           className="shrink-0 text-xs font-bold text-[#94A3B8] hover:text-[#64748B]"
         >
-          تعديل
+          {t('settings.severity.edit')}
         </button>
       </div>
     </div>

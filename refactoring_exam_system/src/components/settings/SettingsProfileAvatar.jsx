@@ -1,3 +1,4 @@
+import { useTranslation } from 'react-i18next'
 import { Camera } from 'lucide-react'
 import { getUserInitials } from '../../lib/userDisplay'
 
@@ -10,7 +11,8 @@ function SettingsProfileAvatar({
   uploading = false,
   disabled = false,
 }) {
-  const fullName = user?.full_name?.trim() || 'مستخدم'
+  const { t } = useTranslation('settings')
+  const fullName = user?.full_name?.trim() || t('profile.defaultUser')
   const avatarUrl = user?.avatar_url || null
   const showInitials =
     mode === 'initials' || ((mode === 'solo' || mode === 'default') && !avatarUrl)

@@ -1,15 +1,19 @@
-import { TEST_WIZARD_STEP_LABELS } from '../../constants/tests'
+import { useTranslation } from 'react-i18next'
+import { TEST_WIZARD_STEP_KEYS } from '../../constants/tests'
 
 function ExamWizardStepper({ currentStep }) {
+  const { t } = useTranslation('exams')
+
   return (
     <div className="flex flex-wrap items-center justify-center gap-2 md:gap-4">
-      {TEST_WIZARD_STEP_LABELS.map((label, index) => {
+      {TEST_WIZARD_STEP_KEYS.map((stepKey, index) => {
         const step = index + 1
         const isActive = step === currentStep
         const isDone = step < currentStep
+        const label = t(`wizard.steps.${stepKey}`)
 
         return (
-          <div key={label} className="flex items-center gap-2">
+          <div key={stepKey} className="flex items-center gap-2">
             <div
               className={`flex h-8 w-8 items-center justify-center rounded-full text-xs font-bold ${
                 isActive
@@ -32,7 +36,7 @@ function ExamWizardStepper({ currentStep }) {
             >
               {label}
             </span>
-            {step < TEST_WIZARD_STEP_LABELS.length ? (
+            {step < TEST_WIZARD_STEP_KEYS.length ? (
               <span className="mx-1 hidden h-px w-6 bg-[var(--shell-border)] md:block" />
             ) : null}
           </div>

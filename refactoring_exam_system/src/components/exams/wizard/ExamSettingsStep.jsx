@@ -1,9 +1,10 @@
 import { useEffect, useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import { ArrowLeft, ArrowRight } from 'lucide-react'
 import {
   buildTestSettingsFormState,
   buildTestSettingsPayload,
-  DEFAULT_SEVERITY_POLICY,
+  getDefaultSeverityPolicy,
 } from '../../../lib/testSettings'
 import ExamWizardFooter from '../ExamWizardFooter'
 import {
@@ -23,6 +24,7 @@ function ExamSettingsStep({
   onSaveDraft,
   onFormChange,
 }) {
+  const { t } = useTranslation(['exams', 'common'])
   const [form, setForm] = useState(() => buildTestSettingsFormState(test))
 
   useEffect(() => {
@@ -73,18 +75,16 @@ function ExamSettingsStep({
   }
 
   const cfg = form.settings_config
-  const severity = cfg.severity_policy || DEFAULT_SEVERITY_POLICY
+  const severity = cfg.severity_policy || getDefaultSeverityPolicy()
 
   return (
     <form onSubmit={handleSubmit} className="space-y-6 pb-28">
       <header className="text-right">
-        <p className="text-sm font-bold text-[#2AA8A2]">إعدادات الامتحان والتحكم</p>
+        <p className="text-sm font-bold text-[#2AA8A2]">{t('wizard.settings.eyebrow')}</p>
         <h2 className="mt-2 text-[28px] font-extrabold leading-tight text-[#2A3433] md:text-[32px]">
-          الإعدادات
+          {t('wizard.settings.title')}
         </h2>
-        <p className="mt-3 max-w-3xl text-sm leading-8 text-[#64748B]">
-          اضبط سلوك الامتحان أثناء أداء الطلاب، وفعّل خيارات المراقبة الذكية عند الحاجة.
-        </p>
+        <p className="mt-3 max-w-3xl text-sm leading-8 text-[#64748B]">{t('wizard.settings.subtitle')}</p>
       </header>
 
       <ExamAttemptSettingsSection form={form} onFormChange={setForm} />
@@ -101,7 +101,7 @@ function ExamSettingsStep({
             className="inline-flex items-center gap-2 rounded-xl bg-[#F6F8F9] px-6 py-3 text-sm font-bold text-[#64748B]"
           >
             <ArrowRight className="h-4 w-4" />
-            رجوع
+            {t('wizard.questions.review.back')}
           </button>
 
           <button
@@ -110,7 +110,7 @@ function ExamSettingsStep({
             disabled={savingDraft}
             className="text-sm font-bold text-[#64748B] hover:text-[#374151] disabled:opacity-50"
           >
-            {savingDraft ? 'جاري الحفظ...' : 'حفظ كمسودة'}
+            {savingDraft ? t('wizard.basicInfo.savingDraft') : t('wizard.basicInfo.saveDraft')}
           </button>
 
           <button
@@ -118,7 +118,7 @@ function ExamSettingsStep({
             disabled={submitting}
             className="inline-flex items-center gap-2 rounded-xl bg-[#2AA8A2] px-7 py-3 text-sm font-bold text-white shadow-[0_10px_20px_rgba(42,168,162,0.28)] disabled:opacity-60"
           >
-            {submitting ? 'جاري الحفظ...' : 'المتابعة للمعاينة'}
+            {submitting ? t('common:loading.saving') : t('wizard.settings.continueToReview')}
             <ArrowLeft className="h-4 w-4" />
           </button>
         </div>

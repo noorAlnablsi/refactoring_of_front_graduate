@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
+import { useTranslation } from 'react-i18next'
 import AuthShell from '../../components/auth/AuthShell'
 import PasswordField from '../../components/auth/PasswordField'
 import { ROUTES } from '../../constants/routes'
@@ -15,6 +16,7 @@ const inputClassName =
   'h-12 w-full rounded-xl bg-[#EEF2F3] px-4 text-sm text-[#374151] outline-none placeholder:text-[#9CA3AF] focus:ring-2 focus:ring-[#2AA8A2]/40 md:w-[448px]'
 
 function StudentRegisterPage() {
+  const { t } = useTranslation(['auth', 'forms', 'common'])
   useStudentRegisterGuard()
   const navigate = useNavigate()
   const store = useRegistrationStore()
@@ -24,10 +26,10 @@ function StudentRegisterPage() {
   const validate = () => {
     const nextErrors = {}
 
-    if (!store.full_name.trim()) nextErrors.full_name = 'الاسم الكامل مطلوب'
-    if (!store.email.trim()) nextErrors.email = 'البريد الإلكتروني مطلوب'
+    if (!store.full_name.trim()) nextErrors.full_name = t('validation.fullNameRequired', { ns: 'forms' })
+    if (!store.email.trim()) nextErrors.email = t('validation.emailRequired', { ns: 'forms' })
     else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(store.email.trim())) {
-      nextErrors.email = 'صيغة البريد الإلكتروني غير صحيحة'
+      nextErrors.email = t('validation.emailInvalid', { ns: 'forms' })
     }
 
     const passwordError = validatePassword(store.password)
@@ -46,10 +48,12 @@ function StudentRegisterPage() {
   }
 
   return (
-    <AuthShell heroImage={loginHero} heroAlt="إصقل تقييمك الأكاديمي">
-      <h1 className="text-right text-3xl font-extrabold text-[#2A3433] md:text-4xl">أهلاً بك في كويزهاب</h1>
+    <AuthShell heroImage={loginHero} heroAlt={t('studentRegister.heroAlt')}>
+      <h1 className="text-right text-3xl font-extrabold text-[#2A3433] md:text-4xl">
+        {t('studentRegister.title')}
+      </h1>
       <p className="mt-3 text-right text-sm leading-7 text-[#6B7280] md:text-base">
-        املأ بيانات حسابك لتنضم الى مساحة تعليمية
+        {t('studentRegister.subtitle')}
       </p>
 
       <form
@@ -62,13 +66,15 @@ function StudentRegisterPage() {
       >
         <div className="space-y-5">
           <div className="space-y-2">
-            <label className="block text-right text-sm font-semibold text-[#374151]">الاسم الكامل</label>
+            <label className="block text-right text-sm font-semibold text-[#374151]">
+              {t('fields.fullName', { ns: 'forms' })}
+            </label>
             <input
               type="text"
               name="student-register-full-name"
               value={store.full_name}
               onChange={(e) => updateFields({ full_name: e.target.value })}
-              placeholder="أدخل اسمك الكامل"
+              placeholder={t('placeholders.fullName', { ns: 'forms' })}
               autoComplete="off"
               className={inputClassName}
             />
@@ -76,13 +82,15 @@ function StudentRegisterPage() {
           </div>
 
           <div className="space-y-2">
-            <label className="block text-right text-sm font-semibold text-[#374151]">البريد الإلكتروني</label>
+            <label className="block text-right text-sm font-semibold text-[#374151]">
+              {t('fields.email', { ns: 'forms' })}
+            </label>
             <input
               type="email"
               name="student-register-email"
               value={store.email}
               onChange={(e) => updateFields({ email: e.target.value })}
-              placeholder="أدخل بريدك الإلكتروني"
+              placeholder={t('placeholders.email', { ns: 'forms' })}
               autoComplete="off"
               className={inputClassName}
             />
@@ -90,18 +98,18 @@ function StudentRegisterPage() {
           </div>
 
           <PasswordField
-            label="اختر كلمة سر"
+            label={t('register.password.passwordLabel')}
             name="student-register-password"
-            placeholder="أدخل كلمة المرور"
+            placeholder={t('placeholders.password', { ns: 'forms' })}
             value={store.password}
             onChange={(e) => updateFields({ password: e.target.value })}
             error={errors.password}
           />
 
           <PasswordField
-            label="تأكيد كلمة السر"
+            label={t('register.password.confirmPasswordLabel')}
             name="student-register-confirm-password"
-            placeholder="أعد إدخال كلمة المرور"
+            placeholder={t('placeholders.confirmPassword', { ns: 'forms' })}
             value={store.confirm_password}
             onChange={(e) => updateFields({ confirm_password: e.target.value })}
             error={errors.confirm_password}
@@ -112,14 +120,14 @@ function StudentRegisterPage() {
           type="submit"
           className="mt-8 h-12 w-full rounded-xl bg-[#2AA8A2] text-base font-bold text-white shadow-[0_12px_20px_rgba(42,168,162,0.22)] transition hover:opacity-95 md:w-[448px]"
         >
-          التالي
+          {t('actions.next', { ns: 'common' })}
         </button>
       </form>
 
       <p className="mt-5 text-center text-sm text-[#6B7280]">
-        لديك حساب بالفعل؟{' '}
+        {t('welcome.hasAccount')}{' '}
         <Link to={ROUTES.LOGIN} className="font-bold text-[#2AA8A2]">
-          تسجيل دخول
+          {t('welcome.loginLink')}
         </Link>
       </p>
     </AuthShell>

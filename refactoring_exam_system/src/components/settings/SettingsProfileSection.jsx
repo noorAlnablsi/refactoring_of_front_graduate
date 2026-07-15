@@ -1,4 +1,5 @@
 import { Link } from 'react-router-dom'
+import { useTranslation } from 'react-i18next'
 import { Mail, Pencil, Plus } from 'lucide-react'
 import { getMembershipRoleLabel } from '../../lib/membershipLabel'
 import { isInstitutionOwner, isSoloTeacher } from '../../lib/workspaceContext'
@@ -20,6 +21,7 @@ function getWorkspaceInitials(name = '') {
 }
 
 function SettingsProfileCard() {
+  const { t } = useTranslation('settings')
   const user = useAuthStore((state) => state.user)
   const membership = useAuthStore((state) => {
     const { memberships, selected_membership_id } = state
@@ -36,7 +38,7 @@ function SettingsProfileCard() {
   } = useProfileAvatar()
 
   const activeUser = profileUser || user
-  const fullName = activeUser?.full_name?.trim() || 'مستخدم'
+  const fullName = activeUser?.full_name?.trim() || t('profile.defaultUser')
   const email = activeUser?.email?.trim() || '—'
   const isOwner = isInstitutionOwner(membership)
   const isSolo = isSoloTeacher(membership)
@@ -44,15 +46,15 @@ function SettingsProfileCard() {
   const roleLabel = getMembershipRoleLabel(membership)
 
   const subtitle = isOwner
-    ? `مدير مؤسسة "${workspaceName || 'مساحة تعليمية'}"`
+    ? t('profile.ownerSubtitle', { name: workspaceName || t('profile.defaultWorkspace') })
     : isSolo
-      ? 'معلم مستقل'
+      ? t('profile.soloTeacher')
       : [roleLabel, workspaceName ? workspaceName : null].filter(Boolean).join(' | ')
 
   const avatarMode = isOwner ? 'initials' : isSolo ? 'solo' : 'default'
 
   return (
-    <SettingsCard title="الملف الشخصي">
+    <SettingsCard title={t('profile.title')}>
       <div className="flex flex-col items-center text-center">
         <SettingsProfileAvatar
           user={activeUser}
@@ -66,7 +68,7 @@ function SettingsProfileCard() {
 
         {canUploadAvatar ? (
           <p className="mt-2 text-xs text-[var(--shell-text-subtle)]">
-            {uploading ? 'جاري رفع الصورة...' : 'اضغط على أيقونة الكاميرا لتحديث صورتك'}
+            {uploading ? t('profile.uploadingAvatar') : t('profile.avatarHint')}
           </p>
         ) : null}
 
@@ -78,14 +80,14 @@ function SettingsProfileCard() {
           <div className="rounded-xl bg-[var(--shell-input-bg)] px-4 py-3 text-right">
             <div className="mb-1 flex items-center gap-2 text-xs font-semibold text-[var(--shell-text-muted)]">
               <Mail className="h-3.5 w-3.5" />
-              البريد الإلكتروني
+              {t('profile.email')}
             </div>
             <p className="truncate text-sm font-semibold text-[var(--shell-text)]">{email}</p>
           </div>
 
           {(isOwner || (!isSolo && workspaceName)) ? (
             <div className="rounded-xl bg-[var(--shell-input-bg)] px-4 py-3 text-right">
-              <p className="mb-1 text-xs font-semibold text-[var(--shell-text-muted)]">مساحة العمل</p>
+              <p className="mb-1 text-xs font-semibold text-[var(--shell-text-muted)]">{t('profile.workspace')}</p>
               <p className="truncate text-sm font-semibold text-[var(--shell-text)]">
                 {workspaceName || '—'}
               </p>
@@ -99,7 +101,7 @@ function SettingsProfileCard() {
           className="mt-6 inline-flex cursor-not-allowed items-center gap-2 rounded-xl border border-[var(--shell-accent)] px-5 py-2.5 text-sm font-bold text-[var(--shell-accent)] opacity-60"
         >
           <Pencil className="h-4 w-4" />
-          تعديل الملف الشخصي
+          {t('profile.editProfile')}
         </button>
       </div>
     </SettingsCard>
@@ -107,19 +109,20 @@ function SettingsProfileCard() {
 }
 
 function SettingsWorkspacesCard() {
+  const { t } = useTranslation('settings')
   const memberships = useAuthStore((state) => state.memberships)
   const selectedMembershipId = useAuthStore((state) => state.selected_membership_id)
   const activeCount = memberships.length
 
   return (
     <SettingsCard
-      title="مساحات العمل"
-      badge={activeCount > 0 ? `${activeCount} نشطة` : null}
+      title={t('workspaces.title')}
+      badge={activeCount > 0 ? t('workspaces.activeBadge', { count: activeCount }) : null}
     >
       <div className="space-y-3">
         {memberships.map((membership) => {
           const isActive = membership.membership_id === selectedMembershipId
-          const workspaceName = membership.workspace?.name?.trim() || 'مساحة تعليمية'
+          const workspaceName = membership.workspace?.name?.trim() || t('profile.defaultWorkspace')
           const roleLabel = getMembershipRoleLabel(membership)
           const logoUrl = membership.workspace?.logo_url
 
@@ -134,7 +137,7 @@ function SettingsWorkspacesCard() {
             >
               {isActive ? (
                 <span className="absolute left-4 top-0 -translate-y-1/2 rounded-md bg-[var(--shell-accent)] px-2.5 py-0.5 text-[10px] font-bold text-[var(--shell-accent-contrast)] shadow-sm">
-                  مساحة العمل الحالية
+                  {t('workspaces.current')}
                 </span>
               ) : null}
 
@@ -158,7 +161,9 @@ function SettingsWorkspacesCard() {
 
               <div className="min-w-0 flex-1 text-right">
                 <p className="truncate text-sm font-bold text-[var(--shell-text)]">{workspaceName}</p>
-                <p className="mt-0.5 text-xs text-[var(--shell-text-muted)]">الدور: {roleLabel}</p>
+                <p className="mt-0.5 text-xs text-[var(--shell-text-muted)]">
+                  {t('workspaces.role', { role: roleLabel })}
+                </p>
               </div>
             </div>
           )
@@ -169,7 +174,7 @@ function SettingsWorkspacesCard() {
           className={`mt-1 inline-flex items-center gap-2 self-start px-5 py-2.5 ${shellAccentButtonClass}`}
         >
           <Plus className="h-4 w-4" />
-          إنشاء مساحة عمل جديدة
+          {t('workspaces.createNew')}
         </Link>
       </div>
     </SettingsCard>

@@ -1,0 +1,92 @@
+{
+  "portal": {
+    "title": "Student portal",
+    "defaultName": "Student"
+  },
+  "sidebar": {
+    "home": "Home",
+    "exams": "Exams",
+    "results": "Results",
+    "settings": "Settings"
+  },
+  "topbar": {
+    "searchPlaceholder": "Search exams, subjects, or results...",
+    "notificationsAria": "Notifications",
+    "profileLabel": "Student profile"
+  },
+  "dashboard": {
+    "loading": "Loading student dashboard...",
+    "retry": "Retry",
+    "loadError": "Could not load student dashboard",
+    "welcome": "Hello, {{name}} 👋",
+    "welcomeSubtitle": "We wish you a successful day in your exams."
+  },
+  "stats": {
+    "availableExams": "Available exams",
+    "upcoming": "Upcoming",
+    "completed": "Completed",
+    "averageScore": "Average score"
+  },
+  "availableExams": {
+    "title": "Currently available exams",
+    "viewAll": "View all →",
+    "empty": "No exams available right now."
+  },
+  "upcomingExams": {
+    "title": "Upcoming exams",
+    "empty": "No upcoming exams right now."
+  },
+  "latestResults": {
+    "title": "Latest results",
+    "filterAria": "Filter results",
+    "columns": {
+      "exam": "Exam",
+      "subject": "Subject",
+      "score": "Score",
+      "date": "Date",
+      "status": "Status"
+    },
+    "status": {
+      "approved": "Approved",
+      "pending": "Under review"
+    },
+    "empty": "No results to display yet."
+  },
+  "examCard": {
+    "proctored": "Proctored",
+    "regular": "Regular",
+    "meta": "{{minutes}} min • {{questions}} questions",
+    "start": "Start exam"
+  },
+  "calendar": {
+    "prevMonthAria": "Previous month",
+    "nextMonthAria": "Next month",
+    "weekdays": ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"],
+    "months": ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"]
+  },
+  "availability": {
+    "startsAt": "Starts: {{datetime}}",
+    "availableNow": "Available now"
+  },
+  "subjectFallback": "Subject #{{id}}",
+  "placeholder": {
+    "comingSoon": "Coming soon — ready for backend integration",
+    "exams": {
+      "title": "Exams",
+      "description": "You will find all your available, upcoming, and completed exams here."
+    },
+    "results": {
+      "title": "Results",
+      "description": "This page will show your exam results and score details."
+    },
+    "settings": {
+      "title": "Settings",
+      "description": "Student account settings and preferences will be available here soon."
+    }
+  },
+  "register": {
+    "title": "Welcome to QuizHub",
+    "subtitle": "Fill in your account details to join an educational space",
+    "joinCodeSubtitle": "Enter the join code provided by your institution"
+  }
+}

@@ -1,21 +1,35 @@
 import { Link } from 'react-router-dom'
+import { useTranslation } from 'react-i18next'
 import { ChevronLeft, Globe, Lock, LogOut } from 'lucide-react'
 import { ROUTES } from '../../constants/routes'
+import { LANGUAGE_OPTIONS } from '../../constants/language'
 import { useLogout } from '../../hooks/useLogout'
+import { useLanguageStore } from '../../store/languageStore'
 import SettingsCard from './SettingsCard'
 import ThemeModeToggle from './ThemeModeToggle'
+
 function SettingsAppearanceCard() {
+  const { t } = useTranslation(['common', 'settings'])
+  const language = useLanguageStore((state) => state.language)
+  const setLanguage = useLanguageStore((state) => state.setLanguage)
+
   return (
-    <SettingsCard title="المظهر واللغة" icon={Globe}>
+    <SettingsCard title={t('appearance.title', { ns: 'common' })} icon={Globe}>
       <div className="space-y-1">
         <label className="block">
-          <span className="mb-2 block text-sm font-semibold text-[var(--shell-text-muted)]">اللغة</span>
+          <span className="mb-2 block text-sm font-semibold text-[var(--shell-text-muted)]">
+            {t('language.label', { ns: 'common' })}
+          </span>
           <select
-            disabled
-            className="w-full cursor-not-allowed rounded-xl bg-[var(--shell-input-bg)] px-4 py-3 text-sm text-[var(--shell-text-muted)] opacity-70 outline-none"
-            defaultValue="ar"
+            value={language}
+            onChange={(event) => setLanguage(event.target.value)}
+            className="w-full rounded-xl bg-[var(--shell-input-bg)] px-4 py-3 text-sm text-[var(--shell-text)] outline-none transition hover:bg-[var(--shell-hover)]"
           >
-            <option value="ar">العربية</option>
+            {LANGUAGE_OPTIONS.map((option) => (
+              <option key={option.value} value={option.value}>
+                {t(option.labelKey, { ns: 'common' })}
+              </option>
+            ))}
           </select>
         </label>
 
@@ -23,12 +37,12 @@ function SettingsAppearanceCard() {
           to={ROUTES.SETTINGS_CHANGE_PASSWORD}
           className="flex w-full items-center justify-between rounded-xl px-1 py-3.5 text-sm font-semibold text-[var(--shell-text)] transition hover:bg-[var(--shell-hover)]"
         >
-          <span>تغيير كلمة المرور</span>
+          <span>{t('appearance.changePassword', { ns: 'settings' })}</span>
           <ChevronLeft className="h-4 w-4 text-[var(--shell-text-subtle)]" />
         </Link>
 
         <div className="flex items-center justify-between rounded-xl px-1 py-3.5">
-          <span className="text-sm font-semibold text-[var(--shell-text)]">النمط</span>
+          <span className="text-sm font-semibold text-[var(--shell-text)]">{t('appearance.theme', { ns: 'settings' })}</span>
           <ThemeModeToggle />
         </div>
       </div>
@@ -37,10 +51,11 @@ function SettingsAppearanceCard() {
 }
 
 function SettingsPrivacyCard() {
+  const { t } = useTranslation('settings')
   const { logoutAllSessions, loading } = useLogout()
 
   return (
-    <SettingsCard title="الخصوصية والبيانات" icon={Lock}>
+    <SettingsCard title={t('privacy.title')} icon={Lock}>
       <div className="space-y-3">
         <button
           type="button"
@@ -49,7 +64,7 @@ function SettingsPrivacyCard() {
           className="flex w-full items-center justify-center gap-2 rounded-xl bg-[var(--shell-input-bg)] px-4 py-3 text-sm font-bold text-[var(--shell-danger-text)] transition hover:bg-[var(--shell-hover)] disabled:opacity-60"
         >
           <LogOut className="h-4 w-4" />
-          {loading ? 'جاري الخروج...' : 'تسجيل خروج من المنصة'}
+          {loading ? t('privacy.loggingOut') : t('privacy.logoutAll')}
         </button>
 
         <button
@@ -57,7 +72,7 @@ function SettingsPrivacyCard() {
           disabled
           className="flex w-full cursor-not-allowed items-center justify-center gap-2 rounded-xl bg-[var(--shell-danger-bg)] px-4 py-3 text-sm font-bold text-[var(--shell-danger-text)] opacity-60"
         >
-          حذف الحساب نهائياً
+          {t('privacy.deleteAccount')}
         </button>
       </div>
     </SettingsCard>

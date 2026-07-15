@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { ROUTES } from '../constants/routes'
+import { tUI } from '../lib/appToast'
 import { forgotPassword } from '../services/auth.service'
 import { usePasswordResetStore } from '../store/passwordResetStore'
 
@@ -19,12 +20,12 @@ export function useForgotPassword() {
     const trimmedEmail = email.trim()
 
     if (!trimmedEmail) {
-      setError('يرجى إدخال البريد الإلكتروني')
+      setError(tUI('validation.emailRequired', { ns: 'forms' }))
       return
     }
 
     if (!EMAIL_PATTERN.test(trimmedEmail)) {
-      setError('يرجى إدخال بريد إلكتروني صالح')
+      setError(tUI('validation.emailInvalid', { ns: 'forms' }))
       return
     }
 

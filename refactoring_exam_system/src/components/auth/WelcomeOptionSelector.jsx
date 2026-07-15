@@ -1,16 +1,18 @@
+import { useTranslation } from 'react-i18next'
 import { Building2, GraduationCap } from 'lucide-react'
 import { WELCOME_SELECTION } from '../../constants/auth'
 
 function WelcomeOptionSelector({ selected, onSelect }) {
+  const { t } = useTranslation('auth')
   const options = [
     {
       id: WELCOME_SELECTION.CREATE_SPACE,
-      title: 'إنشاء مساحة تعليمية',
+      title: t('welcome.createSpace'),
       icon: Building2,
     },
     {
       id: WELCOME_SELECTION.JOIN_STUDENT,
-      title: 'الانضمام كطالب',
+      title: t('welcome.joinAsStudent'),
       icon: GraduationCap,
     },
   ]

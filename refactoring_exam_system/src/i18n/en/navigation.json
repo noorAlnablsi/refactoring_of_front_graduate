@@ -1,0 +1,51 @@
+{
+  "sidebar": {
+    "dashboard": "Dashboard",
+    "subjects": "Subject management",
+    "members": "Member management",
+    "questionBanks": "Question banks",
+    "exams": "Exams",
+    "statistics": "Statistics",
+    "settings": "Settings",
+    "logoutCurrentPath": "Sign out of current path"
+  },
+  "studentSidebar": {
+    "home": "Home",
+    "exams": "Exams",
+    "results": "Results",
+    "settings": "Settings",
+    "portalTitle": "Student portal"
+  },
+  "topbar": {
+    "searchExams": "Search exams...",
+    "searchBanks": "Search banks...",
+    "searchStudents": "Search for a student...",
+    "searchStudentPortal": "Search exams, subjects, or results...",
+    "notifications": "Notifications"
+  },
+  "breadcrumbs": {
+    "home": "Home",
+    "settings": "Settings",
+    "members": "Member management",
+    "teachers": "Teacher management",
+    "students": "Student management",
+    "changePassword": "Reset password"
+  },
+  "wizardSteps": {
+    "examInfo": "Information",
+    "examQuestions": "Add questions",
+    "examSettings": "Settings",
+    "examReview": "Review",
+    "examPublish": "Publish",
+    "registerStep1": "Basic details",
+    "registerStep2": "Password",
+    "registerStep3": "Verification"
+  },
+  "searchPlaceholders": {
+    "exams": "Search exams...",
+    "questionBanks": "Search banks...",
+    "students": "Search for a student...",
+    "teachersFilter": "Filter by...",
+    "studentPortal": "Search exams, subjects, or results..."
+  }
+}

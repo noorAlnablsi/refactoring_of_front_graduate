@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react'
 import { ChevronLeft, Save } from 'lucide-react'
+import { useTranslation } from 'react-i18next'
 import { getSubjects } from '../../../services/subjects.service'
 import { buildTestStep1Payload } from '../../../lib/testPayload'
 import { isInstitutionWorkspace } from '../../../lib/workspaceContext'
@@ -15,6 +16,7 @@ function ExamBasicInfoStep({
   submitting,
   savingDraft,
 }) {
+  const { t } = useTranslation(['exams', 'forms', 'common'])
   const showSubjectField = isInstitutionWorkspace()
   const [subjects, setSubjects] = useState([])
   const [errors, setErrors] = useState({})
@@ -58,19 +60,21 @@ function ExamBasicInfoStep({
 
   const validate = () => {
     const nextErrors = {}
-    if (!form.name.trim()) nextErrors.name = 'اسم الاختبار مطلوب'
-    if (showSubjectField && !form.subject_id) nextErrors.subject_id = 'المادة مطلوبة'
+    if (!form.name.trim()) nextErrors.name = t('validation.nameRequired', { ns: 'exams' })
+    if (showSubjectField && !form.subject_id) {
+      nextErrors.subject_id = t('validation.subjectRequired', { ns: 'exams' })
+    }
     if (!form.duration_minutes || Number(form.duration_minutes) < 1) {
-      nextErrors.duration_minutes = 'مدة الاختبار مطلوبة'
+      nextErrors.duration_minutes = t('validation.durationRequired', { ns: 'exams' })
     }
     if (!form.total_score || Number(form.total_score) < 1) {
-      nextErrors.total_score = 'الدرجة الكلية مطلوبة'
+      nextErrors.total_score = t('validation.totalScoreRequired', { ns: 'exams' })
     }
     if (form.passing_score === '' || Number(form.passing_score) < 0) {
-      nextErrors.passing_score = 'علامة النجاح مطلوبة'
+      nextErrors.passing_score = t('validation.passingScoreRequired', { ns: 'exams' })
     }
     if (Number(form.passing_score) > Number(form.total_score)) {
-      nextErrors.passing_score = 'علامة النجاح لا يمكن أن تتجاوز الدرجة الكلية'
+      nextErrors.passing_score = t('validation.passingScoreExceedsTotal', { ns: 'exams' })
     }
     setErrors(nextErrors)
     return Object.keys(nextErrors).length === 0
@@ -90,7 +94,7 @@ function ExamBasicInfoStep({
 
   const handleSaveDraft = () => {
     if (!form.name.trim()) {
-      setErrors({ name: 'اسم الاختبار مطلوب لحفظ المسودة' })
+      setErrors({ name: t('validation.nameRequiredForDraft', { ns: 'exams' }) })
       return
     }
     onSaveDraft?.(buildPayload())
@@ -99,45 +103,49 @@ function ExamBasicInfoStep({
   return (
     <form onSubmit={handleSubmit} className="space-y-6 rounded-2xl bg-white p-6 ring-1 ring-[#E5E9EB]">
       <div>
-        <h2 className="text-xl font-extrabold text-[#2A3433]">البيانات الأساسية للامتحان</h2>
-        <p className="mt-1 text-sm text-[#64748B]">
-          أدخل المعلومات الأساسية التي ستظهر للطلاب عند بدء الاختبار.
-        </p>
+        <h2 className="text-xl font-extrabold text-[#2A3433]">{t('wizard.basicInfo.title', { ns: 'exams' })}</h2>
+        <p className="mt-1 text-sm text-[#64748B]">{t('wizard.basicInfo.subtitle', { ns: 'exams' })}</p>
       </div>
 
       <div>
-        <label className="mb-2 block text-sm font-bold text-[#374151]">اسم الاختبار</label>
+        <label className="mb-2 block text-sm font-bold text-[#374151]">
+          {t('wizard.basicInfo.nameLabel', { ns: 'exams' })}
+        </label>
         <input
           required
           value={form.name}
           onChange={(e) => setField('name', e.target.value)}
-          placeholder="مثال: منتصف الفصل الدراسي الأول - فيزياء"
+          placeholder={t('wizard.basicInfo.namePlaceholder', { ns: 'exams' })}
           className={inputClassName}
         />
         {errors.name ? <p className="mt-1 text-xs text-red-600">{errors.name}</p> : null}
       </div>
 
       <div>
-        <label className="mb-2 block text-sm font-bold text-[#374151]">وصف الاختبار</label>
+        <label className="mb-2 block text-sm font-bold text-[#374151]">
+          {t('wizard.basicInfo.descriptionLabel', { ns: 'exams' })}
+        </label>
         <textarea
           rows={4}
           value={form.description}
           onChange={(e) => setField('description', e.target.value)}
-          placeholder="اكتب وصفاً مختصراً يظهر للطلاب قبل بدء الاختبار..."
+          placeholder={t('wizard.basicInfo.descriptionPlaceholder', { ns: 'exams' })}
           className={inputClassName}
         />
       </div>
 
       <div className="grid gap-4 md:grid-cols-2">
         <div>
-          <label className="mb-2 block text-sm font-bold text-[#374151]">المادة</label>
+          <label className="mb-2 block text-sm font-bold text-[#374151]">
+            {t('wizard.basicInfo.subjectLabel', { ns: 'exams' })}
+          </label>
           <select
             required={showSubjectField}
             value={form.subject_id}
             onChange={(e) => setField('subject_id', e.target.value)}
             className={inputClassName}
           >
-            <option value="">اختر المادة الدراسية</option>
+            <option value="">{t('wizard.basicInfo.subjectPlaceholder', { ns: 'exams' })}</option>
             {subjects.map((subject) => (
               <option key={subject.id} value={subject.id}>
                 {subject.name}
@@ -145,13 +153,17 @@ function ExamBasicInfoStep({
             ))}
           </select>
           {!showSubjectField ? (
-            <p className="mt-1 text-xs text-[#94A3B8]">اختياري للمعلم المستقل.</p>
+            <p className="mt-1 text-xs text-[#94A3B8]">
+              {t('wizard.basicInfo.subjectOptionalHint', { ns: 'exams' })}
+            </p>
           ) : null}
           {errors.subject_id ? <p className="mt-1 text-xs text-red-600">{errors.subject_id}</p> : null}
         </div>
 
         <div>
-          <label className="mb-2 block text-sm font-bold text-[#374151]">مدة الاختبار</label>
+          <label className="mb-2 block text-sm font-bold text-[#374151]">
+            {t('wizard.basicInfo.durationLabel', { ns: 'exams' })}
+          </label>
           <div className="relative">
             <input
               type="number"
@@ -162,7 +174,7 @@ function ExamBasicInfoStep({
               className={`${inputClassName} pl-16`}
             />
             <span className="pointer-events-none absolute left-4 top-1/2 -translate-y-1/2 text-sm font-semibold text-[#94A3B8]">
-              دقيقة
+              {t('wizard.basicInfo.minutesUnit', { ns: 'exams' })}
             </span>
           </div>
           {errors.duration_minutes ? (
@@ -173,7 +185,9 @@ function ExamBasicInfoStep({
 
       <div className="grid gap-4 md:grid-cols-2">
         <div>
-          <label className="mb-2 block text-sm font-bold text-[#374151]">الدرجة الكلية</label>
+          <label className="mb-2 block text-sm font-bold text-[#374151]">
+            {t('wizard.basicInfo.totalScoreLabel', { ns: 'exams' })}
+          </label>
           <input
             type="number"
             min={1}
@@ -186,7 +200,9 @@ function ExamBasicInfoStep({
         </div>
 
         <div>
-          <label className="mb-2 block text-sm font-bold text-[#374151]">علامة النجاح</label>
+          <label className="mb-2 block text-sm font-bold text-[#374151]">
+            {t('wizard.basicInfo.passingScoreLabel', { ns: 'exams' })}
+          </label>
           <input
             type="number"
             min={0}
@@ -208,7 +224,9 @@ function ExamBasicInfoStep({
           onChange={(e) => setField('auto_distribute_scores', e.target.checked)}
           className="h-5 w-5 accent-[#2AA8A2]"
         />
-        <span className="text-sm font-bold text-[#374151]">تفعيل التوزيع التلقائي للعلامات</span>
+        <span className="text-sm font-bold text-[#374151]">
+          {t('wizard.basicInfo.autoDistribute', { ns: 'exams' })}
+        </span>
       </label>
 
       <div className="flex flex-wrap items-center justify-between gap-3 border-t border-[#E5E9EB] pt-5">
@@ -220,7 +238,9 @@ function ExamBasicInfoStep({
             className="inline-flex items-center gap-2 text-sm font-bold text-[#2AA8A2] disabled:opacity-60"
           >
             <Save className="h-4 w-4" />
-            {savingDraft ? 'جاري الحفظ...' : 'حفظ كمسودة'}
+            {savingDraft
+              ? t('wizard.basicInfo.savingDraft', { ns: 'exams' })
+              : t('wizard.basicInfo.saveDraft', { ns: 'exams' })}
           </button>
         ) : (
           <span />
@@ -231,7 +251,9 @@ function ExamBasicInfoStep({
           disabled={submitting}
           className="inline-flex items-center gap-2 rounded-xl bg-[#2AA8A2] px-6 py-3 text-sm font-bold text-white shadow-[0_8px_16px_rgba(42,168,162,0.2)] disabled:opacity-60"
         >
-          {submitting ? 'جاري الحفظ...' : 'المتابعة لإضافة الأسئلة'}
+          {submitting
+            ? t('wizard.basicInfo.saving', { ns: 'exams' })
+            : t('wizard.basicInfo.continueToQuestions', { ns: 'exams' })}
           <ChevronLeft className="h-4 w-4" />
         </button>
       </div>

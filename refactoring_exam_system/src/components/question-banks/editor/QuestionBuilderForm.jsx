@@ -1,11 +1,16 @@
 import { Plus, Trash2 } from 'lucide-react'
-import { DIFFICULTY_OPTIONS, getQuestionTypeLabel } from '../../../lib/questionBanks'
+import { useTranslation } from 'react-i18next'
+import {
+  DIFFICULTY_OPTIONS,
+  getQuestionTypeLabel,
+  getTrueFalseChoices,
+} from '../../../lib/questionBanks'
 import QuestionBodyEditor from './QuestionBodyEditor'
 
 const inputClassName =
   'w-full rounded-xl bg-[#F6F8F9] px-4 py-3 text-sm text-[#374151] outline-none placeholder:text-[#94A3B8] focus:ring-2 focus:ring-[#2AA8A2]/40'
 
-function ChoiceRow({ choice, index, onChange, onRemove, removable, selectable, multiple }) {
+function ChoiceRow({ choice, index, onChange, onRemove, removable, selectable, multiple, placeholder }) {
   return (
     <div className="flex items-center gap-3">
       {selectable ? (
@@ -20,7 +25,7 @@ function ChoiceRow({ choice, index, onChange, onRemove, removable, selectable, m
       <input
         value={choice.body}
         onChange={(event) => onChange(index, 'body', event.target.value)}
-        placeholder={`الخيار ${index + 1}`}
+        placeholder={placeholder}
         className={inputClassName}
       />
       {removable ? (
@@ -33,6 +38,7 @@ function ChoiceRow({ choice, index, onChange, onRemove, removable, selectable, m
 }
 
 function QuestionBuilderForm({ value, onChange, onSave, onAddAnother, topics = [] }) {
+  const { t } = useTranslation(['questionBanks', 'common'])
   const isEssay = value.type_code === 'ESSAY'
   const isTrueFalse = value.type_code === 'TRUE_FALSE'
   const isMultiple = value.type_code === 'MULTI_SELECT'
@@ -50,10 +56,7 @@ function QuestionBuilderForm({ value, onChange, onSave, onAddAnother, topics = [
     if (typeCode === 'ESSAY') {
       nextChoices = []
     } else if (typeCode === 'TRUE_FALSE') {
-      nextChoices = [
-        { body: 'صح', is_correct: true },
-        { body: 'خطأ', is_correct: false },
-      ]
+      nextChoices = getTrueFalseChoices()
     } else if (!value.choices.length || value.type_code === 'ESSAY' || value.type_code === 'TRUE_FALSE') {
       nextChoices = [
         { body: '', is_correct: true },
@@ -101,12 +104,12 @@ function QuestionBuilderForm({ value, onChange, onSave, onAddAnother, topics = [
   return (
     <section className="rounded-2xl bg-white p-6 shadow-[0_2px_12px_rgba(15,23,42,0.04)] ring-1 ring-[#E5E9EB]">
       <div className="mb-6 flex items-center justify-between">
-        <h2 className="text-xl font-extrabold text-[#2A3433]">منشئ الأسئلة</h2>
+        <h2 className="text-xl font-extrabold text-[#2A3433]">{t('editor.questionBuilderTitle')}</h2>
         <span className="text-xs font-semibold text-[#94A3B8]">{getQuestionTypeLabel(value.type_code)}</span>
       </div>
 
       <div className="mt-4 space-y-2">
-        <label className="text-sm font-semibold text-[#374151]">الصعوبة</label>
+        <label className="text-sm font-semibold text-[#374151]">{t('labels.difficulty')}</label>
         <select
           value={value.difficulty}
           onChange={(event) => setField('difficulty', event.target.value)}
@@ -121,7 +124,7 @@ function QuestionBuilderForm({ value, onChange, onSave, onAddAnother, topics = [
       </div>
 
       <div className="mt-4 space-y-2">
-        <label className="text-sm font-semibold text-[#374151]">نص السؤال</label>
+        <label className="text-sm font-semibold text-[#374151]">{t('labels.questionText')}</label>
         <QuestionBodyEditor
           value={value.body}
           typeCode={value.type_code}
@@ -132,14 +135,12 @@ function QuestionBuilderForm({ value, onChange, onSave, onAddAnother, topics = [
           onTopicChange={(topicId) => setField('topic_id', topicId)}
         />
         {topics.length === 0 ? (
-          <p className="text-xs text-[#C2410C]">
-            لا توجد محاور لهذه المادة. أضف محاوراً من تفاصيل المادة أولاً.
-          </p>
+          <p className="text-xs text-[#C2410C]">{t('editor.noTopicsWarning')}</p>
         ) : null}
       </div>
 
       <div className="mt-4 space-y-2">
-        <label className="text-sm font-semibold text-[#374151]">العلامة</label>
+        <label className="text-sm font-semibold text-[#374151]">{t('labels.points')}</label>
         <input
           type="number"
           min="1"
@@ -151,7 +152,7 @@ function QuestionBuilderForm({ value, onChange, onSave, onAddAnother, topics = [
 
       {showChoices ? (
         <div className="mt-5 space-y-3">
-          <p className="text-sm font-semibold text-[#374151]">الإجابات</p>
+          <p className="text-sm font-semibold text-[#374151]">{t('labels.answers')}</p>
           <div className="space-y-2">
             {value.choices.map((choice, index) => (
               <ChoiceRow
@@ -163,6 +164,7 @@ function QuestionBuilderForm({ value, onChange, onSave, onAddAnother, topics = [
                 removable={!isTrueFalse && value.choices.length > 2}
                 selectable={true}
                 multiple={isMultiple}
+                placeholder={t('choices.placeholder', { number: index + 1 })}
               />
             ))}
           </div>
@@ -173,7 +175,7 @@ function QuestionBuilderForm({ value, onChange, onSave, onAddAnother, topics = [
               className="inline-flex items-center gap-2 text-sm font-bold text-[#2AA8A2]"
             >
               <Plus className="h-4 w-4" />
-              إضافة خيار جديد
+              {t('choices.addNew')}
             </button>
           ) : null}
         </div>
@@ -185,14 +187,14 @@ function QuestionBuilderForm({ value, onChange, onSave, onAddAnother, topics = [
           onClick={onSave}
           className="rounded-xl bg-[#2AA8A2] px-6 py-3 text-sm font-bold text-white"
         >
-          حفظ السؤال
+          {t('editor.saveQuestion')}
         </button>
         <button
           type="button"
           onClick={onAddAnother}
           className="rounded-xl bg-[#EEF2F3] px-5 py-3 text-sm font-bold text-[#374151]"
         >
-          إضافة سؤال جديد
+          {t('editor.addAnotherQuestion')}
         </button>
       </div>
     </section>

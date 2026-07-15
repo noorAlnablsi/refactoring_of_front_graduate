@@ -1,0 +1,116 @@
+{
+  "language": {
+    "ar": "Arabic",
+    "en": "English",
+    "label": "Language"
+  },
+  "appearance": {
+    "title": "Appearance & language"
+  },
+  "errors": {
+    "network": "Could not reach the server ({{url}}). Make sure the backend is running and the URL is correct.",
+    "requestFailed": "Could not reach the server",
+    "unexpected": "An unexpected error occurred"
+  },
+  "comingSoon": "Coming soon",
+  "actions": {
+    "save": "Save",
+    "cancel": "Cancel",
+    "close": "Close",
+    "delete": "Delete",
+    "edit": "Edit",
+    "confirm": "Confirm",
+    "back": "Back",
+    "next": "Next",
+    "previous": "Previous",
+    "submit": "Submit",
+    "copy": "Copy",
+    "export": "Export",
+    "import": "Import",
+    "retry": "Retry",
+    "viewAll": "View all",
+    "assign": "Assign",
+    "reject": "Reject",
+    "accept": "Accept",
+    "goHome": "Back to home",
+    "comingSoon": "Coming soon"
+  },
+  "roles": {
+    "student": "Student",
+    "teacher": "Teacher",
+    "admin": "Admin",
+    "owner": "Owner",
+    "soloTeacher": "Independent teacher",
+    "institutionOwner": "Institution owner",
+    "institutionTeacher": "Institution teacher",
+    "defaultWorkspace": "Educational workspace",
+    "studentInWorkspace": "Student — {{name}}",
+    "soloTeacherNamed": "Independent teacher — {{name}}",
+    "ownerNamed": "Owner — {{name}}",
+    "institutionTeacherNamed": "Teacher — {{name}}",
+    "adminNamed": "Admin — {{name}}"
+  },
+  "dialogs": {
+    "deleteConfirm": {
+      "title": "Confirm deletion",
+      "message": "Are you sure you want to delete?",
+      "itemLabel": "{{label}}: {{name}}",
+      "recoveryNote": "Deleted data can be restored by contacting customer support.",
+      "deleting": "Deleting..."
+    },
+    "defaultItemLabel": "Item"
+  },
+  "footer": {
+    "copyright": "© 2024 EduAssess. All rights reserved.",
+    "support": "Contact support",
+    "cookies": "Cookies",
+    "terms": "Terms of service",
+    "privacy": "Privacy policy"
+  },
+  "loading": {
+    "default": "Loading...",
+    "processing": "Processing...",
+    "saving": "Saving...",
+    "sending": "Sending...",
+    "submitting": "Submitting...",
+    "deleting": "Deleting...",
+    "uploading": "Uploading...",
+    "signingIn": "Signing in...",
+    "signingOut": "Signing out...",
+    "creating": "Creating...",
+    "assigning": "Assigning...",
+    "importing": "Importing...",
+    "publishing": "Publishing...",
+    "verifying": "Verifying..."
+  },
+  "pagination": {
+    "previousPage": "Previous page",
+    "nextPage": "Next page",
+    "page": "Page {{number}}"
+  },
+  "status": {
+    "active": "Active",
+    "pending": "Pending",
+    "suspended": "Suspended",
+    "enabled": "Enabled",
+    "disabled": "Disabled",
+    "draft": "DRAFT",
+    "published": "Published",
+    "closed": "Closed",
+    "archived": "Archived",
+    "completed": "Completed"
+  },
+  "toast": {
+    "success": "Operation completed successfully",
+    "error": "An error occurred",
+    "saved": "Saved",
+    "deleted": "Deleted",
+    "copied": "Copied",
+    "inviteSent": "Invite sent successfully"
+  },
+  "fallback": {
+    "user": "User",
+    "academy": "Academy",
+    "dash": "—"
+  }
+}

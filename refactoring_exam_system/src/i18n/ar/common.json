@@ -1,0 +1,116 @@
+{
+  "language": {
+    "ar": "العربية",
+    "en": "الإنجليزية",
+    "label": "اللغة"
+  },
+  "appearance": {
+    "title": "المظهر واللغة"
+  },
+  "errors": {
+    "network": "تعذّر الاتصال بالخادم ({{url}}). تأكد أن الباكند يعمل وأن العنوان صحيح.",
+    "requestFailed": "تعذّر الاتصال بالخادم",
+    "unexpected": "حدث خطأ غير متوقع"
+  },
+  "comingSoon": "قريباً",
+  "actions": {
+    "save": "حفظ",
+    "cancel": "إلغاء",
+    "close": "إغلاق",
+    "delete": "حذف",
+    "edit": "تعديل",
+    "confirm": "تأكيد",
+    "back": "رجوع",
+    "next": "التالي",
+    "previous": "السابق",
+    "submit": "إرسال",
+    "copy": "نسخ",
+    "export": "تصدير",
+    "import": "استيراد",
+    "retry": "إعادة المحاولة",
+    "viewAll": "عرض الكل",
+    "assign": "إسناد",
+    "reject": "رفض",
+    "accept": "قبول",
+    "goHome": "العودة للرئيسية",
+    "comingSoon": "قريباً"
+  },
+  "roles": {
+    "student": "طالب",
+    "teacher": "معلم",
+    "admin": "مدير",
+    "owner": "مالك",
+    "soloTeacher": "معلم مستقل",
+    "institutionOwner": "مالك مؤسسة",
+    "institutionTeacher": "معلم مؤسسة",
+    "defaultWorkspace": "مساحة تعليمية",
+    "studentInWorkspace": "طالب — {{name}}",
+    "soloTeacherNamed": "معلم مستقل — {{name}}",
+    "ownerNamed": "مالك — {{name}}",
+    "institutionTeacherNamed": "معلم — {{name}}",
+    "adminNamed": "مدير — {{name}}"
+  },
+  "dialogs": {
+    "deleteConfirm": {
+      "title": "تأكيد الحذف",
+      "message": "هل أنت متأكد من الحذف؟",
+      "itemLabel": "{{label}}: {{name}}",
+      "recoveryNote": "يمكن استعادة البيانات المحذوفة عند التواصل مع خدمة العملاء.",
+      "deleting": "جاري الحذف..."
+    },
+    "defaultItemLabel": "العنصر"
+  },
+  "footer": {
+    "copyright": "© 2024 إدو أسيس. جميع الحقوق محفوظة.",
+    "support": "تواصل مع الدعم",
+    "cookies": "ملفات التعريف",
+    "terms": "شروط الخدمة",
+    "privacy": "سياسة الخصوصية"
+  },
+  "loading": {
+    "default": "جاري التحميل...",
+    "processing": "جاري المعالجة...",
+    "saving": "جاري الحفظ...",
+    "sending": "جاري الإرسال...",
+    "submitting": "جاري الإرسال...",
+    "deleting": "جاري الحذف...",
+    "uploading": "جاري الرفع...",
+    "signingIn": "جاري تسجيل الدخول...",
+    "signingOut": "جاري الخروج...",
+    "creating": "جاري الإنشاء...",
+    "assigning": "جاري الإسناد...",
+    "importing": "جاري الاستيراد...",
+    "publishing": "جاري النشر...",
+    "verifying": "جاري التحقق..."
+  },
+  "pagination": {
+    "previousPage": "الصفحة السابقة",
+    "nextPage": "الصفحة التالية",
+    "page": "الصفحة {{number}}"
+  },
+  "status": {
+    "active": "نشط",
+    "pending": "قيد الانتظار",
+    "suspended": "معلق",
+    "enabled": "مفعل",
+    "disabled": "معطّل",
+    "draft": "DRAFT",
+    "published": "منشور",
+    "closed": "مغلق",
+    "archived": "مؤرشف",
+    "completed": "مكتمل"
+  },
+  "toast": {
+    "success": "تمت العملية بنجاح",
+    "error": "حدث خطأ",
+    "saved": "تم الحفظ",
+    "deleted": "تم الحذف",
+    "copied": "تم النسخ",
+    "inviteSent": "تم إرسال الدعوة بنجاح"
+  },
+  "fallback": {
+    "user": "مستخدم",
+    "academy": "أكاديمية",
+    "dash": "—"
+  }
+}

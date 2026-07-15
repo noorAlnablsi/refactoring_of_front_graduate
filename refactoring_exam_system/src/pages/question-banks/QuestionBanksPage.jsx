@@ -1,5 +1,6 @@
 import { useMemo, useState } from 'react'
 import { Navigate, useNavigate, useSearchParams } from 'react-router-dom'
+import { useTranslation } from 'react-i18next'
 import { Plus, Search } from 'lucide-react'
 import SoftDeleteConfirmDialog from '../../components/common/SoftDeleteConfirmDialog'
 import AlertNoticeDialog from '../../components/common/AlertNoticeDialog'
@@ -14,6 +15,7 @@ import QuestionBanksSkeleton from '../../components/question-banks/QuestionBanks
 import { ROUTES } from '../../constants/routes'
 import { useCommunityBanksView } from '../../hooks/question-banks/useCommunityBanksView'
 import { useQuestionBanks } from '../../hooks/question-banks/useQuestionBanks'
+import { showAppToast } from '../../lib/appToast'
 import { parseQuestionBanksTab, QUESTION_BANK_TABS } from '../../lib/questionBanks'
 import {
   canAccessQuestionBanks,
@@ -35,21 +37,24 @@ import {
   shellTabsBarClass,
 } from '../../lib/shellUi'
 
-const TABS = [
-  { id: QUESTION_BANK_TABS.MY, label: 'بنوكي' },
-  { id: QUESTION_BANK_TABS.WORKSPACE, label: 'بنوك ضمن المؤسسة', institutionOnly: true },
-  { id: QUESTION_BANK_TABS.COMMUNITY, label: 'مجتمع' },
-]
-
 function QuestionBanksPage() {
+  const { t } = useTranslation(['questionBanks', 'common'])
   const navigate = useNavigate()
   const [searchParams, setSearchParams] = useSearchParams()
   const showToast = useToastStore((s) => s.showToast)
   const showInstitutionTab = isInstitutionWorkspace()
-  const visibleTabs = useMemo(
-    () => TABS.filter((tab) => !tab.institutionOnly || showInstitutionTab),
-    [showInstitutionTab],
-  )
+  const visibleTabs = useMemo(() => {
+    const tabs = [
+      { id: QUESTION_BANK_TABS.MY, label: t('tabs.my', { ns: 'questionBanks' }) },
+      {
+        id: QUESTION_BANK_TABS.WORKSPACE,
+        label: t('tabs.workspace', { ns: 'questionBanks' }),
+        institutionOnly: true,
+      },
+      { id: QUESTION_BANK_TABS.COMMUNITY, label: t('tabs.community', { ns: 'questionBanks' }) },
+    ]
+    return tabs.filter((tab) => !tab.institutionOnly || showInstitutionTab)
+  }, [showInstitutionTab, t])
   const visibleTabIds = useMemo(() => visibleTabs.map((tab) => tab.id), [visibleTabs])
   const activeTab = parseQuestionBanksTab(searchParams.get('tab'), visibleTabIds)
   const { banks, filteredBanks, loading, error, search, setSearch, refetch } = useQuestionBanks(activeTab)
@@ -88,7 +93,7 @@ function QuestionBanksPage() {
     setArchiveLoading(true)
     try {
       await archiveQuestionBank(archiveBank.id)
-      showToast('تم حذف بنك الأسئلة')
+      showAppToast('page.deleteSuccess', 'success', { ns: 'questionBanks' })
       setArchiveBank(null)
       refetch()
     } catch (err) {
@@ -111,7 +116,7 @@ function QuestionBanksPage() {
       setEditBank(bank)
       return
     }
-    setBlockedNotice('لا يمكنك التعديل على هذا البنك')
+    setBlockedNotice(t('page.cannotEdit', { ns: 'questionBanks' }))
   }
 
   const handleCommunityDelete = (bank) => {
@@ -119,18 +124,16 @@ function QuestionBanksPage() {
       setArchiveBank(bank)
       return
     }
-    setBlockedNotice('لا يمكنك حذف هذا البنك')
+    setBlockedNotice(t('page.cannotDelete', { ns: 'questionBanks' }))
   }
 
   return (
     <div className="space-y-6">
       <div className="flex flex-wrap items-start justify-between gap-4">
         <div>
-          <p className={shellPageEyebrowClass}>المشروع الأكاديمي</p>
-          <h1 className={`mt-1 text-4xl ${shellPageTitleClass}`}>بنوك الأسئلة</h1>
-          <p className={`mt-2 ${shellBodyTextClass}`}>
-            قم ببناء مستودع أكاديمي شامل من خلال تحديد المعلومات الأساسية وإضافة أسئلة متنوعة لتقييم طلابك.
-          </p>
+          <p className={shellPageEyebrowClass}>{t('page.eyebrow', { ns: 'questionBanks' })}</p>
+          <h1 className={`mt-1 text-4xl ${shellPageTitleClass}`}>{t('page.title', { ns: 'questionBanks' })}</h1>
+          <p className={`mt-2 ${shellBodyTextClass}`}>{t('page.subtitle', { ns: 'questionBanks' })}</p>
         </div>
         <button
           type="button"
@@ -138,7 +141,7 @@ function QuestionBanksPage() {
           className={shellAccentButtonClass}
         >
           <Plus className="h-4 w-4" />
-          إضافة بنك جديد
+          {t('page.addBank', { ns: 'questionBanks' })}
         </button>
       </div>
 
@@ -168,7 +171,7 @@ function QuestionBanksPage() {
             type="search"
             value={search}
             onChange={(event) => setSearch(event.target.value)}
-            placeholder="البحث في البنوك..."
+            placeholder={t('page.searchPlaceholder', { ns: 'questionBanks' })}
             className={shellSearchInputClass}
           />
         </div>
@@ -253,7 +256,7 @@ function QuestionBanksPage() {
 
       <SoftDeleteConfirmDialog
         open={Boolean(archiveBank)}
-        itemLabel="البنك"
+        itemLabel={t('page.itemLabel', { ns: 'questionBanks' })}
         itemName={archiveBank?.title}
         loading={archiveLoading}
         onClose={() => setArchiveBank(null)}

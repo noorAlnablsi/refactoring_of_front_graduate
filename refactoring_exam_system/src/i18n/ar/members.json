@@ -1,0 +1,129 @@
+{
+  "pageTitle": "إدارة الأعضاء",
+  "pageSubtitle": "إدارة جميع الطلاب والمعلمين داخل المؤسسة.",
+  "overview": {
+    "title": "إدارة الأعضاء",
+    "subtitle": "إدارة جميع الطلاب والمعلمين داخل المؤسسة.",
+    "latestAdditions": "أحدث الإضافات",
+    "viewAll": "عرض الكل",
+    "noRecentAdditions": "لا توجد إضافات حديثة بعد.",
+    "loadError": "تعذّر تحميل بيانات الأعضاء"
+  },
+  "stats": {
+    "studentsTitle": "الطلاب",
+    "studentsDescription": "إجمالي الطلاب المسجلين",
+    "viewStudents": "عرض الطلاب",
+    "teachersTitle": "المعلمون",
+    "teachersDescription": "الكوادر التعليمية النشطة",
+    "viewTeachers": "عرض المعلمين",
+    "students": {
+      "title": "الطلاب",
+      "description": "إجمالي الطلاب المسجلين",
+      "action": "عرض الطلاب"
+    },
+    "teachers": {
+      "title": "المعلمون",
+      "description": "الكوادر التعليمية النشطة",
+      "action": "عرض المعلمين"
+    }
+  },
+  "students": {
+    "title": "إدارة الطلاب",
+    "subtitle": "استعراض وتعديل بيانات الطلاب المسجلين وإدارة حالتهم الأكاديمية.",
+    "inviteStudent": "دعوة طالب",
+    "exportData": "تصدير البيانات",
+    "memberLabel": "الطالب",
+    "loadError": "تعذّر تحميل قائمة الطلاب",
+    "membershipError": "تعذّر تحديد عضوية الطالب.",
+    "loadingSubjects": "جاري تحميل المواد...",
+    "assignSubjectModal": {
+      "title": "إسناد مادة",
+      "description": "اختر مادة لإسناد الطالب {{name}} إليها",
+      "allAssigned": "جميع المواد مسندة لهذا الطالب",
+      "noSubjects": "لا توجد مواد متاحة للإسناد",
+      "alreadyEnrolled": "الطالب مسجّل في هذه المادة مسبقاً",
+      "selectSubjectError": "يرجى اختيار مادة",
+      "success": "تم إسناد الطالب للمادة بنجاح",
+      "assigning": "جاري الإسناد...",
+      "assign": "إسناد"
+    },
+    "removeSubjectModal": {
+      "title": "حذف الطالب من مادة",
+      "description": "اختر المادة التي تريد إزالة {{name}} منها",
+      "notEnrolled": "الطالب غير مسجل في أي مادة حالياً",
+      "success": "تم حذف الطالب من المادة بنجاح",
+      "removing": "جاري الحذف..."
+    }
+  },
+  "teachers": {
+    "title": "قائمة الهيئة التدريسية",
+    "subtitle": "إدارة وتوجيه الكادر التعليمي وتسجيل المواد المسندة لهم.",
+    "addTeacher": "إضافة معلم",
+    "exportData": "تصدير البيانات",
+    "memberLabel": "المعلم",
+    "loadError": "تعذّر تحميل قائمة المعلمين",
+    "removeSuccess": "تم إزالة المعلم من المؤسسة",
+    "membershipError": "تعذّر تحديد عضوية المعلم",
+    "summary": {
+      "total": "إجمالي المعلمين",
+      "activityStatus": "حالات النشاط",
+      "activeRate": "نسبة المعلمين النشطين في الصفحة الحالية"
+    },
+    "table": {
+      "show": "عرض:",
+      "perPage": "{{count}} معلمين",
+      "filterPlaceholder": "تصفية حسب..",
+      "empty": "لا يوجد معلمون في المؤسسة بعد",
+      "columns": {
+        "teacher": "المعلم",
+        "email": "البريد الإلكتروني",
+        "phone": "رقم الهاتف",
+        "subjectsCount": "عدد المواد",
+        "status": "الحالة",
+        "actions": "الإجراءات"
+      },
+      "assignSubject": "إسناد مادة",
+      "editProfile": "تعديل معلومات المعلم",
+      "removeFromWorkspace": "حذف من المؤسسة",
+      "pagination": "عرض {{from}}-{{to}} من أصل {{total}} معلم"
+    },
+    "assignSubjectModal": {
+      "title": "إسناد مادة",
+      "description": "اختر مادة لإسنادها إلى {{name}}",
+      "membershipError": "تعذّر تحديد عضوية المعلم.",
+      "loadingSubjects": "جاري تحميل المواد...",
+      "allAssigned": "جميع المواد مسندة لهذا المعلم",
+      "noSubjects": "لا توجد مواد متاحة للإسناد",
+      "selectSubjectError": "يرجى اختيار مادة",
+      "success": "تم إسناد المادة للمعلم بنجاح",
+      "assigning": "جاري الإسناد...",
+      "assign": "إسناد"
+    },
+    "editSubjectsModal": {
+      "title": "تعديل المواد المسندة",
+      "description": "حدّد المواد المسندة إلى {{name}}",
+      "noInstitutionSubjects": "لا توجد مواد دراسية في المؤسسة.",
+      "success": "تم تحديث المواد المسندة بنجاح",
+      "saving": "جاري الحفظ...",
+      "save": "حفظ التعديلات"
+    }
+  },
+  "status": {
+    "active": "نشط",
+    "pending": "قيد الانتظار",
+    "suspended": "معلق"
+  },
+  "roles": {
+    "teacherWithSubjects": "معلم • {{count}} مواد",
+    "teacher": "معلم",
+    "studentWithSubjects": "طالب • {{count}} مواد",
+    "student": "طالب"
+  },
+  "relativeTime": {
+    "now": "الآن",
+    "minutesAgo": "منذ {{count}} دقيقة",
+    "hoursAgo": "منذ {{count}} ساعة",
+    "yesterday": "أمس",
+    "daysAgo": "منذ {{count}} يوم"
+  }
+}

@@ -1,3 +1,4 @@
+import { useTranslation } from 'react-i18next'
 import { BookOpen, ClipboardList, Users } from 'lucide-react'
 import { formatStatValue } from '../../lib/subjectDisplay'
 import { isInstitutionWorkspace } from '../../lib/workspaceContext'
@@ -34,6 +35,7 @@ function StatCard({ label, value, icon: Icon, iconWrapClass, badge, badgeClassNa
 }
 
 function SubjectStatsCards({ subjectsCount, teachersCount, teachersLoading }) {
+  const { t } = useTranslation(['subjects', 'common'])
   const teachersValue = teachersLoading
     ? '…'
     : !isInstitutionWorkspace()
@@ -45,29 +47,29 @@ function SubjectStatsCards({ subjectsCount, teachersCount, teachersLoading }) {
   return (
     <div className="grid gap-4 md:grid-cols-3">
       <StatCard
-        label="إجمالي المواد"
+        label={t('stats.totalSubjects')}
         value={formatStatValue(subjectsCount)}
         icon={BookOpen}
         iconWrapClass="bg-[var(--shell-accent-bg)] text-[var(--shell-accent)]"
-        badge="+12%"
+        badge={t('stats.growthBadge')}
         badgeClassName="bg-[var(--shell-accent-bg)] text-[var(--shell-accent)]"
         accentClassName="bg-[var(--shell-accent)]"
       />
       <StatCard
-        label="المعلمون المعينون"
+        label={t('stats.assignedTeachers')}
         value={teachersValue}
         icon={Users}
         iconWrapClass="bg-[var(--shell-info-bg)] text-[var(--shell-info-text)]"
-        badge={isInstitutionWorkspace() ? '+4 جديد' : undefined}
+        badge={isInstitutionWorkspace() ? t('stats.newTeachersBadge') : undefined}
         badgeClassName="bg-[var(--shell-info-bg)] text-[var(--shell-info-text)]"
         accentClassName="bg-[var(--shell-info-text)]"
       />
       <StatCard
-        label="إجمالي الاختبارات"
+        label={t('stats.totalExams')}
         value="—"
         icon={ClipboardList}
         iconWrapClass="bg-[var(--shell-hover)] text-[var(--shell-text-subtle)]"
-        badge="قريباً"
+        badge={t('comingSoon', { ns: 'common' })}
         badgeClassName="bg-[var(--shell-hover)] text-[var(--shell-text-muted)]"
         accentClassName="bg-[var(--shell-border)]"
       />

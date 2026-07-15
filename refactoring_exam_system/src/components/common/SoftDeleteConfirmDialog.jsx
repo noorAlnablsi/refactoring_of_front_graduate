@@ -1,4 +1,5 @@
 import { AlertTriangle } from 'lucide-react'
+import { useAppTranslation } from '../../hooks/useAppTranslation'
 import {
   shellBodyTextClass,
   shellModalOverlayClass,
@@ -8,13 +9,17 @@ import {
 
 function SoftDeleteConfirmDialog({
   open,
-  itemLabel = 'العنصر',
+  itemLabel,
   itemName,
   loading = false,
   onClose,
   onConfirm,
 }) {
+  const { t } = useAppTranslation('common')
+
   if (!open) return null
+
+  const resolvedItemLabel = itemLabel ?? t('softDelete.itemLabel')
 
   return (
     <div className={shellModalOverlayClass}>
@@ -24,15 +29,15 @@ function SoftDeleteConfirmDialog({
             <AlertTriangle className="h-5 w-5" />
           </span>
           <div>
-            <h3 className={`text-lg ${shellPageTitleClass}`}>تأكيد الحذف</h3>
-            <p className={`mt-2 text-sm leading-7 ${shellBodyTextClass}`}>هل أنت متأكد من الحذف؟</p>
+            <h3 className={`text-lg ${shellPageTitleClass}`}>{t('softDelete.title')}</h3>
+            <p className={`mt-2 text-sm leading-7 ${shellBodyTextClass}`}>{t('softDelete.confirmMessage')}</p>
             {itemName ? (
               <p className={`mt-2 text-sm leading-7 ${shellBodyTextClass}`}>
-                {itemLabel}: <span className={`font-bold ${shellPageTitleClass}`}>{itemName}</span>
+                {resolvedItemLabel}: <span className={`font-bold ${shellPageTitleClass}`}>{itemName}</span>
               </p>
             ) : null}
             <p className={`mt-3 rounded-xl bg-[var(--shell-input-bg)] px-3 py-2 text-xs leading-6 ${shellBodyTextClass}`}>
-              يمكن استعادة البيانات المحذوفة عند التواصل مع خدمة العملاء.
+              {t('softDelete.recoveryNote')}
             </p>
           </div>
         </div>
@@ -43,7 +48,7 @@ function SoftDeleteConfirmDialog({
             onClick={onClose}
             className="text-sm font-bold text-[var(--shell-accent)]"
           >
-            إلغاء
+            {t('actions.cancel')}
           </button>
           <button
             type="button"
@@ -51,7 +56,7 @@ function SoftDeleteConfirmDialog({
             disabled={loading}
             className="rounded-xl bg-red-600 px-5 py-2.5 text-sm font-bold text-white disabled:opacity-70"
           >
-            {loading ? 'جاري الحذف...' : 'حذف'}
+            {loading ? t('actions.deleting') : t('actions.delete')}
           </button>
         </div>
       </div>

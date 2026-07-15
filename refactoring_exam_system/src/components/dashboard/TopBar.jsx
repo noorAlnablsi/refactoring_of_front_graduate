@@ -1,13 +1,16 @@
 import { Bell, HelpCircle, Search } from 'lucide-react'
+import { useAppTranslation } from '../../hooks/useAppTranslation'
 import { getActiveMembership } from '../../lib/workspaceContext'
 import { getMembershipShortLabel } from '../../lib/membershipLabel'
 import { useAuthStore } from '../../store/authStore'
 import UserAvatar from './UserAvatar'
 
-function TopBar({ searchPlaceholder = 'البحث في المنصة...' }) {
+function TopBar({ searchPlaceholder }) {
+  const { t } = useAppTranslation('navigation')
   const user = useAuthStore((s) => s.user)
   const membership = getActiveMembership()
   const roleLabel = getMembershipShortLabel(membership)
+  const placeholder = searchPlaceholder ?? t('topBar.searchPlaceholder')
 
   return (
     <header className="flex h-16 shrink-0 items-center bg-[var(--shell-surface)] px-[37px]">
@@ -17,7 +20,7 @@ function TopBar({ searchPlaceholder = 'البحث في المنصة...' }) {
             <UserAvatar user={user} size="xs" rounded />
             <div className="text-left">
               <p className="truncate text-sm font-medium leading-tight text-[var(--shell-accent)]">
-                {user?.full_name || 'مستخدم'}
+                {user?.full_name || t('topBar.defaultUser')}
               </p>
               {roleLabel ? (
                 <p className="mt-0.5 truncate text-xs font-normal leading-tight text-[var(--shell-text-muted)]">
@@ -30,7 +33,7 @@ function TopBar({ searchPlaceholder = 'البحث في المنصة...' }) {
           <button
             type="button"
             className="relative flex shrink-0 items-center justify-center text-[var(--shell-text-muted)]"
-            aria-label="مساعدة"
+            aria-label={t('topBar.help')}
           >
             <HelpCircle className="h-[18px] w-[18px]" strokeWidth={1.9} />
           </button>
@@ -38,7 +41,7 @@ function TopBar({ searchPlaceholder = 'البحث في المنصة...' }) {
           <button
             type="button"
             className="relative flex shrink-0 items-center justify-center text-[var(--shell-text-muted)]"
-            aria-label="إشعارات"
+            aria-label={t('topBar.notifications')}
           >
             <Bell className="h-[18px] w-[18px]" strokeWidth={1.9} />
             <span className="absolute -right-0.5 -top-0.5 h-1.5 w-1.5 rounded-full bg-[#EF4444]" />
@@ -54,7 +57,7 @@ function TopBar({ searchPlaceholder = 'البحث في المنصة...' }) {
             <input
               type="search"
               dir="rtl"
-              placeholder={searchPlaceholder}
+              placeholder={placeholder}
               className="h-9 w-full rounded-full border-0 bg-[var(--shell-search-bg)] pt-[3px] pr-10 pb-1 pl-4 text-sm text-[var(--shell-text)] outline-none placeholder:text-sm placeholder:text-[var(--shell-text-subtle)] focus:ring-2 focus:ring-[var(--shell-accent)]/25"
             />
           </div>

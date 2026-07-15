@@ -1,16 +1,18 @@
+import { useTranslation } from 'react-i18next'
 import { Building2, UserRound } from 'lucide-react'
 import { WORKSPACE_KIND } from '../../constants/auth'
 
 function RoleSelector({ selected, onSelect }) {
+  const { t } = useTranslation('auth')
   const roles = [
     {
       kind: WORKSPACE_KIND.SOLO,
-      title: 'معلم مستقل',
+      title: t('register.selectRole.soloTeacher'),
       icon: UserRound,
     },
     {
       kind: WORKSPACE_KIND.INSTITUTION,
-      title: 'مؤسسة تعليمية',
+      title: t('register.selectRole.institution'),
       icon: Building2,
     },
   ]

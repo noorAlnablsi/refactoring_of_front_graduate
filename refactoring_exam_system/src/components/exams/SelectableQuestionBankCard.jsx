@@ -1,3 +1,4 @@
+import { useTranslation } from 'react-i18next'
 import { CalendarDays, FileText } from 'lucide-react'
 import {
   formatBankCardDate,
@@ -9,6 +10,7 @@ const cardShadow =
   'shadow-[0_1px_3px_rgba(16,24,40,0.06),0_1px_2px_rgba(16,24,40,0.04)] hover:shadow-[0_4px_12px_rgba(16,24,40,0.08),0_2px_4px_rgba(16,24,40,0.04)]'
 
 function SelectableQuestionBankCard({ bank, selected, onToggle, variant = 'owned' }) {
+  const { t } = useTranslation('exams')
   const theme = variant === 'community' ? getCommunityBankTheme(bank) : null
   const badgeBg = theme?.badgeBg || '#E8F7F3'
   const badgeText = theme?.badgeText || '#0EA896'
@@ -32,7 +34,7 @@ function SelectableQuestionBankCard({ bank, selected, onToggle, variant = 'owned
             className="rounded-full bg-[#E8F7F3] px-3 py-1 text-xs font-medium"
             style={{ backgroundColor: badgeBg, color: badgeText }}
           >
-            {bank.subject_name || 'عام'}
+            {bank.subject_name || t('bankCard.generalSubject')}
           </span>
         </div>
 
@@ -41,7 +43,7 @@ function SelectableQuestionBankCard({ bank, selected, onToggle, variant = 'owned
             {bank.title}
           </h3>
           <p className="mt-2 line-clamp-2 text-center text-[13px] leading-6 text-[#6B7280]">
-            {bank.description || 'لا يوجد وصف لهذا البنك بعد.'}
+            {bank.description || t('bankCard.noDescription')}
           </p>
         </div>
 

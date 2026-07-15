@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { Link } from 'react-router-dom'
+import { useTranslation } from 'react-i18next'
 import { BookOpen, LayoutGrid, UserPlus } from 'lucide-react'
 import SendInviteModal from '../components/invites/SendInviteModal'
 import { ROUTES } from '../constants/routes'
@@ -15,23 +16,24 @@ import { canAccessSubjectsModule, canSendInvites, getActiveMembership } from '..
 import { useAuthStore } from '../store/authStore'
 
 function DashboardPage() {
+  const { t } = useTranslation('dashboard')
   const user = useAuthStore((s) => s.user)
   const membership = getActiveMembership()
   const showSubjectsCard = canAccessSubjectsModule()
   const showInviteCard = canSendInvites()
   const [inviteModalOpen, setInviteModalOpen] = useState(false)
 
-  const fullName = user?.full_name?.trim() || 'مستخدم'
+  const fullName = user?.full_name?.trim() || t('defaultUserName')
   const workspaceName = membership?.workspace?.name?.trim()
   const greeting =
     workspaceName && workspaceName !== fullName
-      ? `مرحباً ${fullName} — ${workspaceName}`
-      : `مرحباً ${fullName}`
+      ? t('greetingWithWorkspace', { name: fullName, workspace: workspaceName })
+      : t('greeting', { name: fullName })
 
   return (
     <div className="space-y-6">
       <div>
-        <h1 className={`text-2xl md:text-3xl ${shellPageTitleClass}`}>لوحة التحكم</h1>
+        <h1 className={`text-2xl md:text-3xl ${shellPageTitleClass}`}>{t('title')}</h1>
         <p className={`mt-2 ${shellPageSubtitleClass}`}>{greeting}</p>
       </div>
 
@@ -42,8 +44,8 @@ function DashboardPage() {
               <BookOpen className="h-6 w-6" />
             </span>
             <div>
-              <p className={shellSectionTitleClass}>إدارة المواد</p>
-              <p className={shellBodyTextClass}>إنشاء وإدارة المواد الدراسية</p>
+              <p className={shellSectionTitleClass}>{t('subjects.title')}</p>
+              <p className={shellBodyTextClass}>{t('subjects.description')}</p>
             </div>
           </Link>
         ) : null}
@@ -58,8 +60,8 @@ function DashboardPage() {
               <UserPlus className="h-6 w-6" />
             </span>
             <div>
-              <p className={shellSectionTitleClass}>إرسال دعوة</p>
-              <p className={shellBodyTextClass}>دعوة طالب أو معلم أو مدير عبر البريد</p>
+              <p className={shellSectionTitleClass}>{t('invite.title')}</p>
+              <p className={shellBodyTextClass}>{t('invite.description')}</p>
             </div>
           </button>
         ) : null}
@@ -69,8 +71,8 @@ function DashboardPage() {
             <LayoutGrid className="h-6 w-6" />
           </span>
           <div>
-            <p className={shellSectionTitleClass}>وحدات أخرى</p>
-            <p className={shellBodyTextClass}>قريباً</p>
+            <p className={shellSectionTitleClass}>{t('otherModules.title')}</p>
+            <p className={shellBodyTextClass}>{t('otherModules.comingSoon')}</p>
           </div>
         </div>
       </div>

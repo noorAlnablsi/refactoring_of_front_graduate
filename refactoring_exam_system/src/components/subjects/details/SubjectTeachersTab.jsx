@@ -1,14 +1,16 @@
+import { useTranslation } from 'react-i18next'
 import { canAssignTeachers } from '../../../lib/workspaceContext'
 import { getTeacherName, getTeacherSpecialty } from '../../../lib/subjectDisplay'
 import TeacherAvatar from './TeacherAvatar'
 
 function SubjectTeachersTab({ teachers, onRemove }) {
+  const { t } = useTranslation('subjects')
   const showRemove = canAssignTeachers()
 
   if (teachers.length === 0) {
     return (
       <div className="rounded-2xl bg-white p-10 text-center shadow-[0_2px_12px_rgba(15,23,42,0.04)] ring-1 ring-[#E5E9EB]">
-        <p className="text-sm text-[#64748B]">لا يوجد معلمون مسندون لهذه المادة</p>
+        <p className="text-sm text-[#64748B]">{t('details.teachers.empty')}</p>
       </div>
     )
   }
@@ -34,7 +36,7 @@ function SubjectTeachersTab({ teachers, onRemove }) {
                 onClick={() => onRemove(teacher.membership_id)}
                 className="shrink-0 text-sm font-semibold text-red-600 transition hover:text-red-700"
               >
-                إزالة
+                {t('details.teachers.remove')}
               </button>
             ) : null}
           </div>

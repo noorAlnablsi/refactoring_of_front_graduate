@@ -1,4 +1,5 @@
 import { useNavigate } from 'react-router-dom'
+import { useTranslation } from 'react-i18next'
 import { Eye, FlaskConical, Pencil, Trash2 } from 'lucide-react'
 import { ROUTES } from '../../constants/routes'
 import {
@@ -35,6 +36,7 @@ function SubjectsTable({
   onEdit,
   onDelete,
 }) {
+  const { t } = useTranslation('subjects')
   const navigate = useNavigate()
   const showEdit = canEditSubject()
 
@@ -56,7 +58,7 @@ function SubjectsTable({
   if (!subjects.length && totalCount === 0) {
     return (
       <div className={`overflow-hidden p-12 text-center ${shellCardClass}`}>
-        <p className={shellBodyTextClass}>لا توجد مواد دراسية بعد</p>
+        <p className={shellBodyTextClass}>{t('table.empty')}</p>
       </div>
     )
   }
@@ -71,11 +73,11 @@ function SubjectsTable({
         <table className="w-full min-w-[760px] text-right text-sm">
           <thead className={`border-b bg-[var(--shell-input-bg)] text-[13px] text-[var(--shell-text-muted)] ${shellDividerClass}`}>
             <tr>
-              <th className="px-5 py-3.5 font-semibold">اسم المادة</th>
-              <th className="px-5 py-3.5 font-semibold">عدد المعلمين</th>
-              <th className="px-5 py-3.5 font-semibold">بنوك الأسئلة</th>
-              <th className="px-5 py-3.5 font-semibold">عدد الاختبارات</th>
-              <th className="px-5 py-3.5 font-semibold">الإجراءات</th>
+              <th className="px-5 py-3.5 font-semibold">{t('table.name')}</th>
+              <th className="px-5 py-3.5 font-semibold">{t('table.teachersCount')}</th>
+              <th className="px-5 py-3.5 font-semibold">{t('table.questionBanks')}</th>
+              <th className="px-5 py-3.5 font-semibold">{t('table.examsCount')}</th>
+              <th className="px-5 py-3.5 font-semibold">{t('table.actions')}</th>
             </tr>
           </thead>
           <tbody>
@@ -112,7 +114,7 @@ function SubjectsTable({
                       type="button"
                       onClick={() => navigate(`${ROUTES.SUBJECTS}/${subject.id}`)}
                       className={actionButtonClassName}
-                      aria-label="عرض"
+                      aria-label={t('table.view')}
                     >
                       <Eye className="h-4 w-4" strokeWidth={2} />
                     </button>
@@ -122,7 +124,7 @@ function SubjectsTable({
                           type="button"
                           onClick={() => onEdit(subject)}
                           className={actionButtonClassName}
-                          aria-label="تعديل"
+                          aria-label={t('table.edit')}
                         >
                           <Pencil className="h-4 w-4" strokeWidth={2} />
                         </button>
@@ -130,7 +132,7 @@ function SubjectsTable({
                           type="button"
                           onClick={() => onDelete?.(subject)}
                           className={`${actionButtonClassName} hover:text-red-400`}
-                          aria-label="حذف"
+                          aria-label={t('table.delete')}
                         >
                           <Trash2 className="h-4 w-4" strokeWidth={2} />
                         </button>
@@ -147,7 +149,10 @@ function SubjectsTable({
       {totalCount > 0 ? (
         <div className={`flex flex-wrap items-center justify-between gap-4 border-t px-5 py-4 ${shellDividerClass}`}>
           <p className={shellSubtleTextClass}>
-            عرض {formatStatValue(subjects.length)} من أصل {formatStatValue(totalCount)} مادة
+            {t('table.pagination', {
+              shown: formatStatValue(subjects.length),
+              total: formatStatValue(totalCount),
+            })}
           </p>
           <SubjectsPagination page={page} totalPages={totalPages} onPageChange={onPageChange} />
         </div>

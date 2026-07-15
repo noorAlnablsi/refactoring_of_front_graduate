@@ -1,0 +1,129 @@
+{
+  "pageTitle": "Member management",
+  "pageSubtitle": "Manage all students and teachers within the institution.",
+  "overview": {
+    "title": "Member management",
+    "subtitle": "Manage all students and teachers within the institution.",
+    "latestAdditions": "Latest additions",
+    "viewAll": "View all",
+    "noRecentAdditions": "No recent additions yet.",
+    "loadError": "Could not load member data"
+  },
+  "stats": {
+    "studentsTitle": "Students",
+    "studentsDescription": "Total registered students",
+    "viewStudents": "View students",
+    "teachersTitle": "Teachers",
+    "teachersDescription": "Active teaching staff",
+    "viewTeachers": "View teachers",
+    "students": {
+      "title": "Students",
+      "description": "Total registered students",
+      "action": "View students"
+    },
+    "teachers": {
+      "title": "Teachers",
+      "description": "Active teaching staff",
+      "action": "View teachers"
+    }
+  },
+  "students": {
+    "title": "Student management",
+    "subtitle": "Review and edit registered student profiles and manage their academic status.",
+    "inviteStudent": "Invite student",
+    "exportData": "Export data",
+    "memberLabel": "Student",
+    "loadError": "Could not load student list",
+    "membershipError": "Could not identify student membership.",
+    "loadingSubjects": "Loading subjects...",
+    "assignSubjectModal": {
+      "title": "Assign subject",
+      "description": "Choose a subject to assign student {{name}} to",
+      "allAssigned": "All subjects are already assigned to this student",
+      "noSubjects": "No subjects available for assignment",
+      "alreadyEnrolled": "Student is already enrolled in this subject",
+      "selectSubjectError": "Please select a subject",
+      "success": "Student assigned to subject successfully",
+      "assigning": "Assigning...",
+      "assign": "Assign"
+    },
+    "removeSubjectModal": {
+      "title": "Remove student from subject",
+      "description": "Choose the subject to remove {{name}} from",
+      "notEnrolled": "Student is not enrolled in any subject yet",
+      "success": "Student removed from subject successfully",
+      "removing": "Removing..."
+    }
+  },
+  "teachers": {
+    "title": "Faculty list",
+    "subtitle": "Manage teaching staff and track assigned subjects.",
+    "addTeacher": "Add teacher",
+    "exportData": "Export data",
+    "memberLabel": "Teacher",
+    "loadError": "Could not load teacher list",
+    "removeSuccess": "Teacher removed from the institution",
+    "membershipError": "Could not identify teacher membership",
+    "summary": {
+      "total": "Total teachers",
+      "activityStatus": "Activity status",
+      "activeRate": "Active teachers on the current page"
+    },
+    "table": {
+      "show": "Show:",
+      "perPage": "{{count}} teachers",
+      "filterPlaceholder": "Filter by...",
+      "empty": "No teachers in the institution yet",
+      "columns": {
+        "teacher": "Teacher",
+        "email": "Email",
+        "phone": "Phone",
+        "subjectsCount": "Subjects",
+        "status": "Status",
+        "actions": "Actions"
+      },
+      "assignSubject": "Assign subject",
+      "editProfile": "Edit teacher profile",
+      "removeFromWorkspace": "Remove from institution",
+      "pagination": "Showing {{from}}-{{to}} of {{total}} teachers"
+    },
+    "assignSubjectModal": {
+      "title": "Assign subject",
+      "description": "Choose a subject to assign to {{name}}",
+      "membershipError": "Could not identify teacher membership.",
+      "loadingSubjects": "Loading subjects...",
+      "allAssigned": "All subjects are already assigned to this teacher",
+      "noSubjects": "No subjects available for assignment",
+      "selectSubjectError": "Please select a subject",
+      "success": "Subject assigned to teacher successfully",
+      "assigning": "Assigning...",
+      "assign": "Assign"
+    },
+    "editSubjectsModal": {
+      "title": "Edit assigned subjects",
+      "description": "Select subjects assigned to {{name}}",
+      "noInstitutionSubjects": "No subjects in the institution.",
+      "success": "Assigned subjects updated successfully",
+      "saving": "Saving...",
+      "save": "Save changes"
+    }
+  },
+  "status": {
+    "active": "Active",
+    "pending": "Pending",
+    "suspended": "Suspended"
+  },
+  "roles": {
+    "teacherWithSubjects": "Teacher • {{count}} subjects",
+    "teacher": "Teacher",
+    "studentWithSubjects": "Student • {{count}} subjects",
+    "student": "Student"
+  },
+  "relativeTime": {
+    "now": "Now",
+    "minutesAgo": "{{count}} minutes ago",
+    "hoursAgo": "{{count}} hours ago",
+    "yesterday": "Yesterday",
+    "daysAgo": "{{count}} days ago"
+  }
+}

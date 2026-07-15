@@ -1,3 +1,4 @@
+import { useTranslation } from 'react-i18next'
 import { FileQuestion } from 'lucide-react'
 import {
   getQuestionBankName,
@@ -6,12 +7,13 @@ import {
 } from '../../../lib/subjectDisplay'
 
 function SubjectQuestionBanksTab({ questionBanks }) {
+  const { t } = useTranslation('subjects')
   const banks = sortByRecentDate(questionBanks)
 
   if (banks.length === 0) {
     return (
       <div className="rounded-2xl bg-white p-10 text-center shadow-[0_2px_12px_rgba(15,23,42,0.04)] ring-1 ring-[#E5E9EB]">
-        <p className="text-sm text-[#64748B]">لا توجد بنوك أسئلة مرتبطة بهذه المادة</p>
+        <p className="text-sm text-[#64748B]">{t('details.banks.empty')}</p>
       </div>
     )
   }

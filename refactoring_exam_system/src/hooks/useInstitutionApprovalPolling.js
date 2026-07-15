@@ -1,8 +1,10 @@
 import { useEffect, useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import { INSTITUTION_APPROVAL_POLL_INTERVAL_SEC } from '../constants/auth'
 import { checkInstitutionApprovalStatus } from '../services/auth.service'
 
 export function useInstitutionApprovalPolling({ enabled, email, password }) {
+  const { t } = useTranslation('auth')
   const [status, setStatus] = useState('pending')
   const [checking, setChecking] = useState(false)
   const [rejectionMessage, setRejectionMessage] = useState('')
@@ -25,7 +27,7 @@ export function useInstitutionApprovalPolling({ enabled, email, password }) {
 
         if (result.status === 'rejected') {
           setStatus('rejected')
-          setRejectionMessage(result.message || 'تم رفض طلب التسجيل من قبل الإدارة.')
+          setRejectionMessage(result.message || t('institutionApproval.rejectedDefault'))
           return
         }
 
@@ -42,7 +44,7 @@ export function useInstitutionApprovalPolling({ enabled, email, password }) {
       cancelled = true
       clearInterval(interval)
     }
-  }, [enabled, email, password])
+  }, [enabled, email, password, t])
 
   return { status, checking, rejectionMessage }
 }

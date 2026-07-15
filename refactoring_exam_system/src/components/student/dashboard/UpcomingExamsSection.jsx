@@ -1,3 +1,5 @@
+import { useTranslation } from 'react-i18next'
+
 const TONE_DOT_CLASS = {
   teal: 'bg-[#2AA8A2]',
   blue: 'bg-[#3B82F6]',
@@ -5,9 +7,11 @@ const TONE_DOT_CLASS = {
 }
 
 function UpcomingExamsSection({ exams }) {
+  const { t } = useTranslation('student')
+
   return (
     <section className="rounded-2xl bg-white p-4 shadow-[0_1px_3px_rgba(16,24,40,0.06)] ring-1 ring-[#E5E9EB]/80">
-      <h2 className="mb-3 text-sm font-extrabold text-[#2A3433]">الاختبارات القادمة</h2>
+      <h2 className="mb-3 text-sm font-extrabold text-[#2A3433]">{t('upcomingExams.title')}</h2>
 
       {exams.length ? (
         <ul className="space-y-3">
@@ -30,7 +34,7 @@ function UpcomingExamsSection({ exams }) {
           ))}
         </ul>
       ) : (
-        <p className="text-xs leading-6 text-[#94A3B8]">لا توجد اختبارات قادمة حالياً.</p>
+        <p className="text-xs leading-6 text-[#94A3B8]">{t('upcomingExams.empty')}</p>
       )}
     </section>
   )

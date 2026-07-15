@@ -6,6 +6,7 @@ import {
   validatePassword,
   validatePasswordMatch,
 } from './usePasswordValidation'
+import { tUI } from '../lib/appToast'
 import { getInvitePreview, registerViaInvite } from '../services/invites.service'
 import { useRegistrationStore } from '../store/registrationStore'
 
@@ -56,7 +57,7 @@ export function useInviteRegister() {
   const validate = () => {
     const nextErrors = {}
 
-    if (!fullName.trim()) nextErrors.full_name = 'الاسم الكامل مطلوب'
+    if (!fullName.trim()) nextErrors.full_name = tUI('validation.fullNameRequired', { ns: 'forms' })
 
     const passwordError = validatePassword(password)
     if (passwordError) nextErrors.password = passwordError

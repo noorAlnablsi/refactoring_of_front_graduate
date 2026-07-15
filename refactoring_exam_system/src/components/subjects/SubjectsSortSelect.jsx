@@ -1,22 +1,26 @@
+import { useTranslation } from 'react-i18next'
 import { ChevronDown } from 'lucide-react'
-import { SUBJECT_SORT_OPTIONS } from '../../constants/subjects'
+import { getSubjectSortOptions } from '../../constants/subjects'
+import { formatStatValue } from '../../lib/subjectDisplay'
 import { shellBodyTextClass, shellInputClass } from '../../lib/shellUi'
 
 function SubjectsSortSelect({ value, onChange }) {
+  const { t } = useTranslation('subjects')
+  const sortOptions = getSubjectSortOptions()
   const selectedLabel =
-    SUBJECT_SORT_OPTIONS.find((option) => option.value === value)?.label || 'الأحدث'
+    sortOptions.find((option) => option.value === value)?.label || t('sort.newest')
 
   return (
     <label className={`inline-flex items-center gap-2 text-sm ${shellBodyTextClass}`}>
-      <span className="font-medium">ترتيب حسب:</span>
+      <span className="font-medium">{t('sort.label')}</span>
       <span className="relative inline-flex items-center">
         <select
           value={value}
           onChange={(event) => onChange(event.target.value)}
           className={`cursor-pointer appearance-none py-2 pl-8 pr-3 text-sm font-semibold ${shellInputClass}`}
-          aria-label="ترتيب عرض المواد"
+          aria-label={t('sort.aria')}
         >
-          {SUBJECT_SORT_OPTIONS.map((option) => (
+          {sortOptions.map((option) => (
             <option key={option.value} value={option.value}>
               {option.label}
             </option>

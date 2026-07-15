@@ -7,6 +7,8 @@ export const ROUTES = {
   PATH_SELECTION: '/path-selection',
   SUBJECTS: '/subjects',
   MEMBERS: '/members',
+  MEMBERS_TEACHERS: '/members/teachers',
+  MEMBERS_STUDENTS: '/members/students',
   QUESTION_BANKS: '/question-banks',
   EXAMS: '/exams',
   EXAM_CREATE: '/exams/new',

@@ -1,3 +1,4 @@
+import { useTranslation } from 'react-i18next'
 import educationLogo from '../../assets/landing/logo-education-center.png'
 import saintLogo from '../../assets/landing/logo-saint.png'
 import vintageLogo from '../../assets/landing/logo-vintage.png'
@@ -19,11 +20,13 @@ function BrandCircle({ src, alt, label, bgClass = 'bg-[#0F3554]' }) {
 }
 
 function TrustedSection() {
+  const { t } = useTranslation('landing')
+
   return (
     <section className="bg-[#EDEFF0] px-4 py-14 md:px-8">
       <div className="mx-auto w-full max-w-6xl text-center">
         <h2 className="mx-auto mb-10 h-4 w-[489px] max-w-full text-center text-base font-bold text-[#5A6062]">
-          موثوق به من قبل المؤسسات التعليمية و الأكاديميات التالية
+          {t('trusted.title')}
         </h2>
         <div className="flex flex-wrap items-center justify-center gap-8">
           <BrandCircle src={vintageLogo} alt="Vintage School" />
@@ -38,4 +41,3 @@ function TrustedSection() {
 }
 
 export default TrustedSection
-

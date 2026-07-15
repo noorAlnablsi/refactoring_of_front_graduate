@@ -1,0 +1,51 @@
+{
+  "sidebar": {
+    "dashboard": "لوحة التحكم",
+    "subjects": "إدارة المواد",
+    "members": "إدارة الأعضاء",
+    "questionBanks": "بنوك الأسئلة",
+    "exams": "الامتحانات",
+    "statistics": "الإحصائيات",
+    "settings": "الإعدادات",
+    "logoutCurrentPath": "خروج من المسار الحالي"
+  },
+  "studentSidebar": {
+    "home": "الرئيسية",
+    "exams": "الاختبارات",
+    "results": "النتائج",
+    "settings": "الإعدادات",
+    "portalTitle": "بوابة الطالب"
+  },
+  "topbar": {
+    "searchExams": "البحث في الامتحانات...",
+    "searchBanks": "البحث في البنوك...",
+    "searchStudents": "بحث عن طالب...",
+    "searchStudentPortal": "البحث عن الاختبارات، المواد أو النتائج...",
+    "notifications": "إشعارات"
+  },
+  "breadcrumbs": {
+    "home": "الرئيسية",
+    "settings": "الإعدادات",
+    "members": "إدارة الأعضاء",
+    "teachers": "إدارة المعلمين",
+    "students": "إدارة الطلاب",
+    "changePassword": "إعادة تعيين كلمة المرور"
+  },
+  "wizardSteps": {
+    "examInfo": "المعلومات",
+    "examQuestions": "إضافة الأسئلة",
+    "examSettings": "الإعدادات",
+    "examReview": "المراجعة",
+    "examPublish": "النشر",
+    "registerStep1": "البيانات الأساسية",
+    "registerStep2": "كلمة المرور",
+    "registerStep3": "التحقق"
+  },
+  "searchPlaceholders": {
+    "exams": "البحث في الامتحانات...",
+    "questionBanks": "البحث في البنوك...",
+    "students": "بحث عن طالب...",
+    "teachersFilter": "تصفية حسب..",
+    "studentPortal": "البحث عن الاختبارات، المواد أو النتائج..."
+  }
+}

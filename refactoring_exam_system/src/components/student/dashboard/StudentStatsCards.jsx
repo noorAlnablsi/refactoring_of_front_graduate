@@ -1,3 +1,4 @@
+import { useTranslation } from 'react-i18next'
 import { BarChart3, Calendar, CheckCircle2, ClipboardList } from 'lucide-react'
 
 const CARD_CLASS =
@@ -23,33 +24,34 @@ function StatCard({ label, value, icon: Icon, iconBg, accentClassName }) {
 }
 
 function StudentStatsCards({ stats }) {
+  const { t } = useTranslation('student')
   const formatCount = (value) => String(value).padStart(2, '0')
 
   return (
     <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
       <StatCard
-        label="الاختبارات المتاحة"
+        label={t('stats.availableExams')}
         value={formatCount(stats.availableExams)}
         icon={ClipboardList}
         iconBg="bg-[#E8F7F6] text-[#2AA8A2]"
         accentClassName="bg-[#2AA8A2]"
       />
       <StatCard
-        label="القادمة"
+        label={t('stats.upcoming')}
         value={formatCount(stats.upcomingExams)}
         icon={Calendar}
         iconBg="bg-[#EFF6FF] text-[#3B82F6]"
         accentClassName="bg-[#3B82F6]"
       />
       <StatCard
-        label="المكتملة"
+        label={t('stats.completed')}
         value={formatCount(stats.completedExams)}
         icon={CheckCircle2}
         iconBg="bg-[#E8F7F6] text-[#2AA8A2]"
         accentClassName="bg-[#2AA8A2]"
       />
       <StatCard
-        label="متوسط الدرجات"
+        label={t('stats.averageScore')}
         value={`${stats.averageScore}%`}
         icon={BarChart3}
         iconBg="bg-[#E8F7F6] text-[#2AA8A2]"

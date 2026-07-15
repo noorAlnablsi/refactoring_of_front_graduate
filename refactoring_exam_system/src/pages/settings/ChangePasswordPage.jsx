@@ -1,4 +1,5 @@
 import { Link } from 'react-router-dom'
+import { useTranslation } from 'react-i18next'
 import { ChevronLeft, KeyRound, LockKeyhole, Save, ShieldCheck } from 'lucide-react'
 import ChangePasswordSecurityTips from '../../components/settings/ChangePasswordSecurityTips'
 import SettingsPasswordField from '../../components/settings/SettingsPasswordField'
@@ -11,6 +12,7 @@ import {
 } from '../../lib/shellUi'
 
 function ChangePasswordPage() {
+  const { t } = useTranslation(['settings', 'navigation'])
   const {
     currentPassword,
     setCurrentPassword,
@@ -28,18 +30,18 @@ function ChangePasswordPage() {
       <div>
         <nav className="mb-3 flex flex-wrap items-center gap-2 text-sm text-[var(--shell-text-muted)]">
           <Link to={ROUTES.DASHBOARD} className="transition hover:text-[var(--shell-accent)]">
-            الرئيسية
+            {t('breadcrumb.home', { ns: 'navigation' })}
           </Link>
           <ChevronLeft className="h-4 w-4" aria-hidden="true" />
           <Link to={ROUTES.SETTINGS} className="transition hover:text-[var(--shell-accent)]">
-            الإعدادات
+            {t('breadcrumb.settings', { ns: 'navigation' })}
           </Link>
           <ChevronLeft className="h-4 w-4" aria-hidden="true" />
-          <span className="font-semibold text-[var(--shell-accent)]">إعادة تعيين كلمة المرور</span>
+          <span className="font-semibold text-[var(--shell-accent)]">{t('changePassword.pageTitle')}</span>
         </nav>
 
         <h1 className={`text-center text-2xl md:text-3xl ${shellPageTitleClass}`}>
-          إعادة تعيين كلمة المرور
+          {t('changePassword.pageTitle')}
         </h1>
       </div>
 
@@ -49,28 +51,28 @@ function ChangePasswordPage() {
         <section className={`p-6 md:p-8 ${shellCardClass}`}>
           <form className="space-y-5" onSubmit={submit} autoComplete="off">
             <SettingsPasswordField
-              label="كلمة المرور الحالية"
+              label={t('changePassword.currentPassword')}
               value={currentPassword}
               onChange={(event) => setCurrentPassword(event.target.value)}
-              placeholder="أدخل كلمة المرور الحالية"
+              placeholder={t('changePassword.currentPasswordPlaceholder')}
               icon={KeyRound}
               autoComplete="current-password"
             />
 
             <SettingsPasswordField
-              label="كلمة المرور الجديدة"
+              label={t('changePassword.newPassword')}
               value={newPassword}
               onChange={(event) => setNewPassword(event.target.value)}
-              placeholder="أدخل كلمة المرور الجديدة"
+              placeholder={t('changePassword.newPasswordPlaceholder')}
               icon={LockKeyhole}
               autoComplete="new-password"
             />
 
             <SettingsPasswordField
-              label="تأكيد كلمة المرور الجديدة"
+              label={t('changePassword.confirmPassword')}
               value={confirmPassword}
               onChange={(event) => setConfirmPassword(event.target.value)}
-              placeholder="أعد إدخال كلمة المرور الجديدة"
+              placeholder={t('changePassword.confirmPasswordPlaceholder')}
               icon={ShieldCheck}
               autoComplete="new-password"
             />
@@ -87,7 +89,7 @@ function ChangePasswordPage() {
               className={`mt-2 w-full justify-center py-3.5 ${shellAccentButtonClass} disabled:opacity-70`}
             >
               <Save className="h-4 w-4" />
-              {loading ? 'جاري التحديث...' : 'تحديث كلمة المرور'}
+              {loading ? t('changePassword.submitting') : t('changePassword.submit')}
             </button>
           </form>
         </section>

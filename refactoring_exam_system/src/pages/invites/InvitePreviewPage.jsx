@@ -1,7 +1,8 @@
 import { useEffect, useState } from 'react'
 import { Link, useNavigate, useParams } from 'react-router-dom'
+import { useTranslation } from 'react-i18next'
 import AuthShell from '../../components/auth/AuthShell'
-import { INVITE_STATUS_MESSAGES } from '../../constants/invites'
+import { INVITE_STATUS } from '../../constants/invites'
 import { ROUTES } from '../../constants/routes'
 import {
   getInviteRole,
@@ -12,6 +13,7 @@ import { getInvitePreview, rejectInvite } from '../../services/invites.service'
 import loginHero from '../../assets/auth/login-hero.png'
 
 function InvitePreviewPage() {
+  const { t } = useTranslation(['invites', 'auth'])
   const navigate = useNavigate()
   const { token } = useParams()
   const [preview, setPreview] = useState(null)
@@ -19,6 +21,13 @@ function InvitePreviewPage() {
   const [rejecting, setRejecting] = useState(false)
   const [error, setError] = useState('')
   const [infoMessage, setInfoMessage] = useState('')
+
+  const getStatusMessage = (status) => {
+    if (status === INVITE_STATUS.ACCEPTED) return t('status.accepted')
+    if (status === INVITE_STATUS.REJECTED) return t('status.rejected')
+    if (status === INVITE_STATUS.EXPIRED) return t('status.expired')
+    return null
+  }
 
   const loadPreview = async () => {
     setLoading(true)
@@ -29,7 +38,7 @@ function InvitePreviewPage() {
       const data = await getInvitePreview(token)
       setPreview(data)
 
-      const statusMessage = INVITE_STATUS_MESSAGES[data.status]
+      const statusMessage = getStatusMessage(data.status)
       if (statusMessage) setInfoMessage(statusMessage)
     } catch (err) {
       setError(err.message)
@@ -53,7 +62,7 @@ function InvitePreviewPage() {
 
     try {
       const result = await rejectInvite(token)
-      setInfoMessage(result.message || 'تم رفض الدعوة')
+      setInfoMessage(result.message || t('preview.rejected'))
       await loadPreview()
     } catch (err) {
       setError(err.message)
@@ -67,35 +76,37 @@ function InvitePreviewPage() {
   const actionable = isInviteActionable(preview)
   const workspaceName = getInviteWorkspaceName(preview)
   const assignedRole = getInviteRole(preview)
+  const roleLabel = assignedRole ? t(`roles.${assignedRole}`) : ''
 
   return (
-    <AuthShell heroImage={loginHero} heroAlt="دعوة للانضمام">
-      <h1 className="text-right text-3xl font-extrabold text-[#2A3433] md:text-4xl">دعوة للانضمام</h1>
-      <p className="mt-3 text-right text-sm leading-7 text-[#6B7280] md:text-base">
-        تمت دعوتك للانضمام إلى مساحة تعليمية على QuizHub.
-      </p>
+    <AuthShell heroImage={loginHero} heroAlt={t('preview.heroAlt')}>
+      <h1 className="text-right text-3xl font-extrabold text-[#2A3433] md:text-4xl">{t('preview.title')}</h1>
+      <p className="mt-3 text-right text-sm leading-7 text-[#6B7280] md:text-base">{t('preview.subtitle')}</p>
 
       {loading ? (
-        <p className="mt-8 text-sm text-[#64748B]">جاري تحميل بيانات الدعوة...</p>
+        <p className="mt-8 text-sm text-[#64748B]">{t('preview.loading')}</p>
       ) : (
         <div className="mt-8 space-y-3 text-right text-sm text-[#374151]">
           {workspaceName ? (
             <p>
-              المؤسسة: <span className="font-semibold">{workspaceName}</span>
+              {t('preview.institution')} <span className="font-semibold">{workspaceName}</span>
             </p>
           ) : null}
           {preview?.invited_email ? (
             <p>
-              البريد المدعو: <span className="font-semibold">{preview.invited_email}</span>
+              {t('preview.invitedEmail')}{' '}
+              <span className="font-semibold">{preview.invited_email}</span>
             </p>
           ) : null}
-          {assignedRole ? (
+          {roleLabel ? (
             <p>
-              الدور: <span className="font-semibold">{assignedRole}</span>
+              {t('preview.role')} <span className="font-semibold">{roleLabel}</span>
             </p>
           ) : null}
           {preview?.expires_at ? (
-            <p className="text-[#64748B]">تنتهي صلاحية الدعوة: {preview.expires_at}</p>
+            <p className="text-[#64748B]">
+              {t('preview.expiresAt', { date: preview.expires_at })}
+            </p>
           ) : null}
         </div>
       )}
@@ -115,7 +126,7 @@ function InvitePreviewPage() {
             onClick={() => navigate(registerPath)}
             className="h-12 w-full rounded-xl bg-[#2AA8A2] text-base font-bold text-white shadow-[0_12px_20px_rgba(42,168,162,0.22)] transition hover:opacity-95 disabled:opacity-70"
           >
-            إنشاء حساب جديد
+            {t('preview.createAccount')}
           </button>
 
           <button
@@ -124,7 +135,7 @@ function InvitePreviewPage() {
             onClick={() => navigate(acceptPath)}
             className="h-12 w-full rounded-xl border border-[#2AA8A2] bg-white text-base font-bold text-[#2AA8A2] transition hover:bg-[#E8F7F6] disabled:opacity-70"
           >
-            لدي حساب — قبول الدعوة
+            {t('preview.acceptExisting')}
           </button>
 
           <button
@@ -133,14 +144,14 @@ function InvitePreviewPage() {
             onClick={handleReject}
             className="h-12 w-full rounded-xl border border-[#E5E9EB] bg-white text-base font-bold text-[#64748B] transition hover:bg-[#F6F8F9] disabled:opacity-70"
           >
-            {rejecting ? 'جاري الرفض...' : 'رفض الدعوة'}
+            {rejecting ? t('preview.rejecting') : t('preview.reject')}
           </button>
         </div>
       ) : null}
 
       <p className="mt-5 text-center text-sm text-[#6B7280]">
         <Link to={ROUTES.HOME} className="font-bold text-[#2AA8A2]">
-          العودة للرئيسية
+          {t('preview.backHome')}
         </Link>
       </p>
     </AuthShell>

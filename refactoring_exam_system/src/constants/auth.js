@@ -20,5 +20,4 @@ export const INSTITUTION_APPROVAL_POLL_INTERVAL_SEC = 5
 
 export const PASSWORD_RULES = {
   minLength: 8,
-  message: 'كلمة المرور يجب ألا تقل عن 8 أحرف',
 }

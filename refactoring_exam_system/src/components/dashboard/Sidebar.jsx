@@ -11,6 +11,7 @@ import {
 } from 'lucide-react'
 import SidebarSessionLogout from '../auth/SidebarSessionLogout'
 import { ROUTES } from '../../constants/routes'
+import { useAppTranslation } from '../../hooks/useAppTranslation'
 import {
   canAccessMembersModule,
   canAccessQuestionBanks,
@@ -19,16 +20,30 @@ import {
 } from '../../lib/workspaceContext'
 
 const baseNavItems = [
-  { to: ROUTES.DASHBOARD, label: 'لوحة التحكم', icon: LayoutGrid, end: true },
-  { to: ROUTES.SUBJECTS, label: 'إدارة المواد', icon: BookOpen, end: false, requiresSubjectsModule: true },
-  { to: ROUTES.MEMBERS, label: 'إدارة الأعضاء', icon: Users, end: true, requiresMembersModule: true },
-  { to: ROUTES.QUESTION_BANKS, label: 'بنوك الأسئلة', icon: FileQuestion, end: false, requiresQuestionBanks: true },
-  { to: ROUTES.EXAMS, label: 'الامتحانات', icon: ClipboardList, end: false, requiresExams: true },
-  { to: '#', label: 'الإحصائيات', icon: BarChart3, disabled: true },
-  { to: ROUTES.SETTINGS, label: 'الإعدادات', icon: Settings, end: true },
+  { to: ROUTES.DASHBOARD, labelKey: 'sidebar.dashboard', icon: LayoutGrid, end: true },
+  {
+    to: ROUTES.SUBJECTS,
+    labelKey: 'sidebar.subjects',
+    icon: BookOpen,
+    end: false,
+    requiresSubjectsModule: true,
+  },
+  { to: ROUTES.MEMBERS, labelKey: 'sidebar.members', icon: Users, end: true, requiresMembersModule: true },
+  {
+    to: ROUTES.QUESTION_BANKS,
+    labelKey: 'sidebar.questionBanks',
+    icon: FileQuestion,
+    end: false,
+    requiresQuestionBanks: true,
+  },
+  { to: ROUTES.EXAMS, labelKey: 'sidebar.exams', icon: ClipboardList, end: false, requiresExams: true },
+  { to: '#', labelKey: 'sidebar.statistics', icon: BarChart3, disabled: true },
+  { to: ROUTES.SETTINGS, labelKey: 'sidebar.settings', icon: Settings, end: true },
 ]
 
 function SidebarBrand() {
+  const { t } = useAppTranslation('navigation')
+
   return (
     <div className="flex h-16 shrink-0 items-center gap-3 border-b border-[var(--shell-border)] px-6">
       <span
@@ -41,7 +56,7 @@ function SidebarBrand() {
       <div>
         <p className="text-base font-semibold leading-tight text-[var(--shell-accent)]">QuizHub</p>
         <p className="mt-0.5 text-[11px] font-normal uppercase leading-tight text-[var(--shell-text-muted)]">
-          Admin Dashboard
+          {t('sidebar.brandSubtitle')}
         </p>
       </div>
     </div>
@@ -49,6 +64,8 @@ function SidebarBrand() {
 }
 
 function Sidebar() {
+  const { t } = useAppTranslation('navigation')
+
   const navItems = baseNavItems.filter((item) => {
     if (item.requiresSubjectsModule && !canAccessSubjectsModule()) return false
     if (item.requiresMembersModule && !canAccessMembersModule()) return false
@@ -62,10 +79,12 @@ function Sidebar() {
       <SidebarBrand />
 
       <nav className="min-h-0 flex-1 space-y-2 overflow-y-auto px-4 py-6">
-        {navItems.map(({ to, label, icon: Icon, end = true, disabled }) =>
-          disabled ? (
+        {navItems.map(({ to, labelKey, icon: Icon, end = true, disabled }) => {
+          const label = t(labelKey)
+
+          return disabled ? (
             <span
-              key={label}
+              key={labelKey}
               className="flex cursor-not-allowed items-center gap-3.5 rounded-xl px-4 py-3.5 text-sm font-semibold text-[var(--shell-text-subtle)]"
             >
               <Icon className="h-5 w-5" />
@@ -94,8 +113,8 @@ function Sidebar() {
                 </>
               )}
             </NavLink>
-          ),
-        )}
+          )
+        })}
       </nav>
 
       <div className="shrink-0 border-t border-[var(--shell-border)] px-4 py-5">
