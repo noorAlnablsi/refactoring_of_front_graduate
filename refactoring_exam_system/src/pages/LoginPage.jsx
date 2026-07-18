@@ -3,6 +3,7 @@ import { Link, useLocation, useNavigate } from 'react-router-dom'
 import { Eye, EyeOff } from 'lucide-react'
 import { ROUTES } from '../constants/routes'
 import { useAppTranslation } from '../hooks/useAppTranslation'
+import { waitForAuthHydration } from '../lib/authSession'
 import { resolvePostLoginRoute } from '../lib/postLoginNavigation'
 import { login } from '../services/auth.service'
 import { useAuthStore } from '../store/authStore'
@@ -39,15 +40,16 @@ function LoginPage() {
     setLoading(true)
 
     try {
+      await waitForAuthHydration()
       const data = await login({ email: email.trim(), password })
       useAuthStore.getState().setAuth(data)
 
       if (redirectTo) {
-        navigate(redirectTo)
+        navigate(redirectTo, { replace: true })
         return
       }
 
-      navigate(resolvePostLoginRoute(data))
+      navigate(resolvePostLoginRoute(data), { replace: true })
     } catch (err) {
       setError(err.message)
     } finally {

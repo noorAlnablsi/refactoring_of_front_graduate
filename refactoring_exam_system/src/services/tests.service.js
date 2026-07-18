@@ -151,3 +151,29 @@ export async function importAiQuestions(testId, payload) {
   const { data } = await api.post(`/tests/${testId}/questions/import-ai`, payload)
   return data
 }
+
+/** POST /tests/{test_id}/attempts — start or resume attempt (no body) */
+export async function startTestAttempt(testId) {
+  const { data } = await api.post(`/tests/${testId}/attempts`)
+  return data
+}
+
+/** GET /tests/{test_id}/attempts/{attempt_id} */
+export async function getTestAttempt(testId, attemptId) {
+  const { data } = await api.get(`/tests/${testId}/attempts/${attemptId}`)
+  return data
+}
+
+/** PUT /tests/{test_id}/attempts/{attempt_id}/answers */
+export async function saveAttemptAnswers(testId, attemptId, answers) {
+  const { data } = await api.put(`/tests/${testId}/attempts/${attemptId}/answers`, {
+    answers,
+  })
+  return data
+}
+
+/** POST /tests/{test_id}/attempts/{attempt_id}/submit */
+export async function submitTestAttempt(testId, attemptId, payload = {}) {
+  const { data } = await api.post(`/tests/${testId}/attempts/${attemptId}/submit`, payload)
+  return data
+}

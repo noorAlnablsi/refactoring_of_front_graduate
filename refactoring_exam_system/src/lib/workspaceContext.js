@@ -17,7 +17,7 @@ export function canAccessDashboard() {
 }
 
 export function isStudentMembership(membership = getActiveMembership()) {
-  return membership?.role === 'STUDENT'
+  return String(membership?.role || '').trim().toUpperCase() === 'STUDENT'
 }
 
 export function canAccessStudentDashboard() {

@@ -2,6 +2,7 @@
   "pageTitle": "Academic subjects",
   "pageSubtitle": "Manage subjects and assign responsible teachers within your institution efficiently and professionally.",
   "addSubject": "Add new subject",
+  "deleteItemLabel": "Subject",
   "toasts": {
     "deleted": "Subject deleted"
   },
@@ -75,6 +76,11 @@
     "newest": "Newest"
   },
   "details": {
+    "breadcrumbLabel": "Subject path",
+    "manageSubjects": "Academic subjects",
+    "subjectDetails": "Subject details",
+    "assignTeacher": "Assign teacher",
+    "editSubject": "Edit subject",
     "tabs": {
       "overview": "Overview",
       "teachers": "Teachers",

@@ -1,0 +1,71 @@
+export const PROCTORING_CONNECTION_STATE = {
+  DISCONNECTED: 'DISCONNECTED',
+  CONNECTING: 'CONNECTING',
+  CONNECTED: 'CONNECTED',
+  SESSION_ACTIVE: 'SESSION_ACTIVE',
+  CLOSED: 'CLOSED',
+}
+
+/** WebSocket outgoing `type` values (backend contract). */
+export const PROCTORING_WS_EVENT = {
+  STUDENT_JOINED: 'student_joined',
+  CAMERA_STATUS: 'camera_status',
+  FACE_DETECTED: 'face_detected',
+  FACE_LOST: 'face_lost',
+  NO_FACE: 'no_face',
+  MULTIPLE_FACES: 'multiple_faces',
+  TAB_SWITCH: 'tab_switch',
+  WINDOW_BLUR: 'window_blur',
+  COPY_PASTE: 'copy_paste',
+  FULLSCREEN_EXIT: 'fullscreen_exit',
+  SUSPICIOUS_NAVIGATION: 'suspicious_navigation',
+  SCREEN_INACTIVITY: 'screen_inactivity',
+  MICROPHONE_ACTIVITY: 'microphone_activity',
+  AUDIO_ANOMALY: 'audio_anomaly',
+}
+
+/** REST fallback uses UPPER_SNAKE `event_type`. */
+export const PROCTORING_REST_EVENT = {
+  STUDENT_JOINED: 'STUDENT_JOINED',
+  CAMERA_STATUS: 'CAMERA_STATUS',
+  FACE_DETECTED: 'FACE_DETECTED',
+  FACE_LOST: 'FACE_LOST',
+  NO_FACE: 'NO_FACE',
+  MULTIPLE_FACES: 'MULTIPLE_FACES',
+  TAB_SWITCH: 'TAB_SWITCH',
+  WINDOW_BLUR: 'WINDOW_BLUR',
+  COPY_PASTE: 'COPY_PASTE',
+  FULLSCREEN_EXIT: 'FULLSCREEN_EXIT',
+  SUSPICIOUS_NAVIGATION: 'SUSPICIOUS_NAVIGATION',
+  SCREEN_INACTIVITY: 'SCREEN_INACTIVITY',
+  MICROPHONE_ACTIVITY: 'MICROPHONE_ACTIVITY',
+  AUDIO_ANOMALY: 'AUDIO_ANOMALY',
+}
+
+export const PROCTORING_INCOMING = {
+  SESSION_STARTED: 'session_started',
+  EVENT_RECORDED: 'event_recorded',
+  VIOLATION_TRIGGERED: 'violation_triggered',
+  ERROR: 'error',
+}
+
+export const CAMERA_STATUS = {
+  ON: 'ON',
+  DENIED: 'DENIED',
+  DISCONNECTED: 'DISCONNECTED',
+  OFF: 'OFF',
+}
+
+export const VIOLATION_SEVERITY = {
+  LOW: 'LOW',
+  MEDIUM: 'MEDIUM',
+  HIGH: 'HIGH',
+}
+
+export const FACE_LOST_DEBOUNCE_MS = 2500
+export const FACE_DETECT_INTERVAL_MS = 150
+export const WINDOW_BLUR_DEBOUNCE_MS = 400
+export const SCREEN_INACTIVITY_MS = 60_000
+export const AUDIO_EVENT_THROTTLE_MS = 3000
+export const WS_RECONNECT_DELAY_MS = 2000
+export const MEDIAPIPE_DETECTOR = 'MediaPipe'

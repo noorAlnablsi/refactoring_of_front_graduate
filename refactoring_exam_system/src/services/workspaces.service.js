@@ -13,6 +13,11 @@ export async function getWorkspace(workspaceId) {
   return normalizeWorkspace(data)
 }
 
+export async function deleteWorkspace(workspaceId) {
+  const { data } = await api.delete(`/workspaces/${workspaceId}`)
+  return data
+}
+
 export async function getWorkspaceStudents(params = {}) {
   const { data } = await api.get('/workspaces/students', { params })
   const students = (data.students || []).map(normalizeWorkspaceStudent)

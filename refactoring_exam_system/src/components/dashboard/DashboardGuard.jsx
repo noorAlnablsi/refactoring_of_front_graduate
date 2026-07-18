@@ -25,7 +25,16 @@ function DashboardGuard() {
   }
 
   if (!canAccessDashboard()) {
-    return <Navigate to={ROUTES.HOME} replace />
+    const hasStudentPath = memberships.some(
+      (item) => String(item?.role || '').trim().toUpperCase() === 'STUDENT',
+    )
+    if (hasStudentPath) {
+      return <Navigate to={ROUTES.STUDENT_DASHBOARD} replace />
+    }
+    if (memberships.length > 0) {
+      return <Navigate to={ROUTES.PATH_SELECTION} replace />
+    }
+    return <Navigate to={ROUTES.JOIN} replace />
   }
 
   return <Outlet />

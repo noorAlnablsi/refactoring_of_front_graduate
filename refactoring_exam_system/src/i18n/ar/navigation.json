@@ -31,6 +31,12 @@
     "students": "إدارة الطلاب",
     "changePassword": "إعادة تعيين كلمة المرور"
   },
+  "breadcrumb": {
+    "home": "الرئيسية",
+    "settings": "الإعدادات"
+  },
+  "home": "الرئيسية",
+  "members": "إدارة الأعضاء",
   "wizardSteps": {
     "examInfo": "المعلومات",
     "examQuestions": "إضافة الأسئلة",

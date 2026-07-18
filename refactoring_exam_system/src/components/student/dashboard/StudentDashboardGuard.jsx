@@ -20,7 +20,11 @@ function StudentDashboardGuard() {
     if (canAccessDashboard()) {
       return <Navigate to={ROUTES.DASHBOARD} replace />
     }
-    return <Navigate to={ROUTES.HOME} replace />
+    if (memberships.length > 0) {
+      return <Navigate to={ROUTES.PATH_SELECTION} replace />
+    }
+    // Logged in but no membership yet — join flow, not marketing landing
+    return <Navigate to={ROUTES.JOIN} replace />
   }
 
   return <Outlet />

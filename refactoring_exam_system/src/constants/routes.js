@@ -33,7 +33,9 @@ export const ROUTES = {
   STUDENT_JOIN_CODE: '/student/join-code',
   STUDENT_DASHBOARD: '/student/dashboard',
   STUDENT_EXAMS: '/student/exams',
+  STUDENT_EXAM_ATTEMPT: '/student/exams/:testId/attempt',
   STUDENT_RESULTS: '/student/results',
+  STUDENT_RESULTS_PENDING: '/student/results/pending',
   STUDENT_SETTINGS: '/student/settings',
 
   INVITE_PREVIEW: '/invites/:token',

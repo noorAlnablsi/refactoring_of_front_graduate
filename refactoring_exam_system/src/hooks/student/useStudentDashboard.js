@@ -1,50 +1,46 @@
 import { useCallback, useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import {
+  buildCalendarEventsFromUpcoming,
   getCalendarEventDays,
   normalizeAvailableTestsResponse,
-  normalizeStudentDashboard,
+  normalizeUpcomingTestsResponse,
 } from '../../lib/studentDashboardModel'
-import { getStudentDashboard } from '../../services/studentDashboard.service'
+import { getUpcomingStudentTests } from '../../services/studentDashboard.service'
 import { getAvailableTests } from '../../services/tests.service'
 
 async function loadStudentDashboardData() {
-  const availableData = await getAvailableTests()
-  const available = normalizeAvailableTestsResponse(availableData)
+  const [availableResult, upcomingResult] = await Promise.allSettled([
+    getAvailableTests(),
+    getUpcomingStudentTests(),
+  ])
 
-  let dashboard = {
+  if (availableResult.status === 'rejected' && upcomingResult.status === 'rejected') {
+    throw availableResult.reason || upcomingResult.reason
+  }
+
+  const available =
+    availableResult.status === 'fulfilled'
+      ? normalizeAvailableTestsResponse(availableResult.value)
+      : { count: 0, exams: [] }
+
+  const upcomingExams =
+    upcomingResult.status === 'fulfilled'
+      ? normalizeUpcomingTestsResponse(upcomingResult.value)
+      : []
+
+  return {
     stats: {
       availableExams: available.count,
-      upcomingExams: 0,
+      upcomingExams: upcomingExams.length,
       completedExams: 0,
       averageScore: 0,
     },
     availableExams: available.exams,
-    upcomingExams: [],
+    upcomingExams,
     latestResults: [],
-    calendarEvents: [],
+    calendarEvents: buildCalendarEventsFromUpcoming(upcomingExams),
   }
-
-  try {
-    const extraData = await getStudentDashboard()
-    const extra = normalizeStudentDashboard(extraData)
-    dashboard = {
-      stats: {
-        availableExams: available.count,
-        upcomingExams: extra.stats.upcomingExams,
-        completedExams: extra.stats.completedExams,
-        averageScore: extra.stats.averageScore,
-      },
-      availableExams: available.exams,
-      upcomingExams: extra.upcomingExams,
-      latestResults: extra.latestResults,
-      calendarEvents: extra.calendarEvents,
-    }
-  } catch {
-    // GET /student/dashboard optional until backend provides it
-  }
-
-  return dashboard
 }
 
 export function useStudentDashboard() {

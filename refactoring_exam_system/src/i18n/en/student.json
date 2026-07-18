@@ -88,5 +88,32 @@
     "title": "Welcome to QuizHub",
     "subtitle": "Fill in your account details to join an educational space",
     "joinCodeSubtitle": "Enter the join code provided by your institution"
+  },
+  "attempt": {
+    "title": "Exam",
+    "loading": "Preparing your exam...",
+    "progress": "Question {{current}} of {{total}}",
+    "saving": "Saving...",
+    "submitting": "Submitting...",
+    "previous": "Previous",
+    "next": "Next",
+    "submit": "Submit exam",
+    "points": "{{count}} pts",
+    "questionFallback": "Question text",
+    "essayPlaceholder": "Write your answer here...",
+    "choice": "Choice",
+    "answerRequired": "Answer the current question before continuing",
+    "backDisabled": "Going back is not allowed in this exam",
+    "requireAllAnswers": "All questions must be answered before submit",
+    "submitError": "Could not submit the exam",
+    "proctoringError": "Proctoring notice",
+    "backToDashboard": "Back to student dashboard",
+    "retry": "Try again"
+  },
+  "results": {
+    "readyTitle": "Exam submitted",
+    "readyDescription": "Your answers were processed. You can review results once grading is complete.",
+    "pendingTitle": "Waiting for teacher review",
+    "pendingDescription": "Your attempt was submitted. Some answers need manual grading, and you will be notified when the result is approved."
   }
 }

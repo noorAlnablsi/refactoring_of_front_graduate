@@ -81,6 +81,36 @@ export const useAuthStore = create(
           }
         }),
 
+      setMemberships: (memberships = []) =>
+        set((state) => {
+          const next = Array.isArray(memberships) ? memberships : []
+          const selectedStillExists = next.some(
+            (item) => item.membership_id === state.selected_membership_id,
+          )
+
+          if (next.length === 0) {
+            return {
+              memberships: [],
+              selected_membership_id: null,
+              requires_workspace_selection: false,
+            }
+          }
+
+          if (next.length === 1) {
+            return {
+              memberships: next,
+              selected_membership_id: next[0].membership_id,
+              requires_workspace_selection: false,
+            }
+          }
+
+          return {
+            memberships: next,
+            selected_membership_id: selectedStillExists ? state.selected_membership_id : null,
+            requires_workspace_selection: !selectedStillExists,
+          }
+        }),
+
       clearAuth: () => set({ ...initialState }),
     }),
     {

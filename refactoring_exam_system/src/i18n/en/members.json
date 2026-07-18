@@ -1,6 +1,7 @@
 {
   "pageTitle": "Member management",
   "pageSubtitle": "Manage all students and teachers within the institution.",
+  "exportData": "Export data",
   "overview": {
     "title": "Member management",
     "subtitle": "Manage all students and teachers within the institution.",
@@ -29,8 +30,11 @@
   },
   "students": {
     "title": "Student management",
+    "pageTitle": "Student management",
     "subtitle": "Review and edit registered student profiles and manage their academic status.",
+    "pageSubtitle": "Review and edit registered student profiles and manage their academic status.",
     "inviteStudent": "Invite student",
+    "invite": "Invite student",
     "exportData": "Export data",
     "memberLabel": "Student",
     "loadError": "Could not load student list",
@@ -57,8 +61,12 @@
   },
   "teachers": {
     "title": "Faculty list",
+    "pageTitle": "Faculty list",
+    "breadcrumbTitle": "Faculty list",
     "subtitle": "Manage teaching staff and track assigned subjects.",
+    "pageSubtitle": "Manage teaching staff and track assigned subjects.",
     "addTeacher": "Add teacher",
+    "add": "Add teacher",
     "exportData": "Export data",
     "memberLabel": "Teacher",
     "loadError": "Could not load teacher list",

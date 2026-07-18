@@ -2,6 +2,7 @@
   "pageTitle": "المواد الدراسية",
   "pageSubtitle": "إدارة المواد الدراسية وتحديد المعلمين المسؤولين عنها داخل المؤسسة التعليمية بكفاءة واحترافية.",
   "addSubject": "إضافة مادة جديدة",
+  "deleteItemLabel": "المادة",
   "toasts": {
     "deleted": "تم حذف المادة"
   },
@@ -75,6 +76,11 @@
     "newest": "الأحدث"
   },
   "details": {
+    "breadcrumbLabel": "مسار المادة",
+    "manageSubjects": "المواد الدراسية",
+    "subjectDetails": "تفاصيل المادة",
+    "assignTeacher": "إسناد معلم",
+    "editSubject": "تعديل المادة",
     "tabs": {
       "overview": "نظرة عامة",
       "teachers": "المعلمون",

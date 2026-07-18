@@ -17,6 +17,8 @@ import StudentRegisterPage from './pages/student/StudentRegisterPage'
 import StudentJoinCodePage from './pages/student/StudentJoinCodePage'
 import StudentDashboardPage from './pages/student/StudentDashboardPage'
 import StudentPlaceholderPage from './pages/student/StudentPlaceholderPage'
+import ExamAttemptPage from './pages/student/ExamAttemptPage'
+import StudentResultStatusPage from './pages/student/StudentResultStatusPage'
 import StudentDashboardGuard from './components/student/dashboard/StudentDashboardGuard'
 import StudentDashboardLayout from './components/student/dashboard/StudentDashboardLayout'
 import SubjectsPage from './pages/subjects/SubjectsPage'
@@ -83,6 +85,8 @@ function App() {
       <Route path={ROUTES.STUDENT_JOIN_CODE} element={<StudentJoinCodePage />} />
 
       <Route element={<StudentDashboardGuard />}>
+        <Route path={ROUTES.STUDENT_EXAM_ATTEMPT} element={<ExamAttemptPage />} />
+
         <Route element={<StudentDashboardLayout />}>
           <Route path={ROUTES.STUDENT_DASHBOARD} element={<StudentDashboardPage />} />
           <Route
@@ -91,7 +95,11 @@ function App() {
           />
           <Route
             path={ROUTES.STUDENT_RESULTS}
-            element={<StudentPlaceholderPage page="results" />}
+            element={<StudentResultStatusPage mode="results" />}
+          />
+          <Route
+            path={ROUTES.STUDENT_RESULTS_PENDING}
+            element={<StudentResultStatusPage mode="pending" />}
           />
           <Route
             path={ROUTES.STUDENT_SETTINGS}

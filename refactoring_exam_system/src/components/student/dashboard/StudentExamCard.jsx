@@ -1,7 +1,15 @@
+import { useNavigate } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
+import { ROUTES } from '../../../constants/routes'
 
 function StudentExamCard({ exam }) {
   const { t } = useTranslation('student')
+  const navigate = useNavigate()
+
+  const handleStart = () => {
+    if (!exam?.id) return
+    navigate(ROUTES.STUDENT_EXAM_ATTEMPT.replace(':testId', String(exam.id)))
+  }
 
   return (
     <article className="flex h-full flex-col rounded-2xl bg-white p-5 shadow-[0_1px_3px_rgba(16,24,40,0.06)] ring-1 ring-[#E5E9EB]/80">
@@ -26,6 +34,7 @@ function StudentExamCard({ exam }) {
 
       <button
         type="button"
+        onClick={handleStart}
         className="mt-auto w-full rounded-xl bg-[#2AA8A2] py-3 pt-5 text-sm font-bold text-white shadow-[0_8px_18px_rgba(42,168,162,0.24)] transition hover:opacity-95"
       >
         {t('examCard.start')}

@@ -13,7 +13,6 @@ function PathSelectionPage() {
   const navigate = useNavigate()
   const access_token = useAuthStore((s) => s.access_token)
   const memberships = useAuthStore((s) => s.memberships)
-  const requires_workspace_selection = useAuthStore((s) => s.requires_workspace_selection)
   const setSelectedMembership = useAuthStore((s) => s.setSelectedMembership)
   const [selectedId, setSelectedId] = useState(null)
   const [error, setError] = useState('')
@@ -25,18 +24,17 @@ function PathSelectionPage() {
     }
 
     if (memberships.length === 0) {
-      navigate(ROUTES.HOME, { replace: true })
+      navigate(ROUTES.JOIN, { replace: true })
       return
     }
 
-    if (!requires_workspace_selection && memberships.length === 1) {
+    if (memberships.length === 1) {
       setSelectedMembership(memberships[0].membership_id)
       navigate(resolveMembershipHomeRoute(memberships[0]), { replace: true })
     }
   }, [
     access_token,
     memberships,
-    requires_workspace_selection,
     navigate,
     setSelectedMembership,
   ])
@@ -53,7 +51,7 @@ function PathSelectionPage() {
   }
 
   if (!access_token || memberships.length === 0) return null
-  if (!requires_workspace_selection && memberships.length <= 1) return null
+  if (memberships.length <= 1) return null
 
   const hasMultiplePaths = memberships.length > 1
 

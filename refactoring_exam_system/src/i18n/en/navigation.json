@@ -31,6 +31,12 @@
     "students": "Student management",
     "changePassword": "Reset password"
   },
+  "breadcrumb": {
+    "home": "Home",
+    "settings": "Settings"
+  },
+  "home": "Home",
+  "members": "Member management",
   "wizardSteps": {
     "examInfo": "Information",
     "examQuestions": "Add questions",

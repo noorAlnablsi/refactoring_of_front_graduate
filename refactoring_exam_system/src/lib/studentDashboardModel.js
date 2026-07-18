@@ -21,7 +21,7 @@ function formatAvailabilityLabel(test) {
     }
   }
 
-  if (test.published_at) {
+  if (test.published_at || test.status === 'PUBLISHED') {
     return tStudent('availability.availableNow')
   }
 
@@ -33,21 +33,33 @@ function formatSubjectFallback(subjectId) {
   return tStudent('subjectFallback', { id: subjectId })
 }
 
+function pickStartDate(test) {
+  const raw =
+    test.start_time ||
+    test.starts_at ||
+    test.availability_window?.available_from ||
+    test.available_from ||
+    null
+  if (!raw) return null
+  const parsed = new Date(raw)
+  return Number.isNaN(parsed.getTime()) ? null : parsed
+}
+
 export function normalizeAvailableTestFromApi(test) {
   return {
     id: test.test_id ?? test.id,
-    subject: test.subject_name || formatSubjectFallback(test.subject_id),
+    subject: test.subject_name || test.subject || formatSubjectFallback(test.subject_id),
     title: test.name || test.title || '—',
     teacher: test.teacher_name || test.teacher || '—',
     durationMinutes: test.duration_minutes ?? 0,
     questionsCount: test.questions_count ?? test.question_count ?? 0,
-    availability: test.availability_label || formatAvailabilityLabel(test),
+    availability: test.availability_label || test.availability_note || formatAvailabilityLabel(test),
     proctored: Boolean(test.proctored ?? test.is_proctored),
   }
 }
 
 export function normalizeAvailableTestsResponse(data) {
-  const tests = data?.tests || data?.items || []
+  const tests = data?.tests || data?.items || (Array.isArray(data) ? data : [])
 
   return {
     count: data?.count ?? tests.length,
@@ -55,76 +67,50 @@ export function normalizeAvailableTestsResponse(data) {
   }
 }
 
+const UPCOMING_TONES = ['teal', 'blue', 'purple']
+
 /**
- * Normalizes GET /student/dashboard response for UI components.
+ * Normalizes GET /student/tests/upcoming (array or wrapped payload).
  */
-export function normalizeStudentDashboard(data) {
-  const payload = data?.dashboard || data || {}
-
-  return {
-    stats: {
-      availableExams: payload.stats?.available_exams ?? payload.stats?.availableExams ?? 0,
-      upcomingExams: payload.stats?.upcoming_exams ?? payload.stats?.upcomingExams ?? 0,
-      completedExams: payload.stats?.completed_exams ?? payload.stats?.completedExams ?? 0,
-      averageScore: payload.stats?.average_score ?? payload.stats?.averageScore ?? 0,
-    },
-    availableExams: (payload.available_exams || payload.availableExams || []).map(normalizeAvailableExam),
-    upcomingExams: (payload.upcoming_exams || payload.upcomingExams || []).map(normalizeUpcomingExam),
-    latestResults: (payload.latest_results || payload.latestResults || []).map(normalizeLatestResult),
-    calendarEvents: (payload.calendar_events || payload.calendarEvents || []).map(normalizeCalendarEvent),
-  }
+export function normalizeUpcomingTestsResponse(data) {
+  const tests = Array.isArray(data) ? data : data?.tests || data?.items || []
+  return tests.map((exam, index) => normalizeUpcomingExam(exam, index))
 }
 
-function normalizeAvailableExam(exam) {
-  if (exam.test_id != null || (exam.name && exam.subject_id != null)) {
-    return normalizeAvailableTestFromApi(exam)
-  }
+export function normalizeUpcomingExam(exam, index = 0) {
+  const startsAt = pickStartDate(exam)
+  const dateLabel = startsAt
+    ? startsAt.toLocaleDateString(getDateLocale(), { dateStyle: 'medium' })
+    : exam.date_label || exam.dateLabel || exam.time_until_start_human || '—'
+  const timeLabel = startsAt
+    ? startsAt.toLocaleTimeString(getDateLocale(), { timeStyle: 'short' })
+    : exam.time_label || exam.timeLabel || exam.availability_note || '—'
 
   return {
-    id: exam.id,
-    subject: exam.subject_name || exam.subject || '—',
+    id: exam.test_id ?? exam.id,
+    subjectCode: exam.subject || exam.subject_code || exam.subjectCode || exam.subject_name || '—',
     title: exam.title || exam.name || '—',
     teacher: exam.teacher_name || exam.teacher || '—',
-    durationMinutes: exam.duration_minutes ?? exam.durationMinutes ?? 0,
-    questionsCount: exam.questions_count ?? exam.questionsCount ?? 0,
-    availability: exam.availability_label || exam.availability || '—',
-    proctored: Boolean(exam.proctored ?? exam.is_proctored),
+    dateLabel,
+    timeLabel,
+    tone: exam.tone || UPCOMING_TONES[index % UPCOMING_TONES.length],
+    startsAt: startsAt ? startsAt.toISOString() : exam.starts_at || exam.start_time || null,
   }
 }
 
-function normalizeUpcomingExam(exam) {
-  return {
-    id: exam.id,
-    subjectCode: exam.subject_code || exam.subjectCode || exam.subject_name || '—',
-    title: exam.title || exam.name || '—',
-    teacher: exam.teacher_name || exam.teacher || '—',
-    dateLabel: exam.date_label || exam.dateLabel || '—',
-    timeLabel: exam.time_label || exam.timeLabel || '—',
-    tone: exam.tone || 'teal',
-    startsAt: exam.starts_at || exam.startsAt || null,
-  }
-}
-
-function normalizeLatestResult(row) {
-  const status = row.status === 'pending' || row.status === 'UNDER_REVIEW' ? 'pending' : 'approved'
-
-  return {
-    id: row.id,
-    exam: row.exam_name || row.exam || '—',
-    subject: row.subject_name || row.subject || '—',
-    score: row.score_label || row.score || '—',
-    scoreDetail: row.score_detail || row.scoreDetail || null,
-    date: row.date_label || row.date || '—',
-    status,
-  }
-}
-
-function normalizeCalendarEvent(event) {
-  return {
-    date: event.date,
-    examId: event.exam_id ?? event.examId ?? null,
-    title: event.title || null,
-  }
+export function buildCalendarEventsFromUpcoming(upcomingExams = []) {
+  return upcomingExams
+    .map((exam) => {
+      if (!exam.startsAt) return null
+      const parsed = new Date(exam.startsAt)
+      if (Number.isNaN(parsed.getTime())) return null
+      return {
+        date: parsed.toISOString().slice(0, 10),
+        examId: exam.id,
+        title: exam.title,
+      }
+    })
+    .filter(Boolean)
 }
 
 export function getCalendarEventDays(events = [], year, month) {
