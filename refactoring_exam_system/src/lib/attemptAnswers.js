@@ -1,4 +1,6 @@
 /** Question type codes from attempt.questions[].snapshot_type_code */
+import { normalizeSettingsConfig } from './testSettings'
+
 export const ATTEMPT_QUESTION_TYPE = {
   MCQ: 'MCQ',
   TRUE_FALSE: 'TRUE_FALSE',
@@ -130,32 +132,14 @@ export function getUnansweredQuestionIds(answersMap, questions = []) {
 
 export function readAttemptNavigationSettings(testOrSettings) {
   const config = testOrSettings?.settings_config || testOrSettings || {}
-  const navigation = config.navigation_settings || {}
-  const answer = config.answer_rules || {}
-  const proctoring = config.proctoring || {}
-
-  const allowBack =
-    typeof navigation.allow_back_navigation === 'boolean'
-      ? navigation.allow_back_navigation
-      : typeof navigation.sequential_navigation === 'boolean'
-        ? !navigation.sequential_navigation
-        : true
-
-  const allowSkip =
-    typeof answer.allow_skip_questions === 'boolean'
-      ? answer.allow_skip_questions
-      : typeof answer.require_answer_all === 'boolean'
-        ? !answer.require_answer_all
-        : true
-
-  const requireAll =
-    typeof answer.require_answer_all === 'boolean' ? answer.require_answer_all : !allowSkip
+  // Flat or nested settings_config — same source of truth as teacher wizard.
+  const flat = normalizeSettingsConfig(config)
 
   return {
-    allowBackNavigation: allowBack,
-    allowSkipQuestions: allowSkip,
-    requireAnswerAll: requireAll,
-    fullscreenRequired: Boolean(proctoring.fullscreen_required),
+    allowBackNavigation: Boolean(flat.allow_back_navigation),
+    allowSkipQuestions: Boolean(flat.allow_skip_questions),
+    requireAnswerAll: Boolean(flat.require_all_answers) || !flat.allow_skip_questions,
+    fullscreenRequired: Boolean(flat.fullscreen_required),
   }
 }
 
@@ -194,4 +178,29 @@ export function formatCountdown(totalSeconds) {
   }
 
   return `${String(minutes).padStart(2, '0')}:${String(secs).padStart(2, '0')}`
+}
+
+/** Design timer segments: `01 : 45 : 21` */
+export function formatCountdownSpaced(totalSeconds) {
+  const seconds = Math.max(0, Math.floor(Number(totalSeconds) || 0))
+  const hours = Math.floor(seconds / 3600)
+  const minutes = Math.floor((seconds % 3600) / 60)
+  const secs = seconds % 60
+
+  if (hours > 0) {
+    return `${String(hours).padStart(2, '0')} : ${String(minutes).padStart(2, '0')} : ${String(secs).padStart(2, '0')}`
+  }
+
+  return `${String(minutes).padStart(2, '0')} : ${String(secs).padStart(2, '0')}`
+}
+
+export function getQuestionImageUrl(question) {
+  if (!question) return null
+  return (
+    question.snapshot_image_url ||
+    question.snapshot_image_path ||
+    question.image_url ||
+    question.image_path ||
+    null
+  )
 }

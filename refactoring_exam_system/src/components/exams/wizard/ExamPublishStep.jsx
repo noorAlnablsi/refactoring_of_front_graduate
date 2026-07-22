@@ -185,7 +185,7 @@ function ExamPublishStep({
   }
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-6 pb-24">
+    <form onSubmit={handleSubmit} className="space-y-6">
       <header className="text-right">
         <p className="text-sm font-bold text-[#2AA8A2]">{t('wizard.publish.eyebrow', { ns: 'exams' })}</p>
         <h2 className="mt-2 text-[28px] font-extrabold leading-tight text-[#2A3433] md:text-[32px]">

@@ -29,23 +29,23 @@ function SoftDeleteConfirmDialog({
 
   return (
     <div className={shellModalOverlayClass}>
-      <div dir="rtl" className={`max-w-md ${shellModalPanelClass}`}>
-        <div className="flex items-start gap-3">
-          <span className="mt-1 rounded-full bg-[var(--shell-danger-bg)] p-2 text-[var(--shell-danger-text)]">
-            <AlertTriangle className="h-5 w-5" />
-          </span>
-          <div>
+      <div className={`max-w-md ${shellModalPanelClass}`}>
+        <div className="text-start">
+          <div className="flex items-center gap-3">
+            <span className="flex shrink-0 rounded-full bg-[var(--shell-danger-bg)] p-2 text-[var(--shell-danger-text)]">
+              <AlertTriangle className="h-5 w-5" />
+            </span>
             <h3 className={`text-lg ${shellPageTitleClass}`}>{resolvedTitle}</h3>
-            <p className={`mt-2 text-sm leading-7 ${shellBodyTextClass}`}>{resolvedMessage}</p>
-            {itemName ? (
-              <p className={`mt-2 text-sm leading-7 ${shellBodyTextClass}`}>
-                {resolvedItemLabel}: <span className={`font-bold ${shellPageTitleClass}`}>{itemName}</span>
-              </p>
-            ) : null}
-            <p className={`mt-3 rounded-xl bg-[var(--shell-input-bg)] px-3 py-2 text-xs leading-6 ${shellBodyTextClass}`}>
-              {resolvedRecoveryNote}
-            </p>
           </div>
+          <p className={`mt-3 text-sm leading-7 ${shellBodyTextClass}`}>{resolvedMessage}</p>
+          {itemName ? (
+            <p className={`mt-2 text-sm leading-7 ${shellBodyTextClass}`}>
+              {resolvedItemLabel}: <span className={`font-bold ${shellPageTitleClass}`}>{itemName}</span>
+            </p>
+          ) : null}
+          <p className={`mt-3 rounded-xl bg-[var(--shell-input-bg)] px-3 py-2 text-xs leading-6 ${shellBodyTextClass}`}>
+            {resolvedRecoveryNote}
+          </p>
         </div>
 
         <div className="mt-7 flex items-center justify-end gap-3">

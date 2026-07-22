@@ -114,6 +114,28 @@ export function useProctoring({
     }
   }, [])
 
+  const getService = useCallback(() => serviceRef.current, [])
+
+  const adoptService = useCallback(
+    (service, { testOrSettings: settingsSource } = {}) => {
+      if (!service) return
+
+      serviceRef.current = service
+      service.setVideoElement?.(videoRef.current)
+
+      if (settingsSource) {
+        const settings = getProctoringSettings(settingsSource)
+        service.settings = settings
+      }
+
+      setRunning(true)
+      setStatus(service.connectionState || PROCTORING_CONNECTION_STATE.SESSION_ACTIVE)
+      setCameraStream(service.camera?.getStream?.() || null)
+      setError(null)
+    },
+    [],
+  )
+
   return {
     status,
     warning,
@@ -123,6 +145,8 @@ export function useProctoring({
     videoRef: bindVideo,
     start,
     stop,
+    getService,
+    adoptService,
     clearWarning: () => setWarning(null),
   }
 }

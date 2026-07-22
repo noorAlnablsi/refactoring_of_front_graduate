@@ -1,9 +1,13 @@
 import { LANGUAGE, LANGUAGE_DIRECTION, LANGUAGE_STORAGE_KEY } from '../constants/language'
 
+export function getLanguageDirection(language) {
+  return language === LANGUAGE.EN ? LANGUAGE_DIRECTION[LANGUAGE.EN] : LANGUAGE_DIRECTION[LANGUAGE.AR]
+}
+
 export function applyDocumentLanguage(language) {
   const root = document.documentElement
   const lang = language === LANGUAGE.EN ? LANGUAGE.EN : LANGUAGE.AR
-  const dir = LANGUAGE_DIRECTION[lang]
+  const dir = getLanguageDirection(lang)
 
   root.lang = lang
   root.dir = dir

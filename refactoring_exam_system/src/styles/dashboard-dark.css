@@ -48,9 +48,28 @@
   background-color: var(--shell-danger-bg) !important;
 }
 
+.dark [data-app-shell='dashboard'] .text-\[\#1F2533\],
 .dark [data-app-shell='dashboard'] .text-\[\#2A3433\],
 .dark [data-app-shell='dashboard'] .text-\[\#374151\] {
   color: var(--shell-text) !important;
+}
+
+.dark [data-app-shell='dashboard'] .bg-\[\#D1FAE5\] {
+  background-color: var(--shell-brand-bg) !important;
+}
+
+.dark [data-app-shell='dashboard'] .border-\[\#EEF2F4\],
+.dark [data-app-shell='dashboard'] .border-\[\#E5E9EB\],
+.dark [data-app-shell='dashboard'] .border-\[\#F1F5F9\] {
+  border-color: var(--shell-border) !important;
+}
+
+.dark [data-app-shell='dashboard'] .bg-\[\#E8EEF0\] {
+  background-color: var(--shell-border) !important;
+}
+
+.dark [data-app-shell='dashboard'] .shadow-\[0_8px_18px_rgba\(42\,168\,162\,0\.24\)\] {
+  box-shadow: var(--shell-shadow-accent) !important;
 }
 
 .dark [data-app-shell='dashboard'] .text-\[\#64748B\],

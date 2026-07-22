@@ -1,5 +1,8 @@
 {
   "Account already exists. Please login first.": "الحساب موجود بالفعل. يرجى تسجيل الدخول أولاً.",
+  "Account deleted successfully": "تم حذف الحساب بنجاح",
+  "Account is already deleted": "الحساب محذوف بالفعل",
+  "Account already deleted": "الحساب محذوف بالفعل",
   "Account is disabled": "الحساب معطّل",
   "Account is suspended": "الحساب موقوف",
   "Admin access required": "يلزم وصول المشرف",

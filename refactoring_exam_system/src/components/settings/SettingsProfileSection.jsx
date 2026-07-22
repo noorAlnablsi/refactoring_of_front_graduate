@@ -140,6 +140,13 @@ function SettingsWorkspacesCard() {
 
   const activeCount = memberships.length
 
+  const orderedMemberships = [...memberships].sort((a, b) => {
+    const aActive = a.membership_id === selectedMembershipId
+    const bActive = b.membership_id === selectedMembershipId
+    if (aActive === bActive) return 0
+    return aActive ? -1 : 1
+  })
+
   const handleConfirmDelete = async () => {
     if (!deleteTarget) return
     const ok = await deleteOwnedWorkspace(deleteTarget)
@@ -165,7 +172,7 @@ function SettingsWorkspacesCard() {
             <p className="py-2 text-sm text-[var(--shell-text-muted)]">{t('workspaces.empty')}</p>
           ) : null}
 
-          {memberships.map((membership) => {
+          {orderedMemberships.map((membership) => {
             const isActive = membership.membership_id === selectedMembershipId
             const workspaceName = membership.workspace?.name?.trim() || t('profile.defaultWorkspace')
             const roleLabel = getMembershipRoleLabel(membership)
@@ -177,12 +184,12 @@ function SettingsWorkspacesCard() {
                 key={membership.membership_id}
                 className={`relative flex items-center gap-3 rounded-xl border px-4 py-4 ${
                   isActive
-                    ? 'border-[var(--shell-accent)]/30 bg-[var(--shell-accent-bg)]'
+                    ? 'border-[var(--shell-accent)]/35 bg-[var(--shell-accent-bg)] pt-7'
                     : 'border-[var(--shell-border)] bg-[var(--shell-surface)]'
                 }`}
               >
                 {isActive ? (
-                  <span className="absolute end-4 top-0 -translate-y-1/2 rounded-md bg-[var(--shell-accent)] px-2.5 py-0.5 text-[10px] font-bold text-[var(--shell-accent-contrast)] shadow-sm">
+                  <span className="absolute end-3 top-2 rounded-md bg-[var(--shell-accent)] px-2.5 py-0.5 text-[10px] font-bold leading-none text-[var(--shell-accent-contrast)] shadow-sm">
                     {t('workspaces.current')}
                   </span>
                 ) : null}

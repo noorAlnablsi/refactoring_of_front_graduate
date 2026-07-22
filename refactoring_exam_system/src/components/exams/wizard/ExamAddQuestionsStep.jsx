@@ -139,18 +139,28 @@ function ExamAddQuestionsStep({
 
   const openGeneratedReview = (source, nextQuestions) => {
     const list = resolveGeneratedQuestions(nextQuestions)
-    if (!list.length) return
+    if (!list.length) return false
     setGeneratedQuestions(list)
     setReviewSource(source)
     setShowGeneratedView(true)
     setSelectedFromBank(null)
     setFromBankSelectedIds([])
-        setShowManualView(false)
-        setShowCsvView(false)
-        setShowAiView(false)
-        setBlueprintBanks(null)
+    setShowManualView(false)
+    setShowCsvView(false)
+    setShowAiView(false)
+    setBlueprintBanks(null)
     setRestoredBlueprints(null)
     setActiveMethod(null)
+    return true
+  }
+
+  const finishQuestionsImport = async (source, importedQuestions) => {
+    const refreshed = await onRefresh?.()
+    const nextQuestions =
+      (importedQuestions?.length ? importedQuestions : null) ||
+      refreshed?.questions ||
+      null
+    openGeneratedReview(source, nextQuestions)
   }
 
   const handleBanksSelected = (banks) => {
@@ -199,7 +209,7 @@ function ExamAddQuestionsStep({
     )
   }
 
-  if (showGeneratedView && questions.length) {
+  if (showGeneratedView && (generatedQuestions?.length || questions.length)) {
     return (
       <ExamRandomGeneratedQuestionsPanel
         questions={generatedQuestions?.length ? generatedQuestions : questions}
@@ -247,9 +257,8 @@ function ExamAddQuestionsStep({
             selectedQuestionIds,
           })
         }
-        onSuccess={async () => {
-          await onRefresh?.()
-          openGeneratedReview('from-bank')
+        onSuccess={async (importedQuestions) => {
+          await finishQuestionsImport('from-bank', importedQuestions)
         }}
       />
     )
@@ -272,8 +281,7 @@ function ExamAddQuestionsStep({
         }
         onSuccess={onRefresh}
         onViewQuestions={async () => {
-          await onRefresh?.()
-          openGeneratedReview('manual')
+          await finishQuestionsImport('manual')
         }}
       />
     )
@@ -294,9 +302,8 @@ function ExamAddQuestionsStep({
             reviewSource: 'exam',
           })
         }
-        onSuccess={async () => {
-          await onRefresh?.()
-          openGeneratedReview('exam')
+        onSuccess={async (importedQuestions) => {
+          await finishQuestionsImport('exam', importedQuestions)
         }}
       />
     )
@@ -318,9 +325,8 @@ function ExamAddQuestionsStep({
             reviewSource: 'exam',
           })
         }
-        onSuccess={async () => {
-          await onRefresh?.()
-          openGeneratedReview('exam')
+        onSuccess={async (importedQuestions) => {
+          await finishQuestionsImport('exam', importedQuestions)
         }}
       />
     )

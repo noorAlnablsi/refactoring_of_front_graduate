@@ -57,6 +57,7 @@
     font-family: 'Cairo', 'Tajawal', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI',
       sans-serif;
     scroll-behavior: smooth;
+    --a11y-font-scale: 1;
   }
 
   body {
@@ -77,3 +78,4 @@
 }
 
 @import './styles/dashboard-dark.css';
+@import './styles/a11y.css';

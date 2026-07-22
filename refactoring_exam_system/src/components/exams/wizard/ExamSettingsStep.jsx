@@ -1,6 +1,8 @@
 import { useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { ArrowLeft, ArrowRight } from 'lucide-react'
+import { TEST_AVAILABILITY_TIME_MODE } from '../../../constants/tests'
+import { showAppToast } from '../../../lib/appToast'
 import {
   buildTestSettingsFormState,
   buildTestSettingsPayload,
@@ -10,6 +12,7 @@ import ExamWizardFooter from '../ExamWizardFooter'
 import {
   ExamAnswerRulesSection,
   ExamAttemptSettingsSection,
+  ExamAvailabilitySettingsSection,
   ExamDisplaySettingsSection,
   ExamNavigationSettingsSection,
 } from '../settings/ExamSettingsSections'
@@ -65,12 +68,21 @@ function ExamSettingsStep({
     }))
   }
 
+  const validateAvailability = () => {
+    if (form.availability_time_mode !== TEST_AVAILABILITY_TIME_MODE.SCHEDULED) return true
+    if (form.starts_at) return true
+    showAppToast('validation.startsAtRequired', 'error', { ns: 'exams' })
+    return false
+  }
+
   const handleSubmit = (event) => {
     event.preventDefault()
+    if (!validateAvailability()) return
     onSubmit(buildTestSettingsPayload(form))
   }
 
   const handleSaveDraftClick = () => {
+    if (!validateAvailability()) return
     onSaveDraft?.(buildTestSettingsPayload(form))
   }
 
@@ -78,7 +90,7 @@ function ExamSettingsStep({
   const severity = cfg.severity_policy || getDefaultSeverityPolicy()
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-6 pb-28">
+    <form onSubmit={handleSubmit} className="space-y-6">
       <header className="text-right">
         <p className="text-sm font-bold text-[#2AA8A2]">{t('wizard.settings.eyebrow')}</p>
         <h2 className="mt-2 text-[28px] font-extrabold leading-tight text-[#2A3433] md:text-[32px]">
@@ -87,13 +99,14 @@ function ExamSettingsStep({
         <p className="mt-3 max-w-3xl text-sm leading-8 text-[#64748B]">{t('wizard.settings.subtitle')}</p>
       </header>
 
+      <ExamAvailabilitySettingsSection form={form} onFormChange={setForm} />
       <ExamAttemptSettingsSection form={form} onFormChange={setForm} />
       <ExamNavigationSettingsSection cfg={cfg} onSetNavigationMode={setNavigationMode} />
       <ExamAnswerRulesSection cfg={cfg} onSetAnswerRule={setAnswerRule} />
       <ExamDisplaySettingsSection cfg={cfg} onSetSetting={setSetting} />
       <ExamProctoringSettingsSection cfg={cfg} severity={severity} onSetSetting={setSetting} />
 
-      <ExamWizardFooter className="-mx-1">
+      <ExamWizardFooter className="-mx-1 mt-2">
         <div className="flex flex-wrap items-center justify-between gap-3">
           <button
             type="button"

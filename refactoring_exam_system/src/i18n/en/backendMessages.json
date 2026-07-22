@@ -1,5 +1,8 @@
 {
   "Account already exists. Please login first.": "Account already exists. Please login first.",
+  "Account deleted successfully": "Account deleted successfully",
+  "Account is already deleted": "Account is already deleted",
+  "Account already deleted": "Account already deleted",
   "Account is disabled": "Account is disabled",
   "Account is suspended": "Account is suspended",
   "Admin access required": "Admin access required",

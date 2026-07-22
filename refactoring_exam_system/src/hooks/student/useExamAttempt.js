@@ -12,6 +12,10 @@ import {
 } from '../../lib/attemptAnswers'
 import { isProctoringEnabled } from '../../lib/proctoring/isProctoringEnabled'
 import {
+  getEntryProctoringBridge,
+  clearEntryProctoringBridge,
+} from '../../lib/proctoring/entrySessionBridge'
+import {
   collectBrowserMetadata,
   collectDeviceMetadata,
 } from '../../lib/proctoring/wsUrl'
@@ -24,9 +28,21 @@ import {
   startTestAttempt,
   submitTestAttempt,
 } from '../../services/tests.service'
+import {
+  applyEntryRulesToNavSettings,
+  clearAttemptEntryRules,
+  loadAttemptEntryRules,
+} from '../../lib/attemptEntryRules'
+import { clearAttemptLocalDraft, loadAttemptLocalDraft, saveAttemptLocalDraft, applyLocalDraftToAttemptState } from '../../lib/attemptLocalDraft'
 import { useProctoring } from '../proctoring/useProctoring'
 
 const AUTOSAVE_INTERVAL_MS = 30_000
+
+function hydrateAttemptState(testId, attempt, serverAnswersMap) {
+  const questionsLength = attempt?.questions?.length || 0
+  const draft = loadAttemptLocalDraft(testId, attempt?.id)
+  return applyLocalDraftToAttemptState(draft, { serverAnswersMap, questionsLength })
+}
 
 async function resolveTestSettings(testId) {
   // Prefer student-accessible sources. GET /tests/{id} may 403 for students.
@@ -75,6 +91,8 @@ export function useExamAttempt(testId) {
   const [dirty, setDirty] = useState(false)
   const [submitResult, setSubmitResult] = useState(null)
   const [retryNonce, setRetryNonce] = useState(0)
+  const [markedIds, setMarkedIds] = useState(() => new Set())
+  const [entryRules, setEntryRules] = useState(() => loadAttemptEntryRules(testId))
 
   const answersRef = useRef({})
   const attemptRef = useRef(null)
@@ -83,10 +101,30 @@ export function useExamAttempt(testId) {
   const dirtyRef = useRef(false)
   const startProctoringRef = useRef(null)
   const stopProctoringRef = useRef(null)
+  const adoptProctoringRef = useRef(null)
+  const markedIdsRef = useRef(markedIds)
+  const currentIndexRef = useRef(currentIndex)
+
+  markedIdsRef.current = markedIds
+  currentIndexRef.current = currentIndex
+
+  const persistLocalDraft = useCallback(() => {
+    const currentAttempt = attemptRef.current
+    if (!testId || !currentAttempt?.id) return
+    saveAttemptLocalDraft(testId, currentAttempt.id, {
+      answersMap: answersRef.current,
+      markedIds: [...markedIdsRef.current],
+      currentIndex: currentIndexRef.current,
+    })
+  }, [testId])
 
   const attemptId = attempt?.id ?? null
   const questions = attempt?.questions || []
-  const navSettings = useMemo(() => readAttemptNavigationSettings(test), [test])
+  const navSettings = useMemo(
+    () =>
+      applyEntryRulesToNavSettings(readAttemptNavigationSettings(test), entryRules),
+    [test, entryRules],
+  )
   const proctoringRequired = isProctoringEnabled(test)
 
   const proctoring = useProctoring({
@@ -98,6 +136,7 @@ export function useExamAttempt(testId) {
 
   startProctoringRef.current = proctoring.start
   stopProctoringRef.current = proctoring.stop
+  adoptProctoringRef.current = proctoring.adoptService
 
   const setAnswers = useCallback((updater) => {
     setAnswersMap((prev) => {
@@ -130,6 +169,23 @@ export function useExamAttempt(testId) {
     }
   }, [testId])
 
+  const applyHydratedAnswers = useCallback(
+    (resolvedAttempt, serverMap) => {
+      const draft = loadAttemptLocalDraft(testId, resolvedAttempt?.id)
+      const hydrated = hydrateAttemptState(testId, resolvedAttempt, serverMap)
+      answersRef.current = hydrated.answersMap
+      setAnswersMap(hydrated.answersMap)
+      setMarkedIds(hydrated.markedIds)
+      setCurrentIndex(hydrated.currentIndex)
+      markedIdsRef.current = hydrated.markedIds
+      currentIndexRef.current = hydrated.currentIndex
+      const hasLocalOverlay = Boolean(draft)
+      dirtyRef.current = hasLocalOverlay
+      setDirty(hasLocalOverlay)
+    },
+    [testId],
+  )
+
   useEffect(() => {
     if (!testId) return undefined
 
@@ -141,7 +197,80 @@ export function useExamAttempt(testId) {
       autoSubmitTriggeredRef.current = false
 
       try {
-        // 1) Start/resume attempt FIRST (student entry point).
+        const entryBridge = getEntryProctoringBridge(testId)
+
+        if (entryBridge?.attempt?.id) {
+          let resolvedAttempt = entryBridge.attempt
+          let resolvedTest = entryBridge.test
+          const bridgedRules = entryBridge.entryRules || loadAttemptEntryRules(testId)
+          if (bridgedRules && !cancelled) setEntryRules(bridgedRules)
+
+          try {
+            const details = await getTestAttempt(testId, resolvedAttempt.id)
+            if (!cancelled) {
+              resolvedAttempt = normalizeAttemptPayload(details) || resolvedAttempt
+            }
+          } catch {
+            // keep bridged attempt
+          }
+
+          // Enrich settings from student-accessible sources (entry payload may omit answer_rules).
+          try {
+            const fromList = await resolveTestSettings(testId)
+            if (fromList?.settings_config) {
+              resolvedTest = {
+                ...fromList,
+                ...resolvedTest,
+                settings_config: {
+                  ...(fromList.settings_config || {}),
+                  ...(resolvedTest?.settings_config || {}),
+                  answer_rules: {
+                    ...(resolvedTest?.settings_config?.answer_rules || {}),
+                    ...(fromList.settings_config?.answer_rules || {}),
+                  },
+                  navigation_settings: {
+                    ...(resolvedTest?.settings_config?.navigation_settings || {}),
+                    ...(fromList.settings_config?.navigation_settings || {}),
+                  },
+                },
+                name: resolvedTest?.name || fromList.name || fromList.title,
+              }
+            }
+          } catch {
+            // keep bridged test
+          }
+
+          if (cancelled) return
+
+          setTest(resolvedTest)
+          attemptRef.current = resolvedAttempt
+          setAttempt(resolvedAttempt)
+          setRemainingSeconds(Number(resolvedAttempt.remaining_seconds) || 0)
+
+          applyHydratedAnswers(
+            resolvedAttempt,
+            buildAnswersMapFromAttempt(resolvedAttempt.answers),
+          )
+
+          const settings = readAttemptNavigationSettings(resolvedTest)
+          if (settings.fullscreenRequired && !document.fullscreenElement) {
+            try {
+              await document.documentElement.requestFullscreen?.()
+            } catch {
+              // ignore
+            }
+          }
+
+          if (entryBridge.service) {
+            adoptProctoringRef.current?.(entryBridge.service, {
+              testOrSettings: resolvedTest,
+            })
+          }
+
+          return
+        }
+
+        // Fallback: direct navigation to attempt (resume / legacy).
         const startData = await startTestAttempt(testId)
         if (cancelled) return
 
@@ -188,12 +317,10 @@ export function useExamAttempt(testId) {
         setAttempt(resolvedAttempt)
         setRemainingSeconds(Number(resolvedAttempt.remaining_seconds) || 0)
 
-        const map = buildAnswersMapFromAttempt(resolvedAttempt.answers)
-        answersRef.current = map
-        setAnswersMap(map)
-        setCurrentIndex(0)
-        dirtyRef.current = false
-        setDirty(false)
+        applyHydratedAnswers(
+          resolvedAttempt,
+          buildAnswersMapFromAttempt(resolvedAttempt.answers),
+        )
 
         const settings = readAttemptNavigationSettings(resolvedTest)
         if (settings.fullscreenRequired && !document.fullscreenElement) {
@@ -238,7 +365,12 @@ export function useExamAttempt(testId) {
     return () => {
       cancelled = true
     }
-  }, [testId, retryNonce])
+  }, [testId, retryNonce, applyHydratedAnswers])
+
+  useEffect(() => {
+    if (loading || !attemptId) return
+    persistLocalDraft()
+  }, [answersMap, markedIds, currentIndex, loading, attemptId, persistLocalDraft])
 
   useEffect(() => {
     if (loading || submitting || !attemptId) return undefined
@@ -346,9 +478,24 @@ export function useExamAttempt(testId) {
     [currentIndex, navSettings.allowBackNavigation, canLeaveCurrentQuestion, questions.length],
   )
 
+  const toggleMarkForReview = useCallback((testQuestionId) => {
+    setMarkedIds((prev) => {
+      const next = new Set(prev)
+      if (next.has(testQuestionId)) next.delete(testQuestionId)
+      else next.add(testQuestionId)
+      return next
+    })
+  }, [])
+
   const submit = useCallback(async () => {
     if (submittingRef.current) return null
     if (!testId || !attemptId) throw new Error('Missing attempt')
+
+    if (markedIds.size > 0) {
+      const error = new Error('MARKED_REMAINING')
+      error.markedCount = markedIds.size
+      throw error
+    }
 
     if (navSettings.requireAnswerAll) {
       const missing = getUnansweredQuestionIds(answersRef.current, questions)
@@ -366,7 +513,10 @@ export function useExamAttempt(testId) {
     try {
       await persistAnswers()
       await stopProctoringRef.current?.()
+      clearEntryProctoringBridge()
       const data = await submitTestAttempt(testId, attemptId)
+      clearAttemptLocalDraft(testId, attemptId)
+      clearAttemptEntryRules(testId)
       const redirect = resolveSubmitRedirect(data)
       setSubmitResult({ data, redirect })
       return { data, redirect }
@@ -377,7 +527,7 @@ export function useExamAttempt(testId) {
       submittingRef.current = false
       setSubmitting(false)
     }
-  }, [testId, attemptId, navSettings.requireAnswerAll, questions, persistAnswers])
+  }, [testId, attemptId, markedIds, navSettings.requireAnswerAll, questions, persistAnswers])
 
   useEffect(() => {
     if (loading || submitting || remainingSeconds > 0) return
@@ -390,6 +540,7 @@ export function useExamAttempt(testId) {
   useEffect(() => {
     return () => {
       void stopProctoringRef.current?.()
+      clearEntryProctoringBridge()
     }
   }, [])
 
@@ -415,9 +566,11 @@ export function useExamAttempt(testId) {
     navSettings,
     proctoringRequired,
     proctoring,
+    markedIds,
     persistAnswers,
     updateChoiceAnswer,
     updateEssayAnswer,
+    toggleMarkForReview,
     goNext,
     goPrevious,
     goToIndex,

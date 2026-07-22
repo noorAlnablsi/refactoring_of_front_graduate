@@ -83,7 +83,16 @@
     "title": "Privacy & data",
     "logoutAll": "Sign out of platform",
     "loggingOut": "Signing out...",
-    "deleteAccount": "Permanently delete account"
+    "deleteAccount": "Permanently delete account",
+    "deleting": "Deleting account...",
+    "deleteConfirmTitle": "Confirm account deletion",
+    "deleteConfirmMessage": "Are you sure you want to delete your account? You will not be able to sign in after this.",
+    "deleteRecoveryNote": "This is a soft delete: your data remains recoverable for about one month. Only a Super Admin can restore the account within that window.",
+    "deleteEmailLabel": "Confirm email address",
+    "deleteEmailHint": "Type your account email exactly to enable the delete button.",
+    "deleteEmailPlaceholder": "name@example.com",
+    "deleteEmailMismatch": "The email you entered does not match your account email.",
+    "deleteConfirmAction": "Permanently delete account"
   },
   "changePassword": {
     "title": "Reset password",

@@ -1,0 +1,87 @@
+/**
+ * Accessibility layer (WCAG AA-oriented)
+ *
+ * Font scale: content roots only — never html rem/zoom.
+ * High contrast: strengthens TEXT colors only — card borders/surfaces stay as designed.
+ */
+
+/* ---------- Font scale (content only) ---------- */
+[data-app-shell='dashboard'] main,
+[data-a11y-scale-root] {
+  zoom: var(--a11y-font-scale, 1);
+}
+
+/* ---------- High contrast: light (text tokens only) ---------- */
+html[data-a11y-contrast='high'] {
+  --shell-text: #0f172a;
+  --shell-text-muted: #1e293b;
+  --shell-text-subtle: #334155;
+  --shell-accent: #0f766e;
+  --shell-danger-text: #991b1b;
+  --shell-info-text: #1d4ed8;
+  color-scheme: light;
+}
+
+/* ---------- High contrast: dark (text tokens only) ---------- */
+html.dark[data-a11y-contrast='high'] {
+  --shell-text: #ffffff;
+  --shell-text-muted: #e2e8f0;
+  --shell-text-subtle: #cbd5e1;
+  --shell-accent: #5eead4;
+  --shell-danger-text: #fecaca;
+  --shell-info-text: #bfdbfe;
+  color-scheme: dark;
+}
+
+/* Stronger focus rings for keyboard users when high contrast is on */
+html[data-a11y-contrast='high'] :focus-visible {
+  outline: 3px solid var(--shell-accent);
+  outline-offset: 2px;
+}
+
+/* Legacy hex text utilities — boost readability only (no border/card changes) */
+html[data-a11y-contrast='high'] [data-app-shell='dashboard'] .text-\[\#1F2533\],
+html[data-a11y-contrast='high'] [data-app-shell='dashboard'] .text-\[\#2A3433\],
+html[data-a11y-contrast='high'] [data-app-shell='dashboard'] .text-\[\#374151\] {
+  color: var(--shell-text) !important;
+}
+
+html[data-a11y-contrast='high'] [data-app-shell='dashboard'] .text-\[\#64748B\],
+html[data-a11y-contrast='high'] [data-app-shell='dashboard'] .text-\[\#6B7280\] {
+  color: var(--shell-text-muted) !important;
+}
+
+html[data-a11y-contrast='high'] [data-app-shell='dashboard'] .text-\[\#94A3B8\],
+html[data-a11y-contrast='high'] [data-app-shell='dashboard'] .text-\[\#9CA3AF\],
+html[data-a11y-contrast='high'] [data-app-shell='dashboard'] .text-\[\#CBD5E1\] {
+  color: var(--shell-text-subtle) !important;
+}
+
+html[data-a11y-contrast='high'] [data-app-shell='dashboard'] .text-\[\#2AA8A2\] {
+  color: var(--shell-accent) !important;
+}
+
+html[data-a11y-contrast='high'] [data-app-shell='dashboard'] .text-\[\#DC2626\],
+html[data-a11y-contrast='high'] [data-app-shell='dashboard'] .text-\[\#F43F5E\] {
+  color: var(--shell-danger-text) !important;
+}
+
+html[data-a11y-contrast='high'] [data-a11y-scale-root] .text-\[\#1F2533\],
+html[data-a11y-contrast='high'] [data-a11y-scale-root] .text-\[\#2A3433\],
+html[data-a11y-contrast='high'] [data-a11y-scale-root] .text-\[\#374151\] {
+  color: var(--shell-text) !important;
+}
+
+html[data-a11y-contrast='high'] [data-a11y-scale-root] .text-\[\#64748B\],
+html[data-a11y-contrast='high'] [data-a11y-scale-root] .text-\[\#6B7280\] {
+  color: var(--shell-text-muted) !important;
+}
+
+html[data-a11y-contrast='high'] [data-a11y-scale-root] .text-\[\#94A3B8\],
+html[data-a11y-contrast='high'] [data-a11y-scale-root] .text-\[\#9CA3AF\] {
+  color: var(--shell-text-subtle) !important;
+}
+
+html[data-a11y-contrast='high'] [data-a11y-scale-root] .text-\[\#2AA8A2\] {
+  color: var(--shell-accent) !important;
+}

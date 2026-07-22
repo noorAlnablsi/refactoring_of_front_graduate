@@ -16,8 +16,12 @@ import RegisterSuccessPage from './pages/register/RegisterSuccessPage'
 import StudentRegisterPage from './pages/student/StudentRegisterPage'
 import StudentJoinCodePage from './pages/student/StudentJoinCodePage'
 import StudentDashboardPage from './pages/student/StudentDashboardPage'
+import StudentSettingsPage from './pages/student/StudentSettingsPage'
+import StudentChangePasswordPage from './pages/student/StudentChangePasswordPage'
 import StudentPlaceholderPage from './pages/student/StudentPlaceholderPage'
 import ExamAttemptPage from './pages/student/ExamAttemptPage'
+import ExamEntryPage from './pages/student/ExamEntryPage'
+import StudentPerformancePage from './pages/student/StudentPerformancePage'
 import StudentResultStatusPage from './pages/student/StudentResultStatusPage'
 import StudentDashboardGuard from './components/student/dashboard/StudentDashboardGuard'
 import StudentDashboardLayout from './components/student/dashboard/StudentDashboardLayout'
@@ -85,6 +89,7 @@ function App() {
       <Route path={ROUTES.STUDENT_JOIN_CODE} element={<StudentJoinCodePage />} />
 
       <Route element={<StudentDashboardGuard />}>
+        <Route path={ROUTES.STUDENT_EXAM_ENTRY} element={<ExamEntryPage />} />
         <Route path={ROUTES.STUDENT_EXAM_ATTEMPT} element={<ExamAttemptPage />} />
 
         <Route element={<StudentDashboardLayout />}>
@@ -93,17 +98,15 @@ function App() {
             path={ROUTES.STUDENT_EXAMS}
             element={<StudentPlaceholderPage page="exams" />}
           />
-          <Route
-            path={ROUTES.STUDENT_RESULTS}
-            element={<StudentResultStatusPage mode="results" />}
-          />
+          <Route path={ROUTES.STUDENT_RESULTS} element={<StudentPerformancePage />} />
           <Route
             path={ROUTES.STUDENT_RESULTS_PENDING}
             element={<StudentResultStatusPage mode="pending" />}
           />
+          <Route path={ROUTES.STUDENT_SETTINGS} element={<StudentSettingsPage />} />
           <Route
-            path={ROUTES.STUDENT_SETTINGS}
-            element={<StudentPlaceholderPage page="settings" />}
+            path={ROUTES.STUDENT_SETTINGS_CHANGE_PASSWORD}
+            element={<StudentChangePasswordPage />}
           />
         </Route>
       </Route>

@@ -1,4 +1,6 @@
+import { TEST_AVAILABILITY_TIME_MODE } from '../constants/tests'
 import { tUI } from './appToast'
+import { toNaiveLocalDateTime } from './examPublishTime'
 
 export function getDefaultSeverityPolicy() {
   return {
@@ -195,13 +197,73 @@ export function serializeSettingsConfig(flatSettings = {}) {
   }
 }
 
+/** Max / default entry window = floor(duration / 4), at least 1 minute. */
+export function getMaxEntryWindowMinutes(durationMinutes) {
+  const duration = Math.max(1, Number(durationMinutes) || 1)
+  return Math.max(1, Math.floor(duration / 4))
+}
+
+export function clampEntryWindowMinutes(value, durationMinutes) {
+  const max = getMaxEntryWindowMinutes(durationMinutes)
+  const n = Number(value)
+  if (!Number.isFinite(n) || n < 1) return Math.min(1, max)
+  return Math.min(Math.floor(n), max)
+}
+
+/**
+ * Backend APP_TIMEZONE (Asia/Damascus): dates are naive local wall-clock, no Z/offset.
+ * datetime-local already produces that wall-clock — never convert via toISOString().
+ */
+export function toDatetimeLocalValue(iso) {
+  if (!iso) return ''
+  // Prefer slicing naive API strings so we never shift by UTC.
+  const match = String(iso).match(/^(\d{4}-\d{2}-\d{2})[T ](\d{2}):(\d{2})/)
+  if (match) {
+    return `${match[1]}T${match[2]}:${match[3]}`
+  }
+  const date = new Date(iso)
+  if (Number.isNaN(date.getTime())) return ''
+  const pad = (n) => String(n).padStart(2, '0')
+  return `${date.getFullYear()}-${pad(date.getMonth() + 1)}-${pad(date.getDate())}T${pad(date.getHours())}:${pad(date.getMinutes())}`
+}
+
+export function fromDatetimeLocalValue(localValue) {
+  if (!localValue) return null
+  const raw = String(localValue).trim()
+  // datetime-local: "YYYY-MM-DDTHH:mm" → send seconds, no timezone suffix
+  if (/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}$/.test(raw)) {
+    return `${raw}:00`
+  }
+  if (/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}/.test(raw)) {
+    return raw.slice(0, 19)
+  }
+  return toNaiveLocalDateTime(raw)
+}
+
+function resolveAvailabilityTimeMode(test) {
+  const mode = test?.availability_time_mode || test?.availability_mode
+  if (mode === TEST_AVAILABILITY_TIME_MODE.SCHEDULED) {
+    return TEST_AVAILABILITY_TIME_MODE.SCHEDULED
+  }
+  return TEST_AVAILABILITY_TIME_MODE.FLEXIBLE
+}
+
 export function buildTestSettingsFormState(test) {
   const existing = test?.settings_config || {}
   const cfg = normalizeSettingsConfig(existing)
+  const durationMinutes = test?.duration_minutes || 60
+  const mode = resolveAvailabilityTimeMode(test)
+  const maxEntry = getMaxEntryWindowMinutes(durationMinutes)
 
   return {
-    duration_minutes: test?.duration_minutes || 60,
+    duration_minutes: durationMinutes,
     max_attempts: cfg.max_attempts ?? 1,
+    availability_time_mode: mode,
+    starts_at: mode === TEST_AVAILABILITY_TIME_MODE.SCHEDULED ? test?.starts_at || null : null,
+    entry_window_minutes:
+      mode === TEST_AVAILABILITY_TIME_MODE.SCHEDULED
+        ? clampEntryWindowMinutes(test?.entry_window_minutes ?? maxEntry, durationMinutes)
+        : null,
     settings_config: cfg,
   }
 }
@@ -211,9 +273,28 @@ export function buildTestSettingsPayload(form) {
     ...form.settings_config,
     max_attempts: Number(form.max_attempts) || 1,
   })
+  const durationMinutes = Number(form.duration_minutes) || 60
+  const mode =
+    form.availability_time_mode === TEST_AVAILABILITY_TIME_MODE.SCHEDULED
+      ? TEST_AVAILABILITY_TIME_MODE.SCHEDULED
+      : TEST_AVAILABILITY_TIME_MODE.FLEXIBLE
 
-  return {
-    duration_minutes: Number(form.duration_minutes) || 60,
+  const payload = {
+    duration_minutes: durationMinutes,
+    availability_time_mode: mode,
     settings_config: serializeSettingsConfig(flat),
   }
+
+  if (mode === TEST_AVAILABILITY_TIME_MODE.SCHEDULED) {
+    payload.starts_at = form.starts_at || null
+    payload.entry_window_minutes = clampEntryWindowMinutes(
+      form.entry_window_minutes ?? getMaxEntryWindowMinutes(durationMinutes),
+      durationMinutes,
+    )
+  } else {
+    payload.starts_at = null
+    payload.entry_window_minutes = null
+  }
+
+  return payload
 }

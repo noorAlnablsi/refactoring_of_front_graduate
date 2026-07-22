@@ -124,7 +124,7 @@ export function useExamWizard({ isNew = false } = {}) {
 
   const loadTest = useCallback(
     async (silent = false) => {
-      if (!id) return
+      if (!id) return null
       if (!silent) setLoading(true)
       try {
         const data = await getTestById(id)
@@ -135,9 +135,11 @@ export function useExamWizard({ isNew = false } = {}) {
           const msg = getEditBlockedMessage(fetched)
           if (msg) showToast(msg, 'error')
         }
+        return fetched
       } catch (err) {
         showToast(err.message, 'error')
         navigate(ROUTES.EXAMS, { replace: true })
+        return null
       } finally {
         if (!silent) setLoading(false)
       }

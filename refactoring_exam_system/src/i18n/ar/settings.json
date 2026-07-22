@@ -83,7 +83,16 @@
     "title": "الخصوصية والبيانات",
     "logoutAll": "تسجيل خروج من المنصة",
     "loggingOut": "جاري الخروج...",
-    "deleteAccount": "حذف الحساب نهائياً"
+    "deleteAccount": "حذف الحساب نهائياً",
+    "deleting": "جاري حذف الحساب...",
+    "deleteConfirmTitle": "تأكيد حذف الحساب",
+    "deleteConfirmMessage": "هل أنت متأكد من حذف حسابك؟ لن تتمكن من تسجيل الدخول بعد هذا الإجراء.",
+    "deleteRecoveryNote": "الحذف مؤقت (soft delete): تبقى بياناتك في النظام لمدة شهر تقريباً، ويمكن لمسؤول النظام (Super Admin) استعادة الحساب خلال هذه المدة فقط.",
+    "deleteEmailLabel": "تأكيد البريد الإلكتروني",
+    "deleteEmailHint": "اكتب بريد حسابك بالكامل لتفعيل زر الحذف.",
+    "deleteEmailPlaceholder": "name@example.com",
+    "deleteEmailMismatch": "البريد المدخل لا يطابق بريد حسابك.",
+    "deleteConfirmAction": "حذف الحساب نهائياً"
   },
   "changePassword": {
     "title": "إعادة تعيين كلمة المرور",

@@ -2,6 +2,7 @@ import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
 import { BrowserRouter } from 'react-router-dom'
 import { bootstrapAuth, initAuthSession, waitForAuthHydration } from './lib/authSession'
+import { initAccessibility } from './lib/accessibility'
 import { initLanguage } from './lib/language'
 import { initTheme } from './lib/theme'
 import './i18n'
@@ -13,6 +14,7 @@ async function startApp() {
 
   initTheme()
   initLanguage()
+  initAccessibility()
 
   await waitForAuthHydration()
   await bootstrapAuth()

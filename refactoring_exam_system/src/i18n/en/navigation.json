@@ -7,7 +7,9 @@
     "exams": "Exams",
     "statistics": "Statistics",
     "settings": "Settings",
-    "logoutCurrentPath": "Sign out of current path"
+    "logoutCurrentPath": "Sign out of current path",
+    "brandSubtitle": "Admin Dashboard",
+    "brandTitle": "QuizHub"
   },
   "studentSidebar": {
     "home": "Home",
@@ -21,6 +23,12 @@
     "searchBanks": "Search banks...",
     "searchStudents": "Search for a student...",
     "searchStudentPortal": "Search exams, subjects, or results...",
+    "notifications": "Notifications"
+  },
+  "topBar": {
+    "searchPlaceholder": "Search the platform...",
+    "defaultUser": "User",
+    "help": "Help",
     "notifications": "Notifications"
   },
   "breadcrumbs": {

@@ -75,7 +75,7 @@ function Sidebar() {
   })
 
   return (
-    <aside className="sticky top-0 hidden h-screen w-[260px] shrink-0 flex-col border-l border-[var(--shell-border)] bg-[var(--shell-surface)] lg:flex">
+    <aside className="hidden h-screen w-[260px] shrink-0 flex-col border-e border-[var(--shell-border)] bg-[var(--shell-surface)] lg:flex">
       <SidebarBrand />
 
       <nav className="min-h-0 flex-1 space-y-2 overflow-y-auto px-4 py-6">
@@ -106,7 +106,7 @@ function Sidebar() {
               {({ isActive }) => (
                 <>
                   {isActive ? (
-                    <span className="absolute inset-y-2.5 right-0 w-1 rounded-full bg-[var(--shell-accent)]" />
+                    <span className="absolute inset-y-2.5 start-0 w-1 rounded-full bg-[var(--shell-accent)]" />
                   ) : null}
                   <Icon className="h-5 w-5" />
                   {label}

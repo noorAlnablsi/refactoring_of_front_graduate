@@ -360,6 +360,16 @@
       "preventCopyPasteDesc": "تعطيل اختصارات لوحة المفاتيح والماوس",
       "severityPolicy": "سياسة المخالفات (Severity Policy)"
     },
+    "availability": {
+      "title": "نوع إتاحة الاختبار",
+      "flexibleTitle": "متاح في أي وقت",
+      "flexibleDesc": "يمكن للطلاب بدء الاختبار في أي وقت دون موعد محدد.",
+      "scheduledTitle": "يبدأ في موعد محدد",
+      "scheduledDesc": "يبدأ الاختبار في تاريخ ووقت يحدده المعلم.",
+      "startsAt": "وقت بدء الاختبار",
+      "entryWindow": "فترة سماحية الدخول (بالدقائق)",
+      "entryWindowHint": "الحد الأقصى {{max}} دقيقة (ربع مدة الاختبار)."
+    },
     "sections": {
       "attempt": "إعدادات المحاولة",
       "durationMinutes": "الزمن المحدد (بالدقائق)",
@@ -397,7 +407,8 @@
     "durationRequired": "مدة الاختبار مطلوبة",
     "totalScoreRequired": "الدرجة الكلية مطلوبة",
     "passingScoreRequired": "علامة النجاح مطلوبة",
-    "passingScoreExceedsTotal": "علامة النجاح لا يمكن أن تتجاوز الدرجة الكلية"
+    "passingScoreExceedsTotal": "علامة النجاح لا يمكن أن تتجاوز الدرجة الكلية",
+    "startsAtRequired": "حدد وقت بدء الاختبار لوضع الموعد المحدد"
   },
   "blueprint": {
     "eyebrow": "بناء المعايير الأكاديمية",

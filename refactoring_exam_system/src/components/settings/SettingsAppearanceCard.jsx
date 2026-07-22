@@ -1,9 +1,13 @@
+import { useState } from 'react'
 import { Link } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { ChevronLeft, Lock, LogOut, Trash2 } from 'lucide-react'
+import DeleteAccountConfirmDialog from '../common/DeleteAccountConfirmDialog'
 import { ROUTES } from '../../constants/routes'
 import { LANGUAGE_OPTIONS } from '../../constants/language'
+import { useDeleteAccount } from '../../hooks/useDeleteAccount'
 import { useLogout } from '../../hooks/useLogout'
+import { useAuthStore } from '../../store/authStore'
 import { useLanguageStore } from '../../store/languageStore'
 import SettingsCard from './SettingsCard'
 import ThemeModeToggle from './ThemeModeToggle'
@@ -59,31 +63,66 @@ function SettingsAppearanceCard() {
 
 function SettingsPrivacyCard() {
   const { t } = useTranslation('settings')
-  const { logoutAllSessions, loading } = useLogout()
+  const userEmail = useAuthStore((state) => state.user?.email || '')
+  const { logoutAllSessions, loading: logoutLoading } = useLogout()
+  const { deleteAccount, loading: deleteLoading } = useDeleteAccount()
+  const [deleteConfirmOpen, setDeleteConfirmOpen] = useState(false)
+  const busy = logoutLoading || deleteLoading
+
+  const handleConfirmDelete = async () => {
+    try {
+      await deleteAccount()
+      setDeleteConfirmOpen(false)
+    } catch {
+      // Toast already shown by hook.
+    }
+  }
 
   return (
-    <SettingsCard title={t('privacy.title')} icon={Lock}>
-      <div className="space-y-3">
-        <button
-          type="button"
-          onClick={logoutAllSessions}
-          disabled={loading}
-          className="flex w-full items-center justify-center gap-2 rounded-xl bg-[var(--shell-input-bg)] px-4 py-3.5 text-sm font-bold text-[var(--shell-danger-text)] transition hover:bg-[var(--shell-hover)] disabled:opacity-60"
-        >
-          <LogOut className="h-4 w-4" />
-          {loading ? t('privacy.loggingOut') : t('privacy.logoutAll')}
-        </button>
+    <>
+      <SettingsCard title={t('privacy.title')} icon={Lock}>
+        <div className="space-y-3">
+          <button
+            type="button"
+            onClick={logoutAllSessions}
+            disabled={busy}
+            className="flex w-full items-center justify-center gap-2 rounded-xl bg-[var(--shell-input-bg)] px-4 py-3.5 text-sm font-bold text-[var(--shell-danger-text)] transition hover:bg-[var(--shell-hover)] disabled:opacity-60"
+          >
+            <LogOut className="h-4 w-4" />
+            {logoutLoading ? t('privacy.loggingOut') : t('privacy.logoutAll')}
+          </button>
 
-        <button
-          type="button"
-          disabled
-          className="flex w-full cursor-not-allowed items-center justify-center gap-2 rounded-xl bg-[#DC2626] px-4 py-3.5 text-sm font-bold text-white opacity-70"
-        >
-          <Trash2 className="h-4 w-4" />
-          {t('privacy.deleteAccount')}
-        </button>
-      </div>
-    </SettingsCard>
+          <button
+            type="button"
+            onClick={() => setDeleteConfirmOpen(true)}
+            disabled={busy}
+            className="flex w-full items-center justify-center gap-2 rounded-xl bg-[#DC2626] px-4 py-3.5 text-sm font-bold text-white transition hover:brightness-95 disabled:opacity-70"
+          >
+            <Trash2 className="h-4 w-4" />
+            {deleteLoading ? t('privacy.deleting') : t('privacy.deleteAccount')}
+          </button>
+        </div>
+      </SettingsCard>
+
+      <DeleteAccountConfirmDialog
+        open={deleteConfirmOpen}
+        expectedEmail={userEmail}
+        title={t('privacy.deleteConfirmTitle')}
+        message={t('privacy.deleteConfirmMessage')}
+        recoveryNote={t('privacy.deleteRecoveryNote')}
+        emailLabel={t('privacy.deleteEmailLabel')}
+        emailHint={t('privacy.deleteEmailHint')}
+        emailMismatch={t('privacy.deleteEmailMismatch')}
+        emailPlaceholder={t('privacy.deleteEmailPlaceholder')}
+        confirmLabel={t('privacy.deleteConfirmAction')}
+        deletingLabel={t('privacy.deleting')}
+        loading={deleteLoading}
+        onClose={() => {
+          if (!deleteLoading) setDeleteConfirmOpen(false)
+        }}
+        onConfirm={() => void handleConfirmDelete()}
+      />
+    </>
   )
 }
 

@@ -151,6 +151,8 @@ function ExamAiGeneratePanel({ test, testId, onBack, onSuccess, onSaveDraft, sav
         count: data.count ?? selectedIds.length,
       })
       await onSuccess?.(data.questions || [])
+      setSelectedIds([])
+      setGenerated((prev) => prev.filter((q) => !selectedIds.includes(q.id)))
     } catch (err) {
       showToast(err.message, 'error')
     } finally {
@@ -159,7 +161,7 @@ function ExamAiGeneratePanel({ test, testId, onBack, onSuccess, onSaveDraft, sav
   }
 
   return (
-    <div className="space-y-6 pb-24">
+    <div className="space-y-6">
       <header className="text-right">
         <p className="text-sm font-bold text-[#2AA8A2]">{t('wizard.ai.eyebrow')}</p>
         <h2 className="mt-2 text-[28px] font-extrabold text-[#2A3433]">{t('wizard.ai.title')}</h2>
@@ -271,6 +273,14 @@ function ExamAiGeneratePanel({ test, testId, onBack, onSuccess, onSaveDraft, sav
           <h3 className="text-base font-extrabold text-[#2A3433]">{t('wizard.ai.reviewTitle')}</h3>
           {generated.map((question) => {
             const checked = selectedIds.includes(question.id)
+            const typeCodeLabel = question.type_code || question.snapshot_type_code
+            const choices = Array.isArray(question.choices)
+              ? question.choices
+              : Array.isArray(question.snapshot_choices)
+                ? question.snapshot_choices
+                : []
+            const isTrueFalse = typeCodeLabel === 'TRUE_FALSE'
+
             return (
               <article
                 key={question.id}
@@ -279,7 +289,7 @@ function ExamAiGeneratePanel({ test, testId, onBack, onSuccess, onSaveDraft, sav
                 }`}
               >
                 <div className="flex items-start justify-between gap-3">
-                  <button type="button" onClick={() => toggleQuestion(question.id)} className="text-right">
+                  <button type="button" onClick={() => toggleQuestion(question.id)} className="w-full text-right">
                     <div className="flex flex-wrap items-center gap-2">
                       <span className="rounded-full bg-[#E8F7F6] px-2.5 py-0.5 text-[11px] font-bold text-[#2AA8A2]">
                         {question.topic_name || t('wizard.ai.defaultTopic')}
@@ -287,11 +297,35 @@ function ExamAiGeneratePanel({ test, testId, onBack, onSuccess, onSaveDraft, sav
                       <span className="rounded-full bg-[#F1F5F9] px-2.5 py-0.5 text-[11px] font-bold text-[#64748B]">
                         {t(`difficulty.${question.difficulty}`, { defaultValue: question.difficulty })}
                       </span>
+                      {typeCodeLabel ? (
+                        <span className="rounded-full bg-[#F1F5F9] px-2.5 py-0.5 text-[11px] font-bold text-[#475569]">
+                          {t(`questionTypes.${typeCodeLabel}`, { defaultValue: typeCodeLabel })}
+                        </span>
+                      ) : null}
                       {checked ? <Check className="h-4 w-4 text-[#2AA8A2]" /> : null}
                     </div>
                     <p className="mt-3 text-sm font-bold leading-7 text-[#2A3433]">
                       {question.question_text}
                     </p>
+                    {choices.length > 0 ? (
+                      <ul className="mt-3 space-y-2 text-right">
+                        {choices.map((choice, choiceIndex) => (
+                          <li
+                            key={choice.id || `${question.id}-${choiceIndex}`}
+                            className={`rounded-xl px-3 py-2 text-xs font-semibold ${
+                              choice.is_correct
+                                ? 'bg-[#E8F7F6] text-[#2AA8A2]'
+                                : 'bg-[#F6F8F9] text-[#64748B]'
+                            }`}
+                          >
+                            {!isTrueFalse ? (
+                              <span className="me-1 text-[#94A3B8]">{String.fromCharCode(65 + choiceIndex)})</span>
+                            ) : null}
+                            {choice.choice_text || choice.text || choice.label || ''}
+                          </li>
+                        ))}
+                      </ul>
+                    ) : null}
                   </button>
                   <button
                     type="button"

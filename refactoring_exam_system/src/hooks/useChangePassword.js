@@ -7,7 +7,8 @@ import { changePassword } from '../services/auth.service'
 import { useToastStore } from '../store/toastStore'
 import { validatePassword, validatePasswordMatch } from './usePasswordValidation'
 
-export function useChangePassword() {
+export function useChangePassword(options = {}) {
+  const successPath = options.successPath || ROUTES.SETTINGS
   const { t } = useTranslation(['settings', 'forms'])
   const navigate = useNavigate()
   const showToast = useToastStore((state) => state.showToast)
@@ -51,7 +52,7 @@ export function useChangePassword() {
         new_password: newPassword,
       })
       showToast(t('changePassword.success'))
-      navigate(ROUTES.SETTINGS, { replace: true })
+      navigate(successPath, { replace: true })
     } catch (err) {
       setError(translateBackendMessage(err.message) || t('changePassword.errors.failed'))
     } finally {

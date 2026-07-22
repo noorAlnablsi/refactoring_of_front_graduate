@@ -7,7 +7,9 @@
     "exams": "الامتحانات",
     "statistics": "الإحصائيات",
     "settings": "الإعدادات",
-    "logoutCurrentPath": "خروج من المسار الحالي"
+    "logoutCurrentPath": "خروج من المسار الحالي",
+    "brandSubtitle": "لوحة الإدارة",
+    "brandTitle": "QuizHub"
   },
   "studentSidebar": {
     "home": "الرئيسية",
@@ -21,6 +23,12 @@
     "searchBanks": "البحث في البنوك...",
     "searchStudents": "بحث عن طالب...",
     "searchStudentPortal": "البحث عن الاختبارات، المواد أو النتائج...",
+    "notifications": "إشعارات"
+  },
+  "topBar": {
+    "searchPlaceholder": "البحث في المنصة...",
+    "defaultUser": "مستخدم",
+    "help": "مساعدة",
     "notifications": "إشعارات"
   },
   "breadcrumbs": {

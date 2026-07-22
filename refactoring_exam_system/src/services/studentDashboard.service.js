@@ -9,6 +9,14 @@ export async function getUpcomingStudentTests() {
 }
 
 /**
+ * GET /student/tests/{testId}/entry — pre-exam preparation payload
+ */
+export async function getStudentTestEntry(testId) {
+  const { data } = await api.get(`/student/tests/${testId}/entry`)
+  return data
+}
+
+/**
  * Full exams list (صفحة الاختبارات — عرض الكل) — optional until backend ships it.
  * GET /student/exams?status=available|upcoming|completed
  */
@@ -20,10 +28,29 @@ export async function getStudentExams({ status } = {}) {
 }
 
 /**
- * Full results list (صفحة النتائج) — optional until backend ships it.
- * GET /student/results
+ * Full graded results list for performance dashboard.
+ * GET /student/tests/results
+ */
+export async function getStudentTestResults() {
+  const { data } = await api.get('/student/tests/results')
+  return data
+}
+
+/**
+ * Paginated recent exam attempts (graded + pending).
+ * GET /student/recent-exams?page=&per_page=
+ */
+export async function getStudentRecentExams({ page = 1, perPage = 10 } = {}) {
+  const { data } = await api.get('/student/recent-exams', {
+    params: { page, per_page: perPage },
+  })
+  return data
+}
+
+/**
+ * @deprecated Prefer getStudentTestResults() — kept for callers during migration.
+ * GET /student/tests/results
  */
 export async function getStudentResults() {
-  const { data } = await api.get('/student/results')
-  return data
+  return getStudentTestResults()
 }

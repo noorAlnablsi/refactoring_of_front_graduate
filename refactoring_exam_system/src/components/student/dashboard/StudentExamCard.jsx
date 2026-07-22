@@ -8,7 +8,7 @@ function StudentExamCard({ exam }) {
 
   const handleStart = () => {
     if (!exam?.id) return
-    navigate(ROUTES.STUDENT_EXAM_ATTEMPT.replace(':testId', String(exam.id)))
+    navigate(ROUTES.STUDENT_EXAM_ENTRY.replace(':testId', String(exam.id)))
   }
 
   return (

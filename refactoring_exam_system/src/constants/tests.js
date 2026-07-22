@@ -6,6 +6,12 @@ export const TEST_STATUS = {
   ARCHIVED: 'ARCHIVED',
 }
 
+/** Top-level test.availability_time_mode (not TEST_STATUS.SCHEDULED). */
+export const TEST_AVAILABILITY_TIME_MODE = {
+  FLEXIBLE: 'FLEXIBLE',
+  SCHEDULED: 'SCHEDULED',
+}
+
 export const TEST_TABS = {
   ALL: 'all',
   PUBLISHED: 'published',

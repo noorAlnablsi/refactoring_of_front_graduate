@@ -360,6 +360,16 @@
       "preventCopyPasteDesc": "Disable keyboard and mouse shortcuts",
       "severityPolicy": "Violation policy (Severity Policy)"
     },
+    "availability": {
+      "title": "Exam availability type",
+      "flexibleTitle": "Available anytime",
+      "flexibleDesc": "Students can start the exam at any time without a fixed appointment.",
+      "scheduledTitle": "Starts at a specific time",
+      "scheduledDesc": "The exam starts at a date and time set by the teacher.",
+      "startsAt": "Exam start time",
+      "entryWindow": "Entry grace period (minutes)",
+      "entryWindowHint": "Maximum {{max}} minutes (one quarter of the exam duration)."
+    },
     "sections": {
       "attempt": "Attempt settings",
       "durationMinutes": "Time limit (minutes)",
@@ -397,7 +407,8 @@
     "durationRequired": "Exam duration is required",
     "totalScoreRequired": "Total score is required",
     "passingScoreRequired": "Passing score is required",
-    "passingScoreExceedsTotal": "Passing score cannot exceed total score"
+    "passingScoreExceedsTotal": "Passing score cannot exceed total score",
+    "startsAtRequired": "Set an exam start time for scheduled mode"
   },
   "blueprint": {
     "eyebrow": "Academic blueprint",

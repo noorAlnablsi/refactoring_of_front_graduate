@@ -56,7 +56,7 @@ function ExamCsvImportPanel({ testId, onBack, onSuccess, onSaveDraft, savingDraf
   }
 
   return (
-    <div className="space-y-6 pb-24">
+    <div className="space-y-6">
       <header className="text-right">
         <p className="text-sm font-bold text-[#2AA8A2]">{t('wizard.csv.eyebrow')}</p>
         <h2 className="mt-2 text-[28px] font-extrabold text-[#2A3433]">{t('wizard.csv.title')}</h2>

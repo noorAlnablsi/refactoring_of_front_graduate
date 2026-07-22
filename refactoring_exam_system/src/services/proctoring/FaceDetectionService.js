@@ -46,6 +46,7 @@ export class FaceDetectionService {
     this.faceLostTimer = null
     this.sawFaceOnce = false
     this.stateGate = createStateChangeGate('unknown')
+    this.lastDetection = null
   }
 
   async init() {
@@ -96,6 +97,7 @@ export class FaceDetectionService {
     }
 
     const facesCount = result?.detections?.length || 0
+    this.lastDetection = facesCount > 0 ? result.detections[0] : null
 
     if (facesCount >= 2) {
       this.#clearFaceLostTimer()
@@ -155,6 +157,11 @@ export class FaceDetectionService {
     }
     this.#clearFaceLostTimer()
     this.video = null
+    this.lastDetection = null
+  }
+
+  getLastDetection() {
+    return this.lastDetection
   }
 
   async destroy() {

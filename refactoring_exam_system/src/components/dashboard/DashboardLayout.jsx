@@ -1,12 +1,17 @@
 import { Outlet } from 'react-router-dom'
 import Toast from '../common/Toast'
+import { getLanguageDirection } from '../../lib/language'
+import { useLanguageStore } from '../../store/languageStore'
 import Sidebar from './Sidebar'
 import TopBar from './TopBar'
 
 function DashboardLayout() {
+  const language = useLanguageStore((s) => s.language)
+  const dir = getLanguageDirection(language)
+
   return (
     <div
-      dir="rtl"
+      dir={dir}
       data-app-shell="dashboard"
       className="flex h-screen overflow-hidden bg-[var(--shell-bg)] font-sans text-[var(--shell-text)]"
     >
