@@ -1,4 +1,5 @@
 import i18n from '../i18n'
+import { formatLocaleNumber } from './localeNumber'
 
 function tCommon(key, options = {}) {
   return i18n.t(key, { ns: 'common', ...options })
@@ -83,9 +84,8 @@ export function getQuestionBankVisibilityLabel(bank) {
 
 export function formatStatValue(value) {
   if (value === null || value === undefined || value === '—') return '—'
-  if (typeof value === 'number') {
-    const locale = i18n.language === 'ar' ? 'ar-EG' : 'en-US'
-    return value.toLocaleString(locale)
+  if (typeof value === 'number' || (typeof value === 'string' && value.trim() !== '' && Number.isFinite(Number(value)))) {
+    return formatLocaleNumber(value)
   }
   return value
 }

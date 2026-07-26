@@ -94,12 +94,12 @@ function StudentsTable({
                 className={`border-b bg-[var(--shell-input-bg)] text-[13px] text-[var(--shell-text-muted)] ${shellDividerClass}`}
               >
                 <tr>
-                  <th className="px-5 py-3.5 font-semibold">{t('students.columnName')}</th>
-                  <th className="px-5 py-3.5 font-semibold">{t('table.email')}</th>
-                  <th className="px-5 py-3.5 font-semibold">{t('table.phone')}</th>
-                  <th className="px-5 py-3.5 font-semibold">{t('table.subjectsCount')}</th>
-                  <th className="px-5 py-3.5 font-semibold">{t('table.status')}</th>
-                  <th className="px-5 py-3.5 font-semibold">{t('table.actions')}</th>
+                  <th className="px-5 py-3.5 text-right font-semibold">{t('students.columnName')}</th>
+                  <th className="px-5 py-3.5 text-right font-semibold">{t('table.email')}</th>
+                  <th className="px-5 py-3.5 text-right font-semibold">{t('table.phone')}</th>
+                  <th className="px-5 py-3.5 text-right font-semibold">{t('table.subjectsCount')}</th>
+                  <th className="px-5 py-3.5 text-right font-semibold">{t('table.status')}</th>
+                  <th className="px-5 py-3.5 text-right font-semibold">{t('table.actions')}</th>
                 </tr>
               </thead>
               <tbody>
@@ -115,9 +115,10 @@ function StudentsTable({
                       key={student.membership_id ?? student.user_id}
                       className="border-b border-[var(--shell-border)] last:border-b-0"
                     >
-                      <td className="px-5 py-4">
-                        <div className="flex items-center justify-end gap-3">
-                          <div className="min-w-0 text-right">
+                      <td className="px-5 py-4 align-middle">
+                        <div className="flex items-center gap-3">
+                          <UserAvatar user={user} size="sm" rounded />
+                          <div className="min-w-0">
                             <p className={`truncate font-bold ${shellPageTitleClass}`}>
                               {student.full_name}
                             </p>
@@ -125,27 +126,30 @@ function StudentsTable({
                               #{student.membership_id ?? student.user_id}
                             </p>
                           </div>
-                          <UserAvatar user={user} size="sm" rounded />
                         </div>
                       </td>
-                      <td className={`px-5 py-4 ${shellBodyTextClass}`}>{student.email || '—'}</td>
-                      <td className={`px-5 py-4 ${shellBodyTextClass}`}>
+                      <td className={`px-5 py-4 align-middle ${shellBodyTextClass}`}>
+                        <span dir="ltr" className="inline-block text-right">
+                          {student.email || '—'}
+                        </span>
+                      </td>
+                      <td className={`px-5 py-4 align-middle ${shellBodyTextClass}`}>
                         {student.phone || student.phone_number || '—'}
                       </td>
-                      <td className="px-5 py-4">
+                      <td className="px-5 py-4 align-middle">
                         <span className="inline-flex h-8 min-w-8 items-center justify-center rounded-full bg-[var(--shell-input-bg)] px-2 text-sm font-bold text-[var(--shell-text-muted)]">
                           {formatStatValue(student.enrolled_subjects_count ?? 0)}
                         </span>
                       </td>
-                      <td className="px-5 py-4">
+                      <td className="px-5 py-4 align-middle">
                         <span
                           className={`inline-flex rounded-full px-2.5 py-0.5 text-[11px] font-semibold leading-4 ${status.className}`}
                         >
                           {status.label}
                         </span>
                       </td>
-                      <td className="px-5 py-4">
-                        <div className="flex items-center justify-end gap-1">
+                      <td className="px-5 py-4 align-middle">
+                        <div className="flex items-center gap-1">
                           <button
                             type="button"
                             onClick={() => onAssignSubject?.(student)}

@@ -1,4 +1,5 @@
 /** Question type codes from attempt.questions[].snapshot_type_code */
+import { localizeDigits } from './localeNumber'
 import { normalizeSettingsConfig } from './testSettings'
 
 export const ATTEMPT_QUESTION_TYPE = {
@@ -174,10 +175,12 @@ export function formatCountdown(totalSeconds) {
   const secs = seconds % 60
 
   if (hours > 0) {
-    return `${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}:${String(secs).padStart(2, '0')}`
+    return localizeDigits(
+      `${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}:${String(secs).padStart(2, '0')}`,
+    )
   }
 
-  return `${String(minutes).padStart(2, '0')}:${String(secs).padStart(2, '0')}`
+  return localizeDigits(`${String(minutes).padStart(2, '0')}:${String(secs).padStart(2, '0')}`)
 }
 
 /** Design timer segments: `01 : 45 : 21` */
@@ -188,10 +191,12 @@ export function formatCountdownSpaced(totalSeconds) {
   const secs = seconds % 60
 
   if (hours > 0) {
-    return `${String(hours).padStart(2, '0')} : ${String(minutes).padStart(2, '0')} : ${String(secs).padStart(2, '0')}`
+    return localizeDigits(
+      `${String(hours).padStart(2, '0')} : ${String(minutes).padStart(2, '0')} : ${String(secs).padStart(2, '0')}`,
+    )
   }
 
-  return `${String(minutes).padStart(2, '0')} : ${String(secs).padStart(2, '0')}`
+  return localizeDigits(`${String(minutes).padStart(2, '0')} : ${String(secs).padStart(2, '0')}`)
 }
 
 export function getQuestionImageUrl(question) {

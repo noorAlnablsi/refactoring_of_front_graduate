@@ -1,6 +1,7 @@
 import { useNavigate } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { Eye, FlaskConical, Pencil, Trash2 } from 'lucide-react'
+import { SUBJECTS_PAGE_SIZE } from '../../constants/subjects'
 import { ROUTES } from '../../constants/routes'
 import {
   formatStatValue,
@@ -22,7 +23,9 @@ import SubjectsPagination from './SubjectsPagination'
 import SubjectsSortSelect from './SubjectsSortSelect'
 
 const actionButtonClassName =
-  'flex h-9 w-9 items-center justify-center rounded-lg text-[var(--shell-text-subtle)] transition hover:bg-[var(--shell-hover)] hover:text-[var(--shell-text-muted)]'
+  'flex h-9 w-9 shrink-0 items-center justify-center rounded-lg text-[var(--shell-text-subtle)] transition hover:bg-[var(--shell-hover)] hover:text-[var(--shell-text-muted)]'
+
+const ROW_HEIGHT_CLASS = 'h-[72px]'
 
 function SubjectsTable({
   subjects,
@@ -33,12 +36,16 @@ function SubjectsTable({
   totalPages,
   onPageChange,
   totalCount,
+  rangeStart = 0,
+  rangeEnd = 0,
+  pageSize = SUBJECTS_PAGE_SIZE,
   onEdit,
   onDelete,
 }) {
   const { t } = useTranslation('subjects')
   const navigate = useNavigate()
   const showEdit = canEditSubject()
+  const placeholderCount = Math.max(0, pageSize - subjects.length)
 
   if (loading) {
     return (
@@ -47,7 +54,7 @@ function SubjectsTable({
           <div className="shell-skeleton h-9 w-40 animate-pulse rounded-lg" />
         </div>
         <div className="space-y-0 p-2">
-          {[1, 2, 3].map((i) => (
+          {Array.from({ length: pageSize }, (_, i) => (
             <div key={i} className="shell-skeleton mx-3 my-2 h-16 animate-pulse rounded-xl" />
           ))}
         </div>
@@ -70,14 +77,21 @@ function SubjectsTable({
       </div>
 
       <div className="overflow-x-auto">
-        <table className="w-full min-w-[760px] text-right text-sm">
+        <table className="w-full min-w-[760px] table-fixed text-right text-sm">
+          <colgroup>
+            <col className="w-[38%]" />
+            <col className="w-[14%]" />
+            <col className="w-[16%]" />
+            <col className="w-[14%]" />
+            <col className="w-[18%]" />
+          </colgroup>
           <thead className={`border-b bg-[var(--shell-input-bg)] text-[13px] text-[var(--shell-text-muted)] ${shellDividerClass}`}>
             <tr>
-              <th className="px-5 py-3.5 font-semibold">{t('table.name')}</th>
-              <th className="px-5 py-3.5 font-semibold">{t('table.teachersCount')}</th>
-              <th className="px-5 py-3.5 font-semibold">{t('table.questionBanks')}</th>
-              <th className="px-5 py-3.5 font-semibold">{t('table.examsCount')}</th>
-              <th className="px-5 py-3.5 font-semibold">{t('table.actions')}</th>
+              <th className="px-5 py-3.5 text-start font-semibold">{t('table.name')}</th>
+              <th className="px-5 py-3.5 text-start font-semibold">{t('table.teachersCount')}</th>
+              <th className="px-5 py-3.5 text-start font-semibold">{t('table.questionBanks')}</th>
+              <th className="px-5 py-3.5 text-start font-semibold">{t('table.examsCount')}</th>
+              <th className="px-5 py-3.5 text-start font-semibold">{t('table.actions')}</th>
             </tr>
           </thead>
           <tbody>
@@ -86,30 +100,30 @@ function SubjectsTable({
                 key={subject.id}
                 className={`border-b transition last:border-0 hover:bg-[var(--shell-hover)] ${shellDividerClass}`}
               >
-                <td className="px-5 py-4">
-                  <div className="flex items-center gap-3">
+                <td className={`px-5 py-4 ${ROW_HEIGHT_CLASS}`}>
+                  <div className="flex min-w-0 items-center gap-3">
                     <span className={`h-10 w-10 shrink-0 ${shellIconWrapClass}`}>
                       <FlaskConical className="h-5 w-5" strokeWidth={2} />
                     </span>
-                    <div className="min-w-0">
-                      <p className={`font-bold ${shellPageTitleClass}`}>{subject.name}</p>
-                      <p className={`mt-0.5 line-clamp-1 text-xs ${shellSubtleTextClass}`}>
+                    <div className="min-w-0 flex-1">
+                      <p className={`truncate font-bold ${shellPageTitleClass}`}>{subject.name}</p>
+                      <p className={`mt-0.5 truncate text-xs ${shellSubtleTextClass}`}>
                         {getSubjectTableSubtitle(subject)}
                       </p>
                     </div>
                   </div>
                 </td>
-                <td className={`px-5 py-4 font-medium ${shellBodyTextClass}`}>
+                <td className={`px-5 py-4 whitespace-nowrap tabular-nums font-medium ${shellBodyTextClass}`}>
                   {formatSubjectTeachersLabel(subject)}
                 </td>
-                <td className={`px-5 py-4 font-medium ${shellBodyTextClass}`}>
+                <td className={`px-5 py-4 whitespace-nowrap tabular-nums font-medium ${shellBodyTextClass}`}>
                   {formatSubjectBanksLabel(subject)}
                 </td>
-                <td className={`px-5 py-4 font-medium ${shellBodyTextClass}`}>
+                <td className={`px-5 py-4 whitespace-nowrap tabular-nums font-medium ${shellBodyTextClass}`}>
                   {formatSubjectTestsLabel(subject)}
                 </td>
-                <td className="px-5 py-4">
-                  <div className="flex items-center gap-1">
+                <td className={`px-5 py-4 ${ROW_HEIGHT_CLASS}`}>
+                  <div className="flex items-center justify-start gap-1">
                     <button
                       type="button"
                       onClick={() => navigate(`${ROUTES.SUBJECTS}/${subject.id}`)}
@@ -142,6 +156,11 @@ function SubjectsTable({
                 </td>
               </tr>
             ))}
+            {Array.from({ length: placeholderCount }, (_, index) => (
+              <tr key={`placeholder-${index}`} aria-hidden="true">
+                <td className={`px-5 py-4 ${ROW_HEIGHT_CLASS}`} colSpan={5} />
+              </tr>
+            ))}
           </tbody>
         </table>
       </div>
@@ -150,7 +169,8 @@ function SubjectsTable({
         <div className={`flex flex-wrap items-center justify-between gap-4 border-t px-5 py-4 ${shellDividerClass}`}>
           <p className={shellSubtleTextClass}>
             {t('table.pagination', {
-              shown: formatStatValue(subjects.length),
+              from: formatStatValue(rangeStart),
+              to: formatStatValue(rangeEnd),
               total: formatStatValue(totalCount),
             })}
           </p>

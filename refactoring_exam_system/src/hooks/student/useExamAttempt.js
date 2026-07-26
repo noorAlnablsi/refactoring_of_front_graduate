@@ -34,6 +34,18 @@ import {
   loadAttemptEntryRules,
 } from '../../lib/attemptEntryRules'
 import { clearAttemptLocalDraft, loadAttemptLocalDraft, saveAttemptLocalDraft, applyLocalDraftToAttemptState } from '../../lib/attemptLocalDraft'
+import {
+  OFFLINE_FREEZE_REASON,
+  OFFLINE_PHASE,
+  computeGraceRemainingSeconds,
+  resolveAttemptAvailabilityMode,
+  shouldEnforceOfflineGrace,
+} from '../../lib/attemptOfflinePolicy'
+import {
+  clearAttemptOfflineState,
+  loadAttemptOfflineState,
+  saveAttemptOfflineState,
+} from '../../lib/attemptOfflineState'
 import { useProctoring } from '../proctoring/useProctoring'
 
 const AUTOSAVE_INTERVAL_MS = 30_000
@@ -93,6 +105,13 @@ export function useExamAttempt(testId) {
   const [retryNonce, setRetryNonce] = useState(0)
   const [markedIds, setMarkedIds] = useState(() => new Set())
   const [entryRules, setEntryRules] = useState(() => loadAttemptEntryRules(testId))
+  const [isOnline, setIsOnline] = useState(
+    () => (typeof navigator === 'undefined' ? true : navigator.onLine),
+  )
+  const [offlinePhase, setOfflinePhase] = useState(OFFLINE_PHASE.ONLINE)
+  const [offlineGraceRemainingSeconds, setOfflineGraceRemainingSeconds] = useState(0)
+  const [answersFrozen, setAnswersFrozen] = useState(false)
+  const [pendingForcedSubmit, setPendingForcedSubmit] = useState(false)
 
   const answersRef = useRef({})
   const attemptRef = useRef(null)
@@ -104,9 +123,17 @@ export function useExamAttempt(testId) {
   const adoptProctoringRef = useRef(null)
   const markedIdsRef = useRef(markedIds)
   const currentIndexRef = useRef(currentIndex)
+  const answersFrozenRef = useRef(false)
+  const pendingForcedSubmitRef = useRef(false)
+  const offlineDisconnectedAtRef = useRef(null)
+  const enforceGraceRef = useRef(true)
+  const reconnectHandledRef = useRef(false)
+  const offlineBootstrappedForAttemptRef = useRef(null)
 
   markedIdsRef.current = markedIds
   currentIndexRef.current = currentIndex
+  answersFrozenRef.current = answersFrozen
+  pendingForcedSubmitRef.current = pendingForcedSubmit
 
   const persistLocalDraft = useCallback(() => {
     const currentAttempt = attemptRef.current
@@ -126,6 +153,26 @@ export function useExamAttempt(testId) {
     [test, entryRules],
   )
   const proctoringRequired = isProctoringEnabled(test)
+  const availabilityMode = useMemo(() => {
+    const fromTest = resolveAttemptAvailabilityMode(test)
+    if (test?.availability_time_mode || test?.availability_mode) return fromTest
+    if (entryRules?.availabilityMode) {
+      return resolveAttemptAvailabilityMode({
+        availability_time_mode: entryRules.availabilityMode,
+      })
+    }
+    return fromTest
+  }, [test, entryRules])
+  const enforceOfflineGrace = useMemo(
+    () =>
+      shouldEnforceOfflineGrace({
+        availabilityMode,
+        proctoringEnabled: proctoringRequired,
+      }),
+    [availabilityMode, proctoringRequired],
+  )
+
+  enforceGraceRef.current = enforceOfflineGrace
 
   const proctoring = useProctoring({
     testId,
@@ -138,7 +185,56 @@ export function useExamAttempt(testId) {
   stopProctoringRef.current = proctoring.stop
   adoptProctoringRef.current = proctoring.adoptService
 
+  const persistOfflineSnapshot = useCallback(
+    (patch = {}) => {
+      const currentAttempt = attemptRef.current
+      if (!testId || !currentAttempt?.id) return
+
+      saveAttemptOfflineState(testId, currentAttempt.id, {
+        disconnectedAt: offlineDisconnectedAtRef.current,
+        answersFrozen: answersFrozenRef.current,
+        pendingForcedSubmit: pendingForcedSubmitRef.current,
+        enforceGrace: enforceGraceRef.current,
+        ...patch,
+      })
+    },
+    [testId],
+  )
+
+  const freezeAnswers = useCallback(
+    (reason) => {
+      answersFrozenRef.current = true
+      pendingForcedSubmitRef.current = true
+      setAnswersFrozen(true)
+      setPendingForcedSubmit(true)
+      setOfflinePhase(OFFLINE_PHASE.FROZEN)
+      setOfflineGraceRemainingSeconds(0)
+      persistOfflineSnapshot({
+        answersFrozen: true,
+        pendingForcedSubmit: true,
+        freezeReason: reason,
+        disconnectedAt: offlineDisconnectedAtRef.current,
+      })
+    },
+    [persistOfflineSnapshot],
+  )
+
+  const clearOfflineRuntime = useCallback(() => {
+    offlineDisconnectedAtRef.current = null
+    answersFrozenRef.current = false
+    pendingForcedSubmitRef.current = false
+    setAnswersFrozen(false)
+    setPendingForcedSubmit(false)
+    setOfflinePhase(OFFLINE_PHASE.ONLINE)
+    setOfflineGraceRemainingSeconds(0)
+    const currentAttempt = attemptRef.current
+    if (testId && currentAttempt?.id) {
+      clearAttemptOfflineState(testId, currentAttempt.id)
+    }
+  }, [testId])
+
   const setAnswers = useCallback((updater) => {
+    if (answersFrozenRef.current) return
     setAnswersMap((prev) => {
       const next = typeof updater === 'function' ? updater(prev) : updater
       answersRef.current = next
@@ -149,6 +245,7 @@ export function useExamAttempt(testId) {
   const persistAnswers = useCallback(async () => {
     const currentAttempt = attemptRef.current
     if (!testId || !currentAttempt?.id) return null
+    if (typeof navigator !== 'undefined' && !navigator.onLine) return null
 
     const payload = serializeAnswersPayload(answersRef.current, currentAttempt.questions || [])
     if (!payload.length && !dirtyRef.current) return null
@@ -395,6 +492,7 @@ export function useExamAttempt(testId) {
 
   const updateChoiceAnswer = useCallback(
     (testQuestionId, typeCode, choiceIndex) => {
+      if (answersFrozenRef.current) return
       dirtyRef.current = true
       setDirty(true)
       setAnswers((prev) => {
@@ -427,6 +525,7 @@ export function useExamAttempt(testId) {
 
   const updateEssayAnswer = useCallback(
     (testQuestionId, text) => {
+      if (answersFrozenRef.current) return
       dirtyRef.current = true
       setDirty(true)
       setAnswers((prev) => ({
@@ -479,6 +578,7 @@ export function useExamAttempt(testId) {
   )
 
   const toggleMarkForReview = useCallback((testQuestionId) => {
+    if (answersFrozenRef.current) return
     setMarkedIds((prev) => {
       const next = new Set(prev)
       if (next.has(testQuestionId)) next.delete(testQuestionId)
@@ -487,55 +587,235 @@ export function useExamAttempt(testId) {
     })
   }, [])
 
-  const submit = useCallback(async () => {
-    if (submittingRef.current) return null
-    if (!testId || !attemptId) throw new Error('Missing attempt')
+  const submit = useCallback(
+    async ({ force = false } = {}) => {
+      if (submittingRef.current) return null
+      if (!testId || !attemptId) throw new Error('Missing attempt')
 
-    if (markedIds.size > 0) {
-      const error = new Error('MARKED_REMAINING')
-      error.markedCount = markedIds.size
-      throw error
-    }
+      if (!force) {
+        if (markedIds.size > 0) {
+          const error = new Error('MARKED_REMAINING')
+          error.markedCount = markedIds.size
+          throw error
+        }
 
-    if (navSettings.requireAnswerAll) {
-      const missing = getUnansweredQuestionIds(answersRef.current, questions)
-      if (missing.length) {
-        const error = new Error('ANSWER_ALL_REQUIRED')
-        error.missingQuestionIds = missing
-        throw error
+        if (navSettings.requireAnswerAll) {
+          const missing = getUnansweredQuestionIds(answersRef.current, questions)
+          if (missing.length) {
+            const error = new Error('ANSWER_ALL_REQUIRED')
+            error.missingQuestionIds = missing
+            throw error
+          }
+        }
       }
+
+      submittingRef.current = true
+      setSubmitting(true)
+      setError(null)
+
+      try {
+        await persistAnswers()
+        await stopProctoringRef.current?.()
+        clearEntryProctoringBridge()
+        const data = await submitTestAttempt(testId, attemptId)
+        clearAttemptLocalDraft(testId, attemptId)
+        clearAttemptEntryRules(testId)
+        clearAttemptOfflineState(testId, attemptId)
+        offlineDisconnectedAtRef.current = null
+        answersFrozenRef.current = false
+        pendingForcedSubmitRef.current = false
+        const redirect = resolveSubmitRedirect(data)
+        setSubmitResult({ data, redirect })
+        return { data, redirect }
+      } catch (err) {
+        setError(err?.message || String(err))
+        throw err
+      } finally {
+        submittingRef.current = false
+        setSubmitting(false)
+      }
+    },
+    [testId, attemptId, markedIds, navSettings.requireAnswerAll, questions, persistAnswers],
+  )
+
+  const beginOfflineGrace = useCallback(() => {
+    if (answersFrozenRef.current || pendingForcedSubmitRef.current) {
+      setOfflinePhase(OFFLINE_PHASE.FROZEN)
+      setOfflineGraceRemainingSeconds(0)
+      return
     }
 
-    submittingRef.current = true
-    setSubmitting(true)
-    setError(null)
+    const startedAt = offlineDisconnectedAtRef.current || Date.now()
+    offlineDisconnectedAtRef.current = startedAt
+    const remaining = computeGraceRemainingSeconds(startedAt)
+
+    if (remaining <= 0) {
+      freezeAnswers(OFFLINE_FREEZE_REASON.GRACE_EXPIRED)
+      return
+    }
+
+    setOfflinePhase(OFFLINE_PHASE.GRACE)
+    setOfflineGraceRemainingSeconds(remaining)
+    persistOfflineSnapshot({
+      disconnectedAt: startedAt,
+      answersFrozen: false,
+      pendingForcedSubmit: false,
+    })
+  }, [freezeAnswers, persistOfflineSnapshot])
+
+  const handleWentOffline = useCallback(() => {
+    setIsOnline(false)
+    reconnectHandledRef.current = false
+    persistLocalDraft()
+
+    if (!enforceGraceRef.current) {
+      // Flexible + no proctoring: keep answering; only freeze when exam time ends.
+      setOfflinePhase(OFFLINE_PHASE.ONLINE)
+      offlineDisconnectedAtRef.current = Date.now()
+      persistOfflineSnapshot({
+        disconnectedAt: offlineDisconnectedAtRef.current,
+        answersFrozen: false,
+        pendingForcedSubmit: false,
+        enforceGrace: false,
+      })
+      return
+    }
+
+    beginOfflineGrace()
+  }, [beginOfflineGrace, persistLocalDraft, persistOfflineSnapshot])
+
+  const handleCameOnline = useCallback(async () => {
+    setIsOnline(true)
+    if (reconnectHandledRef.current || submittingRef.current) return
+    reconnectHandledRef.current = true
+
+    persistLocalDraft()
+
+    const mustForceSubmit = pendingForcedSubmitRef.current || answersFrozenRef.current
 
     try {
       await persistAnswers()
-      await stopProctoringRef.current?.()
-      clearEntryProctoringBridge()
-      const data = await submitTestAttempt(testId, attemptId)
-      clearAttemptLocalDraft(testId, attemptId)
-      clearAttemptEntryRules(testId)
-      const redirect = resolveSubmitRedirect(data)
-      setSubmitResult({ data, redirect })
-      return { data, redirect }
-    } catch (err) {
-      setError(err?.message || String(err))
-      throw err
-    } finally {
-      submittingRef.current = false
-      setSubmitting(false)
+    } catch {
+      // keep local draft; force-submit path may retry
     }
-  }, [testId, attemptId, markedIds, navSettings.requireAnswerAll, questions, persistAnswers])
 
+    if (mustForceSubmit) {
+      autoSubmitTriggeredRef.current = true
+      try {
+        await submit({ force: true })
+      } catch {
+        reconnectHandledRef.current = false
+      }
+      return
+    }
+
+    // Reconnected within grace (or flexible offline answering): resume.
+    clearOfflineRuntime()
+  }, [clearOfflineRuntime, persistAnswers, persistLocalDraft, submit])
+
+  // Restore persisted offline state after attempt is ready (once per attempt).
+  useEffect(() => {
+    if (loading || !attemptId || !testId) return
+    if (offlineBootstrappedForAttemptRef.current === attemptId) return
+    offlineBootstrappedForAttemptRef.current = attemptId
+
+    const saved = loadAttemptOfflineState(testId, attemptId)
+    const onlineNow = typeof navigator === 'undefined' ? true : navigator.onLine
+    setIsOnline(onlineNow)
+
+    if (!saved) {
+      if (!onlineNow) handleWentOffline()
+      return
+    }
+
+    offlineDisconnectedAtRef.current = saved.disconnectedAt || null
+
+    if (saved.answersFrozen || saved.pendingForcedSubmit) {
+      answersFrozenRef.current = true
+      pendingForcedSubmitRef.current = true
+      setAnswersFrozen(true)
+      setPendingForcedSubmit(true)
+      setOfflinePhase(OFFLINE_PHASE.FROZEN)
+      setOfflineGraceRemainingSeconds(0)
+
+      if (onlineNow) {
+        void handleCameOnline()
+      }
+      return
+    }
+
+    if (!onlineNow && enforceGraceRef.current) {
+      beginOfflineGrace()
+      return
+    }
+
+    if (!onlineNow && !enforceGraceRef.current) {
+      setOfflinePhase(OFFLINE_PHASE.ONLINE)
+      return
+    }
+
+    clearOfflineRuntime()
+  }, [
+    loading,
+    attemptId,
+    testId,
+    beginOfflineGrace,
+    clearOfflineRuntime,
+    handleCameOnline,
+    handleWentOffline,
+  ])
+
+  useEffect(() => {
+    const onOffline = () => handleWentOffline()
+    const onOnline = () => {
+      void handleCameOnline()
+    }
+
+    window.addEventListener('offline', onOffline)
+    window.addEventListener('online', onOnline)
+    return () => {
+      window.removeEventListener('offline', onOffline)
+      window.removeEventListener('online', onOnline)
+    }
+  }, [handleWentOffline, handleCameOnline])
+
+  // Tick offline grace countdown.
+  useEffect(() => {
+    if (loading || !attemptId) return undefined
+    if (offlinePhase !== OFFLINE_PHASE.GRACE) return undefined
+    if (!offlineDisconnectedAtRef.current) return undefined
+
+    const tick = () => {
+      const remaining = computeGraceRemainingSeconds(offlineDisconnectedAtRef.current)
+      setOfflineGraceRemainingSeconds(remaining)
+      if (remaining <= 0) {
+        freezeAnswers(OFFLINE_FREEZE_REASON.GRACE_EXPIRED)
+      }
+    }
+
+    tick()
+    const timer = setInterval(tick, 1000)
+    return () => clearInterval(timer)
+  }, [loading, attemptId, offlinePhase, freezeAnswers])
+
+  // Exam time ended.
   useEffect(() => {
     if (loading || submitting || remainingSeconds > 0) return
     if (!attemptId || autoSubmitTriggeredRef.current) return
 
+    const onlineNow = typeof navigator === 'undefined' ? true : navigator.onLine
+
+    if (!onlineNow) {
+      autoSubmitTriggeredRef.current = true
+      freezeAnswers(OFFLINE_FREEZE_REASON.TIME_EXPIRED_OFFLINE)
+      return
+    }
+
     autoSubmitTriggeredRef.current = true
-    submit().catch(() => {})
-  }, [loading, submitting, remainingSeconds, attemptId, submit])
+    submit({ force: true }).catch(() => {
+      autoSubmitTriggeredRef.current = false
+    })
+  }, [loading, submitting, remainingSeconds, attemptId, submit, freezeAnswers])
 
   useEffect(() => {
     return () => {
@@ -567,6 +847,12 @@ export function useExamAttempt(testId) {
     proctoringRequired,
     proctoring,
     markedIds,
+    isOnline,
+    offlinePhase,
+    offlineGraceRemainingSeconds,
+    answersFrozen,
+    pendingForcedSubmit,
+    enforceOfflineGrace,
     persistAnswers,
     updateChoiceAnswer,
     updateEssayAnswer,

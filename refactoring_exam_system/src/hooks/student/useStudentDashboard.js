@@ -2,21 +2,31 @@ import { useCallback, useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import {
   buildCalendarEventsFromUpcoming,
+  buildDashboardStatsFromStudentTests,
   getCalendarEventDays,
   normalizeAvailableTestsResponse,
+  normalizeDashboardLatestResults,
   normalizeUpcomingTestsResponse,
 } from '../../lib/studentDashboardModel'
-import { getUpcomingStudentTests } from '../../services/studentDashboard.service'
+import {
+  getStudentTests,
+  getUpcomingStudentTests,
+} from '../../services/studentDashboard.service'
 import { getAvailableTests } from '../../services/tests.service'
 
 async function loadStudentDashboardData() {
-  const [availableResult, upcomingResult] = await Promise.allSettled([
+  const [availableResult, upcomingResult, studentTestsResult] = await Promise.allSettled([
     getAvailableTests(),
     getUpcomingStudentTests(),
+    getStudentTests({ page: 1, perPage: 20 }),
   ])
 
-  if (availableResult.status === 'rejected' && upcomingResult.status === 'rejected') {
-    throw availableResult.reason || upcomingResult.reason
+  if (
+    availableResult.status === 'rejected' &&
+    upcomingResult.status === 'rejected' &&
+    studentTestsResult.status === 'rejected'
+  ) {
+    throw availableResult.reason || upcomingResult.reason || studentTestsResult.reason
   }
 
   const available =
@@ -29,16 +39,18 @@ async function loadStudentDashboardData() {
       ? normalizeUpcomingTestsResponse(upcomingResult.value)
       : []
 
+  const studentTestsPayload =
+    studentTestsResult.status === 'fulfilled' ? studentTestsResult.value : { items: [] }
+
   return {
-    stats: {
-      availableExams: available.count,
-      upcomingExams: upcomingExams.length,
-      completedExams: 0,
-      averageScore: 0,
-    },
+    stats: buildDashboardStatsFromStudentTests(
+      studentTestsPayload,
+      available.count,
+      upcomingExams.length,
+    ),
     availableExams: available.exams,
     upcomingExams,
-    latestResults: [],
+    latestResults: normalizeDashboardLatestResults(studentTestsPayload, 5),
     calendarEvents: buildCalendarEventsFromUpcoming(upcomingExams),
   }
 }

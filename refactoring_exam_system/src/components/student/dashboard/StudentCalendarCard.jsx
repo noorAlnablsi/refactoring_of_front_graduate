@@ -1,6 +1,7 @@
 import { useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { ChevronLeft, ChevronRight } from 'lucide-react'
+import { formatLocaleNumber } from '../../../lib/localeNumber'
 
 function buildMonthGrid(year, month) {
   const firstDay = new Date(year, month, 1).getDay()
@@ -52,7 +53,7 @@ function StudentCalendarCard({ getEventDaysForMonth }) {
         </button>
 
         <h2 className="text-center text-sm font-extrabold text-[#2A3433]">
-          {months[month]} {year}
+          {months[month]} {formatLocaleNumber(year, { useGrouping: false })}
         </h2>
 
         <button
@@ -89,7 +90,7 @@ function StudentCalendarCard({ getEventDaysForMonth }) {
                   isToday ? 'bg-[#2AA8A2] text-white' : 'text-[#374151]'
                 }`}
               >
-                {day}
+                {formatLocaleNumber(day, { useGrouping: false })}
               </span>
               {hasEvent ? <span className="mt-0.5 h-1 w-1 rounded-full bg-[#2AA8A2]" /> : null}
             </div>

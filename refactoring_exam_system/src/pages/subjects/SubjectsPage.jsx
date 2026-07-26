@@ -31,6 +31,8 @@ function SubjectsPage() {
     paginatedSubjects,
     totalPages,
     totalCount,
+    rangeStart,
+    rangeEnd,
   } = useSubjectsListView(activeSubjects)
   const [createOpen, setCreateOpen] = useState(false)
   const [editOpen, setEditOpen] = useState(false)
@@ -94,6 +96,8 @@ function SubjectsPage() {
         totalPages={totalPages}
         onPageChange={setPage}
         totalCount={totalCount}
+        rangeStart={rangeStart}
+        rangeEnd={rangeEnd}
         onEdit={handleEdit}
         onDelete={setDeleteSubjectItem}
       />

@@ -3,7 +3,6 @@ import { ChevronLeft, Save } from 'lucide-react'
 import { useTranslation } from 'react-i18next'
 import { getSubjects } from '../../../services/subjects.service'
 import { buildTestStep1Payload } from '../../../lib/testPayload'
-import { isInstitutionWorkspace } from '../../../lib/workspaceContext'
 
 const inputClassName =
   'w-full rounded-xl bg-[#F6F8F9] px-4 py-3 text-sm text-[#374151] outline-none placeholder:text-[#94A3B8] focus:ring-2 focus:ring-[#2AA8A2]/40'
@@ -17,7 +16,6 @@ function ExamBasicInfoStep({
   savingDraft,
 }) {
   const { t } = useTranslation(['exams', 'forms', 'common'])
-  const showSubjectField = isInstitutionWorkspace()
   const [subjects, setSubjects] = useState([])
   const [errors, setErrors] = useState({})
   const [form, setForm] = useState({
@@ -61,7 +59,7 @@ function ExamBasicInfoStep({
   const validate = () => {
     const nextErrors = {}
     if (!form.name.trim()) nextErrors.name = t('validation.nameRequired', { ns: 'exams' })
-    if (showSubjectField && !form.subject_id) {
+    if (!form.subject_id) {
       nextErrors.subject_id = t('validation.subjectRequired', { ns: 'exams' })
     }
     if (!form.duration_minutes || Number(form.duration_minutes) < 1) {
@@ -95,6 +93,10 @@ function ExamBasicInfoStep({
   const handleSaveDraft = () => {
     if (!form.name.trim()) {
       setErrors({ name: t('validation.nameRequiredForDraft', { ns: 'exams' }) })
+      return
+    }
+    if (!form.subject_id) {
+      setErrors({ subject_id: t('validation.subjectRequired', { ns: 'exams' }) })
       return
     }
     onSaveDraft?.(buildPayload())
@@ -140,7 +142,7 @@ function ExamBasicInfoStep({
             {t('wizard.basicInfo.subjectLabel', { ns: 'exams' })}
           </label>
           <select
-            required={showSubjectField}
+            required
             value={form.subject_id}
             onChange={(e) => setField('subject_id', e.target.value)}
             className={inputClassName}
@@ -152,11 +154,6 @@ function ExamBasicInfoStep({
               </option>
             ))}
           </select>
-          {!showSubjectField ? (
-            <p className="mt-1 text-xs text-[#94A3B8]">
-              {t('wizard.basicInfo.subjectOptionalHint', { ns: 'exams' })}
-            </p>
-          ) : null}
           {errors.subject_id ? <p className="mt-1 text-xs text-red-600">{errors.subject_id}</p> : null}
         </div>
 

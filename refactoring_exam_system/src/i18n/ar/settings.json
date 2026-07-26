@@ -94,6 +94,38 @@
     "deleteEmailMismatch": "البريد المدخل لا يطابق بريد حسابك.",
     "deleteConfirmAction": "حذف الحساب نهائياً"
   },
+  "report": {
+    "cardTitle": "الإبلاغ عن مشكلة",
+    "cardSubtitle": "قم بالإبلاغ عن مشكلتك",
+    "contactTitle": "التواصل مع الدعم",
+    "contactHint": "يمكنك إرسال تقرير عن المشكلة الى فريق الدعم",
+    "modalTitle": "إرسال بلاغ",
+    "modalSubtitle": "أخبرنا عن المشكلة التي واجهتها وسيساعدك فريق الدعم في حلها.",
+    "categoryLabel": "نوع المشكلة",
+    "categoryPlaceholder": "اختر نوع المشكلة",
+    "titleLabel": "عنوان المشكلة",
+    "titlePlaceholder": "اكتب عنواناً مختصراً للمشكلة",
+    "descriptionLabel": "ما المشكلة؟",
+    "descriptionPlaceholder": "اشرح المشكلة بالتفصيل...",
+    "descriptionHint": "أخبرنا ماذا حدث وما الذي كنت تتوقع حدوثه.",
+    "cancel": "إلغاء",
+    "submit": "إرسال بلاغ",
+    "submitting": "جاري الإرسال...",
+    "success": "تم إنشاء البلاغ بنجاح",
+    "submitError": "تعذر إرسال البلاغ",
+    "categories": {
+      "TECHNICAL": "مشكلة تقنية",
+      "ACCOUNT": "الحساب والدخول",
+      "CONTENT": "المحتوى والامتحانات",
+      "CHEATING": "غش أو مخالفة",
+      "OTHER": "أخرى"
+    },
+    "errors": {
+      "categoryRequired": "يرجى اختيار نوع المشكلة للمتابعة",
+      "titleRequired": "يرجى إدخال عنوان للمشكلة للمتابعة",
+      "descriptionRequired": "يرجى وصف المشكلة للمتابعة"
+    }
+  },
   "changePassword": {
     "title": "إعادة تعيين كلمة المرور",
     "pageTitle": "إعادة تعيين كلمة المرور",

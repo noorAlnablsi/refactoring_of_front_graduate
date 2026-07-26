@@ -17,9 +17,16 @@ export function useSubjectDetails(subjectId) {
   const [questionBanksCount, setQuestionBanksCount] = useState(0)
   const [topics, setTopics] = useState([])
   const [topicsCount, setTopicsCount] = useState(0)
+  const [students, setStudents] = useState([])
   const [studentsCount, setStudentsCount] = useState(0)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState('')
+
+  const applyStudentsPayload = (studentsData) => {
+    const list = studentsData.students || studentsData.enrollments || studentsData.assignments || []
+    setStudents(list)
+    setStudentsCount(studentsData.count ?? list.length)
+  }
 
   const fetchDetails = useCallback(async () => {
     if (!subjectId) return
@@ -39,7 +46,7 @@ export function useSubjectDetails(subjectId) {
       setQuestionBanksCount(banksData.count ?? banksData.question_banks?.length ?? 0)
       setTopics(topicsData.topics || [])
       setTopicsCount(topicsData.count ?? topicsData.topics?.length ?? 0)
-      setStudentsCount(studentsData.count ?? 0)
+      applyStudentsPayload(studentsData)
     } catch (err) {
       setError(translateBackendMessage(err.message) || t('errors.loadDetailsFailed'))
     } finally {
@@ -67,7 +74,7 @@ export function useSubjectDetails(subjectId) {
         setQuestionBanksCount(banksData.count ?? banksData.question_banks?.length ?? 0)
         setTopics(topicsData.topics || [])
         setTopicsCount(topicsData.count ?? topicsData.topics?.length ?? 0)
-        setStudentsCount(studentsData.count ?? 0)
+        applyStudentsPayload(studentsData)
       })
       .catch((err) => {
         if (cancelled) return
@@ -90,6 +97,7 @@ export function useSubjectDetails(subjectId) {
     questionBanksCount,
     topics,
     topicsCount,
+    students,
     studentsCount,
     loading,
     error,

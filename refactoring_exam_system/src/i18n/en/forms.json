@@ -61,7 +61,9 @@
     "durationRequired": "Exam duration is required",
     "totalScoreRequired": "Total score is required",
     "passingScoreRequired": "Passing score is required",
-    "passingScoreExceedsTotal": "Passing score cannot exceed total score"
+    "passingScoreExceedsTotal": "Passing score cannot exceed total score",
+    "subjectNameRequired": "Subject name is required",
+    "topicNameRequired": "Topic name is required"
   },
   "passwordRules": {
     "minLength": "Password must be at least {{count}} characters",

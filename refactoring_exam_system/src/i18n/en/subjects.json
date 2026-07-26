@@ -4,7 +4,23 @@
   "addSubject": "Add new subject",
   "deleteItemLabel": "Subject",
   "toasts": {
-    "deleted": "Subject deleted"
+    "deleted": "Subject deleted",
+    "created": "Subject created successfully",
+    "updated": "Subject updated successfully",
+    "topicCreated": "Topic added successfully",
+    "topicUpdated": "Topic updated successfully"
+  },
+  "modals": {
+    "createTitle": "Add new subject",
+    "editTitle": "Edit subject",
+    "nameLabel": "Subject name",
+    "namePlaceholder": "e.g. Distributed Systems",
+    "descriptionLabel": "Subject description",
+    "descriptionPlaceholder": "Write a short description of the subject...",
+    "createSubmit": "Create subject",
+    "createSubmitting": "Creating...",
+    "editSubmit": "Save changes",
+    "editSubmitting": "Saving..."
   },
   "stats": {
     "totalSubjects": "Total subjects",
@@ -42,7 +58,16 @@
     "deleteConfirm": "Delete topic \"{{name}}\"?",
     "deleteSuccess": "Topic deleted",
     "editAria": "Edit topic",
-    "deleteAria": "Delete topic"
+    "deleteAria": "Delete topic",
+    "createTitle": "Add topic",
+    "editTitle": "Edit topic",
+    "nameLabel": "Topic name",
+    "namePlaceholder": "e.g. Virtual memory",
+    "descriptionLabel": "Topic description",
+    "descriptionPlaceholder": "Optional topic description...",
+    "createSubmit": "Add topic",
+    "editSubmit": "Save changes",
+    "submitting": "Saving..."
   },
   "display": {
     "defaultSummary": "This subject covers foundational and advanced concepts within the institution's curriculum.",
@@ -68,6 +93,20 @@
     "assigning": "Assigning...",
     "assign": "Assign"
   },
+  "assignStudents": {
+    "title": "Assign students",
+    "loading": "Loading students...",
+    "allEnrolled": "All students are already enrolled in this subject",
+    "noneAvailable": "No students available for assignment",
+    "selectStudentsError": "Please select at least one student",
+    "successOne": "Student enrolled in subject successfully",
+    "successMany": "{{count}} students enrolled successfully",
+    "successPartial": "Enrolled {{enrolled}}, skipped {{skipped}} (already enrolled)",
+    "allSkipped": "Selected students are already enrolled in this subject",
+    "assigning": "Assigning...",
+    "assign": "Assign",
+    "assignMany": "Assign ({{count}})"
+  },
   "sort": {
     "label": "Sort by:",
     "aria": "Sort subjects display",
@@ -80,6 +119,7 @@
     "manageSubjects": "Academic subjects",
     "subjectDetails": "Subject details",
     "assignTeacher": "Assign teacher",
+    "assignStudents": "Assign students",
     "editSubject": "Edit subject",
     "tabs": {
       "overview": "Overview",

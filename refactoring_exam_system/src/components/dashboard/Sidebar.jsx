@@ -8,6 +8,7 @@ import {
   LayoutGrid,
   Settings,
   Users,
+  UsersRound,
 } from 'lucide-react'
 import SidebarSessionLogout from '../auth/SidebarSessionLogout'
 import { ROUTES } from '../../constants/routes'
@@ -17,6 +18,7 @@ import {
   canAccessQuestionBanks,
   canAccessSubjectsModule,
   canAccessExams,
+  canShowStudentGroupsInSidebar,
 } from '../../lib/workspaceContext'
 
 const baseNavItems = [
@@ -29,6 +31,13 @@ const baseNavItems = [
     requiresSubjectsModule: true,
   },
   { to: ROUTES.MEMBERS, labelKey: 'sidebar.members', icon: Users, end: true, requiresMembersModule: true },
+  {
+    to: ROUTES.GROUPS,
+    labelKey: 'sidebar.groups',
+    icon: UsersRound,
+    end: false,
+    requiresStudentGroups: true,
+  },
   {
     to: ROUTES.QUESTION_BANKS,
     labelKey: 'sidebar.questionBanks',
@@ -69,25 +78,26 @@ function Sidebar() {
   const navItems = baseNavItems.filter((item) => {
     if (item.requiresSubjectsModule && !canAccessSubjectsModule()) return false
     if (item.requiresMembersModule && !canAccessMembersModule()) return false
+    if (item.requiresStudentGroups && !canShowStudentGroupsInSidebar()) return false
     if (item.requiresExams && !canAccessExams()) return false
     if (!item.requiresQuestionBanks) return true
     return canAccessQuestionBanks()
   })
 
   return (
-    <aside className="hidden h-screen w-[260px] shrink-0 flex-col border-e border-[var(--shell-border)] bg-[var(--shell-surface)] lg:flex">
+    <aside className="hidden h-screen w-[280px] shrink-0 flex-col border-e border-[var(--shell-border)] bg-[var(--shell-surface)] lg:flex">
       <SidebarBrand />
 
-      <nav className="min-h-0 flex-1 space-y-2 overflow-y-auto px-4 py-6">
+      <nav className="min-h-0 flex-1 space-y-1.5 overflow-y-auto px-3.5 py-5">
         {navItems.map(({ to, labelKey, icon: Icon, end = true, disabled }) => {
           const label = t(labelKey)
 
           return disabled ? (
             <span
               key={labelKey}
-              className="flex cursor-not-allowed items-center gap-3.5 rounded-xl px-4 py-3.5 text-sm font-semibold text-[var(--shell-text-subtle)]"
+              className="flex cursor-not-allowed items-center gap-3 rounded-xl px-3.5 py-3 text-sm font-semibold text-[var(--shell-text-subtle)]"
             >
-              <Icon className="h-5 w-5" />
+              <Icon className="h-[18px] w-[18px]" />
               {label}
             </span>
           ) : (
@@ -96,7 +106,7 @@ function Sidebar() {
               to={to}
               end={end}
               className={({ isActive }) =>
-                `relative flex items-center gap-3.5 rounded-xl px-4 py-3.5 text-sm font-semibold transition ${
+                `relative flex items-center gap-3 rounded-xl px-3.5 py-3 text-sm font-semibold transition ${
                   isActive
                     ? 'bg-[var(--shell-accent-bg)] text-[var(--shell-accent)]'
                     : 'text-[var(--shell-text-muted)] hover:bg-[var(--shell-hover)]'
@@ -106,9 +116,9 @@ function Sidebar() {
               {({ isActive }) => (
                 <>
                   {isActive ? (
-                    <span className="absolute inset-y-2.5 start-0 w-1 rounded-full bg-[var(--shell-accent)]" />
+                    <span className="absolute inset-y-2 start-0 w-1 rounded-full bg-[var(--shell-accent)]" />
                   ) : null}
-                  <Icon className="h-5 w-5" />
+                  <Icon className="h-[18px] w-[18px]" />
                   {label}
                 </>
               )}

@@ -37,7 +37,7 @@
     "empty": "No upcoming exams right now."
   },
   "latestResults": {
-    "title": "Latest results",
+    "title": "Latest exams",
     "filterAria": "Filter results",
     "columns": {
       "exam": "Exam",
@@ -57,6 +57,57 @@
     "regular": "Regular",
     "meta": "{{minutes}} min • {{questions}} questions",
     "start": "Start exam"
+  },
+  "examCenter": {
+    "title": "Exam Center",
+    "greeting": {
+      "withCount": "Hello {{name}}, you have {{count}} exams available today. Stay focused — good luck!",
+      "empty": "Hello {{name}}, there are no exams available right now. Check recent exams or come back later."
+    },
+    "tabs": {
+      "available": "Available exams",
+      "recent": "Recent exams"
+    },
+    "badges": {
+      "proctored": "Proctored",
+      "standard": "Standard exam",
+      "pendingGrading": "Pending grading",
+      "gradedReviewLocked": "Graded • Review locked",
+      "gradedReviewOpen": "Graded • Review available",
+      "submitted": "Submitted"
+    },
+    "meta": {
+      "duration": "Duration",
+      "durationValue": "{{count}} min",
+      "closingDate": "Closing date"
+    },
+    "remaining": {
+      "label": "Time left: {{value}}",
+      "hoursMinutes": "{{hours}}h : {{minutes}}m",
+      "days": "{{count}} days",
+      "flexible": "Flexible availability",
+      "ended": "Closing time has passed"
+    },
+    "score": {
+      "label": "Final score",
+      "fraction": "{{earned}} / {{max}}",
+      "percent": "{{value}}%",
+      "placeholder": "-- / --",
+      "placeholderOverMax": "-- / {{max}}"
+    },
+    "actions": {
+      "start": "Start",
+      "viewResult": "View result",
+      "viewResultAndReview": "View result & review",
+      "reviewUnavailable": "Review unavailable right now"
+    },
+    "empty": {
+      "available": "No exams available right now.",
+      "recent": "No recent exams to show yet."
+    },
+    "loadError": "Could not load the exam center",
+    "partialError": "Some exam data could not be loaded. You can retry.",
+    "retry": "Retry"
   },
   "entry": {
     "loading": "Preparing exam entry...",
@@ -228,7 +279,12 @@
     "submitError": "Could not submit the exam",
     "proctoringError": "Proctoring notice",
     "backToDashboard": "Back to student dashboard",
-    "retry": "Try again"
+    "retry": "Try again",
+    "offline": {
+      "graceActive": "Connection lost. Reconnect within {{time}} or answering will stop and the exam will submit when you are back online.",
+      "frozenAwaitingReconnect": "Connection grace period ended. Answering is locked. Your exam will be submitted automatically when the connection returns.",
+      "softOfflineContinue": "You are offline. You may keep answering. When the exam time ends, submission will happen automatically once you reconnect."
+    }
   },
   "results": {
     "readyTitle": "Exam submitted",

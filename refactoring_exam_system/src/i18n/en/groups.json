@@ -1,0 +1,120 @@
+{
+  "pageTitle": "Student groups",
+  "pageSubtitle": "Organize students into groups to simplify exam management and follow-up.",
+  "createGroup": "Create new group",
+  "activeListTitle": "Groups list",
+  "tabs": {
+    "all": "All"
+  },
+  "table": {
+    "name": "Group name",
+    "subject": "Subject",
+    "teacher": "Teacher",
+    "students": "Students",
+    "studentsCount": "{{count}} students",
+    "createdAt": "Created at",
+    "actions": "Actions",
+    "view": "View details",
+    "edit": "Edit",
+    "delete": "Delete",
+    "empty": "No groups yet.",
+    "emptySubject": "No groups for this subject.",
+    "pagination": "Showing {{from}}–{{to}} of {{total}} groups",
+    "loading": "Loading groups..."
+  },
+  "sort": {
+    "label": "Sort by",
+    "newest": "Newest",
+    "oldest": "Oldest",
+    "name": "Name"
+  },
+  "preview": {
+    "title": "Groups",
+    "viewAll": "View all",
+    "empty": "No groups yet.",
+    "loading": "Loading groups...",
+    "viewDetails": "View details"
+  },
+  "create": {
+    "title": "Create new group",
+    "step1Hint": "Enter group details, then select students.",
+    "step2Hint": "Select students for the group",
+    "selectedCount": "{{selected}} of {{total}} students selected",
+    "nameLabel": "Group name",
+    "namePlaceholder": "Example: Beginners group",
+    "descriptionLabel": "Group description",
+    "descriptionPlaceholder": "Example: Evening shift group",
+    "subjectLabel": "Choose subject",
+    "subjectPlaceholder": "Select a subject",
+    "noteTitle": "Important note",
+    "noteBody": "Selected students will be linked to this subject only within this group. You can edit this later from group settings.",
+    "next": "Next step",
+    "back": "Previous",
+    "done": "Done",
+    "cancel": "Cancel",
+    "searchPlaceholder": "Search by name or email...",
+    "studentColumn": "Student name & details",
+    "statusColumn": "Status",
+    "available": "Available",
+    "inOtherGroup": "In another group",
+    "noStudents": "No students enrolled in this subject.",
+    "noAssignableSubjects": "You have no subjects you can create groups for. You must be assigned as a teacher on the subject.",
+    "creating": "Creating...",
+    "conflictsTitle": "Add conflict"
+  },
+  "edit": {
+    "title": "Edit group",
+    "submit": "Save changes",
+    "saving": "Saving..."
+  },
+  "details": {
+    "breadcrumb": "Group details",
+    "title": "Group details",
+    "subtitle": "Manage students in the current group",
+    "edit": "Edit",
+    "delete": "Delete group",
+    "teacher": "Teacher",
+    "subject": "Subject",
+    "totalStudents": "Total students",
+    "studentsTitle": "Group students",
+    "studentName": "Student name",
+    "email": "Email",
+    "joinedAt": "Join date",
+    "actions": "Actions",
+    "remove": "Remove",
+    "addStudents": "Add students",
+    "emptyStudents": "No students in this group yet.",
+    "pagination": "Showing {{from}}–{{to}} of {{total}} students",
+    "loading": "Loading group details...",
+    "notFound": "Group not found or you do not have permission to view it."
+  },
+  "delete": {
+    "title": "Delete group",
+    "message": "The group and its memberships will be permanently deleted. Students remain enrolled in the subject and become available for another group.",
+    "recoveryNote": "This is a hard delete and cannot be undone.",
+    "itemLabel": "Group"
+  },
+  "toasts": {
+    "created": "Group created successfully",
+    "updated": "Group updated successfully",
+    "deleted": "Group deleted successfully",
+    "membersAdded": "Students added to the group",
+    "memberRemoved": "Student removed from the group"
+  },
+  "errors": {
+    "loadFailed": "Failed to load groups",
+    "loadDetailsFailed": "Failed to load group details",
+    "nameRequired": "Group name is required",
+    "subjectRequired": "Please select a subject",
+    "createFailed": "Failed to create group",
+    "updateFailed": "Failed to update group",
+    "deleteFailed": "Failed to delete group",
+    "addMembersFailed": "Failed to add students",
+    "removeMemberFailed": "Failed to remove student",
+    "conflict": "Some students are already in another group for this subject"
+  },
+  "validation": {
+    "nameRequired": "Group name is required",
+    "subjectRequired": "Please select a subject"
+  }
+}

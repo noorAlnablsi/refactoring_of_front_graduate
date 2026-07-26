@@ -133,7 +133,7 @@ function EditMemberProfileModalContent({ member, memberLabel, onClose, onSuccess
 
         <div className="mt-8 flex items-center justify-end gap-3">
           <button type="button" onClick={onClose} className="text-sm font-bold text-[var(--shell-accent)]">
-            {t('cancel', { ns: 'common' })}
+            {t('actions.cancel', { ns: 'common' })}
           </button>
           <button
             type="button"

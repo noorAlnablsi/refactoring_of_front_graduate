@@ -9,6 +9,8 @@ export const ROUTES = {
   MEMBERS: '/members',
   MEMBERS_TEACHERS: '/members/teachers',
   MEMBERS_STUDENTS: '/members/students',
+  GROUPS: '/groups',
+  GROUP_DETAILS: '/groups/:groupId',
   QUESTION_BANKS: '/question-banks',
   EXAMS: '/exams',
   EXAM_CREATE: '/exams/new',

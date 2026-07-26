@@ -81,6 +81,50 @@ export function canAccessExams() {
   return membership.role !== 'STUDENT'
 }
 
+/** Teacher / owner / admin (non-student) can open student groups module. */
+/** Route access: teachers, SOLO, and institution owner/admin (monitor via Members). */
+export function canAccessStudentGroups() {
+  const membership = getActiveMembership()
+  if (!membership) return false
+  return membership.role !== 'STUDENT'
+}
+
+/**
+ * Sidebar item only for teachers / SOLO.
+ * Institution owner/ADMIN open groups from Members management, not the sidebar.
+ */
+export function canShowStudentGroupsInSidebar() {
+  const membership = getActiveMembership()
+  if (!membership || membership.role === 'STUDENT') return false
+  if (membership.role === 'TEACHER') return true
+  if (membership.workspace?.kind === 'SOLO') return true
+  return false
+}
+
+/**
+ * Create / edit / members: subject teachers (and SOLO owner acting as teacher).
+ * Institution owner/ADMIN without TEACHER role = monitor only.
+ */
+export function canMutateStudentGroups() {
+  const membership = getActiveMembership()
+  if (!membership || membership.role === 'STUDENT') return false
+  if (membership.role === 'TEACHER') return true
+  if (membership.workspace?.kind === 'SOLO' && membership.is_owner) return true
+  return false
+}
+
+export function isStudentGroupOwner(group) {
+  const membership = getActiveMembership()
+  if (!membership || !group) return false
+  const ownerId = group.createdByMembershipId ?? group.created_by_membership_id
+  if (ownerId == null) return false
+  return Number(ownerId) === Number(membership.membership_id)
+}
+
+export function canEditStudentGroup(group) {
+  return canMutateStudentGroups() && isStudentGroupOwner(group)
+}
+
 export function canCreateExam() {
   return canAccessExams()
 }

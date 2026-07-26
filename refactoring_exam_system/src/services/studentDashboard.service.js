@@ -17,6 +17,17 @@ export async function getStudentTestEntry(testId) {
 }
 
 /**
+ * Student exam center list (available + attempts, paginated).
+ * GET /student/tests?page=&per_page=
+ */
+export async function getStudentTests({ page = 1, perPage = 20 } = {}) {
+  const { data } = await api.get('/student/tests', {
+    params: { page, per_page: perPage },
+  })
+  return data
+}
+
+/**
  * Full exams list (صفحة الاختبارات — عرض الكل) — optional until backend ships it.
  * GET /student/exams?status=available|upcoming|completed
  */

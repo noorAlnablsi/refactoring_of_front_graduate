@@ -18,7 +18,7 @@ import StudentJoinCodePage from './pages/student/StudentJoinCodePage'
 import StudentDashboardPage from './pages/student/StudentDashboardPage'
 import StudentSettingsPage from './pages/student/StudentSettingsPage'
 import StudentChangePasswordPage from './pages/student/StudentChangePasswordPage'
-import StudentPlaceholderPage from './pages/student/StudentPlaceholderPage'
+import StudentExamsPage from './pages/student/StudentExamsPage'
 import ExamAttemptPage from './pages/student/ExamAttemptPage'
 import ExamEntryPage from './pages/student/ExamEntryPage'
 import StudentPerformancePage from './pages/student/StudentPerformancePage'
@@ -44,6 +44,8 @@ import CreateWorkspacePage from './pages/settings/CreateWorkspacePage'
 import MembersPage from './pages/members/MembersPage'
 import TeachersPage from './pages/members/TeachersPage'
 import StudentsPage from './pages/members/StudentsPage'
+import StudentGroupsPage from './pages/groups/StudentGroupsPage'
+import GroupDetailsPage from './pages/groups/GroupDetailsPage'
 import { ROUTES } from './constants/routes'
 
 function App() {
@@ -68,6 +70,8 @@ function App() {
           <Route path={ROUTES.MEMBERS} element={<MembersPage />} />
           <Route path={ROUTES.MEMBERS_TEACHERS} element={<TeachersPage />} />
           <Route path={ROUTES.MEMBERS_STUDENTS} element={<StudentsPage />} />
+          <Route path={ROUTES.GROUPS} element={<StudentGroupsPage />} />
+          <Route path={ROUTES.GROUP_DETAILS} element={<GroupDetailsPage />} />
           <Route path={ROUTES.QUESTION_BANKS} element={<QuestionBanksPage />} />
           <Route path={`${ROUTES.QUESTION_BANKS}/:id/editor`} element={<QuestionBankEditorPage />} />
           <Route path={ROUTES.EXAMS} element={<ExamsPage />} />
@@ -94,10 +98,7 @@ function App() {
 
         <Route element={<StudentDashboardLayout />}>
           <Route path={ROUTES.STUDENT_DASHBOARD} element={<StudentDashboardPage />} />
-          <Route
-            path={ROUTES.STUDENT_EXAMS}
-            element={<StudentPlaceholderPage page="exams" />}
-          />
+          <Route path={ROUTES.STUDENT_EXAMS} element={<StudentExamsPage />} />
           <Route path={ROUTES.STUDENT_RESULTS} element={<StudentPerformancePage />} />
           <Route
             path={ROUTES.STUDENT_RESULTS_PENDING}

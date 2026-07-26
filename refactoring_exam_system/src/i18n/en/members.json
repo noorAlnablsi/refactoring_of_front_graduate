@@ -10,6 +10,12 @@
     "noRecentAdditions": "No recent additions yet.",
     "loadError": "Could not load member data"
   },
+  "latest": {
+    "title": "Latest additions",
+    "viewAll": "View all",
+    "loading": "Loading latest members...",
+    "empty": "No recent additions yet."
+  },
   "stats": {
     "studentsTitle": "Students",
     "studentsDescription": "Total registered students",
@@ -57,6 +63,21 @@
       "notEnrolled": "Student is not enrolled in any subject yet",
       "success": "Student removed from subject successfully",
       "removing": "Removing..."
+    },
+    "total": "Total students",
+    "activeNow": "Active now",
+    "activeDescription": "Active students on the current page",
+    "perPage": "{{count}} students",
+    "columnName": "Student name",
+    "empty": "No students in the institution yet",
+    "pagination": "Showing {{from}}-{{to}} of {{total}} students",
+    "actions": {
+      "assignSubject": "Assign subject",
+      "assignSubjectTitle": "Assign a subject to the student",
+      "editProfile": "Edit profile",
+      "editProfileTitle": "Edit student profile",
+      "removeFromSubject": "Remove from subject",
+      "removeFromSubjectTitle": "Remove student from a subject"
     }
   },
   "teachers": {
@@ -72,6 +93,21 @@
     "loadError": "Could not load teacher list",
     "removeSuccess": "Teacher removed from the institution",
     "membershipError": "Could not identify teacher membership",
+    "total": "Total teachers",
+    "activityStatus": "Activity status",
+    "activeRateDescription": "Active teachers on the current page",
+    "perPage": "{{count}} teachers",
+    "columnName": "Teacher name",
+    "empty": "No teachers in the institution yet",
+    "pagination": "Showing {{from}}-{{to}} of {{total}} teachers",
+    "actions": {
+      "assignSubject": "Assign subject",
+      "assignSubjectTitle": "Assign a subject to the teacher",
+      "editProfile": "Edit profile",
+      "editProfileTitle": "Edit teacher profile",
+      "removeFromWorkspace": "Remove from institution",
+      "removeFromWorkspaceTitle": "Remove teacher from the institution"
+    },
     "summary": {
       "total": "Total teachers",
       "activityStatus": "Activity status",
@@ -116,12 +152,38 @@
       "save": "Save changes"
     }
   },
+  "table": {
+    "show": "Show:",
+    "filterPlaceholder": "Filter by...",
+    "email": "Email",
+    "phone": "Phone",
+    "subjectsCount": "Subjects",
+    "status": "Status",
+    "actions": "Actions"
+  },
+  "editProfile": {
+    "title": "Edit {{role}} profile",
+    "description": "Update {{name}}'s information, then save your changes.",
+    "membershipNotFound": "Could not find {{role}} membership.",
+    "fullName": "Full name",
+    "email": "Email",
+    "phone": "Phone number",
+    "avatarUrl": "Avatar URL",
+    "save": "Save changes",
+    "saving": "Saving..."
+  },
+  "toasts": {
+    "membershipNotFound": "Could not find {{role}} membership.",
+    "fullNameRequired": "Full name is required",
+    "profileUpdated": "{{role}} profile updated successfully"
+  },
   "status": {
     "active": "Active",
     "pending": "Pending",
     "suspended": "Suspended"
   },
   "roles": {
+    "member": "Member",
     "teacherWithSubjects": "Teacher • {{count}} subjects",
     "teacher": "Teacher",
     "studentWithSubjects": "Student • {{count}} subjects",

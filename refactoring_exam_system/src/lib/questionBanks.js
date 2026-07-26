@@ -7,7 +7,7 @@ function tQB(key, options = {}) {
 }
 
 function getCountLocale() {
-  return i18n.language === 'ar' ? 'ar-EG' : 'en-US'
+  return String(i18n.language || '').toLowerCase().startsWith('ar') ? 'ar-EG' : 'en-US'
 }
 
 const VISIBILITY_KEYS = {

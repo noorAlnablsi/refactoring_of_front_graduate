@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { useParams } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
+import AssignStudentsModal from '../../components/subjects/AssignStudentsModal'
 import AssignTeacherModal from '../../components/subjects/AssignTeacherModal'
 import SubjectDetailsBreadcrumb from '../../components/subjects/details/SubjectDetailsBreadcrumb'
 import SubjectDetailsHeader from '../../components/subjects/details/SubjectDetailsHeader'
@@ -10,9 +11,9 @@ import SubjectExamsTab from '../../components/subjects/details/SubjectExamsTab'
 import SubjectOverviewTab from '../../components/subjects/details/SubjectOverviewTab'
 import SubjectQuestionBanksTab from '../../components/subjects/details/SubjectQuestionBanksTab'
 import SubjectTeachersTab from '../../components/subjects/details/SubjectTeachersTab'
-import EditSubjectModal from '../../components/subjects/EditSubjectModal'
 import { useSubjectDetails } from '../../hooks/subjects/useSubjectDetails'
 import { removeTeacherFromSubject } from '../../services/subjects.service'
+import { getStudentMembershipId } from '../../lib/workspaceStudents'
 import { useToastStore } from '../../store/toastStore'
 
 function SubjectDetailsSkeleton() {
@@ -41,16 +42,20 @@ function SubjectDetailsPage() {
     questionBanks,
     questionBanksCount,
     topics,
+    students,
     studentsCount,
     loading,
     error,
     refetch,
   } = useSubjectDetails(id)
   const [activeTab, setActiveTab] = useState('overview')
-  const [editOpen, setEditOpen] = useState(false)
-  const [assignOpen, setAssignOpen] = useState(false)
+  const [assignTeacherOpen, setAssignTeacherOpen] = useState(false)
+  const [assignStudentsOpen, setAssignStudentsOpen] = useState(false)
 
-  const assignedIds = teachers.map((teacher) => teacher.membership_id).filter(Boolean)
+  const assignedTeacherIds = teachers.map((teacher) => teacher.membership_id).filter(Boolean)
+  const enrolledStudentIds = students
+    .map((student) => getStudentMembershipId(student))
+    .filter(Boolean)
 
   const handleRemoveTeacher = async (membershipId) => {
     try {
@@ -73,8 +78,8 @@ function SubjectDetailsPage() {
       <SubjectDetailsBreadcrumb />
       <SubjectDetailsHeader
         subject={subject}
-        onAssign={() => setAssignOpen(true)}
-        onEdit={() => setEditOpen(true)}
+        onAssignTeacher={() => setAssignTeacherOpen(true)}
+        onAssignStudents={() => setAssignStudentsOpen(true)}
       />
       <SubjectDetailsStats
         teachersCount={teachers.length}
@@ -101,18 +106,19 @@ function SubjectDetailsPage() {
       {activeTab === 'banks' ? <SubjectQuestionBanksTab questionBanks={questionBanks} /> : null}
       {activeTab === 'exams' ? <SubjectExamsTab /> : null}
 
-      <EditSubjectModal
-        open={editOpen}
-        subject={subject}
-        onClose={() => setEditOpen(false)}
+      <AssignTeacherModal
+        open={assignTeacherOpen}
+        subjectId={subject.id}
+        assignedIds={assignedTeacherIds}
+        onClose={() => setAssignTeacherOpen(false)}
         onSuccess={refetch}
       />
 
-      <AssignTeacherModal
-        open={assignOpen}
+      <AssignStudentsModal
+        open={assignStudentsOpen}
         subjectId={subject.id}
-        assignedIds={assignedIds}
-        onClose={() => setAssignOpen(false)}
+        enrolledIds={enrolledStudentIds}
+        onClose={() => setAssignStudentsOpen(false)}
         onSuccess={refetch}
       />
     </div>

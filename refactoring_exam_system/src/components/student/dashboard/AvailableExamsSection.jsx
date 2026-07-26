@@ -3,8 +3,11 @@ import { useTranslation } from 'react-i18next'
 import { ROUTES } from '../../../constants/routes'
 import StudentExamCard from './StudentExamCard'
 
+const DASHBOARD_AVAILABLE_PREVIEW_LIMIT = 2
+
 function AvailableExamsSection({ exams }) {
   const { t } = useTranslation('student')
+  const previewExams = (exams || []).slice(0, DASHBOARD_AVAILABLE_PREVIEW_LIMIT)
 
   return (
     <section className="rounded-2xl bg-white p-5 shadow-[0_1px_3px_rgba(16,24,40,0.06)] ring-1 ring-[#E5E9EB]/80">
@@ -18,9 +21,9 @@ function AvailableExamsSection({ exams }) {
         </Link>
       </div>
 
-      {exams.length ? (
+      {previewExams.length ? (
         <div className="grid gap-4 md:grid-cols-2">
-          {exams.map((exam) => (
+          {previewExams.map((exam) => (
             <StudentExamCard key={exam.id} exam={exam} />
           ))}
         </div>

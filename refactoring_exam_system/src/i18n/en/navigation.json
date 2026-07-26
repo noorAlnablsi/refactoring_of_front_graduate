@@ -3,6 +3,7 @@
     "dashboard": "Dashboard",
     "subjects": "Subject management",
     "members": "Member management",
+    "groups": "Student groups",
     "questionBanks": "Question banks",
     "exams": "Exams",
     "statistics": "Statistics",
@@ -35,6 +36,7 @@
     "home": "Home",
     "settings": "Settings",
     "members": "Member management",
+    "groups": "Student groups",
     "teachers": "Teacher management",
     "students": "Student management",
     "changePassword": "Reset password"

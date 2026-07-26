@@ -10,6 +10,12 @@
     "noRecentAdditions": "لا توجد إضافات حديثة بعد.",
     "loadError": "تعذّر تحميل بيانات الأعضاء"
   },
+  "latest": {
+    "title": "أحدث الإضافات",
+    "viewAll": "عرض الكل",
+    "loading": "جاري تحميل أحدث الأعضاء...",
+    "empty": "لا توجد إضافات حديثة بعد."
+  },
   "stats": {
     "studentsTitle": "الطلاب",
     "studentsDescription": "إجمالي الطلاب المسجلين",
@@ -57,6 +63,21 @@
       "notEnrolled": "الطالب غير مسجل في أي مادة حالياً",
       "success": "تم حذف الطالب من المادة بنجاح",
       "removing": "جاري الحذف..."
+    },
+    "total": "إجمالي الطلاب",
+    "activeNow": "نشطون الآن",
+    "activeDescription": "الطلاب النشطون في الصفحة الحالية",
+    "perPage": "{{count}} طلاب",
+    "columnName": "اسم الطالب",
+    "empty": "لا يوجد طلاب في المؤسسة بعد",
+    "pagination": "عرض {{from}}-{{to}} من أصل {{total}} طالب",
+    "actions": {
+      "assignSubject": "إسناد مادة",
+      "assignSubjectTitle": "إسناد مادة للطالب",
+      "editProfile": "تعديل الملف الشخصي",
+      "editProfileTitle": "تعديل معلومات الطالب",
+      "removeFromSubject": "إزالة من مادة",
+      "removeFromSubjectTitle": "حذف الطالب من مادة"
     }
   },
   "teachers": {
@@ -72,6 +93,21 @@
     "loadError": "تعذّر تحميل قائمة المعلمين",
     "removeSuccess": "تم إزالة المعلم من المؤسسة",
     "membershipError": "تعذّر تحديد عضوية المعلم",
+    "total": "إجمالي المعلمين",
+    "activityStatus": "حالات النشاط",
+    "activeRateDescription": "نسبة المعلمين النشطين في الصفحة الحالية",
+    "perPage": "{{count}} معلمين",
+    "columnName": "اسم المعلم",
+    "empty": "لا يوجد معلمون في المؤسسة بعد",
+    "pagination": "عرض {{from}}-{{to}} من أصل {{total}} معلم",
+    "actions": {
+      "assignSubject": "إسناد مادة",
+      "assignSubjectTitle": "إسناد مادة للمعلم",
+      "editProfile": "تعديل الملف الشخصي",
+      "editProfileTitle": "تعديل معلومات المعلم",
+      "removeFromWorkspace": "حذف من المؤسسة",
+      "removeFromWorkspaceTitle": "إزالة المعلم من المؤسسة"
+    },
     "summary": {
       "total": "إجمالي المعلمين",
       "activityStatus": "حالات النشاط",
@@ -116,12 +152,38 @@
       "save": "حفظ التعديلات"
     }
   },
+  "table": {
+    "show": "عرض:",
+    "filterPlaceholder": "تصفية حسب..",
+    "email": "البريد الإلكتروني",
+    "phone": "رقم الهاتف",
+    "subjectsCount": "عدد المواد",
+    "status": "الحالة",
+    "actions": "الإجراءات"
+  },
+  "editProfile": {
+    "title": "تعديل بيانات {{role}}",
+    "description": "حدّث معلومات {{name}} ثم احفظ التغييرات.",
+    "membershipNotFound": "تعذّر العثور على عضوية {{role}}.",
+    "fullName": "الاسم الكامل",
+    "email": "البريد الإلكتروني",
+    "phone": "رقم الهاتف",
+    "avatarUrl": "رابط الصورة الشخصية",
+    "save": "حفظ التغييرات",
+    "saving": "جاري الحفظ..."
+  },
+  "toasts": {
+    "membershipNotFound": "تعذّر العثور على عضوية {{role}}.",
+    "fullNameRequired": "الاسم الكامل مطلوب",
+    "profileUpdated": "تم تحديث بيانات {{role}} بنجاح"
+  },
   "status": {
     "active": "نشط",
     "pending": "قيد الانتظار",
     "suspended": "معلق"
   },
   "roles": {
+    "member": "العضو",
     "teacherWithSubjects": "معلم • {{count}} مواد",
     "teacher": "معلم",
     "studentWithSubjects": "طالب • {{count}} مواد",

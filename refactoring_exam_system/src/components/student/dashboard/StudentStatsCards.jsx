@@ -1,5 +1,6 @@
 import { useTranslation } from 'react-i18next'
 import { BarChart3, Calendar, CheckCircle2, ClipboardList } from 'lucide-react'
+import { formatLocaleNumber, formatLocalePaddedNumber } from '../../../lib/localeNumber'
 
 const CARD_CLASS =
   'relative flex min-h-[120px] flex-col overflow-hidden rounded-2xl bg-white shadow-[0_1px_3px_rgba(16,24,40,0.06)] ring-1 ring-[#E5E9EB]/80'
@@ -25,34 +26,33 @@ function StatCard({ label, value, icon: Icon, iconBg, accentClassName }) {
 
 function StudentStatsCards({ stats }) {
   const { t } = useTranslation('student')
-  const formatCount = (value) => String(value).padStart(2, '0')
 
   return (
     <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
       <StatCard
         label={t('stats.availableExams')}
-        value={formatCount(stats.availableExams)}
+        value={formatLocalePaddedNumber(stats.availableExams ?? 0)}
         icon={ClipboardList}
         iconBg="bg-[#E8F7F6] text-[#2AA8A2]"
         accentClassName="bg-[#2AA8A2]"
       />
       <StatCard
         label={t('stats.upcoming')}
-        value={formatCount(stats.upcomingExams)}
+        value={formatLocalePaddedNumber(stats.upcomingExams ?? 0)}
         icon={Calendar}
         iconBg="bg-[#EFF6FF] text-[#3B82F6]"
         accentClassName="bg-[#3B82F6]"
       />
       <StatCard
         label={t('stats.completed')}
-        value={formatCount(stats.completedExams)}
+        value={formatLocalePaddedNumber(stats.completedExams ?? 0)}
         icon={CheckCircle2}
         iconBg="bg-[#E8F7F6] text-[#2AA8A2]"
         accentClassName="bg-[#2AA8A2]"
       />
       <StatCard
         label={t('stats.averageScore')}
-        value={`${stats.averageScore}%`}
+        value={`${formatLocaleNumber(stats.averageScore ?? 0)}%`}
         icon={BarChart3}
         iconBg="bg-[#E8F7F6] text-[#2AA8A2]"
         accentClassName="bg-[#2AA8A2]"

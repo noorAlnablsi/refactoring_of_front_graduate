@@ -123,11 +123,6 @@ function LoginPage() {
                 </div>
               </div>
 
-              <div className="flex items-center justify-end gap-2">
-                <label className="text-sm text-[#6B7280]">{t('login.rememberMe')}</label>
-                <input type="checkbox" className="h-4 w-4 accent-[#2AA8A2]" />
-              </div>
-
               {successMessageKey ? (
                 <p className="rounded-xl bg-[#E8F7F6] px-4 py-3 text-sm font-semibold text-[#2AA8A2]">
                   {t(successMessageKey)}

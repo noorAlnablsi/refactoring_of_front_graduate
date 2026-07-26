@@ -108,23 +108,50 @@ export async function getSubjectStudents(subjectId) {
   return data
 }
 
-export async function assignStudentToSubject(subjectId, studentOrMembershipId) {
-  const membershipId =
-    typeof studentOrMembershipId === 'object'
-      ? getStudentMembershipId(studentOrMembershipId)
-      : Number(studentOrMembershipId)
-
-  if (!membershipId || !Number.isFinite(membershipId)) {
-    throw new Error('تعذّر تحديد الطالب — تأكد أن API يُرجع membership_id')
-  }
-
+function normalizeSubjectId(subjectId) {
   const normalizedSubjectId = Number(subjectId)
   if (!Number.isFinite(normalizedSubjectId)) {
     throw new Error('تعذّر تحديد المادة')
   }
+  return normalizedSubjectId
+}
 
-  const { data } = await api.post(`/subjects/${normalizedSubjectId}/students`, {
+function resolveMembershipIds(studentOrMembershipIds) {
+  const rawList = Array.isArray(studentOrMembershipIds)
+    ? studentOrMembershipIds
+    : [studentOrMembershipIds]
+
+  const membershipIds = [
+    ...new Set(
+      rawList
+        .map((item) =>
+          typeof item === 'object' ? getStudentMembershipId(item) : Number(item),
+        )
+        .filter((id) => Number.isFinite(id) && id > 0),
+    ),
+  ]
+
+  if (membershipIds.length === 0) {
+    throw new Error('تعذّر تحديد الطالب — تأكد أن API يُرجع membership_id')
+  }
+
+  return membershipIds
+}
+
+/** Enroll one student (legacy body: membership_id). */
+export async function assignStudentToSubject(subjectId, studentOrMembershipId) {
+  const membershipId = resolveMembershipIds(studentOrMembershipId)[0]
+  const { data } = await api.post(`/subjects/${normalizeSubjectId(subjectId)}/students`, {
     membership_id: membershipId,
+  })
+  return data
+}
+
+/** Enroll students in bulk (body: membership_ids). Single id still uses membership_ids array. */
+export async function assignStudentsToSubject(subjectId, studentOrMembershipIds) {
+  const membershipIds = resolveMembershipIds(studentOrMembershipIds)
+  const { data } = await api.post(`/subjects/${normalizeSubjectId(subjectId)}/students`, {
+    membership_ids: membershipIds,
   })
   return data
 }

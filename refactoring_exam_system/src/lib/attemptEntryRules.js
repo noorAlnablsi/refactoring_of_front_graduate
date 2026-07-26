@@ -5,7 +5,7 @@ function storageKey(testId) {
 }
 
 /** Persist entry rules for Attempt page (require_answer_all, navigation, …). */
-export function saveAttemptEntryRules(testId, rules) {
+export function saveAttemptEntryRules(testId, rules, extras = {}) {
   if (!testId || !rules) return
   try {
     sessionStorage.setItem(
@@ -16,6 +16,7 @@ export function saveAttemptEntryRules(testId, rules) {
         requireAnswerAll: Boolean(rules.requireAnswerAll),
         maxAttempts: rules.maxAttempts ?? null,
         proctoringEnabled: Boolean(rules.proctoringEnabled),
+        availabilityMode: extras.availabilityMode ?? rules.availabilityMode ?? null,
       }),
     )
   } catch {

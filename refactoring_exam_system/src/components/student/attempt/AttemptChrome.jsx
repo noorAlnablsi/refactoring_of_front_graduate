@@ -12,6 +12,7 @@ import {
   formatCountdownSpaced,
   isAnswerProvided,
 } from '../../../lib/attemptAnswers'
+import { formatLocalePaddedNumber } from '../../../lib/localeNumber'
 
 function AttemptExamHeader({
   examTitle,
@@ -137,7 +138,7 @@ function AttemptSidebar({
               onClick={() => onSelect(index)}
               className={`${cellClass} disabled:cursor-not-allowed disabled:opacity-40`}
             >
-              {String(index + 1).padStart(2, '0')}
+              {formatLocalePaddedNumber(index + 1)}
               {marked ? (
                 <Bookmark
                   className="absolute -left-0.5 -top-1 h-3.5 w-3.5 fill-[#F472B6] text-[#EC4899]"

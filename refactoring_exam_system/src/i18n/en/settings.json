@@ -94,6 +94,38 @@
     "deleteEmailMismatch": "The email you entered does not match your account email.",
     "deleteConfirmAction": "Permanently delete account"
   },
+  "report": {
+    "cardTitle": "Report a problem",
+    "cardSubtitle": "Report the issue you are facing",
+    "contactTitle": "Contact support",
+    "contactHint": "You can send a problem report to the support team",
+    "modalTitle": "Send a report",
+    "modalSubtitle": "Tell us about the problem you encountered and the support team will help resolve it.",
+    "categoryLabel": "Issue type",
+    "categoryPlaceholder": "Choose issue type",
+    "titleLabel": "Issue title",
+    "titlePlaceholder": "Write a short title for the issue",
+    "descriptionLabel": "What is the problem?",
+    "descriptionPlaceholder": "Explain the problem in detail...",
+    "descriptionHint": "Tell us what happened and what you expected to happen.",
+    "cancel": "Cancel",
+    "submit": "Send report",
+    "submitting": "Sending...",
+    "success": "Report created successfully",
+    "submitError": "Could not send the report",
+    "categories": {
+      "TECHNICAL": "Technical issue",
+      "ACCOUNT": "Account & login",
+      "CONTENT": "Content & exams",
+      "CHEATING": "Cheating / misconduct",
+      "OTHER": "Other"
+    },
+    "errors": {
+      "categoryRequired": "Please choose an issue type to continue",
+      "titleRequired": "Please enter an issue title to continue",
+      "descriptionRequired": "Please describe the issue to continue"
+    }
+  },
   "changePassword": {
     "title": "Reset password",
     "pageTitle": "Reset password",

@@ -4,6 +4,63 @@
   "greetingWithWorkspace": "مرحباً {{name}} — {{workspace}}",
   "defaultUser": "مستخدم",
   "defaultUserName": "مستخدم",
+  "welcome": {
+    "title": "مرحباً بك، {{name}}",
+    "subtitle": "هذه نظرة سريعة على أداء مساحة العمل اليوم، وجميع البيانات تُحدَّث بشكل مباشر.",
+    "subtitleWithWorkspace": "هذه نظرة سريعة على أداء «{{workspace}}» اليوم، وجميع البيانات تُحدَّث بشكل مباشر."
+  },
+  "stats": {
+    "totalMembers": "إجمالي الأعضاء",
+    "averageScore": "متوسط الدرجات",
+    "mostPopularSubject": "المادة الأكثر شعبية",
+    "enrolledStudents": "{{count}} طالب مسجّل",
+    "noPopularSubject": "لا توجد مادة رائدة بعد"
+  },
+  "trend": {
+    "title": "متوسط الدرجات",
+    "subtitle": "تقدم الطلاب الأسبوعي.",
+    "empty": "لا توجد بيانات درجات كافية لعرض الرسم بعد.",
+    "averageLabel": "المتوسط العام"
+  },
+  "recentMembers": {
+    "title": "آخر الأعضاء المنضمين",
+    "empty": "لا يوجد أعضاء حديثون بعد.",
+    "viewAll": "عرض جميع الأعضاء"
+  },
+  "subjectsCard": {
+    "title": "إجمالي المواد",
+    "manage": "إدارة المواد",
+    "empty": "لا توجد مواد بعد.",
+    "studentsCount": "{{count}} طالب",
+    "quickAdd": "إضافة مادة سريعة"
+  },
+  "banks": {
+    "title": "بنوك الأسئلة المحدّثة مؤخراً",
+    "viewAll": "عرض الكل",
+    "empty": "لا توجد بنوك محدّثة بعد.",
+    "questionsCount": "{{count}} سؤال",
+    "updated": "آخر تحديث: {{value}}"
+  },
+  "upcoming": {
+    "title": "الاختبارات القادمة",
+    "empty": "لا توجد اختبارات قادمة حالياً.",
+    "viewCalendar": "مشاهدة التقويم الكامل",
+    "open": "مفتوح",
+    "flexible": "متاح بمرونة",
+    "timeUnavailable": "الوقت غير محدد",
+    "openExam": "فتح الاختبار"
+  },
+  "relative": {
+    "now": "الآن",
+    "minutesAgo": "منذ {{count}} دقيقة",
+    "hoursAgo": "منذ {{count}} ساعة",
+    "yesterday": "أمس",
+    "daysAgo": "منذ {{count}} يوم"
+  },
+  "errors": {
+    "loadFailed": "تعذّر تحميل لوحة التحكم",
+    "retry": "إعادة المحاولة"
+  },
   "subjects": {
     "title": "إدارة المواد",
     "description": "إنشاء وإدارة المواد الدراسية"

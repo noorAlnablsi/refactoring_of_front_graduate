@@ -1,11 +1,12 @@
 import i18n from '../i18n'
+import { localizeDigits } from './localeNumber'
 
 function tStudent(key, options = {}) {
   return i18n.t(key, { ns: 'student', ...options })
 }
 
 function getDateLocale() {
-  return i18n.language === 'ar' ? 'ar-EG' : 'en-US'
+  return String(i18n.language || '').toLowerCase().startsWith('ar') ? 'ar-EG' : 'en-US'
 }
 
 function formatAvailabilityLabel(test) {
@@ -46,9 +47,15 @@ function pickStartDate(test) {
 }
 
 export function normalizeAvailableTestFromApi(test) {
+  const subjectName =
+    (test.subject && typeof test.subject === 'object' ? test.subject.name : null) ||
+    test.subject_name ||
+    (typeof test.subject === 'string' ? test.subject : null) ||
+    formatSubjectFallback(test.subject_id)
+
   return {
     id: test.test_id ?? test.id,
-    subject: test.subject_name || test.subject || formatSubjectFallback(test.subject_id),
+    subject: subjectName,
     title: test.name || test.title || '—',
     teacher: test.teacher_name || test.teacher || '—',
     durationMinutes: test.duration_minutes ?? 0,
@@ -121,4 +128,80 @@ export function getCalendarEventDays(events = [], year, month) {
       return parsed.getFullYear() === year && parsed.getMonth() === month
     })
     .map((event) => new Date(event.date).getDate())
+}
+
+/**
+ * Map GET /student/tests attempt rows → dashboard "آخر الاختبارات" table.
+ */
+export function normalizeDashboardLatestResults(data, limit = 5) {
+  const items = Array.isArray(data?.items) ? data.items : Array.isArray(data) ? data : []
+
+  return items
+    .filter((item) => item && item.attempt_id != null)
+    .slice(0, limit)
+    .map((item) => {
+      const lifecycle = String(item.lifecycle_status || item.attempt_status || '').toUpperCase()
+      const isGraded = lifecycle === 'GRADED'
+      const scoreObj = item.score && typeof item.score === 'object' ? item.score : null
+      const earned = scoreObj != null ? Number(scoreObj.earned) : null
+      const maximum = scoreObj != null ? Number(scoreObj.maximum) : null
+      const percentage = scoreObj != null ? Number(scoreObj.percentage) : null
+
+      let score = '—'
+      let scoreDetail = ''
+      if (isGraded && Number.isFinite(percentage)) {
+        score = localizeDigits(`${Math.round(percentage * 10) / 10}%`)
+        if (Number.isFinite(earned) && Number.isFinite(maximum)) {
+          scoreDetail = localizeDigits(`${earned}/${maximum}`)
+        }
+      } else if (isGraded && Number.isFinite(earned) && Number.isFinite(maximum)) {
+        score = localizeDigits(`${earned}/${maximum}`)
+      }
+
+      const subject =
+        item.subject && typeof item.subject === 'object'
+          ? String(item.subject.name || '').trim()
+          : String(item.subject || item.subject_name || '').trim()
+
+      const dateRaw = item.submitted_at || item.graded_at || item.last_activity_at
+      const dateParsed = dateRaw ? new Date(dateRaw) : null
+      const date =
+        dateParsed && !Number.isNaN(dateParsed.getTime())
+          ? dateParsed.toLocaleDateString(getDateLocale(), { dateStyle: 'medium' })
+          : '—'
+
+      return {
+        id: item.attempt_id,
+        exam: String(item.title || '').trim() || '—',
+        subject: subject || '—',
+        score,
+        scoreDetail,
+        date,
+        status: isGraded ? 'approved' : 'pending',
+      }
+    })
+}
+
+export function buildDashboardStatsFromStudentTests(data, availableCount, upcomingCount) {
+  const items = Array.isArray(data?.items) ? data.items : []
+  const attemptRows = items.filter((item) => item && item.attempt_id != null)
+  const graded = attemptRows.filter(
+    (item) => String(item.lifecycle_status || '').toUpperCase() === 'GRADED',
+  )
+
+  const percentages = graded
+    .map((item) => Number(item?.score?.percentage))
+    .filter((n) => Number.isFinite(n))
+
+  const averageScore =
+    percentages.length === 0
+      ? 0
+      : Math.round((percentages.reduce((sum, n) => sum + n, 0) / percentages.length) * 10) / 10
+
+  return {
+    availableExams: availableCount,
+    upcomingExams: upcomingCount,
+    completedExams: graded.length,
+    averageScore,
+  }
 }

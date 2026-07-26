@@ -4,6 +4,63 @@
   "greetingWithWorkspace": "Hello {{name}} — {{workspace}}",
   "defaultUser": "User",
   "defaultUserName": "User",
+  "welcome": {
+    "title": "Welcome, {{name}}",
+    "subtitle": "Here is a quick look at your workspace performance today. All data updates in real time.",
+    "subtitleWithWorkspace": "Here is a quick look at “{{workspace}}” performance today. All data updates in real time."
+  },
+  "stats": {
+    "totalMembers": "Total members",
+    "averageScore": "Average scores",
+    "mostPopularSubject": "Most popular subject",
+    "enrolledStudents": "{{count}} enrolled students",
+    "noPopularSubject": "No leading subject yet"
+  },
+  "trend": {
+    "title": "Average scores",
+    "subtitle": "Weekly student progress.",
+    "empty": "Not enough graded attempts to draw the chart yet.",
+    "averageLabel": "Overall average"
+  },
+  "recentMembers": {
+    "title": "Recently joined members",
+    "empty": "No recent members yet.",
+    "viewAll": "View all members"
+  },
+  "subjectsCard": {
+    "title": "Total subjects",
+    "manage": "Manage subjects",
+    "empty": "No subjects yet.",
+    "studentsCount": "{{count}} students",
+    "quickAdd": "Quick add subject"
+  },
+  "banks": {
+    "title": "Recently updated question banks",
+    "viewAll": "View all",
+    "empty": "No recently updated banks yet.",
+    "questionsCount": "{{count}} questions",
+    "updated": "Updated: {{value}}"
+  },
+  "upcoming": {
+    "title": "Upcoming exams",
+    "empty": "No upcoming exams right now.",
+    "viewCalendar": "View full calendar",
+    "open": "Open",
+    "flexible": "Flexible availability",
+    "timeUnavailable": "Time not set",
+    "openExam": "Open exam"
+  },
+  "relative": {
+    "now": "Just now",
+    "minutesAgo": "{{count}} minutes ago",
+    "hoursAgo": "{{count}} hours ago",
+    "yesterday": "Yesterday",
+    "daysAgo": "{{count}} days ago"
+  },
+  "errors": {
+    "loadFailed": "Could not load the dashboard",
+    "retry": "Retry"
+  },
   "subjects": {
     "title": "Subject management",
     "description": "Create and manage academic subjects"

@@ -1,3 +1,4 @@
+import { ROUTES } from '../constants/routes'
 import { TEST_STATUS, TEST_TABS } from '../constants/tests'
 import { tUI } from './appToast'
 import { getTestId } from './testModel'
@@ -89,7 +90,10 @@ export function getExamShareLink(test) {
   if (test?.public_url) return test.public_url
 
   const testId = getTestId(test)
-  const slug = test?.slug
-  const path = slug ? `/exams/${slug}` : testId ? `/exams/${testId}` : '/exams'
+  if (testId == null || testId === '') {
+    return `${window.location.origin}${ROUTES.STUDENT_EXAMS}`
+  }
+
+  const path = ROUTES.STUDENT_EXAM_ENTRY.replace(':testId', String(testId))
   return `${window.location.origin}${path}`
 }

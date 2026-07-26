@@ -41,6 +41,7 @@ function MembersLatestList({ members, loading }) {
   return (
     <section className={shellCardClass}>
       <div className="flex items-center justify-between gap-3 border-b border-[var(--shell-border)] px-5 py-4">
+        <h2 className={shellSectionTitleClass}>{t('latest.title')}</h2>
         <button
           type="button"
           disabled
@@ -49,7 +50,6 @@ function MembersLatestList({ members, loading }) {
         >
           {t('latest.viewAll')}
         </button>
-        <h2 className={shellSectionTitleClass}>{t('latest.title')}</h2>
       </div>
 
       {loading ? (

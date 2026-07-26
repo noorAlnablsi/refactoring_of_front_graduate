@@ -116,7 +116,13 @@ export function normalizeStudentTestEntry(data = {}) {
       totalScore: summary.total_score ?? summary.totalScore ?? null,
     },
     time: {
-      availabilityMode: time.availability_mode || time.availabilityMode || null,
+      availabilityMode:
+        time.availability_mode ||
+        time.availabilityMode ||
+        exam.availability_time_mode ||
+        exam.availability_mode ||
+        data.availability_time_mode ||
+        null,
       durationMinutes,
       endsAt: time.ends_at || time.endsAt || null,
       entryWindowMinutes: time.entry_window_minutes ?? time.entryWindowMinutes ?? null,

@@ -1,4 +1,5 @@
 import { useTranslation } from 'react-i18next'
+import { localizeDigits } from '../../../lib/localeNumber'
 import { ClipboardList, LineChart, Trophy } from 'lucide-react'
 
 const CARD_CLASS =
@@ -7,7 +8,7 @@ const CARD_CLASS =
 function formatPercent(value) {
   if (value == null || Number.isNaN(Number(value))) return '—'
   const n = Number(value)
-  return `${Number.isInteger(n) ? n : n.toFixed(1)}%`
+  return localizeDigits(`${Number.isInteger(n) ? n : n.toFixed(1)}%`)
 }
 
 function PerformanceStatCard({ label, children, icon: Icon, iconBg, accentClassName }) {

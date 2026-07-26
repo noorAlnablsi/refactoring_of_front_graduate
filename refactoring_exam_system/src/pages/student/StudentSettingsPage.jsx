@@ -4,6 +4,7 @@ import { useTranslation } from 'react-i18next'
 import DeleteAccountConfirmDialog from '../../components/common/DeleteAccountConfirmDialog'
 import StudentInterfaceSettingsCard from '../../components/student/settings/StudentInterfaceSettingsCard'
 import StudentPrivacySettingsCard from '../../components/student/settings/StudentPrivacySettingsCard'
+import StudentSupportSettingsCard from '../../components/student/settings/StudentSupportSettingsCard'
 import { LANGUAGE } from '../../constants/language'
 import { ROUTES } from '../../constants/routes'
 import { THEME_MODE } from '../../constants/theme'
@@ -65,6 +66,8 @@ function StudentSettingsPage() {
         fontScale={fontScale}
         onFontScaleChange={setFontScale}
       />
+
+      <StudentSupportSettingsCard />
 
       <StudentPrivacySettingsCard
         onChangePasswordClick={() => navigate(ROUTES.STUDENT_SETTINGS_CHANGE_PASSWORD)}

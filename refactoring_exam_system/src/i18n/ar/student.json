@@ -37,7 +37,7 @@
     "empty": "لا توجد اختبارات قادمة حالياً."
   },
   "latestResults": {
-    "title": "آخر النتائج",
+    "title": "آخر الاختبارات",
     "filterAria": "تصفية النتائج",
     "columns": {
       "exam": "الاختبار",
@@ -57,6 +57,57 @@
     "regular": "عادي",
     "meta": "{{minutes}} دقيقة • {{questions}} سؤال",
     "start": "ابدأ الاختبار"
+  },
+  "examCenter": {
+    "title": "مركز الاختبارات",
+    "greeting": {
+      "withCount": "أهلاً {{name}}، لديك {{count}} اختبارات متاحة اليوم. ركّز وبالتوفيق!",
+      "empty": "أهلاً {{name}}، لا توجد اختبارات متاحة حالياً. راجع تبويب آخر الاختبارات أو عُد لاحقاً."
+    },
+    "tabs": {
+      "available": "الاختبارات المتاحة",
+      "recent": "آخر الاختبارات"
+    },
+    "badges": {
+      "proctored": "مراقب (PROCTORED)",
+      "standard": "اختبار قياسي",
+      "pendingGrading": "قيد التصحيح",
+      "gradedReviewLocked": "تم التصحيح • مراجعة مقفلة",
+      "gradedReviewOpen": "تم التصحيح • مراجعة متاحة",
+      "submitted": "تم التسليم"
+    },
+    "meta": {
+      "duration": "المدة",
+      "durationValue": "{{count}} دقيقة",
+      "closingDate": "تاريخ الإغلاق"
+    },
+    "remaining": {
+      "label": "الوقت المتبقي: {{value}}",
+      "hoursMinutes": "{{hours}}س : {{minutes}}د",
+      "days": "{{count}} أيام",
+      "flexible": "متاح بمرونة",
+      "ended": "انتهى موعد الإغلاق"
+    },
+    "score": {
+      "label": "الدرجة النهائية",
+      "fraction": "{{earned}} / {{max}}",
+      "percent": "{{value}}%",
+      "placeholder": "-- / --",
+      "placeholderOverMax": "-- / {{max}}"
+    },
+    "actions": {
+      "start": "ابدأ",
+      "viewResult": "عرض النتيجة",
+      "viewResultAndReview": "عرض النتيجة والمراجعة",
+      "reviewUnavailable": "المراجعة غير متاحة حالياً"
+    },
+    "empty": {
+      "available": "لا توجد اختبارات متاحة حالياً.",
+      "recent": "لا توجد اختبارات سابقة لعرضها بعد."
+    },
+    "loadError": "تعذر تحميل مركز الاختبارات",
+    "partialError": "تعذر تحميل بعض بيانات الاختبارات. يمكنك إعادة المحاولة.",
+    "retry": "إعادة المحاولة"
   },
   "entry": {
     "loading": "جاري تجهيز صفحة الدخول للاختبار...",
@@ -228,7 +279,12 @@
     "submitError": "تعذر تسليم الامتحان",
     "proctoringError": "تنبيه المراقبة",
     "backToDashboard": "العودة للوحة الطالب",
-    "retry": "إعادة المحاولة"
+    "retry": "إعادة المحاولة",
+    "offline": {
+      "graceActive": "انقطع الاتصال. أعد الاتصال خلال {{time}} وإلا سيتم إيقاف الإجابة وتسليم الاختبار تلقائياً عند عودة الشبكة.",
+      "frozenAwaitingReconnect": "انتهت مهلة الاتصال. تم إيقاف الإجابة. سيتم تسليم الاختبار تلقائياً عند عودة الاتصال.",
+      "softOfflineContinue": "أنت غير متصل. يمكنك متابعة الإجابة. عند انتهاء وقت الاختبار سيتم التسليم تلقائياً فور عودة الاتصال."
+    }
   },
   "results": {
     "readyTitle": "تم تسليم الامتحان",

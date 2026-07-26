@@ -4,7 +4,23 @@
   "addSubject": "إضافة مادة جديدة",
   "deleteItemLabel": "المادة",
   "toasts": {
-    "deleted": "تم حذف المادة"
+    "deleted": "تم حذف المادة",
+    "created": "تم إنشاء المادة بنجاح",
+    "updated": "تم تحديث المادة بنجاح",
+    "topicCreated": "تم إضافة المحور بنجاح",
+    "topicUpdated": "تم تحديث المحور بنجاح"
+  },
+  "modals": {
+    "createTitle": "إضافة مادة جديدة",
+    "editTitle": "تعديل المادة",
+    "nameLabel": "اسم المادة",
+    "namePlaceholder": "مثال: نظم موزعة",
+    "descriptionLabel": "وصف المادة",
+    "descriptionPlaceholder": "اكتب وصفاً مختصراً للمادة...",
+    "createSubmit": "إنشاء المادة",
+    "createSubmitting": "جاري الإنشاء...",
+    "editSubmit": "حفظ التعديلات",
+    "editSubmitting": "جاري الحفظ..."
   },
   "stats": {
     "totalSubjects": "إجمالي المواد",
@@ -42,7 +58,16 @@
     "deleteConfirm": "حذف المحور \"{{name}}\"؟",
     "deleteSuccess": "تم حذف المحور",
     "editAria": "تعديل المحور",
-    "deleteAria": "حذف المحور"
+    "deleteAria": "حذف المحور",
+    "createTitle": "إضافة محور",
+    "editTitle": "تعديل المحور",
+    "nameLabel": "اسم المحور",
+    "namePlaceholder": "مثال: الذاكرة الافتراضية",
+    "descriptionLabel": "وصف المحور",
+    "descriptionPlaceholder": "وصف اختياري للمحور...",
+    "createSubmit": "إضافة المحور",
+    "editSubmit": "حفظ التعديلات",
+    "submitting": "جاري الحفظ..."
   },
   "display": {
     "defaultSummary": "تغطي هذه المادة المفاهيم الأساسية والمتقدمة ضمن المنهج التعليمي للمؤسسة.",
@@ -68,6 +93,20 @@
     "assigning": "جاري الإسناد...",
     "assign": "إسناد"
   },
+  "assignStudents": {
+    "title": "إسناد طلاب",
+    "loading": "جاري تحميل الطلاب...",
+    "allEnrolled": "جميع الطلاب مسجّلون في هذه المادة",
+    "noneAvailable": "لا يوجد طلاب متاحون للإسناد",
+    "selectStudentsError": "يرجى اختيار طالب واحد على الأقل",
+    "successOne": "تم إسناد الطالب للمادة بنجاح",
+    "successMany": "تم إسناد {{count}} طلاب للمادة بنجاح",
+    "successPartial": "تم إسناد {{enrolled}} وتخطي {{skipped}} (مسجّلون مسبقاً)",
+    "allSkipped": "الطلاب المحددون مسجّلون مسبقاً في هذه المادة",
+    "assigning": "جاري الإسناد...",
+    "assign": "إسناد",
+    "assignMany": "إسناد ({{count}})"
+  },
   "sort": {
     "label": "ترتيب حسب:",
     "aria": "ترتيب عرض المواد",
@@ -80,6 +119,7 @@
     "manageSubjects": "المواد الدراسية",
     "subjectDetails": "تفاصيل المادة",
     "assignTeacher": "إسناد معلم",
+    "assignStudents": "إسناد طلاب",
     "editSubject": "تعديل المادة",
     "tabs": {
       "overview": "نظرة عامة",

@@ -15,10 +15,12 @@ import { getTestAttempt, startTestAttempt } from '../../services/tests.service'
 
 function buildTestFromEntry(entry) {
   const rules = entry?.rules || {}
+  const availabilityMode = entry?.time?.availabilityMode || null
   return {
     id: entry?.examId,
     name: entry?.title,
     duration_minutes: entry?.time?.durationMinutes,
+    availability_time_mode: availabilityMode || undefined,
     settings_config: {
       proctoring: {
         enabled: Boolean(rules.proctoringEnabled),
@@ -59,6 +61,10 @@ function mergeAttemptTest(baseTest, entry) {
     ...baseTest,
     id: baseTest.id ?? fromEntry.id,
     name: baseTest.name || baseTest.title || fromEntry.name,
+    availability_time_mode:
+      baseTest.availability_time_mode ||
+      baseTest.availability_mode ||
+      fromEntry.availability_time_mode,
     settings_config: {
       ...entryCfg,
       ...baseCfg,
@@ -114,7 +120,9 @@ export function useExamEntryStart({ testId, entry, proctoring, videoElement }) {
         entry,
       )
 
-      saveAttemptEntryRules(testId, entry.rules)
+      saveAttemptEntryRules(testId, entry.rules, {
+        availabilityMode: entry?.time?.availabilityMode || null,
+      })
       setEntryProctoringBridge({
         testId,
         attempt,

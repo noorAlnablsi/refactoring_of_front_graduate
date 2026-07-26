@@ -30,6 +30,18 @@ export async function getWorkspaceTeachers(params = {}) {
   return { ...data, teachers }
 }
 
+/** Institution workspace exams list (owner/admin/teacher with access). */
+export async function getWorkspaceTests(params = {}) {
+  const { data } = await api.get('/workspaces/tests', { params })
+  return data
+}
+
+/** Workspace admin dashboard (INSTITUTION + SOLO owner/admin). */
+export async function getWorkspaceDashboard(params = {}) {
+  const { data } = await api.get('/workspaces/dashboard', { params })
+  return data
+}
+
 export async function removeWorkspaceTeacher(membershipId) {
   const { data } = await api.delete('/workspaces/teachers', {
     params: { membership_id: membershipId },

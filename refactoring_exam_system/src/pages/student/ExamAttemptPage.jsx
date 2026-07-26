@@ -15,6 +15,7 @@ import {
 } from '../../components/student/attempt/AttemptSequentialChrome'
 import AttemptQuestionRenderer from '../../components/student/attempt/AttemptQuestionRenderer'
 import AttemptSubmitConfirmDialog from '../../components/student/attempt/AttemptSubmitConfirmDialog'
+import AttemptOfflineBanner from '../../components/student/attempt/AttemptOfflineBanner'
 import ProctoringWarning from '../../components/proctoring/ProctoringWarning'
 import CameraPreview from '../../components/proctoring/CameraPreview'
 import { ROUTES } from '../../constants/routes'
@@ -43,10 +44,15 @@ function ExamAttemptPage() {
     remainingSeconds,
     saving,
     submitting,
+    submitResult,
     navSettings,
     proctoringRequired,
     proctoring,
     markedIds,
+    isOnline,
+    offlinePhase,
+    offlineGraceRemainingSeconds,
+    answersFrozen,
     updateChoiceAnswer,
     updateEssayAnswer,
     toggleMarkForReview,
@@ -67,6 +73,7 @@ function ExamAttemptPage() {
 
   /** Free navigation UI (sidebar + marks). Sequential locked UI when back nav is off. */
   const isFreeNavigation = navSettings.allowBackNavigation
+  const answersLocked = submitting || answersFrozen
 
   const isMarkedCurrent = useMemo(() => {
     if (!currentQuestion) return false
@@ -84,6 +91,23 @@ function ExamAttemptPage() {
   useEffect(() => {
     if (!proctoring.warning) return
   }, [proctoring.warning])
+
+  useEffect(() => {
+    if (!submitResult?.redirect) return
+
+    if (submitResult.redirect.pathKey === 'pending') {
+      navigate(ROUTES.STUDENT_RESULTS_PENDING, {
+        replace: true,
+        state: { submit: submitResult.data, testId },
+      })
+      return
+    }
+
+    navigate(ROUTES.STUDENT_RESULTS, {
+      replace: true,
+      state: { submit: submitResult.data, testId },
+    })
+  }, [submitResult, navigate, testId])
 
   const handleNext = () => {
     const result = goNext()
@@ -122,21 +146,7 @@ function ExamAttemptPage() {
     try {
       const result = await submit()
       if (!result) return
-
       setSubmitDialogOpen(false)
-
-      if (result.redirect.pathKey === 'pending') {
-        navigate(ROUTES.STUDENT_RESULTS_PENDING, {
-          replace: true,
-          state: { submit: result.data, testId },
-        })
-        return
-      }
-
-      navigate(ROUTES.STUDENT_RESULTS, {
-        replace: true,
-        state: { submit: result.data, testId },
-      })
     } catch (err) {
       if (err?.message === 'MARKED_REMAINING') {
         showToast(t('attempt.markedRemaining', { count: err.markedCount || markedIds.size }), 'error')
@@ -155,6 +165,11 @@ function ExamAttemptPage() {
   }
 
   const handleSubmitRequest = () => {
+    if (answersFrozen) {
+      showToast(t('attempt.offline.frozenAwaitingReconnect'), 'error')
+      return
+    }
+
     if (isFreeNavigation && markedIds.size > 0) {
       showToast(t('attempt.markedRemaining', { count: markedIds.size }), 'error')
       setNavHint(t('attempt.markedRemaining', { count: markedIds.size }))
@@ -229,6 +244,12 @@ function ExamAttemptPage() {
 
   const alerts = (
     <>
+      <AttemptOfflineBanner
+        phase={offlinePhase}
+        graceRemainingSeconds={offlineGraceRemainingSeconds}
+        softOffline={!isOnline && offlinePhase === 'online' && !answersFrozen}
+        t={t}
+      />
       {error ? (
         <p className="mb-4 rounded-xl bg-red-50 px-4 py-3 text-sm font-semibold text-red-600">{error}</p>
       ) : null}
@@ -286,7 +307,7 @@ function ExamAttemptPage() {
           questionIndex={currentIndex}
           questionTotal={questions.length}
           marked={false}
-          disabled={submitting}
+          disabled={answersLocked}
           variant="sequential"
           subjectName={subjectName}
           onSelectChoice={updateChoiceAnswer}
@@ -331,7 +352,7 @@ function ExamAttemptPage() {
           currentIndex={currentIndex}
           allowBack={navSettings.allowBackNavigation}
           saving={saving}
-          submitting={submitting}
+          submitting={submitting || answersFrozen}
           onSelect={handleSelectIndex}
           onSubmitClick={handleSubmitRequest}
         />
@@ -351,7 +372,7 @@ function ExamAttemptPage() {
             questionIndex={currentIndex}
             questionTotal={questions.length}
             marked={isMarkedCurrent}
-            disabled={submitting}
+            disabled={answersLocked}
             onToggleMark={toggleMarkForReview}
             onSelectChoice={updateChoiceAnswer}
             onEssayChange={updateEssayAnswer}
@@ -361,7 +382,7 @@ function ExamAttemptPage() {
             allowBack={navSettings.allowBackNavigation}
             isFirst={currentIndex === 0}
             isLast={currentIndex >= questions.length - 1}
-            submitting={submitting}
+            submitting={submitting || answersFrozen}
             onPrevious={handlePrevious}
             onNext={handleNext}
             onSubmit={handleSubmitRequest}

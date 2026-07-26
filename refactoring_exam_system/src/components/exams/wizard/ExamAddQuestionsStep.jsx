@@ -291,6 +291,7 @@ function ExamAddQuestionsStep({
     return (
       <ExamCsvImportPanel
         testId={testId}
+        subjectId={test?.subject_id}
         savingDraft={savingDraft}
         onBack={() => {
           setShowCsvView(false)

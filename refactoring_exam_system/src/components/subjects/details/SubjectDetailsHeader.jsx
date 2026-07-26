@@ -1,12 +1,11 @@
 import { useTranslation } from 'react-i18next'
-import { FlaskConical, Pencil, UserPlus } from 'lucide-react'
+import { FlaskConical, UserPlus } from 'lucide-react'
 import { getSubjectSummary } from '../../../lib/subjectDisplay'
-import { canAssignTeachers, canEditSubject } from '../../../lib/workspaceContext'
+import { canAssignTeachers } from '../../../lib/workspaceContext'
 
-function SubjectDetailsHeader({ subject, onAssign, onEdit }) {
+function SubjectDetailsHeader({ subject, onAssignTeacher, onAssignStudents }) {
   const { t } = useTranslation('subjects')
   const showAssign = canAssignTeachers()
-  const showEdit = canEditSubject()
 
   return (
     <div className="flex flex-col gap-6 lg:flex-row lg:items-start lg:justify-between">
@@ -22,30 +21,26 @@ function SubjectDetailsHeader({ subject, onAssign, onEdit }) {
         </div>
       </div>
 
-      {(showAssign || showEdit) && (
+      {showAssign ? (
         <div className="flex shrink-0 flex-wrap items-center gap-3 lg:pt-2">
-          {showAssign ? (
-            <button
-              type="button"
-              onClick={onAssign}
-              className="inline-flex items-center gap-2 rounded-xl bg-[#2AA8A2] px-5 py-3 text-sm font-bold text-white shadow-[0_8px_16px_rgba(42,168,162,0.22)] transition hover:opacity-95"
-            >
-              <UserPlus className="h-4 w-4" />
-              {t('details.assignTeacher')}
-            </button>
-          ) : null}
-          {showEdit ? (
-            <button
-              type="button"
-              onClick={onEdit}
-              className="inline-flex items-center gap-2 rounded-xl bg-[#EEF2F3] px-5 py-3 text-sm font-bold text-[#374151] transition hover:bg-[#E5E9EB]"
-            >
-              <Pencil className="h-4 w-4" />
-              {t('details.editSubject')}
-            </button>
-          ) : null}
+          <button
+            type="button"
+            onClick={onAssignStudents}
+            className="inline-flex items-center gap-2 rounded-xl border border-[#2AA8A2] bg-white px-5 py-3 text-sm font-bold text-[#2AA8A2] transition hover:bg-[#E8F7F6]"
+          >
+            <UserPlus className="h-4 w-4" />
+            {t('details.assignStudents')}
+          </button>
+          <button
+            type="button"
+            onClick={onAssignTeacher}
+            className="inline-flex items-center gap-2 rounded-xl bg-[#2AA8A2] px-5 py-3 text-sm font-bold text-white shadow-[0_8px_16px_rgba(42,168,162,0.22)] transition hover:opacity-95"
+          >
+            <UserPlus className="h-4 w-4" />
+            {t('details.assignTeacher')}
+          </button>
         </div>
-      )}
+      ) : null}
     </div>
   )
 }

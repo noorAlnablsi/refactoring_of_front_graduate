@@ -1,16 +1,17 @@
 import { Navigate } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
-import MembersLatestList from '../../components/members/MembersLatestList'
+import MembersGroupsPreview from '../../components/groups/MembersGroupsPreview'
 import MembersStatsCards from '../../components/members/MembersStatsCards'
 import { ROUTES } from '../../constants/routes'
+import { useMembersGroupsPreview } from '../../hooks/groups/useMembersGroupsPreview'
 import { useMembersOverview } from '../../hooks/members/useMembersOverview'
 import { canAccessMembersModule } from '../../lib/workspaceContext'
 import { shellPageSubtitleClass, shellPageTitleClass } from '../../lib/shellUi'
 
 function MembersPage() {
   const { t } = useTranslation('members')
-  const { studentsTotal, teachersTotal, latestMembers, loading, error, isInstitution } =
-    useMembersOverview()
+  const { studentsTotal, teachersTotal, loading, error, isInstitution } = useMembersOverview()
+  const { groups, loading: groupsLoading } = useMembersGroupsPreview(5)
 
   if (!canAccessMembersModule()) {
     return <Navigate to={ROUTES.DASHBOARD} replace />
@@ -36,7 +37,7 @@ function MembersPage() {
         isInstitution={isInstitution}
       />
 
-      <MembersLatestList members={latestMembers} loading={loading} />
+      <MembersGroupsPreview groups={groups} loading={groupsLoading} />
     </div>
   )
 }

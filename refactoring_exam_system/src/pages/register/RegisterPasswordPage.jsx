@@ -24,7 +24,6 @@ function RegisterPasswordPage() {
   const updateFields = useRegistrationStore((s) => s.updateFields)
   const { loading, error, setError, submitRegistration } = useRegisterFlow()
   const [fieldErrors, setFieldErrors] = useState({})
-  const [rememberMe, setRememberMe] = useState(false)
 
   useEffect(() => {
     if (!store.workspace_kind || !store.email || !store.full_name) {
@@ -113,16 +112,6 @@ function RegisterPasswordPage() {
             error={fieldErrors.confirm_password}
           />
         </div>
-
-        <label className="mt-5 flex cursor-pointer items-center justify-end gap-2">
-          <span className="text-sm text-[#6B7280]">{t('register.password.rememberMe')}</span>
-          <input
-            type="checkbox"
-            checked={rememberMe}
-            onChange={(e) => setRememberMe(e.target.checked)}
-            className="h-4 w-4 accent-[#2AA8A2]"
-          />
-        </label>
 
         {error ? <p className="mt-4 text-sm text-red-600">{error}</p> : null}
 

@@ -1,21 +1,60 @@
-import { useRef, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { ArrowRight, Download, FileSpreadsheet, Upload } from 'lucide-react'
 import ExamWizardFooter from './ExamWizardFooter'
 import { showAppToast } from '../../lib/appToast'
+import { getSubjectTopics } from '../../services/subjects.service'
 import {
   downloadExamQuestionsCsvTemplate,
   importQuestionsFromCsv,
 } from '../../services/tests.service'
 import { useToastStore } from '../../store/toastStore'
 
-function ExamCsvImportPanel({ testId, onBack, onSuccess, onSaveDraft, savingDraft = false }) {
+function ExamCsvImportPanel({
+  testId,
+  subjectId,
+  onBack,
+  onSuccess,
+  onSaveDraft,
+  savingDraft = false,
+}) {
   const { t } = useTranslation(['exams', 'common'])
   const showToast = useToastStore((s) => s.showToast)
   const inputRef = useRef(null)
   const [file, setFile] = useState(null)
   const [loading, setLoading] = useState(false)
   const [downloadingTemplate, setDownloadingTemplate] = useState(false)
+  const [topics, setTopics] = useState([])
+  const [topicsLoading, setTopicsLoading] = useState(Boolean(subjectId))
+
+  useEffect(() => {
+    if (!subjectId) {
+      setTopics([])
+      setTopicsLoading(false)
+      return undefined
+    }
+
+    let cancelled = false
+    setTopicsLoading(true)
+
+    getSubjectTopics(subjectId)
+      .then((data) => {
+        if (cancelled) return
+        setTopics(data.topics || [])
+      })
+      .catch(() => {
+        if (cancelled) return
+        setTopics([])
+      })
+      .finally(() => {
+        if (cancelled) return
+        setTopicsLoading(false)
+      })
+
+    return () => {
+      cancelled = true
+    }
+  }, [subjectId])
 
   const handleDownloadTemplate = async () => {
     setDownloadingTemplate(true)
@@ -64,6 +103,28 @@ function ExamCsvImportPanel({ testId, onBack, onSuccess, onSaveDraft, savingDraf
       </header>
 
       <div className="rounded-2xl bg-white p-6 ring-1 ring-[#E5E9EB]">
+        <div className="mb-5 rounded-xl bg-[#F8FDFC] px-4 py-3 ring-1 ring-[#CFECE9]">
+          <p className="text-sm font-semibold text-[#2A3433]">{t('wizard.csv.topicsHintTitle')}</p>
+          <p className="mt-1 text-xs leading-6 text-[#64748B]">{t('wizard.csv.topicsHintBody')}</p>
+          {topicsLoading ? (
+            <p className="mt-3 text-xs text-[#94A3B8]">{t('wizard.csv.topicsLoading')}</p>
+          ) : topics.length === 0 ? (
+            <p className="mt-3 text-xs font-semibold text-amber-700">{t('wizard.csv.topicsEmpty')}</p>
+          ) : (
+            <ul className="mt-3 flex flex-wrap gap-2">
+              {topics.map((topic) => (
+                <li
+                  key={topic.id}
+                  className="inline-flex items-center gap-2 rounded-lg bg-white px-3 py-1.5 text-xs font-bold text-[#2A3433] ring-1 ring-[#E5E9EB]"
+                >
+                  <span className="text-[#2AA8A2]">#{topic.id}</span>
+                  <span>{topic.name}</span>
+                </li>
+              ))}
+            </ul>
+          )}
+        </div>
+
         <div className="mb-5 flex flex-wrap items-center justify-between gap-3 rounded-xl bg-[#F8FDFC] px-4 py-3 ring-1 ring-[#CFECE9]">
           <p className="text-sm font-semibold text-[#2A3433]">{t('wizard.csv.templateTitle')}</p>
           <button

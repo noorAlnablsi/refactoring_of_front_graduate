@@ -2,6 +2,7 @@ import { useTranslation } from 'react-i18next'
 import { BookOpen, Download, SlidersHorizontal } from 'lucide-react'
 import SubjectsPagination from '../../subjects/SubjectsPagination'
 import { formatBankCardDate } from '../../../lib/questionBanks'
+import { localizeDigits } from '../../../lib/localeNumber'
 import { getPercentageBarTone, getResultDisplayDate } from '../../../lib/studentResultsModel'
 
 const TONE_BAR = {
@@ -41,7 +42,9 @@ function PercentageCell({ percentage }) {
 
   const tone = getPercentageBarTone(percentage)
   const width = Math.min(100, Math.max(0, Number(percentage)))
-  const label = `${Number.isInteger(percentage) ? percentage : Number(percentage).toFixed(1)}%`
+  const label = localizeDigits(
+    `${Number.isInteger(percentage) ? percentage : Number(percentage).toFixed(1)}%`,
+  )
 
   return (
     <div className="flex w-full max-w-[160px] items-center gap-2.5">

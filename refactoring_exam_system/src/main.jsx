@@ -5,6 +5,7 @@ import { bootstrapAuth, initAuthSession, waitForAuthHydration } from './lib/auth
 import { initAccessibility } from './lib/accessibility'
 import { initLanguage } from './lib/language'
 import { initTheme } from './lib/theme'
+import { bindThemeToAuth } from './store/themeStore'
 import './i18n'
 import './index.css'
 import App from './App.jsx'
@@ -17,6 +18,7 @@ async function startApp() {
   initAccessibility()
 
   await waitForAuthHydration()
+  bindThemeToAuth()
   await bootstrapAuth()
   initAuthSession()
 

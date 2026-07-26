@@ -61,7 +61,9 @@
     "durationRequired": "مدة الاختبار مطلوبة",
     "totalScoreRequired": "الدرجة الكلية مطلوبة",
     "passingScoreRequired": "علامة النجاح مطلوبة",
-    "passingScoreExceedsTotal": "علامة النجاح لا يمكن أن تتجاوز الدرجة الكلية"
+    "passingScoreExceedsTotal": "علامة النجاح لا يمكن أن تتجاوز الدرجة الكلية",
+    "subjectNameRequired": "اسم المادة مطلوب",
+    "topicNameRequired": "اسم المحور مطلوب"
   },
   "passwordRules": {
     "minLength": "كلمة المرور يجب ألا تقل عن {{count}} أحرف",

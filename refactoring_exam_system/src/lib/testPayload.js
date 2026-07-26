@@ -1,5 +1,3 @@
-import { isInstitutionWorkspace } from './workspaceContext'
-
 function buildTestCoreFields(form) {
   const payload = {
     name: form.name.trim(),
@@ -23,8 +21,10 @@ export function buildCreateTestPayload(form) {
     auto_distribute_scores: Boolean(form.auto_distribute_scores),
   }
 
-  if (isInstitutionWorkspace() && form.subject_id) {
-    payload.subject_id = Number(form.subject_id)
+  // Backend requires subject_id for create (institution and SOLO).
+  const subjectId = Number(form.subject_id)
+  if (Number.isFinite(subjectId) && subjectId > 0) {
+    payload.subject_id = subjectId
   }
 
   return payload
