@@ -277,6 +277,11 @@
     "submitConfirmCancel": "إلغاء",
     "submitConfirmAction": "نعم، سلّم الآن",
     "submitError": "تعذر تسليم الامتحان",
+    "proctoringTerminated": {
+      "title": "تم إنهاء الامتحان",
+      "message": "تم تجاوز حد مخالفات المراقبة المسموح، وأنهى النظام الامتحان تلقائياً.",
+      "backToDashboard": "العودة إلى لوحة الطالب"
+    },
     "proctoringError": "تنبيه المراقبة",
     "backToDashboard": "العودة للوحة الطالب",
     "retry": "إعادة المحاولة",

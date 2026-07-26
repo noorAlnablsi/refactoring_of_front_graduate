@@ -1,3 +1,7 @@
+import { TEST_WIZARD_STEPS } from '../constants/tests'
+import { getTestQuestionsCount } from './testDisplay'
+import { getTestName } from './testModel'
+
 const STORAGE_PREFIX = 'exam-wizard-progress:'
 
 export const EXAM_QUESTIONS_VIEWS = {
@@ -47,9 +51,37 @@ export function clearExamWizardProgress(testId) {
   localStorage.removeItem(getStorageKey(testId))
 }
 
+/**
+ * Resume where the teacher left off.
+ * Prefer explicitly saved wizard progress; otherwise infer from test completeness.
+ * (Backend does not store wizard step numbers.)
+ */
 export function getResumeWizardStep(test, progress) {
-  if (progress?.step) return progress.step
+  const saved = Number(progress?.step)
+  if (saved >= TEST_WIZARD_STEPS.INFO && saved <= TEST_WIZARD_STEPS.PUBLISH) {
+    return saved
+  }
 
-  const questionsCount = test?.questions?.length ?? 0
-  return questionsCount > 0 ? 2 : 1
+  return inferWizardStepFromTest(test)
+}
+
+function hasSavedSettings(test) {
+  const config = test?.settings_config
+  if (!config || typeof config !== 'object') return false
+  return Object.keys(config).length > 0
+}
+
+export function inferWizardStepFromTest(test) {
+  if (!test) return TEST_WIZARD_STEPS.INFO
+
+  const name = String(getTestName(test) || '').trim()
+  if (!name) return TEST_WIZARD_STEPS.INFO
+
+  const questionsCount = getTestQuestionsCount(test)
+  if (questionsCount < 1) return TEST_WIZARD_STEPS.QUESTIONS
+
+  if (!hasSavedSettings(test)) return TEST_WIZARD_STEPS.SETTINGS
+
+  // Questions + settings exist: land on review (safer than jumping to publish).
+  return TEST_WIZARD_STEPS.REVIEW
 }

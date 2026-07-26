@@ -12,7 +12,16 @@ function getDifficultyBadgeClass(difficulty) {
   return 'bg-[#FEF3C7] text-[#D97706]'
 }
 
-function GeneratedQuestionCard({ question, index, testId, onRemoved, onUpdated, t, choiceLetters }) {
+function GeneratedQuestionCard({
+  question,
+  index,
+  testId,
+  allowPointsEdit = false,
+  onRemoved,
+  onUpdated,
+  t,
+  choiceLetters,
+}) {
   const showToast = useToastStore((s) => s.showToast)
   const [removing, setRemoving] = useState(false)
   const [points, setPoints] = useState(question.snapshot_points ?? question.points ?? 0)
@@ -50,10 +59,11 @@ function GeneratedQuestionCard({ question, index, testId, onRemoved, onUpdated, 
     if (!testId || !questionId) return
     setSaving(true)
     try {
-      const data = await updateTestQuestion(testId, questionId, {
-        points: Number(points) || 1,
-        difficulty,
-      })
+      const payload = { difficulty }
+      if (allowPointsEdit) {
+        payload.points = Number(points) || 1
+      }
+      const data = await updateTestQuestion(testId, questionId, payload)
       showAppToast('wizard.questions.review.questionUpdated', 'success', { ns: 'exams' })
       onUpdated?.(data.question || data)
     } catch (err) {
@@ -129,18 +139,20 @@ function GeneratedQuestionCard({ question, index, testId, onRemoved, onUpdated, 
 
       {testId && questionId ? (
         <div className="mt-5 flex flex-wrap items-end gap-3 border-t border-[#EEF2F4] pt-4">
-          <label className="text-right text-xs">
-            <span className="mb-1 block font-semibold text-[#94A3B8]">
-              {t('wizard.questions.review.pointsLabel')}
-            </span>
-            <input
-              type="number"
-              min={1}
-              value={points}
-              onChange={(e) => setPoints(e.target.value)}
-              className="h-10 w-24 rounded-lg bg-[#F6F8F9] px-3 text-sm font-bold outline-none ring-1 ring-[#E5E9EB]"
-            />
-          </label>
+          {allowPointsEdit ? (
+            <label className="text-right text-xs">
+              <span className="mb-1 block font-semibold text-[#94A3B8]">
+                {t('wizard.questions.review.pointsLabel')}
+              </span>
+              <input
+                type="number"
+                min={1}
+                value={points}
+                onChange={(e) => setPoints(e.target.value)}
+                className="h-10 w-24 rounded-lg bg-[#F6F8F9] px-3 text-sm font-bold outline-none ring-1 ring-[#E5E9EB]"
+              />
+            </label>
+          ) : null}
           <label className="text-right text-xs">
             <span className="mb-1 block font-semibold text-[#94A3B8]">
               {t('wizard.questions.review.difficultyLabel')}
@@ -172,6 +184,7 @@ function GeneratedQuestionCard({ question, index, testId, onRemoved, onUpdated, 
 function ExamRandomGeneratedQuestionsPanel({
   questions: initialQuestions,
   testId,
+  allowPointsEdit = false,
   onBack,
   onSaveDraft,
   onContinue,
@@ -209,7 +222,11 @@ function ExamRandomGeneratedQuestionsPanel({
 
   const handleUpdated = (updated) => {
     if (!updated?.id) return
-    setQuestions((prev) => prev.map((q) => (q.id === updated.id ? { ...q, ...updated } : q)))
+    setQuestions((prev) => {
+      const next = prev.map((q) => (q.id === updated.id ? { ...q, ...updated } : q))
+      onQuestionsChange?.(next)
+      return next
+    })
   }
 
   return (
@@ -242,6 +259,7 @@ function ExamRandomGeneratedQuestionsPanel({
               question={question}
               index={index}
               testId={testId}
+              allowPointsEdit={allowPointsEdit}
               onRemoved={handleRemoved}
               onUpdated={handleUpdated}
               t={t}

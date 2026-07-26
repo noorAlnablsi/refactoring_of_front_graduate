@@ -1,4 +1,4 @@
-import { Archive, Clock, Edit3, FileText, Trash2, Users } from 'lucide-react'
+import { Activity, Archive, ClipboardCheck, Clock, Edit3, FileText, Trash2, Users } from 'lucide-react'
 import { useNavigate } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { ROUTES } from '../../constants/routes'
@@ -26,13 +26,22 @@ function ExamCard({ test, onArchive, onClose, onDelete }) {
   const totalPoints = getTestTotalPoints(test)
   const isDraft = test.status === TEST_STATUS.DRAFT
   const isPublished = test.status === TEST_STATUS.PUBLISHED
+  const isClosed = test.status === TEST_STATUS.CLOSED
   const editable = canEditTest(test)
+  const testId = getTestId(test)
 
   const handleContinue = () => {
-    const testId = getTestId(test)
     const progress = getExamWizardProgress(testId)
     const step = getResumeWizardStep(test, progress)
     navigate(ROUTES.EXAM_EDIT.replace(':id', testId) + `?step=${step}`)
+  }
+
+  const openAttempts = () => {
+    navigate(ROUTES.EXAM_ATTEMPTS.replace(':id', testId))
+  }
+
+  const openMonitoring = () => {
+    navigate(ROUTES.EXAM_MONITORING.replace(':id', testId))
   }
 
   return (
@@ -83,11 +92,25 @@ function ExamCard({ test, onArchive, onClose, onDelete }) {
         ) : editable ? (
           <button
             type="button"
-            onClick={() => navigate(ROUTES.EXAM_EDIT.replace(':id', getTestId(test)))}
+            onClick={() => navigate(ROUTES.EXAM_EDIT.replace(':id', testId))}
             className={shellAccentSoftButtonClass}
           >
             <Edit3 className="h-3.5 w-3.5" />
             {t('card.edit')}
+          </button>
+        ) : null}
+
+        {isPublished || isClosed ? (
+          <button type="button" onClick={openAttempts} className={`${shellAccentButtonClass} px-4 py-2 text-xs`}>
+            <ClipboardCheck className="h-3.5 w-3.5" />
+            {t('card.gradeAttempts')}
+          </button>
+        ) : null}
+
+        {isPublished ? (
+          <button type="button" onClick={openMonitoring} className={shellAccentSoftButtonClass}>
+            <Activity className="h-3.5 w-3.5" />
+            {t('card.liveMonitoring')}
           </button>
         ) : null}
 

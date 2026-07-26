@@ -14,17 +14,24 @@ import WizardSection from '../WizardSection'
 import { toNaiveLocalDateTime } from '../../../lib/examPublishTime'
 import { getExamShareLink } from '../../../lib/testDisplay'
 import { getTestId } from '../../../lib/testModel'
+import { normalizeStudentGroup } from '../../../lib/studentGroupsModel'
 import { getStudentMembershipId } from '../../../lib/workspaceStudents'
 import {
   assignStudentsToTest,
   getAssignedStudents,
 } from '../../../services/tests.service'
 import { getSubjectStudents } from '../../../services/subjects.service'
+import { getSubjectGroups } from '../../../services/studentGroups.service'
 import { showAppToast } from '../../../lib/appToast'
 import { useToastStore } from '../../../store/toastStore'
 
 const inputClassName =
   'h-12 rounded-xl border border-[#E5E9EB] bg-[#F6F8F9] px-4 text-sm font-bold text-[#2A3433] outline-none focus:border-[#2AA8A2] focus:ring-2 focus:ring-[#2AA8A2]/20'
+
+const RECIPIENT_TABS = {
+  GROUPS: 'groups',
+  INDIVIDUALS: 'individuals',
+}
 
 function StudentCard({ student, checked, onToggle }) {
   return (
@@ -36,6 +43,30 @@ function StudentCard({ student, checked, onToggle }) {
       <div className="min-w-0 text-right">
         <p className="truncate text-sm font-bold text-[#2A3433]">{student.full_name}</p>
         <p className="mt-1 truncate text-xs text-[#94A3B8]">{student.email || '—'}</p>
+      </div>
+      <input
+        type="checkbox"
+        checked={checked}
+        onChange={onToggle}
+        className="h-5 w-5 shrink-0 accent-[#2AA8A2]"
+      />
+    </label>
+  )
+}
+
+function GroupCard({ group, checked, onToggle, studentsLabel }) {
+  return (
+    <label
+      className={`flex cursor-pointer items-center justify-between gap-3 rounded-xl border p-4 transition ${
+        checked ? 'border-[#2AA8A2] bg-[#F8FDFC]' : 'border-[#E5E9EB] bg-[#FAFBFC]'
+      }`}
+    >
+      <div className="min-w-0 text-right">
+        <p className="truncate text-sm font-bold text-[#2A3433]">{group.name}</p>
+        <p className="mt-1 truncate text-xs text-[#94A3B8]">
+          {studentsLabel}
+          {group.description ? ` — ${group.description}` : ''}
+        </p>
       </div>
       <input
         type="checkbox"
@@ -62,10 +93,13 @@ function ExamPublishStep({
   const subjectId = test?.subject_id
   const [publishDate, setPublishDate] = useState('')
   const [publishTime, setPublishTime] = useState('')
-  const [studentSearch, setStudentSearch] = useState('')
+  const [recipientTab, setRecipientTab] = useState(RECIPIENT_TABS.GROUPS)
+  const [searchQuery, setSearchQuery] = useState('')
   const [students, setStudents] = useState([])
-  const [selectedIds, setSelectedIds] = useState([])
-  const [loadingStudents, setLoadingStudents] = useState(true)
+  const [groups, setGroups] = useState([])
+  const [selectedStudentIds, setSelectedStudentIds] = useState([])
+  const [selectedGroupIds, setSelectedGroupIds] = useState([])
+  const [loadingRecipients, setLoadingRecipients] = useState(true)
 
   const shareLink = useMemo(() => getExamShareLink(test), [test])
 
@@ -74,19 +108,22 @@ function ExamPublishStep({
 
     async function load() {
       if (!subjectId && !testId) {
-        setLoadingStudents(false)
+        setLoadingRecipients(false)
         return
       }
 
-      setLoadingStudents(true)
+      setLoadingRecipients(true)
       try {
-        const [subjectStudentsRes, assignedRes] = await Promise.all([
+        const [subjectStudentsRes, assignedRes, groupsRes] = await Promise.all([
           subjectId
             ? getSubjectStudents(subjectId)
             : Promise.resolve({ students: [] }),
           testId
             ? getAssignedStudents(testId).catch(() => ({ students: [] }))
             : Promise.resolve({ students: [] }),
+          subjectId
+            ? getSubjectGroups(subjectId).catch(() => ({ groups: [] }))
+            : Promise.resolve({ groups: [] }),
         ])
 
         if (cancelled) return
@@ -96,17 +133,22 @@ function ExamPublishStep({
           membership_id: getStudentMembershipId(student) ?? student.membership_id,
         }))
 
+        const normalizedGroups = (groupsRes.groups || groupsRes || [])
+          .map(normalizeStudentGroup)
+          .filter(Boolean)
+
         setStudents(list)
+        setGroups(normalizedGroups)
 
         const assignedIds = (assignedRes.students || [])
           .map((student) => Number(student.membership_id))
           .filter(Boolean)
 
-        setSelectedIds(assignedIds.length ? assignedIds : list.map((s) => Number(s.membership_id)).filter(Boolean))
+        setSelectedStudentIds(assignedIds)
       } catch (err) {
         if (!cancelled) showToast(err.message, 'error')
       } finally {
-        if (!cancelled) setLoadingStudents(false)
+        if (!cancelled) setLoadingRecipients(false)
       }
     }
 
@@ -117,14 +159,31 @@ function ExamPublishStep({
   }, [subjectId, testId, showToast])
 
   const filteredStudents = useMemo(() => {
-    const query = studentSearch.trim().toLowerCase()
+    const query = searchQuery.trim().toLowerCase()
     if (!query) return students
     return students.filter((student) => {
       const name = (student.full_name || '').toLowerCase()
       const email = (student.email || '').toLowerCase()
       return name.includes(query) || email.includes(query)
     })
-  }, [studentSearch, students])
+  }, [searchQuery, students])
+
+  const filteredGroups = useMemo(() => {
+    const query = searchQuery.trim().toLowerCase()
+    if (!query) return groups
+    return groups.filter((group) => {
+      const name = (group.name || '').toLowerCase()
+      const description = (group.description || '').toLowerCase()
+      return name.includes(query) || description.includes(query)
+    })
+  }, [searchQuery, groups])
+
+  const estimatedRecipients = useMemo(() => {
+    const fromGroups = groups
+      .filter((group) => selectedGroupIds.includes(Number(group.id)))
+      .reduce((sum, group) => sum + (Number(group.studentCount) || 0), 0)
+    return fromGroups + selectedStudentIds.length
+  }, [groups, selectedGroupIds, selectedStudentIds])
 
   const handleCopyLink = async () => {
     try {
@@ -136,25 +195,33 @@ function ExamPublishStep({
   }
 
   const toggleStudent = (membershipId) => {
-    setSelectedIds((prev) =>
+    setSelectedStudentIds((prev) =>
       prev.includes(membershipId)
         ? prev.filter((id) => id !== membershipId)
         : [...prev, membershipId],
     )
   }
 
+  const toggleGroup = (groupId) => {
+    setSelectedGroupIds((prev) =>
+      prev.includes(groupId) ? prev.filter((id) => id !== groupId) : [...prev, groupId],
+    )
+  }
+
   const syncAssignments = async () => {
-    if (!testId || selectedIds.length === 0) return
-    await assignStudentsToTest(testId, selectedIds)
+    if (!testId) return
+    if (selectedStudentIds.length === 0 && selectedGroupIds.length === 0) return
+    await assignStudentsToTest(testId, {
+      studentMembershipIds: selectedStudentIds,
+      groupIds: selectedGroupIds,
+    })
   }
 
   const handleSubmit = async (event) => {
     event.preventDefault()
 
     try {
-      if (selectedIds.length > 0) {
-        await syncAssignments()
-      }
+      await syncAssignments()
 
       if (!publishDate && !publishTime) {
         onPublishNow?.()
@@ -251,20 +318,78 @@ function ExamPublishStep({
         </div>
       </WizardSection>
 
-      <WizardSection icon={Users} title={t('wizard.publish.studentsTitle', { ns: 'exams' })}>
+      <WizardSection icon={Users} title={t('wizard.publish.recipientsTitle', { ns: 'exams' })}>
+        <div className="mb-4 flex gap-2 rounded-xl bg-[#F6F8F9] p-1">
+          <button
+            type="button"
+            onClick={() => {
+              setRecipientTab(RECIPIENT_TABS.GROUPS)
+              setSearchQuery('')
+            }}
+            className={`flex-1 rounded-lg px-4 py-2.5 text-sm font-bold transition ${
+              recipientTab === RECIPIENT_TABS.GROUPS
+                ? 'bg-white text-[#2AA8A2] shadow-sm'
+                : 'text-[#64748B]'
+            }`}
+          >
+            {t('wizard.publish.tabGroups', { ns: 'exams' })}
+          </button>
+          <button
+            type="button"
+            onClick={() => {
+              setRecipientTab(RECIPIENT_TABS.INDIVIDUALS)
+              setSearchQuery('')
+            }}
+            className={`flex-1 rounded-lg px-4 py-2.5 text-sm font-bold transition ${
+              recipientTab === RECIPIENT_TABS.INDIVIDUALS
+                ? 'bg-white text-[#2AA8A2] shadow-sm'
+                : 'text-[#64748B]'
+            }`}
+          >
+            {t('wizard.publish.tabIndividuals', { ns: 'exams' })}
+          </button>
+        </div>
+
         <div className="relative mb-4">
           <Search className="pointer-events-none absolute right-4 top-1/2 h-4 w-4 -translate-y-1/2 text-[#94A3B8]" />
           <input
             type="search"
-            value={studentSearch}
-            onChange={(event) => setStudentSearch(event.target.value)}
-            placeholder={t('wizard.publish.searchStudentPlaceholder', { ns: 'exams' })}
+            value={searchQuery}
+            onChange={(event) => setSearchQuery(event.target.value)}
+            placeholder={
+              recipientTab === RECIPIENT_TABS.GROUPS
+                ? t('wizard.publish.searchGroupPlaceholder', { ns: 'exams' })
+                : t('wizard.publish.searchStudentPlaceholder', { ns: 'exams' })
+            }
             className={`${inputClassName} w-full pr-11`}
           />
         </div>
 
-        {loadingStudents ? (
-          <p className="text-sm text-[#64748B]">{t('wizard.publish.loadingStudents', { ns: 'exams' })}</p>
+        {loadingRecipients ? (
+          <p className="text-sm text-[#64748B]">{t('wizard.publish.loadingRecipients', { ns: 'exams' })}</p>
+        ) : recipientTab === RECIPIENT_TABS.GROUPS ? (
+          filteredGroups.length === 0 ? (
+            <p className="text-sm text-[#64748B]">{t('wizard.publish.noGroups', { ns: 'exams' })}</p>
+          ) : (
+            <div className="grid gap-3 sm:grid-cols-2">
+              {filteredGroups.map((group) => {
+                const groupId = Number(group.id)
+                if (!groupId) return null
+                return (
+                  <GroupCard
+                    key={groupId}
+                    group={group}
+                    checked={selectedGroupIds.includes(groupId)}
+                    onToggle={() => toggleGroup(groupId)}
+                    studentsLabel={t('wizard.publish.groupStudentsCount', {
+                      ns: 'exams',
+                      count: group.studentCount,
+                    })}
+                  />
+                )
+              })}
+            </div>
+          )
         ) : filteredStudents.length === 0 ? (
           <p className="text-sm text-[#64748B]">{t('wizard.publish.noStudents', { ns: 'exams' })}</p>
         ) : (
@@ -277,7 +402,7 @@ function ExamPublishStep({
                 <StudentCard
                   key={membershipId}
                   student={student}
-                  checked={selectedIds.includes(membershipId)}
+                  checked={selectedStudentIds.includes(membershipId)}
                   onToggle={() => toggleStudent(membershipId)}
                 />
               )
@@ -285,9 +410,10 @@ function ExamPublishStep({
           </div>
         )}
 
-        <p className="mt-3 text-xs text-[#94A3B8]">
-          {t('wizard.publish.selectedCount', { ns: 'exams', count: selectedIds.length })}
+        <p className="mt-4 text-sm font-bold text-[#2A3433]">
+          {t('wizard.publish.totalRecipients', { ns: 'exams', count: estimatedRecipients })}
         </p>
+        <p className="mt-1 text-xs text-[#94A3B8]">{t('wizard.publish.recipientsHint', { ns: 'exams' })}</p>
       </WizardSection>
 
       <ExamWizardFooter className="-mx-1">
@@ -319,7 +445,7 @@ function ExamPublishStep({
           >
             {publishing
               ? t('wizard.publish.publishing', { ns: 'exams' })
-              : t('wizard.publish.publishNow', { ns: 'exams' })}
+              : t('wizard.publish.publishExam', { ns: 'exams' })}
             <Rocket className="h-4 w-4" />
           </button>
         </div>

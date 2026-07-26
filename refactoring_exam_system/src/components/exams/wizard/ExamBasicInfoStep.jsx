@@ -65,14 +65,19 @@ function ExamBasicInfoStep({
     if (!form.duration_minutes || Number(form.duration_minutes) < 1) {
       nextErrors.duration_minutes = t('validation.durationRequired', { ns: 'exams' })
     }
-    if (!form.total_score || Number(form.total_score) < 1) {
-      nextErrors.total_score = t('validation.totalScoreRequired', { ns: 'exams' })
+    if (form.auto_distribute_scores) {
+      if (!form.total_score || Number(form.total_score) < 1) {
+        nextErrors.total_score = t('validation.totalScoreRequired', { ns: 'exams' })
+      }
+      if (
+        form.passing_score !== '' &&
+        Number(form.passing_score) > Number(form.total_score)
+      ) {
+        nextErrors.passing_score = t('validation.passingScoreExceedsTotal', { ns: 'exams' })
+      }
     }
     if (form.passing_score === '' || Number(form.passing_score) < 0) {
       nextErrors.passing_score = t('validation.passingScoreRequired', { ns: 'exams' })
-    }
-    if (Number(form.passing_score) > Number(form.total_score)) {
-      nextErrors.passing_score = t('validation.passingScoreExceedsTotal', { ns: 'exams' })
     }
     setErrors(nextErrors)
     return Object.keys(nextErrors).length === 0
@@ -180,21 +185,41 @@ function ExamBasicInfoStep({
         </div>
       </div>
 
-      <div className="grid gap-4 md:grid-cols-2">
-        <div>
-          <label className="mb-2 block text-sm font-bold text-[#374151]">
-            {t('wizard.basicInfo.totalScoreLabel', { ns: 'exams' })}
-          </label>
-          <input
-            type="number"
-            min={1}
-            required
-            value={form.total_score}
-            onChange={(e) => setField('total_score', e.target.value)}
-            className={inputClassName}
-          />
-          {errors.total_score ? <p className="mt-1 text-xs text-red-600">{errors.total_score}</p> : null}
-        </div>
+      <label className="flex cursor-pointer items-center gap-3 rounded-xl bg-[#F6F8F9] px-4 py-3">
+        <input
+          type="checkbox"
+          checked={form.auto_distribute_scores}
+          onChange={(e) => setField('auto_distribute_scores', e.target.checked)}
+          className="h-5 w-5 accent-[#2AA8A2]"
+        />
+        <span className="text-sm font-bold text-[#374151]">
+          {t('wizard.basicInfo.autoDistribute', { ns: 'exams' })}
+        </span>
+      </label>
+
+      {!form.auto_distribute_scores ? (
+        <p className="text-xs leading-6 text-[#94A3B8]">
+          {t('wizard.basicInfo.manualScoresHint', { ns: 'exams' })}
+        </p>
+      ) : null}
+
+      <div className={`grid gap-4 ${form.auto_distribute_scores ? 'md:grid-cols-2' : ''}`}>
+        {form.auto_distribute_scores ? (
+          <div>
+            <label className="mb-2 block text-sm font-bold text-[#374151]">
+              {t('wizard.basicInfo.totalScoreLabel', { ns: 'exams' })}
+            </label>
+            <input
+              type="number"
+              min={1}
+              required
+              value={form.total_score}
+              onChange={(e) => setField('total_score', e.target.value)}
+              className={inputClassName}
+            />
+            {errors.total_score ? <p className="mt-1 text-xs text-red-600">{errors.total_score}</p> : null}
+          </div>
+        ) : null}
 
         <div>
           <label className="mb-2 block text-sm font-bold text-[#374151]">
@@ -213,18 +238,6 @@ function ExamBasicInfoStep({
           ) : null}
         </div>
       </div>
-
-      <label className="flex cursor-pointer items-center gap-3 rounded-xl bg-[#F6F8F9] px-4 py-3">
-        <input
-          type="checkbox"
-          checked={form.auto_distribute_scores}
-          onChange={(e) => setField('auto_distribute_scores', e.target.checked)}
-          className="h-5 w-5 accent-[#2AA8A2]"
-        />
-        <span className="text-sm font-bold text-[#374151]">
-          {t('wizard.basicInfo.autoDistribute', { ns: 'exams' })}
-        </span>
-      </label>
 
       <div className="flex flex-wrap items-center justify-between gap-3 border-t border-[#E5E9EB] pt-5">
         {onSaveDraft ? (

@@ -32,6 +32,7 @@ export class ProctoringService {
     onWarning,
     onError,
     onSessionStarted,
+    onAttemptTerminated,
   } = {}) {
     this.testId = testId
     this.attemptId = attemptId
@@ -42,6 +43,7 @@ export class ProctoringService {
     this.onWarning = onWarning
     this.onError = onError
     this.onSessionStarted = onSessionStarted
+    this.onAttemptTerminated = onAttemptTerminated
 
     this.connectionState = PROCTORING_CONNECTION_STATE.DISCONNECTED
     this.monitoringActive = false
@@ -220,6 +222,11 @@ export class ProctoringService {
       return
     }
 
+    if (type === PROCTORING_INCOMING.ATTEMPT_TERMINATED) {
+      this.onAttemptTerminated?.(message.payload || message)
+      return
+    }
+
     if (type === PROCTORING_INCOMING.ERROR) {
       this.onError?.(message.payload?.error || message.payload || message)
     }
@@ -254,7 +261,10 @@ export class ProctoringService {
 
   async #restFallback(type, payload) {
     try {
-      await postProctoringEvent(this.testId, this.attemptId, type, payload)
+      const data = await postProctoringEvent(this.testId, this.attemptId, type, payload)
+      if (data?.terminated || data?.attempt?.status) {
+        this.onAttemptTerminated?.(data)
+      }
     } catch (error) {
       this.onError?.(error)
     }

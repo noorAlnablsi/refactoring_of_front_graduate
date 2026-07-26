@@ -26,7 +26,9 @@
     "edit": "Edit",
     "closeExam": "Close exam",
     "delete": "Delete",
-    "archive": "Archive"
+    "archive": "Archive",
+    "gradeAttempts": "Grade attempts",
+    "liveMonitoring": "Live monitoring"
   },
   "confirm": {
     "archive": "Archive exam \"{{name}}\"?",
@@ -74,6 +76,7 @@
       "totalScoreLabel": "Total score",
       "passingScoreLabel": "Passing score",
       "autoDistribute": "Enable automatic score distribution",
+      "manualScoresHint": "When auto-distribution is off, set each question's points in the Review step. Total score = sum of question points.",
       "saveDraft": "Save as DRAFT",
       "savingDraft": "Saving...",
       "continueToQuestions": "Continue to add questions",
@@ -201,7 +204,7 @@
     "publish": {
       "eyebrow": "Final step",
       "title": "Publish",
-      "subtitle": "Select allowed students, then publish immediately or schedule a publish time.",
+      "subtitle": "Choose recipients (groups or individuals), then publish now or schedule. Email with the link is sent automatically on actual publish.",
       "scheduleTitle": "Publish schedule",
       "scheduleHint": "Leave fields empty for immediate publish, or set a local date and time to schedule.",
       "publishDateLabel": "Publish date",
@@ -212,15 +215,25 @@
       "copy": "Copy",
       "linkCopied": "Link copied",
       "linkCopyFailed": "Could not copy link",
+      "recipientsTitle": "Recipients",
       "studentsTitle": "Allowed students",
+      "tabGroups": "Groups",
+      "tabIndividuals": "Individual students",
+      "searchGroupPlaceholder": "Search for a group...",
       "searchStudentPlaceholder": "Search for a student...",
+      "loadingRecipients": "Loading recipients...",
       "loadingStudents": "Loading subject students...",
+      "noGroups": "No groups for this subject yet.",
       "noStudents": "No students enrolled in this exam's subject yet.",
+      "groupStudentsCount": "{{count}} students",
+      "totalRecipients": "Total students who will receive this exam: {{count}}",
+      "recipientsHint": "Assignment only expands the allow-list. Email with the link is sent automatically on publish or schedule (server may dedupe).",
       "selectedCount": "{{count}} students selected — each must be enrolled in the exam subject.",
       "scheduleBothRequired": "Enter both publish date and time, or leave fields empty for immediate publish",
       "invalidSchedule": "Invalid publish date or time",
       "publishing": "Publishing...",
-      "publishNow": "Publish exam now"
+      "publishExam": "Publish exam",
+      "publishNow": "Publish exam"
     },
     "summary": {
       "settingsTitle": "Settings summary",
@@ -279,6 +292,7 @@
       "eyebrow": "Final review",
       "title": "Review exam",
       "subtitle": "Review exam details and questions before moving to publish.",
+      "manualPointsHint": "Auto-distribution is off — you can edit each question's points here. Total = sum of question points.",
       "summaryTitle": "Exam summary",
       "examName": "Exam name",
       "questionsCount": "Question count",
@@ -299,7 +313,7 @@
     "DRAFT": "DRAFT",
     "SCHEDULED": "Scheduled",
     "PUBLISHED": "Published",
-    "CLOSED": "Graded",
+    "CLOSED": "Closed (ended)",
     "ARCHIVED": "Archived"
   },
   "sourceType": {
@@ -445,6 +459,159 @@
     },
     "toast": {
       "generated": "Generated {{count}} questions successfully"
+    }
+  },
+  "grading": {
+    "attempts": {
+      "eyebrow": "Exam grading",
+      "title": "Student attempts",
+      "subtitle": "Review submitted attempts and grade each student individually.",
+      "backToExams": "Back to exams",
+      "listTitle": "Attempts ({{count}})",
+      "refresh": "Refresh",
+      "loading": "Loading attempts...",
+      "empty": "No attempts yet.",
+      "grade": "Grade",
+      "viewGrade": "View grading",
+      "inProgress": "In progress",
+      "columns": {
+        "student": "Student",
+        "status": "Status",
+        "source": "Submission source",
+        "score": "Score",
+        "action": "Action"
+      }
+    },
+    "attemptStatus": {
+      "IN_PROGRESS": "In progress",
+      "SUBMITTED": "Pending grading",
+      "GRADED": "Graded"
+    },
+    "submissionSource": {
+      "STUDENT": "Student submit",
+      "TIMEOUT": "Timeout",
+      "FORCE": "Teacher force",
+      "PROCTORING_AUTO": "Proctoring auto"
+    },
+    "answerStatus": {
+      "PENDING_REVIEW": "Pending manual review",
+      "AUTO_GRADED": "Auto graded",
+      "MANUALLY_GRADED": "Manually graded"
+    },
+    "wizard": {
+      "eyebrow": "Grading flow",
+      "title": "Grade attempt",
+      "subtitle": "Attempt status: {{status}}",
+      "loading": "Loading attempt...",
+      "notFound": "Attempt not found",
+      "backToAttempts": "Back to attempts",
+      "back": "Back",
+      "steps": {
+        "auto": "1. Auto",
+        "manual": "2. Manual",
+        "proctoring": "3. Proctoring",
+        "final": "4. Final"
+      }
+    },
+    "auto": {
+      "hint": "Non-essay questions are auto-graded. Review then continue.",
+      "empty": "No auto-graded questions in this attempt.",
+      "earned": "Earned score",
+      "next": "Next"
+    },
+    "manual": {
+      "hint": "Grade essay questions only (PENDING_REVIEW).",
+      "empty": "No questions need manual grading.",
+      "scoreLabel": "Score",
+      "feedbackLabel": "Teacher feedback (optional)",
+      "saving": "Saving...",
+      "saveNext": "Save and continue",
+      "saved": "Manual grading saved",
+      "invalidScore": "Enter a valid score for each essay question"
+    },
+    "proctoring": {
+      "hint": "Review the suggested proctoring penalty before approving the final score.",
+      "unavailable": "Proctoring review is unavailable for this attempt (no proctoring session).",
+      "loading": "Loading proctoring review...",
+      "raw": "Raw score",
+      "penalty": "Suggested penalty",
+      "suggested": "Suggested final",
+      "risk": "Risk",
+      "next": "Next — Final result"
+    },
+    "final": {
+      "hint": "Approve the suggested score or set a custom one.",
+      "approveSuggested": "Approve suggested ({{score}})",
+      "customScore": "Custom score",
+      "scoreLabel": "Final score",
+      "reasonLabel": "Reason (optional)",
+      "saving": "Approving...",
+      "confirm": "Confirm final score",
+      "saved": "Final score approved",
+      "invalidScore": "Enter a valid final score"
+    }
+  },
+  "monitoring": {
+    "eyebrow": "Live monitoring",
+    "title": "Live monitoring board",
+    "subtitle": "REST is the source of truth; WebSocket applies live deltas. Click a student or event for details.",
+    "loading": "Loading monitoring board...",
+    "refresh": "Refresh",
+    "backToExams": "Back to exams",
+    "studentsTitle": "Students",
+    "feedTitle": "Live event feed",
+    "feedEmpty": "No live events yet — they appear when WebSocket updates arrive.",
+    "emptyStudents": "No students assigned to this exam yet.",
+    "connection": {
+      "connected": "Connected",
+      "connecting": "Connecting...",
+      "disconnected": "Disconnected"
+    },
+    "stats": {
+      "assigned": "Assigned",
+      "inProgress": "In progress",
+      "submitted": "Submitted",
+      "autoTerminated": "Proctoring auto-ended"
+    },
+    "columns": {
+      "student": "Student",
+      "state": "State",
+      "risk": "Risk",
+      "violations": "Violations",
+      "events": "Events"
+    },
+    "state": {
+      "NOT_STARTED": "Not started",
+      "IN_PROGRESS": "In progress",
+      "SUBMITTED": "Submitted",
+      "TIMED_OUT": "Timed out",
+      "FORCE_SUBMITTED": "Force submitted",
+      "PROCTORING_AUTO_TERMINATED": "Proctoring auto-terminated",
+      "TERMINATED": "Terminated",
+      "COMPLETED": "Completed"
+    },
+    "feed": {
+      "violationLine": "Violation: {{type}} ({{severity}})",
+      "rowUpdatedLine": "State update: {{state}}"
+    },
+    "detail": {
+      "eyebrow": "Student details",
+      "close": "Close",
+      "state": "State",
+      "risk": "Risk",
+      "violations": "Violations",
+      "events": "Events",
+      "source": "Submission source",
+      "openGrading": "Open grading",
+      "auditTitle": "Proctoring audit log",
+      "auditLoading": "Loading audit log...",
+      "auditEmpty": "No audit logs yet, or no attempt."
+    },
+    "forceSubmit": {
+      "action": "Force-submit attempt",
+      "working": "Force-submitting...",
+      "success": "Attempt force-submitted by teacher",
+      "confirm": "Force-submit this student's attempt? This cannot be undone."
     }
   }
 }

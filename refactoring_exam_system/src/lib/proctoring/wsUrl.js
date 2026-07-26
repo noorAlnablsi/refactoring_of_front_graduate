@@ -39,6 +39,23 @@ export function buildProctoringWebSocketUrl({ testId, attemptId, token, workspac
   return `${wsProtocol}//${httpUrl.host}${path}?${qs.toString()}`
 }
 
+/**
+ * Teacher live monitoring channel.
+ * Contract: /ws/proctoring/tests/{test_id}/monitor?token=&workspace_id=
+ */
+export function buildTeacherMonitorWebSocketUrl({ testId, token, workspaceId }) {
+  const apiBase = import.meta.env.VITE_API_BASE_URL || 'http://127.0.0.1:5000'
+  const httpUrl = new URL(apiBase)
+  const wsProtocol = httpUrl.protocol === 'https:' ? 'wss:' : 'ws:'
+  const path = `/ws/proctoring/tests/${encodeURIComponent(testId)}/monitor`
+  const qs = new URLSearchParams({
+    token: String(token || ''),
+    workspace_id: String(workspaceId ?? ''),
+  })
+
+  return `${wsProtocol}//${httpUrl.host}${path}?${qs.toString()}`
+}
+
 export function collectBrowserMetadata() {
   return {
     userAgent: typeof navigator !== 'undefined' ? navigator.userAgent : '',

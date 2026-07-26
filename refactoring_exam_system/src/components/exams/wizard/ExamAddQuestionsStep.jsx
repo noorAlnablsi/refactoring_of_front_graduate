@@ -214,6 +214,7 @@ function ExamAddQuestionsStep({
       <ExamRandomGeneratedQuestionsPanel
         questions={generatedQuestions?.length ? generatedQuestions : questions}
         testId={testId}
+        allowPointsEdit={false}
         eyebrow={reviewCopy.eyebrow}
         title={reviewCopy.title}
         description={reviewCopy.description}

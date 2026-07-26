@@ -50,10 +50,15 @@ export async function scheduleTestPublication(testId, payload) {
   return data
 }
 
-export async function assignStudentsToTest(testId, studentMembershipIds) {
-  const { data } = await api.post(`/tests/${testId}/assign-students`, {
-    student_membership_ids: studentMembershipIds,
-  })
+export async function assignStudentsToTest(testId, { studentMembershipIds = [], groupIds = [] } = {}) {
+  const payload = {}
+  if (studentMembershipIds.length) {
+    payload.student_membership_ids = studentMembershipIds
+  }
+  if (groupIds.length) {
+    payload.group_ids = groupIds
+  }
+  const { data } = await api.post(`/tests/${testId}/assign-students`, payload)
   return data
 }
 
@@ -175,5 +180,62 @@ export async function saveAttemptAnswers(testId, attemptId, answers) {
 /** POST /tests/{test_id}/attempts/{attempt_id}/submit */
 export async function submitTestAttempt(testId, attemptId, payload = {}) {
   const { data } = await api.post(`/tests/${testId}/attempts/${attemptId}/submit`, payload)
+  return data
+}
+
+/** GET /tests/{test_id}/attempts — teacher attempts list (no answers) */
+export async function listTestAttempts(testId) {
+  const { data } = await api.get(`/tests/${testId}/attempts`)
+  return data
+}
+
+/** POST /tests/{test_id}/attempts/{attempt_id}/grading/manual */
+export async function submitManualGrading(testId, attemptId, answers) {
+  const { data } = await api.post(`/tests/${testId}/attempts/${attemptId}/grading/manual`, {
+    answers,
+  })
+  return data
+}
+
+/** GET /tests/{test_id}/attempts/{attempt_id}/grading/result */
+export async function getAttemptGradingResult(testId, attemptId) {
+  const { data } = await api.get(`/tests/${testId}/attempts/${attemptId}/grading/result`)
+  return data
+}
+
+/** GET /tests/{test_id}/attempts/{attempt_id}/proctoring/grading-review */
+export async function getProctoringGradingReview(testId, attemptId) {
+  const { data } = await api.get(
+    `/tests/${testId}/attempts/${attemptId}/proctoring/grading-review`,
+  )
+  return data
+}
+
+/** PATCH /tests/{test_id}/attempts/{attempt_id}/grading/final-score */
+export async function patchAttemptFinalScore(testId, attemptId, payload) {
+  const { data } = await api.patch(
+    `/tests/${testId}/attempts/${attemptId}/grading/final-score`,
+    payload,
+  )
+  return data
+}
+
+/** GET /tests/{test_id}/attempts/{attempt_id}/proctoring/audit-logs */
+export async function getAttemptAuditLogs(testId, attemptId) {
+  const { data } = await api.get(
+    `/tests/${testId}/attempts/${attemptId}/proctoring/audit-logs`,
+  )
+  return data
+}
+
+/** GET /tests/{test_id}/monitoring — live monitoring snapshot */
+export async function getTestMonitoring(testId) {
+  const { data } = await api.get(`/tests/${testId}/monitoring`)
+  return data
+}
+
+/** POST /tests/{test_id}/attempts/{attempt_id}/force-submit — teacher-initiated */
+export async function forceSubmitAttempt(testId, attemptId) {
+  const { data } = await api.post(`/tests/${testId}/attempts/${attemptId}/force-submit`)
   return data
 }

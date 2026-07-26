@@ -16,6 +16,7 @@ import {
 import AttemptQuestionRenderer from '../../components/student/attempt/AttemptQuestionRenderer'
 import AttemptSubmitConfirmDialog from '../../components/student/attempt/AttemptSubmitConfirmDialog'
 import AttemptOfflineBanner from '../../components/student/attempt/AttemptOfflineBanner'
+import AttemptProctoringTerminatedScreen from '../../components/student/attempt/AttemptProctoringTerminatedScreen'
 import ProctoringWarning from '../../components/proctoring/ProctoringWarning'
 import CameraPreview from '../../components/proctoring/CameraPreview'
 import { ROUTES } from '../../constants/routes'
@@ -45,6 +46,7 @@ function ExamAttemptPage() {
     saving,
     submitting,
     submitResult,
+    proctoringTermination,
     navSettings,
     proctoringRequired,
     proctoring,
@@ -93,6 +95,7 @@ function ExamAttemptPage() {
   }, [proctoring.warning])
 
   useEffect(() => {
+    if (proctoringTermination) return
     if (!submitResult?.redirect) return
 
     if (submitResult.redirect.pathKey === 'pending') {
@@ -107,7 +110,7 @@ function ExamAttemptPage() {
       replace: true,
       state: { submit: submitResult.data, testId },
     })
-  }, [submitResult, navigate, testId])
+  }, [submitResult, navigate, testId, proctoringTermination])
 
   const handleNext = () => {
     const result = goNext()
@@ -213,6 +216,15 @@ function ExamAttemptPage() {
       <main className="flex min-h-screen items-center justify-center bg-[#F6F8F9] px-4" data-a11y-scale-root>
         <p className="text-sm font-semibold text-[#64748B]">{t('attempt.loading')}</p>
       </main>
+    )
+  }
+
+  if (proctoringTermination) {
+    return (
+      <AttemptProctoringTerminatedScreen
+        attempt={proctoringTermination}
+        testName={test?.name || test?.title || ''}
+      />
     )
   }
 

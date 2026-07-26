@@ -31,6 +31,9 @@ import QuestionBanksPage from './pages/question-banks/QuestionBanksPage'
 import QuestionBankEditorPage from './pages/question-banks/QuestionBankEditorPage'
 import ExamsPage from './pages/exams/ExamsPage'
 import ExamWizardPage, { ExamCreatePage } from './pages/exams/ExamWizardPage'
+import ExamAttemptsPage from './pages/exams/ExamAttemptsPage'
+import ExamAttemptGradingPage from './pages/exams/ExamAttemptGradingPage'
+import ExamMonitoringPage from './pages/exams/ExamMonitoringPage'
 import InvitePreviewPage from './pages/invites/InvitePreviewPage'
 import InviteRegisterPage from './pages/invites/InviteRegisterPage'
 import InviteAcceptPage from './pages/invites/InviteAcceptPage'
@@ -77,6 +80,9 @@ function App() {
           <Route path={ROUTES.EXAMS} element={<ExamsPage />} />
           <Route path={ROUTES.EXAM_CREATE} element={<ExamCreatePage />} />
           <Route path={ROUTES.EXAM_EDIT} element={<ExamWizardPage />} />
+          <Route path={ROUTES.EXAM_ATTEMPTS} element={<ExamAttemptsPage />} />
+          <Route path={ROUTES.EXAM_ATTEMPT_GRADE} element={<ExamAttemptGradingPage />} />
+          <Route path={ROUTES.EXAM_MONITORING} element={<ExamMonitoringPage />} />
           <Route path={ROUTES.SETTINGS} element={<SettingsPage />} />
           <Route path={ROUTES.SETTINGS_CHANGE_PASSWORD} element={<ChangePasswordPage />} />
         </Route>

@@ -12,9 +12,12 @@ export function useProctoring({
   attemptId,
   testOrSettings = null,
   autoStart = false,
+  onAttemptTerminated,
 } = {}) {
   const serviceRef = useRef(null)
   const videoRef = useRef(null)
+  const onAttemptTerminatedRef = useRef(onAttemptTerminated)
+  onAttemptTerminatedRef.current = onAttemptTerminated
 
   const [status, setStatus] = useState(PROCTORING_CONNECTION_STATE.DISCONNECTED)
   const [warning, setWarning] = useState(null)
@@ -61,6 +64,9 @@ export function useProctoring({
       onError: (err) => setError(err?.message || String(err)),
       onSessionStarted: () => {
         setCameraStream(service.camera?.getStream?.() || null)
+      },
+      onAttemptTerminated: (payload) => {
+        onAttemptTerminatedRef.current?.(payload)
       },
     })
 
@@ -122,6 +128,9 @@ export function useProctoring({
 
       serviceRef.current = service
       service.setVideoElement?.(videoRef.current)
+      service.onAttemptTerminated = (payload) => {
+        onAttemptTerminatedRef.current?.(payload)
+      }
 
       if (settingsSource) {
         const settings = getProctoringSettings(settingsSource)

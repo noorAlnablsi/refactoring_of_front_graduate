@@ -5,7 +5,7 @@ import { getTestId } from './testModel'
 
 export const TEST_STATUS_STYLES = {
   [TEST_STATUS.DRAFT]: 'bg-[#F1F5F9] text-[#64748B]',
-  [TEST_STATUS.SCHEDULED]: 'bg-[#E8F7F6] text-[#2AA8A2]',
+  [TEST_STATUS.SCHEDULED]: 'bg-[#FEF3C7] text-[#B45309]',
   [TEST_STATUS.PUBLISHED]: 'bg-[#E8F7F6] text-[#2AA8A2]',
   [TEST_STATUS.CLOSED]: 'bg-[#EEF2FF] text-[#4F46E5]',
   [TEST_STATUS.ARCHIVED]: 'bg-[#F1F5F9] text-[#94A3B8]',
@@ -35,13 +35,29 @@ export function filterTestsByTab(tests = [], tab) {
 }
 
 export function getTestQuestionsCount(test) {
-  if (Array.isArray(test?.questions) && test.questions.length > 0) {
-    return test.questions.length
+  if (!test) return 0
+
+  // Prefer explicit count fields from list endpoints (list often omits `questions[]`).
+  const countCandidates = [
+    test.questions_count,
+    test.question_count,
+    test.questionsCount,
+    test.questionCount,
+    test.total_questions,
+    test.totalQuestions,
+    test.num_questions,
+    test.questions_total,
+  ]
+
+  for (const candidate of countCandidates) {
+    if (candidate != null && candidate !== '') {
+      const n = Number(candidate)
+      if (Number.isFinite(n) && n >= 0) return n
+    }
   }
 
-  const count = test?.questions_count ?? test?.question_count
-  if (count != null && count !== '') {
-    return Number(count) || 0
+  if (Array.isArray(test.questions)) {
+    return test.questions.length
   }
 
   return 0

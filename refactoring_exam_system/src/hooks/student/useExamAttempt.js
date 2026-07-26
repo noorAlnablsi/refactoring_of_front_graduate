@@ -46,6 +46,10 @@ import {
   loadAttemptOfflineState,
   saveAttemptOfflineState,
 } from '../../lib/attemptOfflineState'
+import {
+  extractAttemptFromPayload,
+  isProctoringAutoTermination,
+} from '../../lib/attemptTermination'
 import { useProctoring } from '../proctoring/useProctoring'
 
 const AUTOSAVE_INTERVAL_MS = 30_000
@@ -112,12 +116,14 @@ export function useExamAttempt(testId) {
   const [offlineGraceRemainingSeconds, setOfflineGraceRemainingSeconds] = useState(0)
   const [answersFrozen, setAnswersFrozen] = useState(false)
   const [pendingForcedSubmit, setPendingForcedSubmit] = useState(false)
+  const [proctoringTermination, setProctoringTermination] = useState(null)
 
   const answersRef = useRef({})
   const attemptRef = useRef(null)
   const submittingRef = useRef(false)
   const autoSubmitTriggeredRef = useRef(false)
   const dirtyRef = useRef(false)
+  const proctoringTerminationHandledRef = useRef(false)
   const startProctoringRef = useRef(null)
   const stopProctoringRef = useRef(null)
   const adoptProctoringRef = useRef(null)
@@ -174,11 +180,50 @@ export function useExamAttempt(testId) {
 
   enforceGraceRef.current = enforceOfflineGrace
 
+  const applyProctoringTermination = useCallback(
+    async (attemptLike) => {
+      const attemptPayload = extractAttemptFromPayload(attemptLike) || attemptLike
+      if (!isProctoringAutoTermination(attemptPayload)) return false
+      if (proctoringTerminationHandledRef.current) return true
+
+      proctoringTerminationHandledRef.current = true
+      autoSubmitTriggeredRef.current = true
+      answersFrozenRef.current = true
+      setAnswersFrozen(true)
+      setProctoringTermination(attemptPayload)
+
+      if (attemptPayload?.id) {
+        attemptRef.current = { ...(attemptRef.current || {}), ...attemptPayload }
+        setAttempt((prev) => ({ ...(prev || {}), ...attemptPayload }))
+      }
+
+      const currentAttemptId = attemptPayload?.id || attemptRef.current?.id
+      if (testId && currentAttemptId) {
+        clearAttemptLocalDraft(testId, currentAttemptId)
+        clearAttemptEntryRules(testId)
+        clearAttemptOfflineState(testId, currentAttemptId)
+      }
+      clearEntryProctoringBridge()
+
+      try {
+        await stopProctoringRef.current?.()
+      } catch {
+        // ignore
+      }
+
+      return true
+    },
+    [testId],
+  )
+
   const proctoring = useProctoring({
     testId,
     attemptId,
     testOrSettings: test,
     autoStart: false,
+    onAttemptTerminated: (payload) => {
+      void applyProctoringTermination(payload)
+    },
   })
 
   startProctoringRef.current = proctoring.start
@@ -349,6 +394,11 @@ export function useExamAttempt(testId) {
             buildAnswersMapFromAttempt(resolvedAttempt.answers),
           )
 
+          if (isProctoringAutoTermination(resolvedAttempt)) {
+            await applyProctoringTermination(resolvedAttempt)
+            return
+          }
+
           const settings = readAttemptNavigationSettings(resolvedTest)
           if (settings.fullscreenRequired && !document.fullscreenElement) {
             try {
@@ -419,6 +469,11 @@ export function useExamAttempt(testId) {
           buildAnswersMapFromAttempt(resolvedAttempt.answers),
         )
 
+        if (isProctoringAutoTermination(resolvedAttempt)) {
+          await applyProctoringTermination(resolvedAttempt)
+          return
+        }
+
         const settings = readAttemptNavigationSettings(resolvedTest)
         if (settings.fullscreenRequired && !document.fullscreenElement) {
           try {
@@ -462,7 +517,7 @@ export function useExamAttempt(testId) {
     return () => {
       cancelled = true
     }
-  }, [testId, retryNonce, applyHydratedAnswers])
+  }, [testId, retryNonce, applyHydratedAnswers, applyProctoringTermination])
 
   useEffect(() => {
     if (loading || !attemptId) return
@@ -802,6 +857,7 @@ export function useExamAttempt(testId) {
   useEffect(() => {
     if (loading || submitting || remainingSeconds > 0) return
     if (!attemptId || autoSubmitTriggeredRef.current) return
+    if (proctoringTerminationHandledRef.current) return
 
     const onlineNow = typeof navigator === 'undefined' ? true : navigator.onLine
 
@@ -825,6 +881,8 @@ export function useExamAttempt(testId) {
   }, [])
 
   const retry = useCallback(() => {
+    proctoringTerminationHandledRef.current = false
+    setProctoringTermination(null)
     setRetryNonce((n) => n + 1)
   }, [])
 
@@ -843,6 +901,7 @@ export function useExamAttempt(testId) {
     submitting,
     dirty,
     submitResult,
+    proctoringTermination,
     navSettings,
     proctoringRequired,
     proctoring,

@@ -117,6 +117,7 @@ function ExamWizardPage({ isNew = false }) {
               onBack={() => wizard.goToStep(TEST_WIZARD_STEPS.SETTINGS)}
               savingDraft={wizard.savingDraft}
               onSaveDraft={() => wizard.handleSaveWizardDraftProgress(TEST_WIZARD_STEPS.REVIEW)}
+              onRefresh={() => wizard.loadTest(true)}
             />
           ) : null}
 

@@ -46,7 +46,16 @@ export const PROCTORING_INCOMING = {
   SESSION_STARTED: 'session_started',
   EVENT_RECORDED: 'event_recorded',
   VIOLATION_TRIGGERED: 'violation_triggered',
+  ATTEMPT_TERMINATED: 'attempt_terminated',
   ERROR: 'error',
+}
+
+/** Teacher live-monitor channel incoming `type` values (backend contract). */
+export const PROCTORING_MONITOR_INCOMING = {
+  SUBSCRIBED: 'subscribed',
+  STUDENT_ROW_UPDATED: 'student_row_updated',
+  VIOLATION_CREATED: 'violation_created',
+  PONG: 'pong',
 }
 
 export const CAMERA_STATUS = {

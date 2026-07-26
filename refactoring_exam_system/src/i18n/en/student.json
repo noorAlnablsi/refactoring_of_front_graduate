@@ -277,6 +277,11 @@
     "submitConfirmCancel": "Cancel",
     "submitConfirmAction": "Yes, submit now",
     "submitError": "Could not submit the exam",
+    "proctoringTerminated": {
+      "title": "Exam ended",
+      "message": "The allowed proctoring violation limit was exceeded, and the system ended the exam automatically.",
+      "backToDashboard": "Back to student dashboard"
+    },
     "proctoringError": "Proctoring notice",
     "backToDashboard": "Back to student dashboard",
     "retry": "Try again",

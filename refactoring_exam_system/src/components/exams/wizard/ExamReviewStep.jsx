@@ -2,14 +2,23 @@ import { useTranslation } from 'react-i18next'
 import { ArrowLeft, ArrowRight, ClipboardList } from 'lucide-react'
 import ExamWizardFooter from '../ExamWizardFooter'
 import { getTestQuestionsCount, getTestTotalPoints } from '../../../lib/testDisplay'
-import { getTestName } from '../../../lib/testModel'
+import { getTestId, getTestName } from '../../../lib/testModel'
 import ExamRandomGeneratedQuestionsPanel from '../ExamRandomGeneratedQuestionsPanel'
 
-function ExamReviewStep({ test, onNext, onBack, onSaveDraft, savingDraft = false }) {
+function ExamReviewStep({
+  test,
+  onNext,
+  onBack,
+  onSaveDraft,
+  onRefresh,
+  savingDraft = false,
+}) {
   const { t } = useTranslation(['exams', 'common'])
   const questions = test?.questions || []
   const totalPoints = getTestTotalPoints(test)
   const displayQuestionsCount = getTestQuestionsCount(test)
+  const testId = getTestId(test)
+  const allowPointsEdit = test?.auto_distribute_scores === false
 
   return (
     <div className="space-y-6">
@@ -19,6 +28,11 @@ function ExamReviewStep({ test, onNext, onBack, onSaveDraft, savingDraft = false
           {t('wizard.review.title')}
         </h2>
         <p className="mt-3 max-w-3xl text-sm leading-8 text-[#64748B]">{t('wizard.review.subtitle')}</p>
+        {allowPointsEdit ? (
+          <p className="mt-2 max-w-3xl text-xs leading-6 text-[#2AA8A2]">
+            {t('wizard.review.manualPointsHint')}
+          </p>
+        ) : null}
       </header>
 
       <div className="rounded-2xl bg-white p-6 ring-1 ring-[#E5E9EB]">
@@ -54,13 +68,18 @@ function ExamReviewStep({ test, onNext, onBack, onSaveDraft, savingDraft = false
       {questions.length > 0 ? (
         <ExamRandomGeneratedQuestionsPanel
           embedded
+          testId={testId}
           questions={questions}
+          allowPointsEdit={allowPointsEdit}
           sectionTitle={t('wizard.review.questionList')}
           continueLabel={t('wizard.review.nextPublish')}
           onBack={onBack}
           onSaveDraft={onSaveDraft}
           onContinue={onNext}
           savingDraft={savingDraft}
+          onQuestionsChange={async () => {
+            await onRefresh?.()
+          }}
         />
       ) : (
         <ExamWizardFooter>

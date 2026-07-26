@@ -2,6 +2,7 @@ export { isProctoringEnabled, getProctoringSettings } from './isProctoringEnable
 export { debounce, throttle, createStateChangeGate } from './eventThrottle'
 export {
   buildProctoringWebSocketUrl,
+  buildTeacherMonitorWebSocketUrl,
   toRestEventType,
   collectBrowserMetadata,
   collectDeviceMetadata,
