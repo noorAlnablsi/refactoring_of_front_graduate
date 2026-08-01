@@ -271,6 +271,8 @@
     "legendMarked": "مميز بعلم",
     "legendRemaining": "متبقي",
     "proctoringActive": "المراقبة نشطة",
+    "liveFeedBadge": "LIVE FEED",
+    "activeMonitorFrame": "إطار المراقبة النشط",
     "footerHelp": "مساعدة",
     "submitConfirmTitle": "تأكيد تسليم الاختبار",
     "submitConfirmMessage": "هل أنت متأكد من تسليم إجاباتك؟ لن تتمكن من تعديلها بعد التسليم.",

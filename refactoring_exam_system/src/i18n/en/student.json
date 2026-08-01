@@ -271,6 +271,8 @@
     "legendMarked": "Marked for review",
     "legendRemaining": "Remaining",
     "proctoringActive": "Proctoring active",
+    "liveFeedBadge": "LIVE FEED",
+    "activeMonitorFrame": "Active monitoring frame",
     "footerHelp": "Help",
     "submitConfirmTitle": "Confirm submission",
     "submitConfirmMessage": "Are you sure you want to submit? You will not be able to edit your answers afterward.",

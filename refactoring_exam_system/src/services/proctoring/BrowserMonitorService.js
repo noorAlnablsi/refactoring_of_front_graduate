@@ -57,6 +57,7 @@ export class BrowserMonitorService {
   start() {
     if (this.running || typeof window === 'undefined') return
     this.running = true
+    console.info('[BROWSER START]')
 
     const trackBrowser = this.settings.browser_window_tracking !== false
     const trackCopy = this.settings.prevent_copy_paste !== false
@@ -83,6 +84,8 @@ export class BrowserMonitorService {
     if (trackFullscreen) {
       document.addEventListener('fullscreenchange', this.#boundFullscreen)
     }
+
+    console.info('[BROWSER LISTENERS REGISTERED]')
   }
 
   #handleVisibility() {
@@ -141,6 +144,7 @@ export class BrowserMonitorService {
   stop() {
     if (!this.running) return
     this.running = false
+    console.info('[BROWSER STOP]')
 
     document.removeEventListener('visibilitychange', this.#boundVisibility)
     window.removeEventListener('blur', this.#boundBlur)

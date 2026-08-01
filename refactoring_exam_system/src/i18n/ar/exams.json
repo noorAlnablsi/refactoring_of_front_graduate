@@ -605,7 +605,9 @@
       "openGrading": "فتح التصحيح",
       "auditTitle": "سجل المراقبة (Audit)",
       "auditLoading": "جاري تحميل السجل...",
-      "auditEmpty": "لا توجد سجلات بعد، أو لا توجد محاولة."
+      "auditEmpty": "لا توجد سجلات بعد، أو لا توجد محاولة.",
+      "eventBadge": "حدث",
+      "violationBadge": "مخالفة"
     },
     "forceSubmit": {
       "action": "إنهاء المحاولة قسراً (Force submit)",

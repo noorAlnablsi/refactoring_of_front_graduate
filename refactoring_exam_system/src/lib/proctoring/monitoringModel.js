@@ -81,11 +81,62 @@ export function applyStudentRowChanges(student, changes = {}) {
 export function normalizeAuditLog(raw) {
   if (!raw) return null
   return {
-    id: raw.id ?? `${raw.created_at || ''}-${raw.event_type || raw.type || 'log'}`,
-    eventType: raw.event_type || raw.type || raw.violation_type || 'EVENT',
+    id: raw.id ?? `audit-${raw.created_at || ''}-${raw.action || 'log'}`,
+    kind: 'audit',
+    eventType: raw.action || raw.event_type || raw.type || raw.violation_type || 'EVENT',
     severity: raw.severity || null,
-    message: raw.message || raw.description || null,
+    message: raw.message || raw.description || formatDetailsMessage(raw.details) || null,
     createdAt: raw.created_at || raw.timestamp || null,
     payload: raw.payload || raw.details || null,
+  }
+}
+
+export function normalizeProctoringEvent(raw) {
+  if (!raw) return null
+  return {
+    id: raw.id ?? `event-${raw.occurred_at || raw.created_at || ''}-${raw.event_type || 'evt'}`,
+    kind: 'event',
+    eventType: raw.event_type || raw.type || 'EVENT',
+    severity: null,
+    message: null,
+    createdAt: raw.occurred_at || raw.created_at || raw.timestamp || null,
+    payload: raw.payload || null,
+  }
+}
+
+export function normalizeProctoringViolation(raw) {
+  if (!raw) return null
+  return {
+    id: raw.id ?? `violation-${raw.created_at || ''}-${raw.violation_type || 'v'}`,
+    kind: 'violation',
+    eventType: raw.violation_type || raw.type || 'VIOLATION',
+    severity: raw.severity || null,
+    message: raw.description || raw.message || null,
+    createdAt: raw.created_at || raw.timestamp || null,
+    payload: raw.payload || null,
+  }
+}
+
+/** Merge events + violations + audit rows into one newest-first timeline for the detail drawer. */
+export function buildMonitoringTimeline({ events = [], violations = [], auditLogs = [] } = {}) {
+  const rows = [
+    ...events.map(normalizeProctoringEvent),
+    ...violations.map(normalizeProctoringViolation),
+    ...auditLogs.map(normalizeAuditLog),
+  ].filter(Boolean)
+
+  return rows.sort((a, b) => {
+    const ta = a.createdAt ? Date.parse(a.createdAt) : 0
+    const tb = b.createdAt ? Date.parse(b.createdAt) : 0
+    return tb - ta
+  })
+}
+
+function formatDetailsMessage(details) {
+  if (!details || typeof details !== 'object') return null
+  try {
+    return JSON.stringify(details)
+  } catch {
+    return null
   }
 }

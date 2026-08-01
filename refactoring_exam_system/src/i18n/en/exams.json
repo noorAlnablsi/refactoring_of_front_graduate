@@ -605,7 +605,9 @@
       "openGrading": "Open grading",
       "auditTitle": "Proctoring audit log",
       "auditLoading": "Loading audit log...",
-      "auditEmpty": "No audit logs yet, or no attempt."
+      "auditEmpty": "No audit logs yet, or no attempt.",
+      "eventBadge": "Event",
+      "violationBadge": "Violation"
     },
     "forceSubmit": {
       "action": "Force-submit attempt",

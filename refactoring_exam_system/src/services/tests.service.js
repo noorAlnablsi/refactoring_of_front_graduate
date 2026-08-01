@@ -228,6 +228,22 @@ export async function getAttemptAuditLogs(testId, attemptId) {
   return data
 }
 
+/** GET /tests/{test_id}/attempts/{attempt_id}/proctoring/events */
+export async function getAttemptProctoringEvents(testId, attemptId) {
+  const { data } = await api.get(
+    `/tests/${testId}/attempts/${attemptId}/proctoring/events`,
+  )
+  return data
+}
+
+/** GET /tests/{test_id}/attempts/{attempt_id}/proctoring/violations */
+export async function getAttemptProctoringViolations(testId, attemptId) {
+  const { data } = await api.get(
+    `/tests/${testId}/attempts/${attemptId}/proctoring/violations`,
+  )
+  return data
+}
+
 /** GET /tests/{test_id}/monitoring — live monitoring snapshot */
 export async function getTestMonitoring(testId) {
   const { data } = await api.get(`/tests/${testId}/monitoring`)

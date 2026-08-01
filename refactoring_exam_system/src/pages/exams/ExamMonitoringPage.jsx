@@ -305,10 +305,22 @@ function ExamMonitoringPage() {
               <ul className="mt-3 space-y-2">
                 {auditLogs.map((log) => (
                   <li
-                    key={log.id}
+                    key={`${log.kind || 'log'}-${log.id}`}
                     className="rounded-xl border border-[#E5E9EB] bg-[#F8FAFB] px-3 py-2.5 text-xs"
                   >
-                    <p className="font-bold text-[#2A3433]">{log.eventType}</p>
+                    <div className="flex flex-wrap items-center gap-2">
+                      <p className="font-bold text-[#2A3433]">{log.eventType}</p>
+                      {log.kind === 'violation' ? (
+                        <span className="rounded-full bg-[#FEE2E2] px-2 py-0.5 text-[10px] font-bold text-[#DC2626]">
+                          {t('monitoring.detail.violationBadge')}
+                        </span>
+                      ) : null}
+                      {log.kind === 'event' ? (
+                        <span className="rounded-full bg-[#E8F7F6] px-2 py-0.5 text-[10px] font-bold text-[#2AA8A2]">
+                          {t('monitoring.detail.eventBadge')}
+                        </span>
+                      ) : null}
+                    </div>
                     {log.severity ? (
                       <p className="mt-1 text-[#B45309]">{log.severity}</p>
                     ) : null}

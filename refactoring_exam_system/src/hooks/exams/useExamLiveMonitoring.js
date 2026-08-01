@@ -8,13 +8,15 @@ import { getWorkspaceId } from '../../lib/workspaceContext'
 import { buildTeacherMonitorWebSocketUrl } from '../../lib/proctoring/wsUrl'
 import {
   applyStudentRowChanges,
-  normalizeAuditLog,
+  buildMonitoringTimeline,
   normalizeMonitoringSnapshot,
 } from '../../lib/proctoring/monitoringModel'
 import { WebSocketManager } from '../../services/proctoring/WebSocketManager'
 import {
   forceSubmitAttempt,
   getAttemptAuditLogs,
+  getAttemptProctoringEvents,
+  getAttemptProctoringViolations,
   getTestMonitoring,
 } from '../../services/tests.service'
 import { showAppToast } from '../../lib/appToast'
@@ -212,8 +214,19 @@ export function useExamLiveMonitoring(testId) {
 
       setAuditLoading(true)
       try {
-        const data = await getAttemptAuditLogs(testId, student.attemptId)
-        const logs = (data.audit_logs || []).map(normalizeAuditLog).filter(Boolean)
+        const [auditData, eventsData, violationsData] = await Promise.all([
+          getAttemptAuditLogs(testId, student.attemptId).catch(() => ({ audit_logs: [] })),
+          getAttemptProctoringEvents(testId, student.attemptId).catch(() => ({ events: [] })),
+          getAttemptProctoringViolations(testId, student.attemptId).catch(() => ({
+            violations: [],
+          })),
+        ])
+
+        const logs = buildMonitoringTimeline({
+          events: eventsData?.events || eventsData?.items || [],
+          violations: violationsData?.violations || violationsData?.items || [],
+          auditLogs: auditData?.audit_logs || auditData?.items || [],
+        })
         setAuditLogs(logs)
       } catch (err) {
         setAuditLogs([])

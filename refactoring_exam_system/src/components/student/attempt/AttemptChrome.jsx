@@ -6,6 +6,7 @@ import {
   CircleHelp,
   Clock3,
   Monitor,
+  Video,
 } from 'lucide-react'
 import { useTranslation } from 'react-i18next'
 import {
@@ -13,6 +14,7 @@ import {
   isAnswerProvided,
 } from '../../../lib/attemptAnswers'
 import { formatLocalePaddedNumber } from '../../../lib/localeNumber'
+import CameraPreview from '../../proctoring/CameraPreview'
 
 function AttemptExamHeader({
   examTitle,
@@ -86,6 +88,8 @@ function AttemptSidebar({
   submitting,
   onSelect,
   onSubmitClick,
+  cameraStream = null,
+  proctoringActive = false,
 }) {
   const { t } = useTranslation('student')
   const lowTime = remainingSeconds > 0 && remainingSeconds <= 300
@@ -164,6 +168,22 @@ function AttemptSidebar({
           {t('attempt.legendRemaining')}
         </div>
       </div>
+
+      {proctoringActive && cameraStream ? (
+        <div className="mt-5 overflow-hidden rounded-xl ring-1 ring-[#E5E9EB]">
+          <div className="relative">
+            <CameraPreview stream={cameraStream} className="h-36 w-full object-cover" />
+            <span className="absolute start-2 top-2 inline-flex items-center gap-1.5 rounded-md bg-black/55 px-2 py-1 text-[10px] font-extrabold tracking-wide text-white">
+              <span className="h-1.5 w-1.5 rounded-full bg-[#EF4444]" />
+              {t('attempt.liveFeedBadge')}
+            </span>
+          </div>
+          <div className="flex items-center gap-2 bg-[#F8FAFB] px-3 py-2">
+            <Video className="h-3.5 w-3.5 text-[#2AA8A2]" />
+            <p className="text-[11px] font-bold text-[#2A3433]">{t('attempt.activeMonitorFrame')}</p>
+          </div>
+        </div>
+      ) : null}
 
       <div className="mt-4 rounded-xl bg-[#FFFBEB] px-3 py-3 ring-1 ring-[#FDE68A]">
         <div className="flex items-start gap-2">

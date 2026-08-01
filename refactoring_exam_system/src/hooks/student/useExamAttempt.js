@@ -14,6 +14,8 @@ import { isProctoringEnabled } from '../../lib/proctoring/isProctoringEnabled'
 import {
   getEntryProctoringBridge,
   clearEntryProctoringBridge,
+  beginAttemptProctoringOwnership,
+  scheduleReleaseAttemptProctoring,
 } from '../../lib/proctoring/entrySessionBridge'
 import {
   collectBrowserMetadata,
@@ -347,6 +349,18 @@ export function useExamAttempt(testId) {
           const bridgedRules = entryBridge.entryRules || loadAttemptEntryRules(testId)
           if (bridgedRules && !cancelled) setEntryRules(bridgedRules)
 
+          // Claim the live Entry service immediately (before any await) so ownership
+          // moves to Attempt while monitors/WS keep running uninterrupted.
+          const bridgedService = entryBridge.service
+          let adopted = false
+          if (bridgedService && !bridgedService.stopped) {
+            adopted = Boolean(
+              adoptProctoringRef.current?.(bridgedService, {
+                testOrSettings: resolvedTest,
+              }),
+            )
+          }
+
           try {
             const details = await getTestAttempt(testId, resolvedAttempt.id)
             if (!cancelled) {
@@ -408,10 +422,29 @@ export function useExamAttempt(testId) {
             }
           }
 
-          if (entryBridge.service) {
-            adoptProctoringRef.current?.(entryBridge.service, {
-              testOrSettings: resolvedTest,
-            })
+          // If handoff failed (dead service / missing adopt), recreate once — resume safety.
+          if (
+            isProctoringEnabled(resolvedTest) &&
+            !adopted &&
+            !cancelled
+          ) {
+            try {
+              await startProctoringSession(testId, resolvedAttempt.id, {
+                device_metadata: collectDeviceMetadata({ camera: true, microphone: true }),
+                browser_metadata: collectBrowserMetadata(),
+              })
+              if (!cancelled) {
+                await startProctoringRef.current?.({
+                  testId,
+                  attemptId: resolvedAttempt.id,
+                  testOrSettings: resolvedTest,
+                })
+              }
+            } catch (proctoringError) {
+              if (!cancelled) {
+                console.warn('[proctoring] failed to start after handoff miss', proctoringError)
+              }
+            }
           }
 
           return
@@ -874,9 +907,12 @@ export function useExamAttempt(testId) {
   }, [loading, submitting, remainingSeconds, attemptId, submit, freezeAnswers])
 
   useEffect(() => {
+    const generation = beginAttemptProctoringOwnership()
     return () => {
-      void stopProctoringRef.current?.()
-      clearEntryProctoringBridge()
+      // Defer stop so React Strict Mode remount can re-adopt the same live service.
+      scheduleReleaseAttemptProctoring(generation, {
+        stop: () => stopProctoringRef.current?.(),
+      })
     }
   }, [])
 

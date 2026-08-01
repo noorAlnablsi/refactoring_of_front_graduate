@@ -1,6 +1,10 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
 import { PROCTORING_CONNECTION_STATE } from '../../constants/proctoring'
 import { getProctoringSettings } from '../../lib/proctoring/isProctoringEnabled'
+import {
+  claimEntryProctoringHandoff,
+  shouldStopProctoringServiceOnRelease,
+} from '../../lib/proctoring/entrySessionBridge'
 import { ProctoringService } from '../../services/proctoring'
 
 /**
@@ -108,8 +112,18 @@ export function useProctoring({
 
   useEffect(() => {
     return () => {
-      serviceRef.current?.stop?.()
+      const service = serviceRef.current
       serviceRef.current = null
+      // Entry→Attempt handoff / adopted bridge: same instance must survive remounts.
+      if (service && shouldStopProctoringServiceOnRelease(service)) {
+        console.info('[PROCTORING STOP]', { reason: 'hook-unmount' })
+        void service.stop?.()
+      } else if (service) {
+        console.info('[HOOK UNMOUNT]', {
+          skippedStop: true,
+          reason: 'bridge-owns-service',
+        })
+      }
     }
   }, [])
 
@@ -124,10 +138,13 @@ export function useProctoring({
 
   const adoptService = useCallback(
     (service, { testOrSettings: settingsSource } = {}) => {
-      if (!service) return
+      if (!service || service.stopped) return false
 
       serviceRef.current = service
       service.setVideoElement?.(videoRef.current)
+      service.onConnectionStateChange = setStatus
+      service.onWarning = (payload) => setWarning(payload)
+      service.onError = (err) => setError(err?.message || String(err))
       service.onAttemptTerminated = (payload) => {
         onAttemptTerminatedRef.current?.(payload)
       }
@@ -137,10 +154,19 @@ export function useProctoring({
         service.settings = settings
       }
 
+      claimEntryProctoringHandoff(service)
+      console.info('[ATTEMPT ADOPT SERVICE]', {
+        testId: service.testId,
+        attemptId: service.attemptId,
+        monitoringActive: service.monitoringActive,
+        stopped: service.stopped,
+      })
+
       setRunning(true)
       setStatus(service.connectionState || PROCTORING_CONNECTION_STATE.SESSION_ACTIVE)
       setCameraStream(service.camera?.getStream?.() || null)
       setError(null)
+      return true
     },
     [],
   )

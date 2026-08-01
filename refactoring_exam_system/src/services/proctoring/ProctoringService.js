@@ -70,6 +70,7 @@ export class ProctoringService {
       throw new Error('ProctoringService requires testId and attemptId')
     }
 
+    console.info('[PROCTORING START]', { testId: this.testId, attemptId: this.attemptId })
     await this.#startMedia()
     await this.#connectWebSocket()
   }
@@ -235,6 +236,7 @@ export class ProctoringService {
   #beginMonitoring() {
     if (this.monitoringActive || this.stopped) return
     this.monitoringActive = true
+    console.info('[SESSION_STARTED → BEGIN MONITORING]')
 
     if (this.cameraStatus === CAMERA_STATUS.ON) {
       this.emitEvent(PROCTORING_WS_EVENT.CAMERA_STATUS, { status: CAMERA_STATUS.ON })
@@ -274,6 +276,7 @@ export class ProctoringService {
     if (this.stopped) return
     this.stopped = true
     this.monitoringActive = false
+    console.info('[PROCTORING STOP]', { testId: this.testId, attemptId: this.attemptId })
 
     this.browser?.stop()
     this.browser = null

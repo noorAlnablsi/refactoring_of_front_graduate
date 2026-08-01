@@ -5,7 +5,10 @@ import { ROUTES } from '../../constants/routes'
 import { normalizeAttemptPayload } from '../../lib/attemptAnswers'
 import { saveAttemptEntryRules } from '../../lib/attemptEntryRules'
 import { isProctoringEnabled } from '../../lib/proctoring/isProctoringEnabled'
-import { setEntryProctoringBridge } from '../../lib/proctoring/entrySessionBridge'
+import {
+  markEntryProctoringHandoffPending,
+  setEntryProctoringBridge,
+} from '../../lib/proctoring/entrySessionBridge'
 import {
   collectBrowserMetadata,
   collectDeviceMetadata,
@@ -158,8 +161,12 @@ export function useExamEntryStart({ testId, entry, proctoring, videoElement }) {
           entryRules: entry.rules,
           service,
         })
+        // Synchronously before navigate so Entry unmount cleanup will not stop().
+        markEntryProctoringHandoffPending()
+        console.info('[PROCTORING HANDOFF PENDING]')
       }
 
+      console.info('[NAVIGATE TO ATTEMPT]')
       navigate(ROUTES.STUDENT_EXAM_ATTEMPT.replace(':testId', String(testId)), {
         state: { attemptId: attempt.id, fromEntry: true },
       })

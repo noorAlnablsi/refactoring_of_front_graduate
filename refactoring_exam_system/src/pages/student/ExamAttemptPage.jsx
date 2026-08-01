@@ -367,16 +367,12 @@ function ExamAttemptPage() {
           submitting={submitting || answersFrozen}
           onSelect={handleSelectIndex}
           onSubmitClick={handleSubmitRequest}
+          cameraStream={proctoringRequired ? proctoring.cameraStream : null}
+          proctoringActive={proctoringActive}
         />
 
         <section className="min-w-0">
           {alerts}
-
-          {proctoringRequired && proctoring.cameraStream ? (
-            <div className="mb-4 overflow-hidden rounded-xl ring-1 ring-[#E5E9EB] lg:hidden">
-              <CameraPreview stream={proctoring.cameraStream} className="h-24 w-full object-cover" />
-            </div>
-          ) : null}
 
           <AttemptQuestionRenderer
             question={currentQuestion}
