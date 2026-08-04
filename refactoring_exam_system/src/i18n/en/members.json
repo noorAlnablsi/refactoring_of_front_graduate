@@ -2,6 +2,7 @@
   "pageTitle": "Member management",
   "pageSubtitle": "Manage all students and teachers within the institution.",
   "exportData": "Export data",
+  "exporting": "Exporting...",
   "overview": {
     "title": "Member management",
     "subtitle": "Manage all students and teachers within the institution.",
@@ -175,7 +176,11 @@
   "toasts": {
     "membershipNotFound": "Could not find {{role}} membership.",
     "fullNameRequired": "Full name is required",
-    "profileUpdated": "{{role}} profile updated successfully"
+    "profileUpdated": "{{role}} profile updated successfully",
+    "teacherMembershipNotFound": "Could not find teacher membership.",
+    "teacherRemoved": "Teacher removed successfully",
+    "exportSuccess": "Export file downloaded",
+    "exportFailed": "Could not export data"
   },
   "status": {
     "active": "Active",

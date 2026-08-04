@@ -189,7 +189,7 @@ export function normalizeTopStudent(row = {}) {
   return {
     student_membership_id: row.student_membership_id ?? row.membership_id ?? null,
     student_name: name,
-    // BE field: profile_image
+    // BE field: profile_image (= User.profile_image_url)
     avatar_url: row.profile_image || pickAvatar(row) || pickAvatar(row.user),
     initials: initialsFromName(name),
     completed_tests:
@@ -207,7 +207,7 @@ export function normalizeInactiveStudent(row = {}) {
   return {
     student_membership_id: row.student_membership_id ?? row.membership_id ?? null,
     student_name: name,
-    avatar_url: pickAvatar(row) || pickAvatar(row.user),
+    avatar_url: row.profile_image || pickAvatar(row) || pickAvatar(row.user),
     initials: initialsFromName(name),
     last_activity_at: lastActivity,
     days_inactive: inactiveDays,

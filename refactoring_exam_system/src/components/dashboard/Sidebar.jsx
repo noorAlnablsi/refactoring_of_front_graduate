@@ -7,6 +7,7 @@ import {
   GraduationCap,
   LayoutGrid,
   Settings,
+  ShieldAlert,
   Users,
   UsersRound,
 } from 'lucide-react'
@@ -18,6 +19,7 @@ import {
   canAccessQuestionBanks,
   canAccessSubjectsModule,
   canAccessExams,
+  canAccessIntegrityReports,
   canShowStudentGroupsInSidebar,
   isInstitutionOwner,
 } from '../../lib/workspaceContext'
@@ -54,6 +56,13 @@ const baseNavItems = [
     end: false,
     requiresInstitutionOwner: true,
   },
+  {
+    to: ROUTES.ANALYTICS_INTEGRITY_REPORTS,
+    labelKey: 'sidebar.integrityReports',
+    icon: ShieldAlert,
+    end: true,
+    requiresIntegrityInbox: true,
+  },
   { to: ROUTES.SETTINGS, labelKey: 'sidebar.settings', icon: Settings, end: true },
 ]
 
@@ -88,6 +97,10 @@ function Sidebar() {
     if (item.requiresStudentGroups && !canShowStudentGroupsInSidebar()) return false
     if (item.requiresExams && !canAccessExams()) return false
     if (item.requiresInstitutionOwner && !isInstitutionOwner()) return false
+    // Teachers/SOLO/admin: inbox without full analytics. Owner uses Analytics → View all.
+    if (item.requiresIntegrityInbox) {
+      return canAccessIntegrityReports() && !isInstitutionOwner()
+    }
     if (!item.requiresQuestionBanks) return true
     return canAccessQuestionBanks()
   })

@@ -65,3 +65,56 @@ export async function updateWorkspaceMember(membershipId, payload) {
   const { data } = await api.patch(`/workspaces/members/${membershipId}`, payload)
   return data
 }
+
+function filenameFromDisposition(disposition, fallback) {
+  const matched = /filename[^;=\n]*=((['"]).*?\2|[^;\n]*)/.exec(disposition || '')
+  if (!matched?.[1]) return fallback
+  return matched[1].replace(/['"]/g, '')
+}
+
+async function downloadWorkspaceCsv(path, { search, fallbackFilename }) {
+  const params = {}
+  const trimmed = typeof search === 'string' ? search.trim() : ''
+  if (trimmed) params.search = trimmed
+
+  const response = await api.get(path, {
+    params,
+    responseType: 'blob',
+    headers: { Accept: 'text/csv' },
+  })
+
+  const filename = filenameFromDisposition(
+    response.headers?.['content-disposition'],
+    fallbackFilename,
+  )
+
+  const blob = new Blob([response.data], { type: 'text/csv;charset=utf-8' })
+  const url = window.URL.createObjectURL(blob)
+  const link = document.createElement('a')
+  link.href = url
+  link.download = filename
+  document.body.appendChild(link)
+  link.click()
+  link.remove()
+  window.URL.revokeObjectURL(url)
+
+  return { filename }
+}
+
+/** GET /workspaces/students/export — workspace owner only. */
+export async function exportWorkspaceStudentsCsv({ search } = {}) {
+  const today = new Date().toISOString().slice(0, 10)
+  return downloadWorkspaceCsv('/workspaces/students/export', {
+    search,
+    fallbackFilename: `students_${today}.csv`,
+  })
+}
+
+/** GET /workspaces/teachers/export — institution owner only. */
+export async function exportWorkspaceTeachersCsv({ search } = {}) {
+  const today = new Date().toISOString().slice(0, 10)
+  return downloadWorkspaceCsv('/workspaces/teachers/export', {
+    search,
+    fallbackFilename: `teachers_${today}.csv`,
+  })
+}

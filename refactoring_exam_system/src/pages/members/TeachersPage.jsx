@@ -15,9 +15,13 @@ import { tUI } from '../../lib/appToast'
 import { getTeacherMembershipId } from '../../lib/workspaceTeachers'
 import {
   canAccessMembersModule,
+  canExportWorkspaceTeachers,
   isInstitutionWorkspace,
 } from '../../lib/workspaceContext'
-import { removeWorkspaceTeacher } from '../../services/workspaces.service'
+import {
+  exportWorkspaceTeachersCsv,
+  removeWorkspaceTeacher,
+} from '../../services/workspaces.service'
 import { useToastStore } from '../../store/toastStore'
 import {
   shellAccentButtonClass,
@@ -29,6 +33,7 @@ import {
 function TeachersPage() {
   const { t } = useTranslation(['members', 'common'])
   const showToast = useToastStore((s) => s.showToast)
+  const canExport = canExportWorkspaceTeachers()
   const [searchInput, setSearchInput] = useState('')
   const [search, setSearch] = useState('')
   const [page, setPage] = useState(1)
@@ -38,6 +43,7 @@ function TeachersPage() {
   const [editTeacher, setEditTeacher] = useState(null)
   const [removeTeacher, setRemoveTeacher] = useState(null)
   const [removeLoading, setRemoveLoading] = useState(false)
+  const [exporting, setExporting] = useState(false)
 
   const { teachers, total, pages, loading, error, refetch, activeRate } = useTeachersList({
     search,
@@ -78,6 +84,18 @@ function TeachersPage() {
     }
   }
 
+  const handleExport = async () => {
+    setExporting(true)
+    try {
+      await exportWorkspaceTeachersCsv({ search })
+      showToast(tUI('toasts.exportSuccess', { ns: 'members' }))
+    } catch (err) {
+      showToast(err.message || tUI('toasts.exportFailed', { ns: 'members' }), 'error')
+    } finally {
+      setExporting(false)
+    }
+  }
+
   return (
     <div className="space-y-6">
       <TeachersBreadcrumb />
@@ -89,15 +107,17 @@ function TeachersPage() {
         </div>
 
         <div className="flex flex-wrap items-center gap-3">
-          <button
-            type="button"
-            disabled
-            title={t('comingSoon', { ns: 'common' })}
-            className={`${shellGhostButtonClass} inline-flex items-center gap-2 opacity-70`}
-          >
-            <Download className="h-4 w-4" strokeWidth={2} />
-            {t('exportData')}
-          </button>
+          {canExport ? (
+            <button
+              type="button"
+              disabled={exporting}
+              onClick={handleExport}
+              className={`${shellGhostButtonClass} inline-flex items-center gap-2`}
+            >
+              <Download className="h-4 w-4" strokeWidth={2} />
+              {exporting ? t('exporting') : t('exportData')}
+            </button>
+          ) : null}
           <button
             type="button"
             onClick={() => setInviteOpen(true)}

@@ -18,12 +18,15 @@ import {
   shellPageTitleClass,
 } from '../../lib/shellUi'
 import { useToastStore } from '../../store/toastStore'
+import { isInstitutionOwner } from '../../lib/workspaceContext'
 
 const selectClass = `h-11 ${shellInputClass} px-3 text-sm font-semibold`
 
 function IntegrityReportsPage() {
   const { t } = useTranslation(['analytics', 'common'])
   const showToast = useToastStore((s) => s.showToast)
+  const backTo = isInstitutionOwner() ? ROUTES.ANALYTICS : ROUTES.EXAMS
+  const backLabel = isInstitutionOwner() ? t('title') : t('common:actions.back')
 
   const [searchInput, setSearchInput] = useState('')
   const [search, setSearch] = useState('')
@@ -89,10 +92,10 @@ function IntegrityReportsPage() {
     <div className="space-y-6">
       <div>
         <Link
-          to={ROUTES.ANALYTICS}
+          to={backTo}
           className="text-xs font-bold text-[var(--shell-accent)] hover:underline"
         >
-          ← {t('title')}
+          ← {backLabel}
         </Link>
         <h1 className={`mt-2 text-2xl md:text-[28px] ${shellPageTitleClass}`}>
           {t('integrity.pageTitle')}

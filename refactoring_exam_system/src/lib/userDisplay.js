@@ -15,5 +15,15 @@ export function resolveAvatarUrl(url) {
   if (!trimmed) return null
   if (/cdn\.example\.com/i.test(trimmed)) return null
   if (/^https?:\/\/(www\.)?example\.(com|org|net)\b/i.test(trimmed)) return null
+
+  // Relative upload paths must hit the API host, not the Vite origin.
+  if (trimmed.startsWith('/')) {
+    const apiBase = (import.meta.env.VITE_API_BASE_URL || 'http://127.0.0.1:5000').replace(
+      /\/$/,
+      '',
+    )
+    return `${apiBase}${trimmed}`
+  }
+
   return trimmed
 }

@@ -137,6 +137,29 @@ export function isSoloTeacher(membership = getActiveMembership()) {
   return membership?.workspace?.kind === 'SOLO'
 }
 
+/** Workspace owner (INSTITUTION or SOLO) — matches students CSV export. */
+export function isWorkspaceOwner(membership = getActiveMembership()) {
+  return Boolean(membership?.is_owner)
+}
+
+/** GET /workspaces/students/export — owner only. */
+export function canExportWorkspaceStudents(membership = getActiveMembership()) {
+  return isWorkspaceOwner(membership)
+}
+
+/** GET /workspaces/teachers/export — institution owner only. */
+export function canExportWorkspaceTeachers(membership = getActiveMembership()) {
+  return isInstitutionOwner(membership)
+}
+
+/**
+ * Integrity reports inbox (GET /proctoring/integrity-reports).
+ * Owner sees all; test creators see their tests (BE filters). Students blocked.
+ */
+export function canAccessIntegrityReports() {
+  return canAccessExams()
+}
+
 export function canManageSubjectTopics() {
   return canCreateSubject()
 }

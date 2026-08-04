@@ -2,6 +2,7 @@
   "pageTitle": "إدارة الأعضاء",
   "pageSubtitle": "إدارة جميع الطلاب والمعلمين داخل المؤسسة.",
   "exportData": "تصدير البيانات",
+  "exporting": "جاري التصدير...",
   "overview": {
     "title": "إدارة الأعضاء",
     "subtitle": "إدارة جميع الطلاب والمعلمين داخل المؤسسة.",
@@ -175,7 +176,11 @@
   "toasts": {
     "membershipNotFound": "تعذّر العثور على عضوية {{role}}.",
     "fullNameRequired": "الاسم الكامل مطلوب",
-    "profileUpdated": "تم تحديث بيانات {{role}} بنجاح"
+    "profileUpdated": "تم تحديث بيانات {{role}} بنجاح",
+    "teacherMembershipNotFound": "تعذّر العثور على عضوية المعلم.",
+    "teacherRemoved": "تم إزالة المعلم بنجاح",
+    "exportSuccess": "تم تنزيل ملف التصدير",
+    "exportFailed": "تعذّر تصدير البيانات"
   },
   "status": {
     "active": "نشط",

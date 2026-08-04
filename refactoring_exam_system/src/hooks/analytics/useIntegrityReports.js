@@ -5,7 +5,7 @@ import {
   normalizeIntegrityReport,
   normalizeIntegrityReportsList,
 } from '../../lib/integrityReportsModel'
-import { isInstitutionOwner } from '../../lib/workspaceContext'
+import { canAccessIntegrityReports } from '../../lib/workspaceContext'
 import {
   getIntegrityReport,
   getIntegrityReports,
@@ -23,7 +23,7 @@ export function useIntegrityReportsList({
   dateTo = '',
 } = {}) {
   const { t } = useTranslation('analytics')
-  const canAccess = isInstitutionOwner()
+  const canAccess = canAccessIntegrityReports()
   const [reports, setReports] = useState([])
   const [total, setTotal] = useState(0)
   const [pages, setPages] = useState(1)
@@ -42,7 +42,7 @@ export function useIntegrityReportsList({
   }, [page, perPage, status, subjectId, search, dateFrom, dateTo])
 
   const refetch = useCallback(async () => {
-    if (!isInstitutionOwner()) {
+    if (!canAccessIntegrityReports()) {
       setReports([])
       setTotal(0)
       setPages(1)

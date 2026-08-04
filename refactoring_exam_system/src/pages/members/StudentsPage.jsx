@@ -11,7 +11,10 @@ import StudentsSummaryCards from '../../components/members/students/StudentsSumm
 import StudentsTable from '../../components/members/students/StudentsTable'
 import { ROUTES } from '../../constants/routes'
 import { useStudentsList } from '../../hooks/members/useStudentsList'
-import { canAccessMembersModule } from '../../lib/workspaceContext'
+import { tUI } from '../../lib/appToast'
+import { canAccessMembersModule, canExportWorkspaceStudents } from '../../lib/workspaceContext'
+import { exportWorkspaceStudentsCsv } from '../../services/workspaces.service'
+import { useToastStore } from '../../store/toastStore'
 import {
   shellAccentButtonClass,
   shellGhostButtonClass,
@@ -21,6 +24,8 @@ import {
 
 function StudentsPage() {
   const { t } = useTranslation(['members', 'common'])
+  const showToast = useToastStore((s) => s.showToast)
+  const canExport = canExportWorkspaceStudents()
   const [searchInput, setSearchInput] = useState('')
   const [search, setSearch] = useState('')
   const [page, setPage] = useState(1)
@@ -29,6 +34,7 @@ function StudentsPage() {
   const [assignStudent, setAssignStudent] = useState(null)
   const [editStudent, setEditStudent] = useState(null)
   const [removeStudent, setRemoveStudent] = useState(null)
+  const [exporting, setExporting] = useState(false)
 
   const { students, total, activeTotal, pages, loading, error, refetch } = useStudentsList({
     search,
@@ -49,6 +55,18 @@ function StudentsPage() {
     return <Navigate to={ROUTES.DASHBOARD} replace />
   }
 
+  const handleExport = async () => {
+    setExporting(true)
+    try {
+      await exportWorkspaceStudentsCsv({ search })
+      showToast(tUI('toasts.exportSuccess', { ns: 'members' }))
+    } catch (err) {
+      showToast(err.message || tUI('toasts.exportFailed', { ns: 'members' }), 'error')
+    } finally {
+      setExporting(false)
+    }
+  }
+
   return (
     <div className="space-y-6">
       <StudentsBreadcrumb />
@@ -60,15 +78,17 @@ function StudentsPage() {
         </div>
 
         <div className="flex flex-wrap items-center gap-3">
-          <button
-            type="button"
-            disabled
-            title={t('comingSoon', { ns: 'common' })}
-            className={`${shellGhostButtonClass} inline-flex items-center gap-2 opacity-70`}
-          >
-            <Download className="h-4 w-4" strokeWidth={2} />
-            {t('exportData')}
-          </button>
+          {canExport ? (
+            <button
+              type="button"
+              disabled={exporting}
+              onClick={handleExport}
+              className={`${shellGhostButtonClass} inline-flex items-center gap-2`}
+            >
+              <Download className="h-4 w-4" strokeWidth={2} />
+              {exporting ? t('exporting') : t('exportData')}
+            </button>
+          ) : null}
           <button
             type="button"
             onClick={() => setInviteOpen(true)}
@@ -97,11 +117,11 @@ function StudentsPage() {
         totalPages={pages}
         totalCount={total}
         perPage={perPage}
+        onPageChange={setPage}
         onPerPageChange={(value) => {
           setPerPage(value)
           setPage(1)
         }}
-        onPageChange={setPage}
         onAssignSubject={setAssignStudent}
         onEditProfile={setEditStudent}
         onRemove={setRemoveStudent}

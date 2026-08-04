@@ -22,7 +22,9 @@ function AnalyticsIntegrityPreview({
   onViewReport,
 }) {
   const { t } = useTranslation('analytics')
-  const highlight = problematicExams[0] || null
+  const exams = problematicExams.slice(0, 3)
+  const hasExams = exams.length > 0
+  const hasReports = integrityPreview.length > 0
 
   return (
     <section className={`flex h-full flex-col p-5 ${shellCardClass}`}>
@@ -43,41 +45,48 @@ function AnalyticsIntegrityPreview({
 
       {loading ? (
         <div className="shell-skeleton mt-5 h-48 animate-pulse rounded-xl" />
+      ) : !hasExams && !hasReports ? (
+        <p className={`mt-6 text-sm ${shellBodyTextClass}`}>{t('integrity.empty')}</p>
       ) : (
         <div className="mt-4 flex flex-1 flex-col gap-4">
-          {highlight ? (
-            <div className="rounded-xl bg-rose-50/70 p-4 ring-1 ring-rose-100">
-              <div className="flex items-start justify-between gap-3">
-                <div className="min-w-0">
-                  <p className="truncate text-sm font-extrabold text-[var(--shell-text)]">
-                    {highlight.test_name}
-                  </p>
-                  <p className={`mt-2 text-xs ${shellSubtleTextClass}`}>
-                    {highlight.subject_name || highlight.teacher_name || '—'}
-                    {' · '}
-                    {t('integrity.reportsCount', {
-                      count: formatAnalyticsCount(highlight.reports_count),
-                    })}
-                    {' · '}
-                    {t('integrity.average', {
-                      score: formatAnalyticsPercent(highlight.average_score),
-                    })}
-                  </p>
-                </div>
-                {highlight.risk_percentage != null ? (
-                  <span className="shrink-0 rounded-full bg-rose-600 px-2.5 py-1 text-[11px] font-bold text-white">
-                    {t('integrity.risk', {
-                      rate: formatAnalyticsPercent(highlight.risk_percentage),
-                    })}
-                  </span>
-                ) : null}
-              </div>
-            </div>
+          {hasExams ? (
+            <ul className="space-y-3">
+              {exams.map((exam) => (
+                <li
+                  key={exam.test_id ?? exam.test_name}
+                  className="rounded-xl bg-rose-50/70 p-4 ring-1 ring-rose-100"
+                >
+                  <div className="flex items-start justify-between gap-3">
+                    <div className="min-w-0">
+                      <p className="truncate text-sm font-extrabold text-[var(--shell-text)]">
+                        {exam.test_name}
+                      </p>
+                      <p className={`mt-2 text-xs ${shellSubtleTextClass}`}>
+                        {exam.subject_name || exam.teacher_name || '—'}
+                        {' · '}
+                        {t('integrity.reportsCount', {
+                          count: formatAnalyticsCount(exam.reports_count),
+                        })}
+                        {' · '}
+                        {t('integrity.average', {
+                          score: formatAnalyticsPercent(exam.average_score),
+                        })}
+                      </p>
+                    </div>
+                    {exam.risk_percentage != null ? (
+                      <span className="shrink-0 rounded-full bg-rose-600 px-2.5 py-1 text-[11px] font-bold text-white">
+                        {t('integrity.risk', {
+                          rate: formatAnalyticsPercent(exam.risk_percentage),
+                        })}
+                      </span>
+                    ) : null}
+                  </div>
+                </li>
+              ))}
+            </ul>
           ) : null}
 
-          {integrityPreview.length === 0 ? (
-            <p className={`text-sm ${shellBodyTextClass}`}>{t('integrity.empty')}</p>
-          ) : (
+          {hasReports ? (
             <ul className="space-y-3">
               {integrityPreview.map((report) => (
                 <li
@@ -111,7 +120,7 @@ function AnalyticsIntegrityPreview({
                 </li>
               ))}
             </ul>
-          )}
+          ) : null}
         </div>
       )}
     </section>
