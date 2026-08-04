@@ -9,24 +9,33 @@ import {
   normalizeUpcomingTestsResponse,
 } from '../../lib/studentDashboardModel'
 import {
+  getStudentRecentExams,
   getStudentTests,
   getUpcomingStudentTests,
 } from '../../services/studentDashboard.service'
 import { getAvailableTests } from '../../services/tests.service'
 
 async function loadStudentDashboardData() {
-  const [availableResult, upcomingResult, studentTestsResult] = await Promise.allSettled([
-    getAvailableTests(),
-    getUpcomingStudentTests(),
-    getStudentTests({ page: 1, perPage: 20 }),
-  ])
+  const [availableResult, upcomingResult, studentTestsResult, recentExamsResult] =
+    await Promise.allSettled([
+      getAvailableTests(),
+      getUpcomingStudentTests(),
+      getStudentTests({ page: 1, perPage: 20 }),
+      getStudentRecentExams({ page: 1, perPage: 5 }),
+    ])
 
   if (
     availableResult.status === 'rejected' &&
     upcomingResult.status === 'rejected' &&
-    studentTestsResult.status === 'rejected'
+    studentTestsResult.status === 'rejected' &&
+    recentExamsResult.status === 'rejected'
   ) {
-    throw availableResult.reason || upcomingResult.reason || studentTestsResult.reason
+    throw (
+      availableResult.reason ||
+      upcomingResult.reason ||
+      studentTestsResult.reason ||
+      recentExamsResult.reason
+    )
   }
 
   const available =
@@ -42,6 +51,9 @@ async function loadStudentDashboardData() {
   const studentTestsPayload =
     studentTestsResult.status === 'fulfilled' ? studentTestsResult.value : { items: [] }
 
+  const recentExamsPayload =
+    recentExamsResult.status === 'fulfilled' ? recentExamsResult.value : { items: [] }
+
   return {
     stats: buildDashboardStatsFromStudentTests(
       studentTestsPayload,
@@ -50,7 +62,7 @@ async function loadStudentDashboardData() {
     ),
     availableExams: available.exams,
     upcomingExams,
-    latestResults: normalizeDashboardLatestResults(studentTestsPayload, 5),
+    latestResults: normalizeDashboardLatestResults(recentExamsPayload, 5),
     calendarEvents: buildCalendarEventsFromUpcoming(upcomingExams),
   }
 }

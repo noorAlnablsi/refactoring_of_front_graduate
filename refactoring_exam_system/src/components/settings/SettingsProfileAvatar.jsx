@@ -1,6 +1,6 @@
 import { useTranslation } from 'react-i18next'
 import { Camera } from 'lucide-react'
-import { getUserInitials } from '../../lib/userDisplay'
+import { getUserInitials, resolveAvatarUrl } from '../../lib/userDisplay'
 
 const ACCEPTED_TYPES = 'image/jpeg,image/jpg,image/png,image/webp'
 
@@ -8,17 +8,18 @@ function SettingsProfileAvatar({
   user,
   mode = 'default',
   onUpload,
+  onOpen,
   uploading = false,
   disabled = false,
 }) {
   const { t } = useTranslation('settings')
   const fullName = user?.full_name?.trim() || t('profile.defaultUser')
-  const avatarUrl = user?.avatar_url || null
-  const showInitials =
-    mode === 'initials' || ((mode === 'solo' || mode === 'default') && !avatarUrl)
+  const avatarUrl = resolveAvatarUrl(user?.avatar_url || user?.profile_image_url)
+  const showInitials = !avatarUrl
   const canUpload = mode === 'solo' && onUpload
+  const canOpen = typeof onOpen === 'function'
 
-  const avatarContent = showInitials ? (
+  const avatarInner = showInitials ? (
     <span className="flex h-20 w-20 items-center justify-center rounded-2xl bg-[var(--shell-accent)] text-2xl font-bold text-[var(--shell-accent-contrast)] shadow-[var(--shell-shadow-accent)]">
       {getUserInitials(fullName)}
     </span>
@@ -28,6 +29,22 @@ function SettingsProfileAvatar({
       alt={fullName}
       className="h-20 w-20 rounded-2xl object-cover ring-1 ring-[var(--shell-border)]"
     />
+  )
+
+  const avatarContent = canOpen ? (
+    <button
+      type="button"
+      onClick={onOpen}
+      disabled={disabled || uploading}
+      className="rounded-2xl transition hover:opacity-90 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--shell-accent)] disabled:opacity-60"
+      aria-label={
+        avatarUrl ? t('profile.viewAvatar') : t('profile.edit.changeAvatar')
+      }
+    >
+      {avatarInner}
+    </button>
+  ) : (
+    avatarInner
   )
 
   if (!canUpload) {

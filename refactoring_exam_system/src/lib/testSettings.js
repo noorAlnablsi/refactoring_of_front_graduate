@@ -264,6 +264,7 @@ export function buildTestSettingsFormState(test) {
       mode === TEST_AVAILABILITY_TIME_MODE.SCHEDULED
         ? clampEntryWindowMinutes(test?.entry_window_minutes ?? maxEntry, durationMinutes)
         : null,
+    closed_at: mode === TEST_AVAILABILITY_TIME_MODE.FLEXIBLE ? test?.closed_at || null : null,
     settings_config: cfg,
   }
 }
@@ -291,9 +292,11 @@ export function buildTestSettingsPayload(form) {
       form.entry_window_minutes ?? getMaxEntryWindowMinutes(durationMinutes),
       durationMinutes,
     )
+    payload.closed_at = null
   } else {
     payload.starts_at = null
     payload.entry_window_minutes = null
+    payload.closed_at = form.closed_at || null
   }
 
   return payload

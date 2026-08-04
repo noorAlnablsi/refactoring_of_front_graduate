@@ -4,7 +4,7 @@ import { useTranslation } from 'react-i18next'
 import { ROUTES } from '../../constants/routes'
 import { TEST_STATUS } from '../../constants/tests'
 import { formatDate } from '../../lib/questionBanks'
-import { canEditTest, getTestQuestionsCount, getTestTotalPoints } from '../../lib/testDisplay'
+import { canEditTest, canShowCloseExamButton, getTestQuestionsCount, getTestTotalPoints } from '../../lib/testDisplay'
 import { getTestId, getTestName } from '../../lib/testModel'
 import { getResumeWizardStep, getExamWizardProgress } from '../../lib/examWizardProgress'
 import {
@@ -114,7 +114,7 @@ function ExamCard({ test, onArchive, onClose, onDelete }) {
           </button>
         ) : null}
 
-        {isPublished ? (
+        {canShowCloseExamButton(test) ? (
           <button type="button" onClick={() => onClose?.(test)} className={shellGhostButtonClass}>
             {t('card.closeExam')}
           </button>

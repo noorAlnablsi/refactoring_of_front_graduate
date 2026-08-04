@@ -6,11 +6,13 @@ import { getMembershipRoleLabel } from '../../lib/membershipLabel'
 import { isInstitutionOwner, isSoloTeacher } from '../../lib/workspaceContext'
 import { ROUTES } from '../../constants/routes'
 import { shellAccentButtonClass } from '../../lib/shellUi'
+import { resolveAvatarUrl } from '../../lib/userDisplay'
 import { useProfileAvatar } from '../../hooks/useProfileAvatar'
 import { useSettingsMemberships } from '../../hooks/useSettingsMemberships'
 import { useAuthStore } from '../../store/authStore'
 import SoftDeleteConfirmDialog from '../common/SoftDeleteConfirmDialog'
 import SettingsProfileAvatar from './SettingsProfileAvatar'
+import ProfileAvatarPreviewModal from './ProfileAvatarPreviewModal'
 import EditMyProfileModal from './EditMyProfileModal'
 import SettingsCard from './SettingsCard'
 
@@ -27,6 +29,7 @@ function getWorkspaceInitials(name = '') {
 function SettingsProfileCard() {
   const { t } = useTranslation('settings')
   const [editOpen, setEditOpen] = useState(false)
+  const [previewOpen, setPreviewOpen] = useState(false)
   const user = useAuthStore((state) => state.user)
   const membership = useAuthStore((state) => {
     const { memberships, selected_membership_id } = state
@@ -56,7 +59,8 @@ function SettingsProfileCard() {
   const displayUser = {
     ...activeUser,
     full_name: displayName,
-    avatar_url: activeUser?.avatar_url || membership?.workspace?.logo_url || null,
+    // Personal card shows the user's own photo — not the institution logo.
+    avatar_url: activeUser?.avatar_url || activeUser?.profile_image_url || null,
   }
 
   const email = activeUser?.email?.trim() || '—'
@@ -67,7 +71,19 @@ function SettingsProfileCard() {
       ? t('profile.soloTeacher')
       : [roleLabel, workspaceName ? workspaceName : null].filter(Boolean).join(' | ')
 
-  const avatarMode = isOwner ? 'initials' : isSolo ? 'solo' : 'default'
+  // Owner/manager personal photo must show when set; initials only as fallback.
+  const avatarMode = isSolo ? 'solo' : 'default'
+  const hasAvatar = Boolean(
+    resolveAvatarUrl(displayUser.avatar_url || displayUser.profile_image_url),
+  )
+
+  const handleAvatarOpen = () => {
+    if (hasAvatar) {
+      setPreviewOpen(true)
+      return
+    }
+    setEditOpen(true)
+  }
 
   return (
     <>
@@ -77,6 +93,7 @@ function SettingsProfileCard() {
             user={displayUser}
             mode={avatarMode}
             onUpload={canUploadAvatar ? uploadAvatar : undefined}
+            onOpen={handleAvatarOpen}
             uploading={uploading || profileLoading}
           />
 
@@ -121,7 +138,21 @@ function SettingsProfileCard() {
         </div>
       </SettingsCard>
 
-      <EditMyProfileModal open={editOpen} onClose={() => setEditOpen(false)} />
+      <ProfileAvatarPreviewModal
+        open={previewOpen}
+        user={displayUser}
+        onClose={() => setPreviewOpen(false)}
+        onEdit={() => {
+          setPreviewOpen(false)
+          setEditOpen(true)
+        }}
+      />
+
+      <EditMyProfileModal
+        open={editOpen}
+        onClose={() => setEditOpen(false)}
+        onSuccess={() => setEditOpen(false)}
+      />
     </>
   )
 }

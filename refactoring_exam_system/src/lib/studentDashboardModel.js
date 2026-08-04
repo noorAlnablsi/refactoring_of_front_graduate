@@ -131,17 +131,28 @@ export function getCalendarEventDays(events = [], year, month) {
 }
 
 /**
- * Map GET /student/tests attempt rows → dashboard "آخر الاختبارات" table.
+ * Map GET /student/recent-exams → dashboard "آخر الاختبارات" table.
+ * Ordered by submission date (newest first), any status (pending or graded).
  */
 export function normalizeDashboardLatestResults(data, limit = 5) {
   const items = Array.isArray(data?.items) ? data.items : Array.isArray(data) ? data : []
 
   return items
     .filter((item) => item && item.attempt_id != null)
-    .slice(0, limit)
     .map((item) => {
-      const lifecycle = String(item.lifecycle_status || item.attempt_status || '').toUpperCase()
-      const isGraded = lifecycle === 'GRADED'
+      const dateRaw = item.submitted_at || item.graded_at || item.last_activity_at || null
+      const dateParsed = dateRaw ? new Date(dateRaw) : null
+      const sortTs =
+        dateParsed && !Number.isNaN(dateParsed.getTime()) ? dateParsed.getTime() : 0
+      return { item, sortTs, dateParsed }
+    })
+    .sort((a, b) => b.sortTs - a.sortTs || b.item.attempt_id - a.item.attempt_id)
+    .slice(0, limit)
+    .map(({ item, dateParsed }) => {
+      const statusRaw = String(
+        item.status || item.lifecycle_status || item.attempt_status || '',
+      ).toUpperCase()
+      const isGraded = statusRaw === 'GRADED'
       const scoreObj = item.score && typeof item.score === 'object' ? item.score : null
       const earned = scoreObj != null ? Number(scoreObj.earned) : null
       const maximum = scoreObj != null ? Number(scoreObj.maximum) : null
@@ -163,8 +174,10 @@ export function normalizeDashboardLatestResults(data, limit = 5) {
           ? String(item.subject.name || '').trim()
           : String(item.subject || item.subject_name || '').trim()
 
-      const dateRaw = item.submitted_at || item.graded_at || item.last_activity_at
-      const dateParsed = dateRaw ? new Date(dateRaw) : null
+      const test = item.test && typeof item.test === 'object' ? item.test : null
+      const examTitle =
+        String(test?.title || item.title || '').trim() || '—'
+
       const date =
         dateParsed && !Number.isNaN(dateParsed.getTime())
           ? dateParsed.toLocaleDateString(getDateLocale(), { dateStyle: 'medium' })
@@ -172,7 +185,7 @@ export function normalizeDashboardLatestResults(data, limit = 5) {
 
       return {
         id: item.attempt_id,
-        exam: String(item.title || '').trim() || '—',
+        exam: examTitle,
         subject: subject || '—',
         score,
         scoreDetail,

@@ -9,6 +9,7 @@ import { buildTeacherMonitorWebSocketUrl } from '../../lib/proctoring/wsUrl'
 import {
   applyStudentRowChanges,
   buildMonitoringTimeline,
+  computeMonitoringStatsFromStudents,
   normalizeMonitoringSnapshot,
 } from '../../lib/proctoring/monitoringModel'
 import { WebSocketManager } from '../../services/proctoring/WebSocketManager'
@@ -46,7 +47,42 @@ export function useExamLiveMonitoring(testId) {
   const studentsRef = useRef([])
 
   const pushLiveEvent = useCallback((event) => {
-    setLiveEvents((prev) => [event, ...prev].slice(0, MAX_FEED_EVENTS))
+    setLiveEvents((prev) => {
+      if (event.kind === 'row_update' && event.monitoringState) {
+        const already = prev.some(
+          (item) =>
+            item.kind === 'row_update' &&
+            item.studentMembershipId === event.studentMembershipId &&
+            String(item.monitoringState || '').toUpperCase() ===
+              String(event.monitoringState || '').toUpperCase(),
+        )
+        if (already) return prev
+      }
+
+      if (event.kind === 'violation' && event.id) {
+        if (prev.some((item) => item.id === event.id)) return prev
+      }
+
+      return [event, ...prev].slice(0, MAX_FEED_EVENTS)
+    })
+  }, [])
+
+  const patchStudents = useCallback((updater) => {
+    setSnapshot((prev) => {
+      if (!prev) return prev
+      const students = updater(prev.students)
+      studentsRef.current = students
+      const rowStats = computeMonitoringStatsFromStudents(students)
+      return {
+        ...prev,
+        students,
+        stats: {
+          ...prev.stats,
+          ...rowStats,
+          totalAssigned: prev.stats?.totalAssigned || students.length,
+        },
+      }
+    })
   }, [])
 
   const loadSnapshot = useCallback(async () => {
@@ -88,18 +124,15 @@ export function useExamLiveMonitoring(testId) {
       if (type === PROCTORING_MONITOR_INCOMING.STUDENT_ROW_UPDATED) {
         const membershipId = message.student_membership_id
         const changes = message.changes || {}
-        setSnapshot((prev) => {
-          if (!prev) return prev
-          const students = prev.students.map((row) =>
+        patchStudents((rows) =>
+          rows.map((row) =>
             row.studentMembershipId === membershipId
               ? applyStudentRowChanges(row, changes)
               : row,
-          )
-          studentsRef.current = students
-          return { ...prev, students }
-        })
+          ),
+        )
         pushLiveEvent({
-          id: `row-${membershipId}-${Date.now()}`,
+          id: `row-${membershipId}-${changes.monitoring_state || 'upd'}-${message.attempt_id || ''}`,
           kind: 'row_update',
           studentMembershipId: membershipId,
           attemptId: message.attempt_id ?? changes.attempt_id ?? null,
@@ -113,9 +146,8 @@ export function useExamLiveMonitoring(testId) {
       if (type === PROCTORING_MONITOR_INCOMING.VIOLATION_CREATED) {
         const violation = message.violation || {}
         const membershipId = message.student_membership_id
-        setSnapshot((prev) => {
-          if (!prev) return prev
-          const students = prev.students.map((row) => {
+        patchStudents((rows) =>
+          rows.map((row) => {
             if (row.studentMembershipId !== membershipId) return row
             return {
               ...row,
@@ -123,12 +155,10 @@ export function useExamLiveMonitoring(testId) {
               eventCount: (Number(row.eventCount) || 0) + 1,
               lastActivityAt: new Date().toISOString(),
             }
-          })
-          studentsRef.current = students
-          return { ...prev, students }
-        })
+          }),
+        )
         pushLiveEvent({
-          id: `viol-${violation.id || Date.now()}`,
+          id: `viol-${violation.id || `${membershipId}-${violation.violation_type}-${Date.now()}`}`,
           kind: 'violation',
           studentMembershipId: membershipId,
           attemptId: message.attempt_id ?? null,
@@ -139,7 +169,7 @@ export function useExamLiveMonitoring(testId) {
         })
       }
     },
-    [pushLiveEvent],
+    [pushLiveEvent, patchStudents],
   )
 
   const disconnectWs = useCallback(() => {

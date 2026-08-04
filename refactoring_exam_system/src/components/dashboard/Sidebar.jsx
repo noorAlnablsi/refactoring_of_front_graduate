@@ -19,6 +19,7 @@ import {
   canAccessSubjectsModule,
   canAccessExams,
   canShowStudentGroupsInSidebar,
+  isInstitutionOwner,
 } from '../../lib/workspaceContext'
 
 const baseNavItems = [
@@ -46,7 +47,13 @@ const baseNavItems = [
     requiresQuestionBanks: true,
   },
   { to: ROUTES.EXAMS, labelKey: 'sidebar.exams', icon: ClipboardList, end: false, requiresExams: true },
-  { to: '#', labelKey: 'sidebar.statistics', icon: BarChart3, disabled: true },
+  {
+    to: ROUTES.ANALYTICS,
+    labelKey: 'sidebar.statistics',
+    icon: BarChart3,
+    end: false,
+    requiresInstitutionOwner: true,
+  },
   { to: ROUTES.SETTINGS, labelKey: 'sidebar.settings', icon: Settings, end: true },
 ]
 
@@ -80,6 +87,7 @@ function Sidebar() {
     if (item.requiresMembersModule && !canAccessMembersModule()) return false
     if (item.requiresStudentGroups && !canShowStudentGroupsInSidebar()) return false
     if (item.requiresExams && !canAccessExams()) return false
+    if (item.requiresInstitutionOwner && !isInstitutionOwner()) return false
     if (!item.requiresQuestionBanks) return true
     return canAccessQuestionBanks()
   })

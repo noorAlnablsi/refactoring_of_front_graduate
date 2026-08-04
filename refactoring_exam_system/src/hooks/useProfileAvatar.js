@@ -14,10 +14,6 @@ export function useProfileAvatar() {
   const [error, setError] = useState('')
 
   useEffect(() => {
-    if (!isSoloTeacher()) {
-      return undefined
-    }
-
     let cancelled = false
 
     async function loadProfile() {

@@ -1,0 +1,124 @@
+{
+  "title": "Institution analytics",
+  "subtitle": "A comprehensive overview of student and teacher performance",
+  "viewAll": "View all",
+  "view": "View",
+  "search": "Search",
+  "empty": "No data for the selected range",
+  "filters": {
+    "subject": "Subject",
+    "allSubjects": "All",
+    "teacher": "Teacher",
+    "allTeachers": "All teachers",
+    "dateRange": "Date range",
+    "presets": {
+      "7d": "Last 7 days",
+      "30d": "Last 30 days",
+      "90d": "Last 90 days",
+      "custom": "Custom"
+    },
+    "dateFrom": "From",
+    "dateTo": "To"
+  },
+  "overview": {
+    "totalStudents": "Total students",
+    "totalTeachers": "Total teachers",
+    "totalTests": "Total exams",
+    "totalAttempts": "Exam attempts",
+    "averageScore": "Average score",
+    "activeStudents": "Active students"
+  },
+  "passFail": {
+    "title": "Pass / fail rate",
+    "passCenter": "{{rate}} pass",
+    "passed": "Passed",
+    "failed": "Failed",
+    "pass": "Pass",
+    "fail": "Fail"
+  },
+  "monthly": {
+    "title": "Average score trend",
+    "legend": "Institution average"
+  },
+  "engagedSubjects": {
+    "title": "Most active subjects",
+    "subject": "Subject",
+    "students": "Students",
+    "teachers": "Teachers",
+    "tests": "Exams",
+    "attempts": "Attempts",
+    "score": "Score"
+  },
+  "rankedSubjects": {
+    "title": "Best and weakest subjects",
+    "best": "Best",
+    "worst": "Weakest"
+  },
+  "teachers": {
+    "title": "Teacher activity",
+    "teacher": "Teacher",
+    "testsCreated": "Tests created",
+    "targetedStudents": "Targeted students",
+    "averageScore": "Average score",
+    "completionRate": "Completion rate"
+  },
+  "integrity": {
+    "title": "Integrity reports",
+    "pageTitle": "Integrity reports",
+    "pageSubtitle": "Review reports created by automatic proctoring termination",
+    "risk": "Risk {{rate}}",
+    "reportsCount": "{{count}} reports",
+    "average": "{{score}} avg",
+    "empty": "No integrity reports",
+    "status": "Status",
+    "allStatuses": "All statuses",
+    "statuses": {
+      "PENDING": "Pending",
+      "CONFIRMED": "Confirmed",
+      "DISMISSED": "Dismissed"
+    },
+    "student": "Student",
+    "teacher": "Teacher",
+    "subject": "Subject",
+    "test": "Exam",
+    "recommendation": "Recommendation",
+    "violations": "Violations",
+    "createdAt": "Created at",
+    "actions": "Actions",
+    "review": "Review",
+    "confirm": "Confirm cheating",
+    "dismiss": "Dismiss report",
+    "reviewNote": "Review note (optional)",
+    "reviewNotePlaceholder": "Add a review note...",
+    "reviewTitle": "Review integrity report",
+    "submitConfirm": "Confirm",
+    "submitDismiss": "Dismiss",
+    "alreadyReviewed": "This report was already reviewed",
+    "detail": {
+      "risk": "Risk percentage",
+      "violations": "Violations",
+      "score": "Score",
+      "termination": "Termination reason",
+      "reason": "Recommendation reason"
+    }
+  },
+  "topStudents": {
+    "title": "Most active students",
+    "completed": "Completed {{count}} exams",
+    "averageLabel": "Average score"
+  },
+  "inactiveStudents": {
+    "title": "Inactive students",
+    "lastActivity": "Last activity: {{date}}",
+    "daysAgo": "{{count}} days ago"
+  },
+  "errors": {
+    "loadFailed": "Could not load institution analytics",
+    "loadIntegrityFailed": "Could not load integrity reports",
+    "reviewFailed": "Could not update report status",
+    "forbidden": "Institution analytics are available to the institution owner only"
+  },
+  "toasts": {
+    "reviewSuccess": "Integrity report updated"
+  }
+}

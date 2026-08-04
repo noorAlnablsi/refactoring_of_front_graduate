@@ -1,0 +1,116 @@
+import {
+  BookOpenCheck,
+  ClipboardList,
+  GraduationCap,
+  Percent,
+  UserCheck,
+  Users,
+} from 'lucide-react'
+import { useTranslation } from 'react-i18next'
+import {
+  formatAnalyticsCount,
+  formatAnalyticsPercent,
+  formatChangePercentage,
+} from '../../lib/institutionAnalyticsModel'
+import { shellBodyTextClass, shellCardClass } from '../../lib/shellUi'
+
+function ChangeBadge({ value }) {
+  const label = formatChangePercentage(value)
+  if (!label) return null
+  const num = Number(value)
+  const tone =
+    num > 0 ? 'text-emerald-600 bg-emerald-50' : num < 0 ? 'text-rose-600 bg-rose-50' : 'text-[var(--shell-text-muted)] bg-[var(--shell-hover)]'
+
+  return (
+    <span className={`mt-2 inline-flex rounded-full px-2 py-0.5 text-[11px] font-bold ${tone}`}>
+      {label}
+    </span>
+  )
+}
+
+function OverviewCard({ icon: Icon, title, value, change, loading }) {
+  return (
+    <article className={`flex items-start justify-between gap-3 p-4 ${shellCardClass}`}>
+      <div className="min-w-0">
+        <p className={`text-xs font-semibold ${shellBodyTextClass}`}>{title}</p>
+        {loading ? (
+          <div className="shell-skeleton mt-3 h-8 w-20 animate-pulse rounded-lg" />
+        ) : (
+          <>
+            <p className="mt-2 text-2xl font-extrabold text-[var(--shell-text)]">{value}</p>
+            <ChangeBadge value={change} />
+          </>
+        )}
+      </div>
+      <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-[var(--shell-accent-bg)] text-[var(--shell-accent)]">
+        <Icon className="h-5 w-5" strokeWidth={2} />
+      </span>
+    </article>
+  )
+}
+
+function AnalyticsOverviewCards({ overview, loading }) {
+  const { t } = useTranslation('analytics')
+
+  const cards = [
+    {
+      key: 'students',
+      icon: Users,
+      title: t('overview.totalStudents'),
+      value: formatAnalyticsCount(overview?.total_students?.value),
+      change: overview?.total_students?.change_percentage,
+    },
+    {
+      key: 'teachers',
+      icon: GraduationCap,
+      title: t('overview.totalTeachers'),
+      value: formatAnalyticsCount(overview?.total_teachers?.value),
+      change: overview?.total_teachers?.change_percentage,
+    },
+    {
+      key: 'tests',
+      icon: ClipboardList,
+      title: t('overview.totalTests'),
+      value: formatAnalyticsCount(overview?.total_tests?.value),
+      change: overview?.total_tests?.change_percentage,
+    },
+    {
+      key: 'attempts',
+      icon: BookOpenCheck,
+      title: t('overview.totalAttempts'),
+      value: formatAnalyticsCount(overview?.total_attempts?.value),
+      change: overview?.total_attempts?.change_percentage,
+    },
+    {
+      key: 'average',
+      icon: Percent,
+      title: t('overview.averageScore'),
+      value: formatAnalyticsPercent(overview?.institution_average_score?.value),
+      change: overview?.institution_average_score?.change_percentage,
+    },
+    {
+      key: 'active',
+      icon: UserCheck,
+      title: t('overview.activeStudents'),
+      value: formatAnalyticsCount(overview?.active_students?.value),
+      change: overview?.active_students?.change_percentage,
+    },
+  ]
+
+  return (
+    <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-6">
+      {cards.map((card) => (
+        <OverviewCard
+          key={card.key}
+          icon={card.icon}
+          title={card.title}
+          value={card.value}
+          change={card.change}
+          loading={loading}
+        />
+      ))}
+    </div>
+  )
+}
+
+export default AnalyticsOverviewCards

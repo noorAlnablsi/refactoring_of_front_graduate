@@ -4,7 +4,7 @@ import { useTranslation } from 'react-i18next'
 import { Activity, ArrowRight, Radio, RefreshCw, ShieldAlert, X } from 'lucide-react'
 import { ROUTES } from '../../constants/routes'
 import { PROCTORING_CONNECTION_STATE } from '../../constants/proctoring'
-import { MONITORING_STATE } from '../../lib/proctoring/monitoringModel'
+import { MONITORING_STATE, formatMonitoringTimestamp, normalizeMonitoringEventKey, resolveMonitoringLogMessage } from '../../lib/proctoring/monitoringModel'
 import { useExamLiveMonitoring } from '../../hooks/exams/useExamLiveMonitoring'
 import { formatLocaleNumber } from '../../lib/localeNumber'
 import {
@@ -15,6 +15,24 @@ import {
   shellPageTitleClass,
   shellSubtleTextClass,
 } from '../../lib/shellUi'
+
+function translateEventType(t, eventType) {
+  const key = normalizeMonitoringEventKey(eventType)
+  if (!key) return '—'
+  return t(`monitoring.eventTypes.${key}`, { defaultValue: key.replace(/_/g, ' ') })
+}
+
+function translateSeverity(t, severity) {
+  const key = normalizeMonitoringEventKey(severity)
+  if (!key) return null
+  return t(`monitoring.severity.${key}`, { defaultValue: key })
+}
+
+function translateMonitoringState(t, state) {
+  const key = normalizeMonitoringEventKey(state)
+  if (!key) return '—'
+  return t(`monitoring.state.${key}`, { defaultValue: key })
+}
 
 function stateBadgeClass(state) {
   if (state === MONITORING_STATE.IN_PROGRESS) return 'bg-[#E8F7F6] text-[#2AA8A2]'
@@ -38,7 +56,7 @@ function connectionLabel(state, t) {
 function ExamMonitoringPage() {
   const { id: testId } = useParams()
   const navigate = useNavigate()
-  const { t } = useTranslation('exams')
+  const { t, i18n } = useTranslation('exams')
   const {
     loading,
     error,
@@ -198,11 +216,15 @@ function ExamMonitoringPage() {
                           <p className={`mt-1 text-xs ${shellSubtleTextClass}`}>
                             {event.kind === 'violation'
                               ? t('monitoring.feed.violationLine', {
-                                  type: event.violationType,
-                                  severity: event.severity || '—',
+                                  type: translateEventType(t, event.violationType),
+                                  severity:
+                                    translateSeverity(t, event.severity) || '—',
                                 })
                               : t('monitoring.feed.rowUpdatedLine', {
-                                  state: event.monitoringState || '—',
+                                  state: translateMonitoringState(
+                                    t,
+                                    event.monitoringState,
+                                  ),
                                 })}
                           </p>
                         </button>
@@ -303,13 +325,22 @@ function ExamMonitoringPage() {
               <p className={`mt-3 text-sm ${shellSubtleTextClass}`}>{t('monitoring.detail.auditEmpty')}</p>
             ) : (
               <ul className="mt-3 space-y-2">
-                {auditLogs.map((log) => (
+                {auditLogs.map((log) => {
+                  const displayMessage = resolveMonitoringLogMessage(
+                    t,
+                    log,
+                    i18n.language,
+                  )
+                  const severityLabel = translateSeverity(t, log.severity)
+                  return (
                   <li
                     key={`${log.kind || 'log'}-${log.id}`}
                     className="rounded-xl border border-[#E5E9EB] bg-[#F8FAFB] px-3 py-2.5 text-xs"
                   >
                     <div className="flex flex-wrap items-center gap-2">
-                      <p className="font-bold text-[#2A3433]">{log.eventType}</p>
+                      <p className="font-bold text-[#2A3433]">
+                        {translateEventType(t, log.eventType)}
+                      </p>
                       {log.kind === 'violation' ? (
                         <span className="rounded-full bg-[#FEE2E2] px-2 py-0.5 text-[10px] font-bold text-[#DC2626]">
                           {t('monitoring.detail.violationBadge')}
@@ -320,20 +351,26 @@ function ExamMonitoringPage() {
                           {t('monitoring.detail.eventBadge')}
                         </span>
                       ) : null}
+                      {log.kind === 'audit' ? (
+                        <span className="rounded-full bg-[#EEF2FF] px-2 py-0.5 text-[10px] font-bold text-[#4F46E5]">
+                          {t('monitoring.detail.auditBadge')}
+                        </span>
+                      ) : null}
                     </div>
-                    {log.severity ? (
-                      <p className="mt-1 text-[#B45309]">{log.severity}</p>
+                    {severityLabel ? (
+                      <p className="mt-1 text-[#B45309]">{severityLabel}</p>
                     ) : null}
-                    {log.message ? (
-                      <p className={`mt-1 ${shellSubtleTextClass}`}>{log.message}</p>
+                    {displayMessage ? (
+                      <p className={`mt-1 ${shellSubtleTextClass}`}>{displayMessage}</p>
                     ) : null}
                     {log.createdAt ? (
-                      <p className={`mt-1 ${shellSubtleTextClass}`} dir="ltr">
-                        {log.createdAt}
+                      <p className={`mt-1 ${shellSubtleTextClass}`}>
+                        {formatMonitoringTimestamp(log.createdAt, i18n.language)}
                       </p>
                     ) : null}
                   </li>
-                ))}
+                  )
+                })}
               </ul>
             )}
           </div>

@@ -22,7 +22,6 @@ function EditMyProfileModalContent({ onClose, onSuccess }) {
     phoneNumber,
     setPhoneNumber,
     avatarUrl,
-    email,
     loadingProfile,
     saving,
     uploadingAvatar,
@@ -121,21 +120,6 @@ function EditMyProfileModalContent({ onClose, onSuccess }) {
               className={`h-11 w-full px-4 text-sm ${shellInputClass}`}
               autoComplete="name"
             />
-          </label>
-
-          <label className="block text-start">
-            <span className={`mb-2 block text-sm font-semibold ${shellBodyTextClass}`}>
-              {t('profile.edit.email')}
-            </span>
-            <input
-              type="email"
-              value={email}
-              disabled
-              className={`h-11 w-full cursor-not-allowed px-4 text-sm opacity-70 ${shellInputClass}`}
-            />
-            <span className="mt-1 block text-xs text-[var(--shell-text-subtle)]">
-              {t('profile.edit.emailReadOnly')}
-            </span>
           </label>
 
           <label className="block text-start">

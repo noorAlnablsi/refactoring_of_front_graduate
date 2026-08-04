@@ -13,6 +13,12 @@ export async function getWorkspace(workspaceId) {
   return normalizeWorkspace(data)
 }
 
+/** PATCH /workspaces/{id} — owner/admin (SOLO admin included). */
+export async function updateWorkspace(workspaceId, payload) {
+  const { data } = await api.patch(`/workspaces/${workspaceId}`, payload)
+  return data
+}
+
 export async function deleteWorkspace(workspaceId) {
   const { data } = await api.delete(`/workspaces/${workspaceId}`)
   return data
@@ -39,6 +45,12 @@ export async function getWorkspaceTests(params = {}) {
 /** Workspace admin dashboard (INSTITUTION + SOLO owner/admin). */
 export async function getWorkspaceDashboard(params = {}) {
   const { data } = await api.get('/workspaces/dashboard', { params })
+  return data
+}
+
+/** Institution analytics (INSTITUTION owner only). */
+export async function getWorkspaceAnalytics(params = {}) {
+  const { data } = await api.get('/workspaces/analytics', { params })
   return data
 }
 

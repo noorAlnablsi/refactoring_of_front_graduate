@@ -292,6 +292,8 @@ export function useExamAttempt(testId) {
   const persistAnswers = useCallback(async () => {
     const currentAttempt = attemptRef.current
     if (!testId || !currentAttempt?.id) return null
+    if (proctoringTerminationHandledRef.current) return null
+    if (submittingRef.current) return null
     if (typeof navigator !== 'undefined' && !navigator.onLine) return null
 
     const payload = serializeAnswersPayload(answersRef.current, currentAttempt.questions || [])
@@ -308,6 +310,12 @@ export function useExamAttempt(testId) {
       }
 
       return data
+    } catch (err) {
+      const status = err?.response?.status ?? err?.status ?? err?.statusCode
+      const msg = String(err?.message || '')
+      // Attempt already closed (submit / proctoring auto-terminate) — ignore quietly.
+      if (status === 409 || /not in progress/i.test(msg)) return null
+      throw err
     } finally {
       setSaving(false)
     }
@@ -572,6 +580,7 @@ export function useExamAttempt(testId) {
 
     const timer = setInterval(() => {
       if (submittingRef.current) return
+      if (proctoringTerminationHandledRef.current) return
       persistAnswers().catch(() => {})
     }, AUTOSAVE_INTERVAL_MS)
 

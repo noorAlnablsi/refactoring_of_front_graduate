@@ -15,6 +15,7 @@ import {
 } from '../../../lib/attemptAnswers'
 import { formatLocalePaddedNumber } from '../../../lib/localeNumber'
 import CameraPreview from '../../proctoring/CameraPreview'
+import { resolveAvatarUrl } from '../../../lib/userDisplay'
 
 function AttemptExamHeader({
   examTitle,
@@ -24,6 +25,7 @@ function AttemptExamHeader({
   proctoringActive,
 }) {
   const { t } = useTranslation('student')
+  const safeAvatarUrl = resolveAvatarUrl(studentAvatarUrl)
   const initials = (studentName || '?')
     .trim()
     .split(/\s+/)
@@ -59,9 +61,9 @@ function AttemptExamHeader({
             <div className="text-end">
               <p className="text-sm font-extrabold text-[#2A3433]">{studentName}</p>
             </div>
-            {studentAvatarUrl ? (
+            {safeAvatarUrl ? (
               <img
-                src={studentAvatarUrl}
+                src={safeAvatarUrl}
                 alt=""
                 className="h-11 w-11 rounded-full object-cover ring-2 ring-[#E8F7F6]"
               />

@@ -3,6 +3,7 @@ import { initReactI18next } from 'react-i18next'
 import { LANGUAGE } from '../constants/language'
 import { localizeDigitsInString } from '../lib/localeDigits'
 import { readStoredLanguage } from '../lib/language'
+import arAnalytics from './ar/analytics.json'
 import arAuth from './ar/auth.json'
 import arBackendMessages from './ar/backendMessages.json'
 import arCommon from './ar/common.json'
@@ -18,6 +19,7 @@ import arQuestionBanks from './ar/questionBanks.json'
 import arSettings from './ar/settings.json'
 import arStudent from './ar/student.json'
 import arSubjects from './ar/subjects.json'
+import enAnalytics from './en/analytics.json'
 import enAuth from './en/auth.json'
 import enBackendMessages from './en/backendMessages.json'
 import enCommon from './en/common.json'
@@ -47,6 +49,7 @@ const localizeDigitsPostProcessor = {
 
 const resources = {
   ar: {
+    analytics: arAnalytics,
     auth: arAuth,
     backendMessages: arBackendMessages,
     common: arCommon,
@@ -64,6 +67,7 @@ const resources = {
     subjects: arSubjects,
   },
   en: {
+    analytics: enAnalytics,
     auth: enAuth,
     backendMessages: enBackendMessages,
     common: enCommon,
@@ -97,6 +101,7 @@ i18n
       'backendMessages',
       'auth',
       'dashboard',
+      'analytics',
       'members',
       'groups',
       'subjects',

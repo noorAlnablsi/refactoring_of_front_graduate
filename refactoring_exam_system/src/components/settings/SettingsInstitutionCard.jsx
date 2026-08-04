@@ -1,9 +1,13 @@
+import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Building2, GraduationCap, Pencil } from 'lucide-react'
+import EditInstitutionModal from './EditInstitutionModal'
 import SettingsCard from './SettingsCard'
 
-function SettingsInstitutionCard({ workspace, loading = false }) {
+function SettingsInstitutionCard({ workspace, loading = false, onUpdated }) {
   const { t } = useTranslation('settings')
+  const [editMode, setEditMode] = useState(null)
+
   const workspaceName = workspace?.name?.trim() || '—'
   const logoUrl = workspace?.logo_url
   const description = workspace?.description?.trim() || t('institution.noDescription')
@@ -34,9 +38,15 @@ function SettingsInstitutionCard({ workspace, loading = false }) {
               <GraduationCap className="h-10 w-10" strokeWidth={1.8} />
             </span>
           )}
-          <span className="absolute -bottom-1 -start-1 flex h-7 w-7 items-center justify-center rounded-full bg-[var(--shell-surface)] text-[var(--shell-text-muted)] shadow-sm ring-1 ring-[var(--shell-border)]">
+          <button
+            type="button"
+            onClick={() => setEditMode('logo')}
+            disabled={loading || !workspace?.id}
+            className="absolute -bottom-1 -start-1 flex h-7 w-7 items-center justify-center rounded-full bg-[var(--shell-surface)] text-[var(--shell-text-muted)] shadow-sm ring-1 ring-[var(--shell-border)] transition hover:bg-[var(--shell-hover)] hover:text-[var(--shell-accent)] disabled:cursor-not-allowed disabled:opacity-60"
+            aria-label={t('institution.edit.changeLogo')}
+          >
             <Pencil className="h-3.5 w-3.5" />
-          </span>
+          </button>
         </div>
 
         <div className="grid min-w-0 flex-1 gap-3 sm:grid-cols-2">
@@ -67,12 +77,24 @@ function SettingsInstitutionCard({ workspace, loading = false }) {
 
       <button
         type="button"
-        disabled
-        className="mt-6 inline-flex cursor-not-allowed items-center gap-2 rounded-xl border border-[var(--shell-accent)] bg-[var(--shell-surface)] px-5 py-2.5 text-sm font-bold text-[var(--shell-accent)] opacity-60"
+        onClick={() => setEditMode('full')}
+        disabled={loading || !workspace?.id}
+        className="mt-6 inline-flex items-center gap-2 rounded-xl border border-[var(--shell-accent)] bg-[var(--shell-surface)] px-5 py-2.5 text-sm font-bold text-[var(--shell-accent)] transition hover:bg-[var(--shell-accent-bg)] disabled:cursor-not-allowed disabled:opacity-60"
       >
         <Pencil className="h-4 w-4" />
-        {t('institution.edit')}
+        {t('institution.editButton')}
       </button>
+
+      <EditInstitutionModal
+        open={Boolean(editMode)}
+        mode={editMode || 'full'}
+        workspace={workspace}
+        onClose={() => setEditMode(null)}
+        onSuccess={(patch) => {
+          onUpdated?.(patch)
+          setEditMode(null)
+        }}
+      />
     </SettingsCard>
   )
 }

@@ -1,10 +1,10 @@
 import { useTranslation } from 'react-i18next'
-import { getUserInitials } from '../../lib/userDisplay'
+import { getUserInitials, resolveAvatarUrl } from '../../lib/userDisplay'
 
 function UserAvatar({ user, size = 'md', rounded = false }) {
   const { t } = useTranslation('common')
   const name = user?.full_name?.trim() || t('fallback.user')
-  const avatarUrl = user?.avatar_url || null
+  const avatarUrl = resolveAvatarUrl(user?.avatar_url)
   const radius = rounded ? 'rounded-full' : 'rounded-xl'
   const sizes = {
     xs: 'h-8 w-8 text-xs',

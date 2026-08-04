@@ -49,6 +49,8 @@ import TeachersPage from './pages/members/TeachersPage'
 import StudentsPage from './pages/members/StudentsPage'
 import StudentGroupsPage from './pages/groups/StudentGroupsPage'
 import GroupDetailsPage from './pages/groups/GroupDetailsPage'
+import AnalyticsPage from './pages/analytics/AnalyticsPage'
+import IntegrityReportsPage from './pages/analytics/IntegrityReportsPage'
 import { ROUTES } from './constants/routes'
 
 function App() {
@@ -83,6 +85,8 @@ function App() {
           <Route path={ROUTES.EXAM_ATTEMPTS} element={<ExamAttemptsPage />} />
           <Route path={ROUTES.EXAM_ATTEMPT_GRADE} element={<ExamAttemptGradingPage />} />
           <Route path={ROUTES.EXAM_MONITORING} element={<ExamMonitoringPage />} />
+          <Route path={ROUTES.ANALYTICS} element={<AnalyticsPage />} />
+          <Route path={ROUTES.ANALYTICS_INTEGRITY_REPORTS} element={<IntegrityReportsPage />} />
           <Route path={ROUTES.SETTINGS} element={<SettingsPage />} />
           <Route path={ROUTES.SETTINGS_CHANGE_PASSWORD} element={<ChangePasswordPage />} />
         </Route>

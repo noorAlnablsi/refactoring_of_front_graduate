@@ -1,7 +1,52 @@
 import { ROUTES } from '../constants/routes'
-import { TEST_STATUS, TEST_TABS } from '../constants/tests'
+import { TEST_AVAILABILITY_TIME_MODE, TEST_STATUS, TEST_TABS } from '../constants/tests'
 import { tUI } from './appToast'
 import { getTestId } from './testModel'
+
+function parseLocalDateTimeMs(value) {
+  if (!value) return null
+  const match = String(value).match(/^(\d{4}-\d{2}-\d{2})[T ](\d{2}):(\d{2})(?::(\d{2}))?/)
+  if (match) {
+    const year = Number(match[1].slice(0, 4))
+    const month = Number(match[1].slice(5, 7)) - 1
+    const day = Number(match[1].slice(8, 10))
+    const hour = Number(match[2])
+    const minute = Number(match[3])
+    const second = Number(match[4] || 0)
+    const ms = new Date(year, month, day, hour, minute, second).getTime()
+    return Number.isNaN(ms) ? null : ms
+  }
+  const ms = new Date(value).getTime()
+  return Number.isNaN(ms) ? null : ms
+}
+
+/**
+ * Teacher "Close exam" button: only while PUBLISHED and availability window still open.
+ * Hides for CLOSED, or when planned closed_at / scheduled global end has passed.
+ */
+export function canShowCloseExamButton(test, nowMs = Date.now()) {
+  if (!test || test.status !== TEST_STATUS.PUBLISHED) return false
+
+  const mode = String(
+    test.availability_time_mode || test.availability_mode || '',
+  ).toUpperCase()
+
+  if (mode === TEST_AVAILABILITY_TIME_MODE.FLEXIBLE || (!mode && test.closed_at)) {
+    const closedAtMs = parseLocalDateTimeMs(test.closed_at)
+    if (closedAtMs != null && nowMs >= closedAtMs) return false
+  }
+
+  if (mode === TEST_AVAILABILITY_TIME_MODE.SCHEDULED || (test.starts_at && test.duration_minutes)) {
+    const startsAtMs = parseLocalDateTimeMs(test.starts_at)
+    const duration = Number(test.duration_minutes)
+    if (startsAtMs != null && Number.isFinite(duration) && duration > 0) {
+      const globalEndMs = startsAtMs + duration * 60 * 1000
+      if (nowMs >= globalEndMs) return false
+    }
+  }
+
+  return true
+}
 
 export const TEST_STATUS_STYLES = {
   [TEST_STATUS.DRAFT]: 'bg-[#F1F5F9] text-[#64748B]',

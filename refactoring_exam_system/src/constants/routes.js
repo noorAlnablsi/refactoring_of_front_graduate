@@ -18,6 +18,8 @@ export const ROUTES = {
   EXAM_ATTEMPTS: '/exams/:id/attempts',
   EXAM_ATTEMPT_GRADE: '/exams/:id/attempts/:attemptId/grade',
   EXAM_MONITORING: '/exams/:id/monitoring',
+  ANALYTICS: '/analytics',
+  ANALYTICS_INTEGRITY_REPORTS: '/analytics/integrity-reports',
   SETTINGS: '/settings',
   SETTINGS_CHANGE_PASSWORD: '/settings/change-password',
   SETTINGS_CREATE_WORKSPACE: '/settings/create-workspace',

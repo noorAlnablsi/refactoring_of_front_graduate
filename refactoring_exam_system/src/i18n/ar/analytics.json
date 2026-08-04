@@ -1,0 +1,124 @@
+{
+  "title": "تحليلات المؤسسة",
+  "subtitle": "نظرة عامة شاملة على أداء الطلاب والمعلمين",
+  "viewAll": "عرض الكل",
+  "view": "عرض",
+  "search": "بحث",
+  "empty": "لا توجد بيانات في النطاق المحدد",
+  "filters": {
+    "subject": "المادة",
+    "allSubjects": "الكل",
+    "teacher": "المعلم",
+    "allTeachers": "كل المعلمين",
+    "dateRange": "نطاق التاريخ",
+    "presets": {
+      "7d": "آخر 7 أيام",
+      "30d": "آخر 30 يوم",
+      "90d": "آخر 90 يوم",
+      "custom": "مخصص"
+    },
+    "dateFrom": "من",
+    "dateTo": "إلى"
+  },
+  "overview": {
+    "totalStudents": "إجمالي الطلاب",
+    "totalTeachers": "إجمالي المعلمين",
+    "totalTests": "إجمالي الاختبارات",
+    "totalAttempts": "محاولات الاختبار",
+    "averageScore": "متوسط الدرجات",
+    "activeStudents": "الطلاب النشطون"
+  },
+  "passFail": {
+    "title": "نسبة النجاح والرسوب",
+    "passCenter": "{{rate}} نجاح",
+    "passed": "ناجحون",
+    "failed": "راسبون",
+    "pass": "نجاح",
+    "fail": "رسوب"
+  },
+  "monthly": {
+    "title": "اتجاه متوسط الدرجات",
+    "legend": "متوسط المؤسسة"
+  },
+  "engagedSubjects": {
+    "title": "المواد الأكثر نشاطاً",
+    "subject": "المادة",
+    "students": "الطلاب",
+    "teachers": "المعلمون",
+    "tests": "اختبارات",
+    "attempts": "محاولات",
+    "score": "الدرجة"
+  },
+  "rankedSubjects": {
+    "title": "أفضل وأقل المواد أداءً",
+    "best": "أفضل",
+    "worst": "أقل"
+  },
+  "teachers": {
+    "title": "نشاط المعلمين",
+    "teacher": "المعلم",
+    "testsCreated": "الاختبارات المنشأة",
+    "targetedStudents": "الطلاب المستهدفون",
+    "averageScore": "متوسط الدرجة",
+    "completionRate": "نسبة الإكمال"
+  },
+  "integrity": {
+    "title": "تقارير ضبط الغش",
+    "pageTitle": "تقارير النزاهة",
+    "pageSubtitle": "مراجعة بلاغات الإنهاء التلقائي بسبب المراقبة",
+    "risk": "مخاطرة {{rate}}",
+    "reportsCount": "{{count}} بلاغ",
+    "average": "{{score}} متوسط",
+    "empty": "لا توجد تقارير نزاهة",
+    "status": "الحالة",
+    "allStatuses": "كل الحالات",
+    "statuses": {
+      "PENDING": "قيد المراجعة",
+      "CONFIRMED": "مؤكد",
+      "DISMISSED": "مرفوض"
+    },
+    "student": "الطالب",
+    "teacher": "المعلم",
+    "subject": "المادة",
+    "test": "الاختبار",
+    "recommendation": "التوصية",
+    "violations": "المخالفات",
+    "createdAt": "تاريخ الإنشاء",
+    "actions": "إجراءات",
+    "review": "مراجعة",
+    "confirm": "تأكيد الغش",
+    "dismiss": "رفض البلاغ",
+    "reviewNote": "ملاحظة المراجعة (اختياري)",
+    "reviewNotePlaceholder": "أضف ملاحظة للمراجعة...",
+    "reviewTitle": "مراجعة تقرير النزاهة",
+    "submitConfirm": "تأكيد",
+    "submitDismiss": "رفض",
+    "alreadyReviewed": "تمت مراجعة هذا التقرير مسبقاً",
+    "detail": {
+      "risk": "نسبة المخاطرة",
+      "violations": "عدد المخالفات",
+      "score": "الدرجة",
+      "termination": "سبب الإنهاء",
+      "reason": "سبب التوصية"
+    }
+  },
+  "topStudents": {
+    "title": "أكثر الطلاب نشاطاً",
+    "completed": "تم إكمال {{count}} اختبار",
+    "averageLabel": "متوسط الدرجات"
+  },
+  "inactiveStudents": {
+    "title": "طلاب غير نشطين",
+    "lastActivity": "آخر نشاط: {{date}}",
+    "daysAgo": "منذ {{count}} يوم"
+  },
+  "errors": {
+    "loadFailed": "تعذر تحميل تحليلات المؤسسة",
+    "loadIntegrityFailed": "تعذر تحميل تقارير النزاهة",
+    "reviewFailed": "تعذر تحديث حالة التقرير",
+    "forbidden": "تحليلات المؤسسة متاحة لمالك المؤسسة فقط"
+  },
+  "toasts": {
+    "reviewSuccess": "تم تحديث تقرير النزاهة"
+  }
+}

@@ -21,10 +21,11 @@
     "workspace": "Workspace",
     "defaultWorkspace": "Educational workspace",
     "editProfile": "Edit profile",
+    "viewAvatar": "View profile photo",
     "avatarUpdateError": "Could not update profile photo",
     "edit": {
       "title": "Edit profile",
-      "description": "Update your name, phone number, and photo. Email cannot be changed here.",
+      "description": "Update your name, phone number, and photo.",
       "fullName": "Full name",
       "email": "Email",
       "emailReadOnly": "Email cannot be changed from here",
@@ -69,9 +70,27 @@
     "type": "Institution type",
     "descriptionLabel": "Description",
     "noDescription": "No institution description added yet.",
-    "edit": "Edit institution details",
+    "editButton": "Edit institution details",
     "loadError": "Could not load institution data",
-    "defaultType": "Academy"
+    "defaultType": "Academy",
+    "edit": {
+      "title": "Edit institution details",
+      "description": "Update the institution name, description, and logo. These details are visible to members.",
+      "logoTitle": "Edit institution logo",
+      "logoDescription": "Choose a new logo, then press Save to confirm.",
+      "changeLogo": "Change institution logo",
+      "logoHint": "JPG, PNG, or WEBP",
+      "uploadingLogo": "Uploading logo...",
+      "removeLogo": "Remove logo",
+      "descriptionPlaceholder": "A short description of the institution...",
+      "nameRequired": "Institution name is required.",
+      "logoUploadError": "Could not upload the institution logo.",
+      "forbidden": "You do not have permission to edit institution details.",
+      "saving": "Saving...",
+      "save": "Save",
+      "success": "Institution details updated successfully.",
+      "failed": "Could not update institution details."
+    }
   },
   "appearance": {
     "changePassword": "Change password",

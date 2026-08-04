@@ -67,6 +67,7 @@ export function ExamAvailabilitySettingsSection({ form, onFormChange }) {
           prev.entry_window_minutes ?? defaultEntry,
           duration,
         ),
+        closed_at: null,
       }
     })
   }
@@ -89,6 +90,28 @@ export function ExamAvailabilitySettingsSection({ form, onFormChange }) {
           onSelect={() => setMode(TEST_AVAILABILITY_TIME_MODE.SCHEDULED)}
         />
       </div>
+
+      {!isScheduled ? (
+        <div className="mt-5 max-w-md">
+          <label className="mb-2 block text-sm font-bold text-[#374151]">
+            {t('settings.availability.closedAt')}
+          </label>
+          <input
+            type="datetime-local"
+            value={toDatetimeLocalValue(form.closed_at)}
+            onChange={(event) =>
+              onFormChange((prev) => ({
+                ...prev,
+                closed_at: fromDatetimeLocalValue(event.target.value),
+              }))
+            }
+            className={`${inputClassName} text-sm font-bold`}
+          />
+          <p className="mt-2 text-xs leading-6 text-[#94A3B8]">
+            {t('settings.availability.closedAtHint')}
+          </p>
+        </div>
+      ) : null}
 
       {isScheduled ? (
         <div className="mt-5 grid gap-4 md:grid-cols-2">
