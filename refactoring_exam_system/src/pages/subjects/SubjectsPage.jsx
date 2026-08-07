@@ -6,6 +6,7 @@ import CreateSubjectModal from '../../components/subjects/CreateSubjectModal'
 import EditSubjectModal from '../../components/subjects/EditSubjectModal'
 import SubjectStatsCards from '../../components/subjects/SubjectStatsCards'
 import SubjectsTable from '../../components/subjects/SubjectsTable'
+import { getSubjectTestsCount } from '../../lib/subjectDisplay'
 import { canCreateSubject } from '../../lib/workspaceContext'
 import { useSubjects } from '../../hooks/subjects/useSubjects'
 import { useSubjectsListView } from '../../hooks/subjects/useSubjectsListView'
@@ -21,6 +22,14 @@ function SubjectsPage() {
   const activeSubjects = useMemo(
     () => subjects.filter((subject) => !subject.is_archived),
     [subjects],
+  )
+  const totalExamsCount = useMemo(
+    () =>
+      activeSubjects.reduce((sum, subject) => {
+        const count = getSubjectTestsCount(subject)
+        return sum + (Number.isFinite(count) ? count : 0)
+      }, 0),
+    [activeSubjects],
   )
   const { teachersCount, loadingTeachers } = useWorkspaceTeachersCount()
   const {
@@ -83,6 +92,7 @@ function SubjectsPage() {
         subjectsCount={totalCount}
         teachersCount={teachersCount}
         teachersLoading={loadingTeachers}
+        examsCount={totalExamsCount}
       />
 
       {error ? <p className="text-sm text-red-600">{error}</p> : null}

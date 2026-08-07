@@ -30,21 +30,21 @@ function ChangeBadge({ value }) {
 
 function OverviewCard({ icon: Icon, title, value, change, loading }) {
   return (
-    <article className={`flex items-start justify-between gap-3 p-4 ${shellCardClass}`}>
-      <div className="min-w-0">
-        <p className={`text-xs font-semibold ${shellBodyTextClass}`}>{title}</p>
-        {loading ? (
-          <div className="shell-skeleton mt-3 h-8 w-20 animate-pulse rounded-lg" />
-        ) : (
-          <>
-            <p className="mt-2 text-2xl font-extrabold text-[var(--shell-text)]">{value}</p>
-            <ChangeBadge value={change} />
-          </>
-        )}
+    <article className={`flex h-full min-h-[128px] flex-col p-5 ${shellCardClass}`}>
+      <div className="flex items-start justify-between gap-3">
+        <p className={`text-xs font-semibold leading-5 ${shellBodyTextClass}`}>{title}</p>
+        <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-[var(--shell-accent-bg)] text-[var(--shell-accent)]">
+          <Icon className="h-5 w-5" strokeWidth={2} />
+        </span>
       </div>
-      <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-[var(--shell-accent-bg)] text-[var(--shell-accent)]">
-        <Icon className="h-5 w-5" strokeWidth={2} />
-      </span>
+      {loading ? (
+        <div className="shell-skeleton mt-auto h-8 w-20 animate-pulse rounded-lg" />
+      ) : (
+        <div className="mt-auto pt-3">
+          <p className="text-2xl font-extrabold leading-none text-[var(--shell-text)]">{value}</p>
+          <ChangeBadge value={change} />
+        </div>
+      )}
     </article>
   )
 }

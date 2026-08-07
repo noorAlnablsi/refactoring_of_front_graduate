@@ -133,6 +133,7 @@
       "recentTeachers": "Recently assigned teachers",
       "noTeachers": "No teachers assigned to this subject yet",
       "recentExams": "Latest exams",
+      "noExams": "No exams for this subject yet",
       "recentBanks": "Latest question banks",
       "noBanks": "No linked question banks yet"
     },
@@ -145,7 +146,7 @@
     },
     "exams": {
       "title": "Subject exams",
-      "apiNote": "Exams will be linked when the API is available"
+      "empty": "No exams linked to this subject yet"
     },
     "examStatus": {
       "active": "Active",
@@ -153,13 +154,15 @@
     },
     "stats": {
       "teachers": "Teachers",
-      "teachersBadge": "+12% this month",
       "banks": "Question banks",
-      "banksBadge": "Updated today",
       "exams": "Exams",
-      "examsBadge": "5 active exams",
-      "evaluatedStudents": "Evaluated students",
-      "successRateBadge": "88% pass rate"
+      "publishedExamsHint": "{{count}} published",
+      "enrolledStudents": "Enrolled students"
     }
+  },
+  "notFound": "Subject not found",
+  "errors": {
+    "loadDetailsFailed": "Failed to load subject details",
+    "loadExamsFailed": "Failed to load subject exams"
   }
 }

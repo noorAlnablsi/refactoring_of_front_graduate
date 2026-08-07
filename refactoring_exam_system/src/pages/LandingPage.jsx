@@ -3,6 +3,7 @@ import FeaturesSection from '../components/landing/FeaturesSection'
 import HeroSection from '../components/landing/HeroSection'
 import Footer from '../components/landing/Footer'
 import Header from '../components/landing/Header'
+import SolutionsSection from '../components/landing/SolutionsSection'
 import TrustedSection from '../components/landing/TrustedSection'
 
 function LandingPage() {
@@ -12,6 +13,7 @@ function LandingPage() {
       <HeroSection />
       <TrustedSection />
       <FeaturesSection />
+      <SolutionsSection />
       <CtaSection />
       <Footer />
     </main>

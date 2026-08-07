@@ -2,6 +2,11 @@ import { useCallback, useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { translateBackendMessage } from '../../i18n/translateBackendMessage'
 import {
+  fetchTestsForActiveWorkspace,
+  filterTestsBySubjectId,
+} from '../../lib/fetchWorkspaceTests'
+import { sortByRecentDate } from '../../lib/subjectDisplay'
+import {
   getSubjectById,
   getSubjectQuestionBanks,
   getSubjectStudents,
@@ -19,6 +24,9 @@ export function useSubjectDetails(subjectId) {
   const [topicsCount, setTopicsCount] = useState(0)
   const [students, setStudents] = useState([])
   const [studentsCount, setStudentsCount] = useState(0)
+  const [tests, setTests] = useState([])
+  const [testsLoading, setTestsLoading] = useState(true)
+  const [testsError, setTestsError] = useState('')
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState('')
 
@@ -28,31 +36,54 @@ export function useSubjectDetails(subjectId) {
     setStudentsCount(studentsData.count ?? list.length)
   }
 
+  const applyCorePayload = ([subjectData, teachersData, banksData, studentsData, topicsData]) => {
+    setSubject(subjectData)
+    setTeachers(teachersData.teachers || [])
+    setQuestionBanks(banksData.question_banks || [])
+    setQuestionBanksCount(banksData.count ?? banksData.question_banks?.length ?? 0)
+    setTopics(topicsData.topics || [])
+    setTopicsCount(topicsData.count ?? topicsData.topics?.length ?? 0)
+    applyStudentsPayload(studentsData)
+  }
+
+  const loadSubjectTests = useCallback(async (id) => {
+    setTestsLoading(true)
+    setTestsError('')
+    try {
+      const allTests = await fetchTestsForActiveWorkspace()
+      const subjectTests = sortByRecentDate(
+        filterTestsBySubjectId(allTests, id),
+        ['updated_at', 'created_at', 'published_at'],
+      )
+      setTests(subjectTests)
+    } catch (err) {
+      setTests([])
+      setTestsError(translateBackendMessage(err.message) || t('errors.loadExamsFailed'))
+    } finally {
+      setTestsLoading(false)
+    }
+  }, [t])
+
   const fetchDetails = useCallback(async () => {
     if (!subjectId) return
     setLoading(true)
     setError('')
     try {
-      const [subjectData, teachersData, banksData, studentsData, topicsData] = await Promise.all([
+      const payload = await Promise.all([
         getSubjectById(subjectId),
         getSubjectTeachers(subjectId),
         getSubjectQuestionBanks(subjectId),
         getSubjectStudents(subjectId),
         getSubjectTopics(subjectId),
       ])
-      setSubject(subjectData)
-      setTeachers(teachersData.teachers || [])
-      setQuestionBanks(banksData.question_banks || [])
-      setQuestionBanksCount(banksData.count ?? banksData.question_banks?.length ?? 0)
-      setTopics(topicsData.topics || [])
-      setTopicsCount(topicsData.count ?? topicsData.topics?.length ?? 0)
-      applyStudentsPayload(studentsData)
+      applyCorePayload(payload)
+      await loadSubjectTests(subjectId)
     } catch (err) {
       setError(translateBackendMessage(err.message) || t('errors.loadDetailsFailed'))
     } finally {
       setLoading(false)
     }
-  }, [subjectId, t])
+  }, [subjectId, t, loadSubjectTests])
 
   useEffect(() => {
     if (!subjectId) return undefined
@@ -66,15 +97,9 @@ export function useSubjectDetails(subjectId) {
       getSubjectStudents(subjectId),
       getSubjectTopics(subjectId),
     ])
-      .then(([subjectData, teachersData, banksData, studentsData, topicsData]) => {
+      .then((payload) => {
         if (cancelled) return
-        setSubject(subjectData)
-        setTeachers(teachersData.teachers || [])
-        setQuestionBanks(banksData.question_banks || [])
-        setQuestionBanksCount(banksData.count ?? banksData.question_banks?.length ?? 0)
-        setTopics(topicsData.topics || [])
-        setTopicsCount(topicsData.count ?? topicsData.topics?.length ?? 0)
-        applyStudentsPayload(studentsData)
+        applyCorePayload(payload)
       })
       .catch((err) => {
         if (cancelled) return
@@ -85,10 +110,14 @@ export function useSubjectDetails(subjectId) {
         setLoading(false)
       })
 
+    loadSubjectTests(subjectId).finally(() => {
+      if (cancelled) return
+    })
+
     return () => {
       cancelled = true
     }
-  }, [subjectId, t])
+  }, [subjectId, t, loadSubjectTests])
 
   return {
     subject,
@@ -99,6 +128,9 @@ export function useSubjectDetails(subjectId) {
     topicsCount,
     students,
     studentsCount,
+    tests,
+    testsLoading,
+    testsError,
     loading,
     error,
     refetch: fetchDetails,

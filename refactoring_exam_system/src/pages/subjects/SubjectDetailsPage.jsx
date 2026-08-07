@@ -44,6 +44,9 @@ function SubjectDetailsPage() {
     topics,
     students,
     studentsCount,
+    tests,
+    testsLoading,
+    testsError,
     loading,
     error,
     refetch,
@@ -56,6 +59,10 @@ function SubjectDetailsPage() {
   const enrolledStudentIds = students
     .map((student) => getStudentMembershipId(student))
     .filter(Boolean)
+  const testsCount = subject?.tests_count ?? tests.length
+  const publishedTestsCount = tests.filter(
+    (test) => String(test.status || '').toUpperCase() === 'PUBLISHED',
+  ).length
 
   const handleRemoveTeacher = async (membershipId) => {
     try {
@@ -84,7 +91,9 @@ function SubjectDetailsPage() {
       <SubjectDetailsStats
         teachersCount={teachers.length}
         questionBanksCount={questionBanksCount}
-        studentsCount={studentsCount}
+        testsCount={testsCount}
+        enrolledStudentsCount={studentsCount}
+        publishedTestsCount={testsLoading ? null : publishedTestsCount}
       />
       <SubjectDetailsTabs activeTab={activeTab} onChange={setActiveTab} />
 
@@ -94,6 +103,9 @@ function SubjectDetailsPage() {
           teachers={teachers}
           questionBanks={questionBanks}
           topics={topics}
+          exams={tests}
+          examsLoading={testsLoading}
+          examsError={testsError}
           onViewAllTeachers={() => setActiveTab('teachers')}
           onRefreshTopics={refetch}
         />
@@ -104,7 +116,9 @@ function SubjectDetailsPage() {
       ) : null}
 
       {activeTab === 'banks' ? <SubjectQuestionBanksTab questionBanks={questionBanks} /> : null}
-      {activeTab === 'exams' ? <SubjectExamsTab /> : null}
+      {activeTab === 'exams' ? (
+        <SubjectExamsTab exams={tests} loading={testsLoading} error={testsError} />
+      ) : null}
 
       <AssignTeacherModal
         open={assignTeacherOpen}

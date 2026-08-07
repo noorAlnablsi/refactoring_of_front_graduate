@@ -32,7 +32,7 @@
     "manage": "Manage subjects",
     "empty": "No subjects yet.",
     "studentsCount": "{{count}} students",
-    "quickAdd": "Quick add subject"
+    "quickAdd": "Add subject"
   },
   "banks": {
     "title": "Recently updated question banks",
@@ -44,7 +44,7 @@
   "upcoming": {
     "title": "Upcoming exams",
     "empty": "No upcoming exams right now.",
-    "viewCalendar": "View full calendar",
+    "viewCalendar": "View all",
     "open": "Open",
     "flexible": "Flexible availability",
     "timeUnavailable": "Time not set",

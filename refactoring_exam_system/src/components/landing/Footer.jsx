@@ -27,7 +27,11 @@ function Footer() {
         <div className="space-y-4">
           <h4 className="text-lg font-bold text-[#2A3040]">{t('footer.company')}</h4>
           <ul className="space-y-3 text-base text-[#69707F]">
-            <li>{t('footer.companyLinks.about')}</li>
+            <li>
+              <a href="#about" className="transition hover:text-[#2AA8A2]">
+                {t('footer.companyLinks.about')}
+              </a>
+            </li>
             <li>{t('footer.companyLinks.caseStudies')}</li>
             <li>{t('footer.companyLinks.partners')}</li>
             <li>{t('footer.companyLinks.privacy')}</li>

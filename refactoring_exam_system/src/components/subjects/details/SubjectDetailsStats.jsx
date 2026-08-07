@@ -2,22 +2,7 @@ import { useTranslation } from 'react-i18next'
 import { ClipboardList, FileQuestion, UserCheck, Users } from 'lucide-react'
 import { formatStatValue } from '../../../lib/subjectDisplay'
 
-function StatBadge({ children, tone = 'teal' }) {
-  const tones = {
-    teal: 'bg-[#E8F7F6] text-[#2AA8A2]',
-    gray: 'bg-[#F1F5F9] text-[#64748B]',
-    blue: 'bg-[#EFF6FF] text-[#3B82F6]',
-    rose: 'bg-[#FFF1F2] text-[#F43F5E]',
-  }
-
-  return (
-    <span className={`mt-3 inline-block rounded-md px-2 py-1 text-[11px] font-bold ${tones[tone]}`}>
-      {children}
-    </span>
-  )
-}
-
-function StatCard({ label, value, icon: Icon, iconWrapClass, badge, badgeTone }) {
+function StatCard({ label, value, icon: Icon, iconWrapClass, hint }) {
   return (
     <div className="rounded-2xl bg-white p-5 shadow-[0_2px_12px_rgba(15,23,42,0.04)] ring-1 ring-[#E5E9EB]">
       <div className="flex items-start justify-between gap-4">
@@ -26,7 +11,9 @@ function StatCard({ label, value, icon: Icon, iconWrapClass, badge, badgeTone })
           <p className="mt-2 text-[32px] font-extrabold leading-none text-[#2A3433]">
             {formatStatValue(value)}
           </p>
-          {badge ? <StatBadge tone={badgeTone}>{badge}</StatBadge> : null}
+          {hint ? (
+            <p className="mt-3 text-[11px] font-semibold text-[#94A3B8]">{hint}</p>
+          ) : null}
         </div>
         <span
           className={`flex h-12 w-12 shrink-0 items-center justify-center rounded-xl ${iconWrapClass}`}
@@ -38,7 +25,13 @@ function StatCard({ label, value, icon: Icon, iconWrapClass, badge, badgeTone })
   )
 }
 
-function SubjectDetailsStats({ teachersCount, questionBanksCount, studentsCount }) {
+function SubjectDetailsStats({
+  teachersCount,
+  questionBanksCount,
+  testsCount,
+  enrolledStudentsCount,
+  publishedTestsCount,
+}) {
   const { t } = useTranslation('subjects')
 
   return (
@@ -48,32 +41,29 @@ function SubjectDetailsStats({ teachersCount, questionBanksCount, studentsCount 
         value={teachersCount}
         icon={Users}
         iconWrapClass="bg-[#E8F7F6] text-[#2AA8A2]"
-        badge={t('details.stats.teachersBadge')}
-        badgeTone="teal"
       />
       <StatCard
         label={t('details.stats.banks')}
         value={questionBanksCount}
         icon={FileQuestion}
         iconWrapClass="bg-[#F1F5F9] text-[#64748B]"
-        badge={t('details.stats.banksBadge')}
-        badgeTone="gray"
       />
       <StatCard
         label={t('details.stats.exams')}
-        value="—"
+        value={testsCount ?? 0}
         icon={ClipboardList}
         iconWrapClass="bg-[#EFF6FF] text-[#3B82F6]"
-        badge={t('details.stats.examsBadge')}
-        badgeTone="blue"
+        hint={
+          publishedTestsCount != null
+            ? t('details.stats.publishedExamsHint', { count: formatStatValue(publishedTestsCount) })
+            : undefined
+        }
       />
       <StatCard
-        label={t('details.stats.evaluatedStudents')}
-        value={studentsCount > 0 ? studentsCount : '—'}
+        label={t('details.stats.enrolledStudents')}
+        value={enrolledStudentsCount ?? 0}
         icon={UserCheck}
         iconWrapClass="bg-[#FFF1F2] text-[#F43F5E]"
-        badge={t('details.stats.successRateBadge')}
-        badgeTone="rose"
       />
     </div>
   )

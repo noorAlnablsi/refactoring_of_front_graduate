@@ -7,7 +7,7 @@ function HeroSection() {
   const { t } = useTranslation('landing')
 
   return (
-    <section className="bg-[#F4F6F8] px-4 py-12 md:px-8 md:py-16 lg:py-20">
+    <section id="home" className="scroll-mt-24 bg-[#F4F6F8] px-4 py-12 md:px-8 md:py-16 lg:py-20">
       <div dir="ltr" className="mx-auto grid w-full max-w-[1240px] items-center gap-10 lg:grid-cols-2 lg:gap-16">
         <div dir="rtl" className="order-2 space-y-8 text-center lg:order-2 lg:text-right">
           <span className="inline-block rounded-full bg-[#DFF4F3] px-5 py-2 text-sm font-semibold leading-none text-[#2EAFAA]">

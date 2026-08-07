@@ -6,7 +6,7 @@ function FeaturesSection() {
   const { t } = useTranslation('landing')
 
   return (
-    <section className="bg-white px-4 py-16 md:px-8 lg:py-20">
+    <section id="about" className="scroll-mt-24 bg-white px-4 py-16 md:px-8 lg:py-20">
       <div className="mx-auto w-full max-w-6xl">
         <div className="mb-12 text-center lg:text-right">
           <h2 className="text-4xl font-black leading-tight text-[#202636] md:text-5xl">

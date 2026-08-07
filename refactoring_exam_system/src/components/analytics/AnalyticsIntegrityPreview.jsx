@@ -51,11 +51,11 @@ function AnalyticsIntegrityPreview({
         <div className="mt-4 flex flex-1 flex-col gap-4">
           {hasExams ? (
             <ul className="space-y-3">
-              {exams.map((exam) => (
-                <li
-                  key={exam.test_id ?? exam.test_name}
-                  className="rounded-xl bg-rose-50/70 p-4 ring-1 ring-rose-100"
-                >
+              {exams.map((exam) => {
+                const monitoringPath = exam.test_id
+                  ? ROUTES.EXAM_MONITORING.replace(':id', String(exam.test_id))
+                  : null
+                const card = (
                   <div className="flex items-start justify-between gap-3">
                     <div className="min-w-0">
                       <p className="truncate text-sm font-extrabold text-[var(--shell-text)]">
@@ -81,9 +81,30 @@ function AnalyticsIntegrityPreview({
                       </span>
                     ) : null}
                   </div>
-                </li>
-              ))}
+                )
+
+                return (
+                  <li key={exam.test_id ?? exam.test_name}>
+                    {monitoringPath ? (
+                      <Link
+                        to={monitoringPath}
+                        className="block rounded-xl bg-rose-50/70 p-4 ring-1 ring-rose-100 transition hover:bg-rose-50 hover:ring-rose-200"
+                      >
+                        {card}
+                      </Link>
+                    ) : (
+                      <div className="rounded-xl bg-rose-50/70 p-4 ring-1 ring-rose-100">
+                        {card}
+                      </div>
+                    )}
+                  </li>
+                )
+              })}
             </ul>
+          ) : null}
+
+          {hasExams && hasReports ? (
+            <div className="border-t border-[var(--shell-border)]" aria-hidden="true" />
           ) : null}
 
           {hasReports ? (

@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { Link, Navigate } from 'react-router-dom'
+import { Navigate } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import AnalyticsBestWeakSubjects from '../../components/analytics/AnalyticsBestWeakSubjects'
 import AnalyticsEngagedSubjects from '../../components/analytics/AnalyticsEngagedSubjects'
@@ -20,7 +20,6 @@ import {
 } from '../../hooks/analytics/useIntegrityReports'
 import { tUI } from '../../lib/appToast'
 import {
-  shellBodyTextClass,
   shellPageSubtitleClass,
   shellPageTitleClass,
 } from '../../lib/shellUi'
@@ -98,10 +97,10 @@ function AnalyticsPage() {
 
   return (
     <div className="space-y-6">
-      <div className="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
-        <div>
+      <div className="flex flex-col gap-5 lg:flex-row lg:items-end lg:justify-between lg:gap-6">
+        <div className="min-w-0">
           <h1 className={`text-2xl md:text-[28px] ${shellPageTitleClass}`}>{t('title')}</h1>
-          <p className={`mt-2 ${shellPageSubtitleClass}`}>{t('subtitle')}</p>
+          <p className={`mt-1.5 max-w-2xl ${shellPageSubtitleClass}`}>{t('subtitle')}</p>
         </div>
         <AnalyticsFilters
           subjects={subjects}
@@ -137,12 +136,12 @@ function AnalyticsPage() {
 
       <AnalyticsOverviewCards overview={overview} loading={loading} />
 
-      <div className="grid gap-4 xl:grid-cols-[minmax(0,0.9fr)_minmax(0,1.4fr)]">
+      <div className="grid items-stretch gap-4 xl:grid-cols-[minmax(0,0.9fr)_minmax(0,1.4fr)]">
         <AnalyticsPassFailChart passFail={passFail} loading={loading} />
         <AnalyticsMonthlyScoresChart monthlyScores={monthlyScores} loading={loading} />
       </div>
 
-      <div className="grid gap-4 xl:grid-cols-2">
+      <div className="grid items-stretch gap-4 xl:grid-cols-2">
         <AnalyticsEngagedSubjects subjects={mostEngagedSubjects} loading={loading} />
         <AnalyticsBestWeakSubjects
           bestSubjects={bestSubjects}
@@ -153,24 +152,18 @@ function AnalyticsPage() {
 
       <AnalyticsTeacherActivity teachers={teacherActivity} loading={loading} />
 
-      <div className="grid gap-4 xl:grid-cols-[minmax(0,1.1fr)_minmax(0,0.9fr)]">
+      <div className="grid items-stretch gap-4 xl:grid-cols-[minmax(0,1.1fr)_minmax(0,0.9fr)]">
         <AnalyticsIntegrityPreview
           problematicExams={problematicExams}
           integrityPreview={integrityPreview}
           loading={loading}
           onViewReport={(report) => setSelectedReportId(report.id)}
         />
-        <div className="space-y-4">
+        <div className="flex min-h-0 flex-col gap-4">
           <AnalyticsTopStudents students={topStudents} loading={loading} />
           <AnalyticsInactiveStudents students={inactiveStudents} loading={loading} />
         </div>
       </div>
-
-      <p className={`text-xs ${shellBodyTextClass}`}>
-        <Link to={ROUTES.ANALYTICS_INTEGRITY_REPORTS} className="font-bold text-[var(--shell-accent)]">
-          {t('integrity.pageTitle')}
-        </Link>
-      </p>
 
       <IntegrityReportReviewModal
         open={Boolean(selectedReportId)}

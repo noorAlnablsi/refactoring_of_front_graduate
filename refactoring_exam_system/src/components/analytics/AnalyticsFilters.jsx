@@ -22,8 +22,8 @@ function AnalyticsFilters({
   const { t } = useTranslation('analytics')
 
   return (
-    <div className="flex flex-wrap items-end gap-3">
-      <label className="flex flex-col gap-1.5">
+    <div className="flex flex-wrap items-end justify-end gap-3">
+      <label className="flex min-w-[148px] flex-col gap-1.5">
         <span className="text-xs font-bold text-[var(--shell-text-muted)]">{t('filters.subject')}</span>
         <select
           className={selectClass}
@@ -40,7 +40,7 @@ function AnalyticsFilters({
         </select>
       </label>
 
-      <label className="flex flex-col gap-1.5">
+      <label className="flex min-w-[148px] flex-col gap-1.5">
         <span className="text-xs font-bold text-[var(--shell-text-muted)]">{t('filters.teacher')}</span>
         <select
           className={selectClass}
@@ -61,7 +61,7 @@ function AnalyticsFilters({
         </select>
       </label>
 
-      <label className="flex flex-col gap-1.5">
+      <label className="flex min-w-[148px] flex-col gap-1.5">
         <span className="text-xs font-bold text-[var(--shell-text-muted)]">{t('filters.dateRange')}</span>
         <select
           className={selectClass}
@@ -78,7 +78,7 @@ function AnalyticsFilters({
 
       {datePreset === 'custom' ? (
         <>
-          <label className="flex flex-col gap-1.5">
+          <label className="flex min-w-[148px] flex-col gap-1.5">
             <span className="text-xs font-bold text-[var(--shell-text-muted)]">{t('filters.dateFrom')}</span>
             <input
               type="date"
@@ -88,7 +88,7 @@ function AnalyticsFilters({
               onChange={(e) => onDateFromChange(e.target.value)}
             />
           </label>
-          <label className="flex flex-col gap-1.5">
+          <label className="flex min-w-[148px] flex-col gap-1.5">
             <span className="text-xs font-bold text-[var(--shell-text-muted)]">{t('filters.dateTo')}</span>
             <input
               type="date"

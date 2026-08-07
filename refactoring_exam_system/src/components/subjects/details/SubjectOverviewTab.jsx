@@ -1,5 +1,5 @@
 import { useTranslation } from 'react-i18next'
-import { ClipboardList, FolderOpen } from 'lucide-react'
+import { FolderOpen } from 'lucide-react'
 import {
   getQuestionBankName,
   getTeacherName,
@@ -8,23 +8,23 @@ import {
 } from '../../../lib/subjectDisplay'
 import TeacherAvatar from './TeacherAvatar'
 import SubjectTopicsSection from './SubjectTopicsSection'
-
-const placeholderExams = [
-  { id: 1, name: 'Mechanics exam', status: 'completed' },
-  { id: 2, name: 'Thermodynamics', status: 'active' },
-]
+import { SubjectRecentExamsPanel } from './SubjectExamsTab'
 
 function SubjectOverviewTab({
   subject,
   teachers,
   questionBanks,
   topics,
+  exams = [],
+  examsLoading = false,
+  examsError = '',
   onViewAllTeachers,
   onRefreshTopics,
 }) {
   const { t } = useTranslation(['subjects', 'common'])
   const recentTeachers = sortByRecentDate(teachers).slice(0, 2)
   const recentBanks = sortByRecentDate(questionBanks).slice(0, 3)
+  const recentExams = exams.slice(0, 5)
 
   return (
     <div className="grid gap-6 xl:grid-cols-[minmax(0,1fr)_300px]">
@@ -80,33 +80,7 @@ function SubjectOverviewTab({
       </div>
 
       <aside className="space-y-6">
-        <section className="rounded-2xl bg-white p-5 shadow-[0_2px_12px_rgba(15,23,42,0.04)] ring-1 ring-[#E5E9EB]">
-          <div className="mb-4 flex items-center gap-2">
-            <ClipboardList className="h-4 w-4 text-[#94A3B8]" />
-            <h2 className="text-base font-bold text-[#2A3433]">{t('details.overview.recentExams')}</h2>
-          </div>
-          <div className="space-y-3">
-            {placeholderExams.map((exam) => (
-              <div
-                key={exam.id}
-                className="flex items-center justify-between gap-3 rounded-xl bg-[#F8FAFB] px-3 py-3"
-              >
-                <span className="text-sm font-semibold text-[#374151]">{exam.name}</span>
-                <span
-                  className={`shrink-0 rounded-md px-2 py-1 text-[11px] font-bold ${
-                    exam.status === 'active'
-                      ? 'bg-[#E8F7F6] text-[#2AA8A2]'
-                      : 'bg-[#F1F5F9] text-[#64748B]'
-                  }`}
-                >
-                  {exam.status === 'active'
-                    ? t('details.examStatus.active')
-                    : t('details.examStatus.completed')}
-                </span>
-              </div>
-            ))}
-          </div>
-        </section>
+        <SubjectRecentExamsPanel exams={recentExams} loading={examsLoading} error={examsError} />
 
         <section className="rounded-2xl bg-white p-5 shadow-[0_2px_12px_rgba(15,23,42,0.04)] ring-1 ring-[#E5E9EB]">
           <div className="mb-4 flex items-center gap-2">

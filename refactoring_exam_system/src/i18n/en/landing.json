@@ -48,6 +48,32 @@
       "description": "Dive into performance metrics with psychometric analysis and cohort progress tracking."
     }
   },
+  "solutions": {
+    "title": "Solutions designed for every learning experience",
+    "subtitle": "From question banks to student performance analysis and exam protection, QuizHub brings academic assessment tools into one platform for institutions, teachers, and students.",
+    "items": {
+      "institutions": {
+        "title": "Educational institutions",
+        "tagline": "Unified academic assessment management",
+        "description": "Give your institution a central space to manage teachers, students, subjects, and exams, with reports and analytics that support data-driven decisions."
+      },
+      "teachers": {
+        "title": "Teachers",
+        "tagline": "Create, assess, and analyze with ease",
+        "description": "Build question banks and exams, assign them to students, track results, and spot strengths and gaps without wasting time on manual work."
+      },
+      "students": {
+        "title": "Students",
+        "tagline": "A clearer exam experience",
+        "description": "Take exams in an organized, secure environment and follow your results and academic progress to know where you improve and where you need practice."
+      },
+      "secureExams": {
+        "title": "Secure exams",
+        "tagline": "Academic integrity you can trust",
+        "description": "Monitoring and analysis tools that help detect unusual behavior during exams and strengthen result reliability."
+      }
+    }
+  },
   "cta": {
     "title": "Ready to elevate your institution?",
     "subtitle": "Join hundreds of universities and schools transforming their assessment strategy with EduAssess.",

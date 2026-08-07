@@ -133,6 +133,7 @@
       "recentTeachers": "المعلمون المرتبطون حديثاً",
       "noTeachers": "لا يوجد معلمون مسندون لهذه المادة بعد",
       "recentExams": "آخر الاختبارات",
+      "noExams": "لا توجد اختبارات لهذه المادة بعد",
       "recentBanks": "أحدث بنوك الأسئلة",
       "noBanks": "لا توجد بنوك أسئلة مرتبطة بعد"
     },
@@ -145,7 +146,7 @@
     },
     "exams": {
       "title": "اختبارات المادة",
-      "apiNote": "سيتم ربط الاختبارات عند توفر API"
+      "empty": "لا توجد اختبارات مرتبطة بهذه المادة بعد"
     },
     "examStatus": {
       "active": "نشط",
@@ -153,13 +154,15 @@
     },
     "stats": {
       "teachers": "عدد المعلمين",
-      "teachersBadge": "+12% هذا الشهر",
       "banks": "بنوك الأسئلة",
-      "banksBadge": "محدث اليوم",
       "exams": "عدد الاختبارات",
-      "examsBadge": "5 اختبارات نشطة",
-      "evaluatedStudents": "الطلاب الذين تم تقييمهم",
-      "successRateBadge": "نسبة نجاح 88%"
+      "publishedExamsHint": "{{count}} منشور",
+      "enrolledStudents": "الطلاب المسندون"
     }
+  },
+  "notFound": "المادة غير موجودة",
+  "errors": {
+    "loadDetailsFailed": "تعذّر تحميل تفاصيل المادة",
+    "loadExamsFailed": "تعذّر تحميل اختبارات المادة"
   }
 }

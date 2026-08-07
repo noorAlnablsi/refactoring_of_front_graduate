@@ -34,7 +34,7 @@ function StatCard({ label, value, icon: Icon, iconWrapClass, badge, badgeClassNa
   )
 }
 
-function SubjectStatsCards({ subjectsCount, teachersCount, teachersLoading }) {
+function SubjectStatsCards({ subjectsCount, teachersCount, teachersLoading, examsCount }) {
   const { t } = useTranslation(['subjects', 'common'])
   const teachersValue = teachersLoading
     ? '…'
@@ -51,8 +51,6 @@ function SubjectStatsCards({ subjectsCount, teachersCount, teachersLoading }) {
         value={formatStatValue(subjectsCount)}
         icon={BookOpen}
         iconWrapClass="bg-[var(--shell-accent-bg)] text-[var(--shell-accent)]"
-        badge={t('stats.growthBadge')}
-        badgeClassName="bg-[var(--shell-accent-bg)] text-[var(--shell-accent)]"
         accentClassName="bg-[var(--shell-accent)]"
       />
       <StatCard
@@ -60,17 +58,13 @@ function SubjectStatsCards({ subjectsCount, teachersCount, teachersLoading }) {
         value={teachersValue}
         icon={Users}
         iconWrapClass="bg-[var(--shell-info-bg)] text-[var(--shell-info-text)]"
-        badge={isInstitutionWorkspace() ? t('stats.newTeachersBadge') : undefined}
-        badgeClassName="bg-[var(--shell-info-bg)] text-[var(--shell-info-text)]"
         accentClassName="bg-[var(--shell-info-text)]"
       />
       <StatCard
         label={t('stats.totalExams')}
-        value="—"
+        value={formatStatValue(examsCount ?? 0)}
         icon={ClipboardList}
         iconWrapClass="bg-[var(--shell-hover)] text-[var(--shell-text-subtle)]"
-        badge={t('comingSoon', { ns: 'common' })}
-        badgeClassName="bg-[var(--shell-hover)] text-[var(--shell-text-muted)]"
         accentClassName="bg-[var(--shell-border)]"
       />
     </div>
