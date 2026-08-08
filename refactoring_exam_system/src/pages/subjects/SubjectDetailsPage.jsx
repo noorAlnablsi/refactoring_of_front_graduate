@@ -10,6 +10,7 @@ import SubjectDetailsTabs from '../../components/subjects/details/SubjectDetails
 import SubjectExamsTab from '../../components/subjects/details/SubjectExamsTab'
 import SubjectOverviewTab from '../../components/subjects/details/SubjectOverviewTab'
 import SubjectQuestionBanksTab from '../../components/subjects/details/SubjectQuestionBanksTab'
+import SubjectStudentsTab from '../../components/subjects/details/SubjectStudentsTab'
 import SubjectTeachersTab from '../../components/subjects/details/SubjectTeachersTab'
 import { useSubjectDetails } from '../../hooks/subjects/useSubjectDetails'
 import { removeTeacherFromSubject } from '../../services/subjects.service'
@@ -114,6 +115,8 @@ function SubjectDetailsPage() {
       {activeTab === 'teachers' ? (
         <SubjectTeachersTab teachers={teachers} onRemove={handleRemoveTeacher} />
       ) : null}
+
+      {activeTab === 'students' ? <SubjectStudentsTab students={students} /> : null}
 
       {activeTab === 'banks' ? <SubjectQuestionBanksTab questionBanks={questionBanks} /> : null}
       {activeTab === 'exams' ? (

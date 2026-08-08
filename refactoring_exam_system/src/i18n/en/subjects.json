@@ -124,6 +124,7 @@
     "tabs": {
       "overview": "Overview",
       "teachers": "Teachers",
+      "students": "Students",
       "banks": "Question banks",
       "exams": "Exams"
     },
@@ -140,6 +141,15 @@
     "teachers": {
       "empty": "No teachers assigned to this subject",
       "remove": "Remove"
+    },
+    "students": {
+      "empty": "No students assigned to this subject yet",
+      "columns": {
+        "student": "Student",
+        "email": "Email",
+        "phone": "Phone number",
+        "status": "Status"
+      }
     },
     "banks": {
       "empty": "No question banks linked to this subject"

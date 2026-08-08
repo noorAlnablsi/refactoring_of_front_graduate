@@ -1,6 +1,6 @@
 import { useTranslation } from 'react-i18next'
 
-const TAB_IDS = ['overview', 'teachers', 'banks', 'exams']
+const TAB_IDS = ['overview', 'teachers', 'students', 'banks', 'exams']
 
 function SubjectDetailsTabs({ activeTab, onChange }) {
   const { t } = useTranslation('subjects')

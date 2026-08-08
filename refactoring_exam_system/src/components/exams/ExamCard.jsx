@@ -1,4 +1,14 @@
-import { Activity, Archive, ClipboardCheck, Clock, Edit3, FileText, Trash2, Users } from 'lucide-react'
+import {
+  Activity,
+  Archive,
+  ClipboardCheck,
+  Clock,
+  Edit3,
+  FileText,
+  Lock,
+  Trash2,
+  Users,
+} from 'lucide-react'
 import { useNavigate } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { ROUTES } from '../../constants/routes'
@@ -30,6 +40,19 @@ function ExamCard({ test, onArchive, onClose, onDelete }) {
   const editable = canEditTest(test)
   const testId = getTestId(test)
 
+  const showContinue = isDraft
+  const showEdit = editable && !isDraft
+  const showGrade = isPublished || isClosed
+  const showMonitor = isPublished
+  const showClose = canShowCloseExamButton(test)
+  const showDelete = isDraft
+  const showArchive = test.status !== TEST_STATUS.ARCHIVED
+
+  const hasPrimaryRow = showContinue || showGrade || showMonitor || (showEdit && !showGrade)
+  const hasStartUtils = (showEdit && showGrade) || showClose
+  const hasEndUtils = showDelete || showArchive
+  const hasUtilityRow = hasStartUtils || hasEndUtils
+
   const handleContinue = () => {
     const progress = getExamWizardProgress(testId)
     const step = getResumeWizardStep(test, progress)
@@ -44,8 +67,17 @@ function ExamCard({ test, onArchive, onClose, onDelete }) {
     navigate(ROUTES.EXAM_MONITORING.replace(':id', testId))
   }
 
+  const primaryButtonClass = `w-full justify-center ${shellAccentButtonClass} h-10 px-3 py-2 text-xs`
+  const softButtonClass = `w-full justify-center ${shellAccentSoftButtonClass} h-10 px-3`
+  const ghostButtonClass = `inline-flex h-9 items-center gap-1.5 ${shellGhostButtonClass}`
+  const dangerButtonClass =
+    'inline-flex h-9 items-center gap-1.5 rounded-xl px-3 py-2 text-xs font-bold text-[var(--shell-danger-text)] transition hover:bg-[var(--shell-danger-bg)]'
+
+  const primaryGridClass =
+    showGrade && showMonitor ? 'grid grid-cols-2 gap-2' : 'grid grid-cols-1 gap-2'
+
   return (
-    <article className={`flex flex-col p-5 ${shellCardInteractiveClass}`}>
+    <article className={`flex h-full flex-col p-5 ${shellCardInteractiveClass}`}>
       <div className="flex items-start justify-between gap-3">
         <div className="min-w-0 flex-1">
           <h3 className={`truncate text-lg ${shellPageTitleClass}`}>
@@ -83,63 +115,93 @@ function ExamCard({ test, onArchive, onClose, onDelete }) {
         </p>
       ) : null}
 
-      <div className={`mt-5 flex flex-wrap gap-2 border-t pt-4 ${shellDividerClass}`}>
-        {isDraft ? (
-          <button type="button" onClick={handleContinue} className={`${shellAccentButtonClass} px-4 py-2 text-xs`}>
-            <Edit3 className="h-3.5 w-3.5" />
-            {t('card.continueEditing')}
-          </button>
-        ) : editable ? (
-          <button
-            type="button"
-            onClick={() => navigate(ROUTES.EXAM_EDIT.replace(':id', testId))}
-            className={shellAccentSoftButtonClass}
+      <div className={`mt-auto flex flex-col gap-2 border-t pt-4 ${shellDividerClass}`}>
+        {hasPrimaryRow ? (
+          <div className={primaryGridClass}>
+            {showContinue ? (
+              <button type="button" onClick={handleContinue} className={primaryButtonClass}>
+                <Edit3 className="h-3.5 w-3.5 shrink-0" />
+                {t('card.continueEditing')}
+              </button>
+            ) : null}
+
+            {showEdit && !showGrade ? (
+              <button
+                type="button"
+                onClick={() => navigate(ROUTES.EXAM_EDIT.replace(':id', testId))}
+                className={softButtonClass}
+              >
+                <Edit3 className="h-3.5 w-3.5 shrink-0" />
+                {t('card.edit')}
+              </button>
+            ) : null}
+
+            {showGrade ? (
+              <button type="button" onClick={openAttempts} className={primaryButtonClass}>
+                <ClipboardCheck className="h-3.5 w-3.5 shrink-0" />
+                {t('card.gradeAttempts')}
+              </button>
+            ) : null}
+
+            {showMonitor ? (
+              <button type="button" onClick={openMonitoring} className={softButtonClass}>
+                <Activity className="h-3.5 w-3.5 shrink-0" />
+                {t('card.liveMonitoring')}
+              </button>
+            ) : null}
+          </div>
+        ) : null}
+
+        {hasUtilityRow ? (
+          <div
+            className={`flex items-center gap-2 ${
+              hasStartUtils ? 'justify-between' : 'justify-end'
+            }`}
           >
-            <Edit3 className="h-3.5 w-3.5" />
-            {t('card.edit')}
-          </button>
-        ) : null}
+            {hasStartUtils ? (
+              <div className="flex min-w-0 flex-wrap items-center gap-2">
+                {showEdit && showGrade ? (
+                  <button
+                    type="button"
+                    onClick={() => navigate(ROUTES.EXAM_EDIT.replace(':id', testId))}
+                    className={ghostButtonClass}
+                  >
+                    <Edit3 className="h-3.5 w-3.5 shrink-0" />
+                    {t('card.edit')}
+                  </button>
+                ) : null}
 
-        {isPublished || isClosed ? (
-          <button type="button" onClick={openAttempts} className={`${shellAccentButtonClass} px-4 py-2 text-xs`}>
-            <ClipboardCheck className="h-3.5 w-3.5" />
-            {t('card.gradeAttempts')}
-          </button>
-        ) : null}
+                {showClose ? (
+                  <button type="button" onClick={() => onClose?.(test)} className={ghostButtonClass}>
+                    <Lock className="h-3.5 w-3.5 shrink-0" />
+                    {t('card.closeExam')}
+                  </button>
+                ) : null}
+              </div>
+            ) : null}
 
-        {isPublished ? (
-          <button type="button" onClick={openMonitoring} className={shellAccentSoftButtonClass}>
-            <Activity className="h-3.5 w-3.5" />
-            {t('card.liveMonitoring')}
-          </button>
-        ) : null}
+            {hasEndUtils ? (
+              <div className="flex shrink-0 items-center gap-1">
+                {showDelete ? (
+                  <button type="button" onClick={() => onDelete?.(test)} className={dangerButtonClass}>
+                    <Trash2 className="h-3.5 w-3.5 shrink-0" />
+                    {t('card.delete')}
+                  </button>
+                ) : null}
 
-        {canShowCloseExamButton(test) ? (
-          <button type="button" onClick={() => onClose?.(test)} className={shellGhostButtonClass}>
-            {t('card.closeExam')}
-          </button>
-        ) : null}
-
-        {isDraft ? (
-          <button
-            type="button"
-            onClick={() => onDelete?.(test)}
-            className="inline-flex items-center gap-1.5 rounded-xl px-4 py-2 text-xs font-bold text-[var(--shell-danger-text)] transition hover:bg-[var(--shell-danger-bg)]"
-          >
-            <Trash2 className="h-3.5 w-3.5" />
-            {t('card.delete')}
-          </button>
-        ) : null}
-
-        {test.status !== TEST_STATUS.ARCHIVED ? (
-          <button
-            type="button"
-            onClick={() => onArchive?.(test)}
-            className="inline-flex items-center gap-1.5 rounded-xl px-4 py-2 text-xs font-bold text-[var(--shell-danger-text)] transition hover:bg-[var(--shell-danger-bg)]"
-          >
-            <Archive className="h-3.5 w-3.5" />
-            {t('card.archive')}
-          </button>
+                {showArchive ? (
+                  <button
+                    type="button"
+                    onClick={() => onArchive?.(test)}
+                    className={dangerButtonClass}
+                  >
+                    <Archive className="h-3.5 w-3.5 shrink-0" />
+                    {t('card.archive')}
+                  </button>
+                ) : null}
+              </div>
+            ) : null}
+          </div>
         ) : null}
       </div>
     </article>

@@ -1,5 +1,4 @@
 import { AlertTriangle, Bell } from 'lucide-react'
-import { useTranslation } from 'react-i18next'
 
 export function SettingsSwitch({ label, description, checked, onChange }) {
   return (
@@ -44,7 +43,6 @@ export function SettingsRadio({ label, checked, onChange }) {
 }
 
 export function SeverityCard({ tone, title, text }) {
-  const { t } = useTranslation('exams')
   const isAction = tone === 'action'
 
   return (
@@ -53,30 +51,22 @@ export function SeverityCard({ tone, title, text }) {
         isAction ? 'bg-[#FEF2F2] ring-1 ring-[#FECACA]' : 'bg-[#E8F7F6] ring-1 ring-[#CFECE9]'
       }`}
     >
-      <div className="flex items-start justify-between gap-3">
-        <div className="flex items-start gap-3">
-          {isAction ? (
-            <AlertTriangle className="mt-0.5 h-5 w-5 shrink-0 text-[#EF4444]" />
-          ) : (
-            <Bell className="mt-0.5 h-5 w-5 shrink-0 text-[#2AA8A2]" />
-          )}
-          <div>
-            <p
-              className={`text-sm font-extrabold ${
-                isAction ? 'text-[#DC2626]' : 'text-[#2AA8A2]'
-              }`}
-            >
-              {title}
-            </p>
-            <p className="mt-2 text-xs leading-6 text-[#64748B]">{text}</p>
-          </div>
+      <div className="flex items-start gap-3">
+        {isAction ? (
+          <AlertTriangle className="mt-0.5 h-5 w-5 shrink-0 text-[#EF4444]" />
+        ) : (
+          <Bell className="mt-0.5 h-5 w-5 shrink-0 text-[#2AA8A2]" />
+        )}
+        <div>
+          <p
+            className={`text-sm font-extrabold ${
+              isAction ? 'text-[#DC2626]' : 'text-[#2AA8A2]'
+            }`}
+          >
+            {title}
+          </p>
+          <p className="mt-2 text-xs leading-6 text-[#64748B]">{text}</p>
         </div>
-        <button
-          type="button"
-          className="shrink-0 text-xs font-bold text-[#94A3B8] hover:text-[#64748B]"
-        >
-          {t('settings.severity.edit')}
-        </button>
       </div>
     </div>
   )
