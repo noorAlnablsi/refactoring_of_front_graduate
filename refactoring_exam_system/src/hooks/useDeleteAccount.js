@@ -9,7 +9,7 @@ import { useAuthStore } from '../store/authStore'
 import { useToastStore } from '../store/toastStore'
 
 export function useDeleteAccount() {
-  const { t } = useTranslation(['student', 'settings'])
+  const { t } = useTranslation(['settings', 'student'])
   const navigate = useNavigate()
   const clearAuth = useAuthStore((state) => state.clearAuth)
   const showToast = useToastStore((state) => state.showToast)
@@ -25,16 +25,14 @@ export function useDeleteAccount() {
       clearScheduledRefresh()
       clearAuth()
       showToast(
-        translateBackendMessage(data?.message) ||
-          t('settingsPage.privacy.deleteSuccess', { ns: 'student' }),
+        translateBackendMessage(data?.message) || t('privacy.deleteSuccess', { ns: 'settings' }),
         'success',
       )
       navigate(ROUTES.LOGIN, { replace: true })
       return data
     } catch (err) {
       showToast(
-        translateBackendMessage(err.message) ||
-          t('settingsPage.privacy.deleteFailed', { ns: 'student' }),
+        translateBackendMessage(err.message) || t('privacy.deleteFailed', { ns: 'settings' }),
         'error',
       )
       throw err

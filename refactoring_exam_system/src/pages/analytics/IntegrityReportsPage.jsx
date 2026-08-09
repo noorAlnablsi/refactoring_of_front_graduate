@@ -11,6 +11,7 @@ import {
 } from '../../hooks/analytics/useIntegrityReports'
 import { tUI } from '../../lib/appToast'
 import { INTEGRITY_REPORT_STATUS } from '../../lib/integrityReportsModel'
+import { formatLocaleNumber } from '../../lib/localeNumber'
 import {
   shellGhostButtonClass,
   shellInputClass,
@@ -177,7 +178,7 @@ function IntegrityReportsPage() {
 
       <div className="flex items-center justify-between gap-3">
         <p className="text-xs font-semibold text-[var(--shell-text-muted)]">
-          {total} · {page}/{pages}
+          {formatLocaleNumber(total)} · {formatLocaleNumber(page)}/{formatLocaleNumber(pages)}
         </p>
         <div className="flex gap-2">
           <button

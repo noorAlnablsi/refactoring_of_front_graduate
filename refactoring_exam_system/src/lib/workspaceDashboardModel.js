@@ -1,4 +1,5 @@
 import i18n from '../i18n'
+import { localizeDigits } from './localeNumber'
 
 function tDashboard(key, options = {}) {
   return i18n.t(key, { ns: 'dashboard', ...options })
@@ -58,7 +59,7 @@ export function formatExamDateBadge(date) {
 
 export function formatExamTimeLabel(time) {
   if (!time) return tDashboard('upcoming.timeUnavailable')
-  return time
+  return localizeDigits(time)
 }
 
 export function formatBankUpdatedLabel(dateString) {

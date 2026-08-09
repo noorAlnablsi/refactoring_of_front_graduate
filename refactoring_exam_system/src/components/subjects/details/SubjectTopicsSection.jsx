@@ -4,6 +4,7 @@ import { Pencil, Plus, Trash2 } from 'lucide-react'
 import CreateTopicModal from '../topics/CreateTopicModal'
 import EditTopicModal from '../topics/EditTopicModal'
 import { canManageSubjectTopics } from '../../../lib/workspaceContext'
+import { formatLocaleNumber } from '../../../lib/localeNumber'
 import { deleteSubjectTopic } from '../../../services/subjects.service'
 import { useToastStore } from '../../../store/toastStore'
 
@@ -82,7 +83,7 @@ function SubjectTopicsSection({ subjectId, topics, onRefresh }) {
                   <div className="flex flex-wrap items-center gap-2">
                     {topic.id != null ? (
                       <span className="inline-flex h-6 min-w-6 shrink-0 items-center justify-center rounded-full bg-[#E8F6F5] px-2 text-[11px] font-bold tabular-nums text-[#2AA8A2] ring-1 ring-[#2AA8A2]/15">
-                        {topic.id}
+                        {formatLocaleNumber(topic.id)}
                       </span>
                     ) : null}
                     <p className="font-bold text-[#2A3433]">{topic.name}</p>

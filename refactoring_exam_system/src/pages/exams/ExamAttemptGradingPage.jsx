@@ -28,7 +28,7 @@ function QuestionBlock({ question, children }) {
     <article className={`p-5 ${shellCardClass}`}>
       <div className="flex flex-wrap items-center justify-between gap-2">
         <p className="text-xs font-bold text-[#2AA8A2]">
-          #{question.test_question_id} · {question.snapshot_type_code || '—'}
+          #{formatLocaleNumber(question.test_question_id)} · {question.snapshot_type_code || '—'}
         </p>
         <p className="text-xs font-bold text-[#64748B]">{formatLocaleNumber(points)} pts</p>
       </div>

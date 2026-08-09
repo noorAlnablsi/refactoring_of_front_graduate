@@ -129,6 +129,7 @@ function RegisterSelectRolePage() {
 
         <button
           type="submit"
+          data-keyboard-primary=""
           className="mt-8 h-12 w-full rounded-xl bg-[#2AA8A2] text-base font-bold text-white shadow-[0_12px_20px_rgba(42,168,162,0.22)] transition hover:opacity-95 md:w-[448px]"
         >
           {t('register.selectRole.next')}

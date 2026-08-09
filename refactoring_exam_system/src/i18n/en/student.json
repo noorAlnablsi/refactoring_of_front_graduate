@@ -219,7 +219,7 @@
       "logoutHint": "You will need to sign in again.",
       "loggingOut": "Signing out...",
       "deleteTitle": "Permanently delete account",
-      "deleteHint": "This will delete all your files and exams and cannot be undone.",
+      "deleteHint": "Soft-deletes your account; data remains recoverable by a Super Admin for about one month.",
       "deleting": "Deleting account...",
       "deleteConfirmTitle": "Confirm account deletion",
       "deleteConfirmMessage": "Are you sure you want to delete your account? You will not be able to sign in after this.",

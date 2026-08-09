@@ -1,5 +1,6 @@
 import { useTranslation } from 'react-i18next'
 import { TEST_WIZARD_STEP_KEYS } from '../../constants/tests'
+import { formatLocaleNumber } from '../../lib/localeNumber'
 
 function ExamWizardStepper({ currentStep }) {
   const { t } = useTranslation('exams')
@@ -23,7 +24,7 @@ function ExamWizardStepper({ currentStep }) {
                     : 'bg-[var(--shell-hover)] text-[var(--shell-text-subtle)]'
               }`}
             >
-              {step}
+              {formatLocaleNumber(step)}
             </div>
             <span
               className={`hidden text-sm font-semibold sm:inline ${

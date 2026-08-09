@@ -1,4 +1,5 @@
 import { useTranslation } from 'react-i18next'
+import { formatLocaleNumber } from '../../../lib/localeNumber'
 import { formatStatValue } from '../../../lib/subjectDisplay'
 import {
   shellBodyTextClass,
@@ -9,7 +10,7 @@ import {
 function TeachersSummaryCards({ total, activeRate, loading }) {
   const { t } = useTranslation('members')
   const totalValue = loading ? '…' : formatStatValue(total)
-  const rateValue = loading ? '…' : `${activeRate}%`
+  const rateValue = loading ? '…' : `${formatLocaleNumber(activeRate)}%`
 
   return (
     <div className="grid gap-4 md:grid-cols-2">

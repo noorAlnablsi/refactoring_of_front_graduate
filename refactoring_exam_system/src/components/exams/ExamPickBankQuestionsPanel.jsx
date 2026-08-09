@@ -3,6 +3,7 @@ import { useTranslation } from 'react-i18next'
 import { ArrowRight, Check, Plus, Search } from 'lucide-react'
 import ExamWizardFooter from './ExamWizardFooter'
 import { showAppToast } from '../../lib/appToast'
+import { formatLocaleNumber } from '../../lib/localeNumber'
 import { getQuestionBankQuestions } from '../../services/questionBanks.service'
 import { addQuestionsFromBank } from '../../services/tests.service'
 import { useToastStore } from '../../store/toastStore'
@@ -44,7 +45,7 @@ function SelectableBankQuestionCard({ question, selected, onToggle, t, choiceLet
             {t(`questionTypes.${question.type_code}`, { defaultValue: question.type_code })}
           </span>
           <span className="rounded-full bg-[#E8F7F6] px-3 py-1 text-xs font-bold text-[#2AA8A2]">
-            {points}{' '}
+            {formatLocaleNumber(points)}{' '}
             {points === 1 ? t('wizard.questions.review.points') : t('wizard.questions.review.pointsPlural')}
           </span>
         </div>
@@ -71,7 +72,8 @@ function SelectableBankQuestionCard({ question, selected, onToggle, t, choiceLet
       {choices.length > 0 ? (
         <ul className="mt-5 space-y-3">
           {choices.map((choice, choiceIndex) => {
-            const letter = choiceLetters[choiceIndex] || String(choiceIndex + 1)
+            const letter =
+              choiceLetters[choiceIndex] || formatLocaleNumber(choiceIndex + 1)
             const isCorrect = Boolean(choice.is_correct)
 
             return (

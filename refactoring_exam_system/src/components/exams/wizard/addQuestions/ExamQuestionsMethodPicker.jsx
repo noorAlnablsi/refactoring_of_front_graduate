@@ -80,6 +80,7 @@ function ExamQuestionsMethodPicker({
         </button>
         <button
           type="button"
+          data-keyboard-primary=""
           onClick={handleNext}
           disabled={!canContinue}
           title={!canContinue ? t('wizard.questions.minOneTitle', { ns: 'exams' }) : undefined}

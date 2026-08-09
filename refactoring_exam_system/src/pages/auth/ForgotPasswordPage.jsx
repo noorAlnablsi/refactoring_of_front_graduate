@@ -42,7 +42,7 @@ function ForgotPasswordPage() {
 
         {error ? <p className="text-sm text-red-600">{error}</p> : null}
 
-        <button type="submit" disabled={loading} className={buttonClassName}>
+        <button type="submit" data-keyboard-primary="" disabled={loading} className={buttonClassName}>
           {loading ? t('passwordReset.sending') : t('passwordReset.sendCode')}
         </button>
       </form>

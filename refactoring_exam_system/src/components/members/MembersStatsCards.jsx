@@ -26,14 +26,17 @@ function MembersStatCard({
   const actionClassName = `mt-auto w-full justify-center ${shellAccentButtonClass}`
 
   return (
-    <div className={`relative flex min-h-[220px] flex-col overflow-hidden ${shellCardClass}`}>
-      <span className="absolute left-4 top-4 text-2xl" aria-hidden="true">
+    <div className={`relative flex min-h-[240px] flex-col overflow-hidden ${shellCardClass}`}>
+      <span
+        className="pointer-events-none absolute left-5 top-5 text-[42px] leading-none opacity-90"
+        aria-hidden="true"
+      >
         {emoji}
       </span>
 
       <div className="flex flex-1 flex-col px-5 pb-5 pt-5">
-        <span className="flex h-11 w-11 items-center justify-center rounded-full bg-[var(--shell-accent-bg)] text-[var(--shell-accent)]">
-          <Icon className="h-5 w-5" strokeWidth={2} />
+        <span className="flex h-14 w-14 items-center justify-center rounded-2xl bg-[var(--shell-accent-bg)] text-[var(--shell-accent)]">
+          <Icon className="h-7 w-7" strokeWidth={2} />
         </span>
 
         <div className="mt-5 text-right">

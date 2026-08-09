@@ -52,8 +52,11 @@ import GroupDetailsPage from './pages/groups/GroupDetailsPage'
 import AnalyticsPage from './pages/analytics/AnalyticsPage'
 import IntegrityReportsPage from './pages/analytics/IntegrityReportsPage'
 import { ROUTES } from './constants/routes'
+import { usePlatformKeyboardNav } from './hooks/usePlatformKeyboardNav'
 
 function App() {
+  usePlatformKeyboardNav()
+
   return (
     <Routes>
       <Route path={ROUTES.HOME} element={<LandingPage />} />

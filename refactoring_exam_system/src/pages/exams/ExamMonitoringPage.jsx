@@ -204,7 +204,7 @@ function ExamMonitoringPage() {
                   {liveEvents.map((event) => {
                     const name =
                       studentNameById.get(event.studentMembershipId) ||
-                      `#${event.studentMembershipId}`
+                      `#${formatLocaleNumber(event.studentMembershipId)}`
                     return (
                       <li key={event.id}>
                         <button

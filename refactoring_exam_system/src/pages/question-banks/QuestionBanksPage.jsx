@@ -16,6 +16,7 @@ import { ROUTES } from '../../constants/routes'
 import { useCommunityBanksView } from '../../hooks/question-banks/useCommunityBanksView'
 import { useQuestionBanks } from '../../hooks/question-banks/useQuestionBanks'
 import { showAppToast } from '../../lib/appToast'
+import { formatLocaleNumber } from '../../lib/localeNumber'
 import { parseQuestionBanksTab, QUESTION_BANK_TABS } from '../../lib/questionBanks'
 import {
   canAccessQuestionBanks,
@@ -156,7 +157,7 @@ function QuestionBanksPage() {
             {tab.label}
             {activeTab === tab.id && !loading ? (
               <span className="mr-2 rounded-full bg-[var(--shell-accent-bg)] px-2 py-0.5 text-xs text-[var(--shell-accent)]">
-                {banks.length}
+                {formatLocaleNumber(banks.length)}
               </span>
             ) : null}
             {activeTab === tab.id ? <span className={shellTabIndicatorClass} /> : null}

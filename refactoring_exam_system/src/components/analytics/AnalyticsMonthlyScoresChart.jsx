@@ -8,7 +8,7 @@ import {
   YAxis,
 } from 'recharts'
 import { useTranslation } from 'react-i18next'
-import { formatAnalyticsPercent } from '../../lib/institutionAnalyticsModel'
+import { formatAnalyticsCount, formatAnalyticsPercent } from '../../lib/institutionAnalyticsModel'
 import {
   shellBodyTextClass,
   shellCardClass,
@@ -52,6 +52,7 @@ function AnalyticsMonthlyScoresChart({ monthlyScores = [], loading }) {
                 axisLine={false}
                 width={32}
                 tick={{ fill: 'var(--shell-text-subtle)', fontSize: 11 }}
+                tickFormatter={(value) => formatAnalyticsCount(value)}
               />
               <Tooltip
                 cursor={{ fill: 'var(--shell-hover)' }}

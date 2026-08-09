@@ -1,5 +1,6 @@
 import { useTranslation } from 'react-i18next'
 import { TEST_STATUS } from '../../constants/tests'
+import { formatLocaleNumber } from '../../lib/localeNumber'
 import { getTestQuestionsCount } from '../../lib/testDisplay'
 import { getTestName } from '../../lib/testModel'
 import ExamStatusBadge from './ExamStatusBadge'
@@ -29,11 +30,15 @@ function ExamSummarySidebar({
         <dl className="mt-5 space-y-4 text-sm">
           <div className="flex items-center justify-between gap-3">
             <dt className="text-xs font-semibold text-[#94A3B8]">{t('sidebar.questionsCount')}</dt>
-            <dd className="font-extrabold text-[#2A3433]">{questionsCount}</dd>
+            <dd className="font-extrabold text-[#2A3433]">
+              {formatLocaleNumber(questionsCount ?? 0)}
+            </dd>
           </div>
           <div className="flex items-center justify-between gap-3">
             <dt className="text-xs font-semibold text-[#94A3B8]">{t('sidebar.totalScore')}</dt>
-            <dd className="font-extrabold text-[#2A3433]">{totalScore || 0}</dd>
+            <dd className="font-extrabold text-[#2A3433]">
+              {formatLocaleNumber(totalScore || 0)}
+            </dd>
           </div>
           <div className="flex items-center justify-between gap-3">
             <dt className="text-xs font-semibold text-[#94A3B8]">{t('sidebar.estimatedTime')}</dt>

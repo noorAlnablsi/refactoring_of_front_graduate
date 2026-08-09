@@ -5,6 +5,99 @@ import {
   isEssayQuestion,
   isMultiSelectQuestion,
 } from '../../../lib/attemptAnswers'
+import { formatLocaleNumber } from '../../../lib/localeNumber'
+
+function AttemptChoiceList({
+  questionId,
+  choices,
+  selected,
+  multi,
+  disabled,
+  onSelectChoice,
+  typeCode,
+  showLetter = false,
+  choiceLetters = [],
+  checkedClassName,
+  uncheckedClassName,
+}) {
+  const { t } = useTranslation('student')
+
+  const moveFocus = (fromIndex, delta) => {
+    if (!choices.length) return
+    const nextIndex = (fromIndex + delta + choices.length) % choices.length
+    const nextInput = document.querySelector(
+      `input[data-attempt-choice][data-qid="${questionId}"][data-choice-index="${nextIndex}"]`,
+    )
+    if (!nextInput || nextInput.disabled) return
+
+    nextInput.focus()
+    if (!multi) {
+      onSelectChoice?.(questionId, typeCode, nextIndex)
+    }
+  }
+
+  const handleListKeyDown = (event) => {
+    if (disabled) return
+    if (event.key !== 'ArrowDown' && event.key !== 'ArrowUp') return
+
+    const target = event.target
+    if (!(target instanceof HTMLInputElement)) return
+    if (target.getAttribute('data-attempt-choice') == null) return
+
+    const fromIndex = Number(target.dataset.choiceIndex)
+    if (!Number.isFinite(fromIndex)) return
+
+    event.preventDefault()
+    event.stopPropagation()
+    moveFocus(fromIndex, event.key === 'ArrowDown' ? 1 : -1)
+  }
+
+  return (
+    <div
+      role={multi ? 'group' : 'radiogroup'}
+      aria-label={t('attempt.choice')}
+      className="mt-5 space-y-3"
+      onKeyDown={handleListKeyDown}
+    >
+      {choices.map((choice, index) => {
+        const label =
+          typeof choice === 'string'
+            ? choice
+            : choice?.body ||
+              choice?.text ||
+              choice?.label ||
+              `${t('attempt.choice')} ${formatLocaleNumber(index + 1)}`
+        const checked = selected.includes(index)
+        const letter = choiceLetters[index] || String.fromCharCode(97 + index)
+
+        return (
+          <label
+            key={`${questionId}-${index}`}
+            className={`flex cursor-pointer items-center justify-between gap-3 rounded-2xl px-4 transition ${
+              checked ? checkedClassName : uncheckedClassName
+            } ${disabled ? 'pointer-events-none opacity-60' : ''}`}
+          >
+            <span className="text-sm font-semibold leading-7 text-[#2A3433]">{label}</span>
+            <span className="flex items-center gap-2">
+              {showLetter ? <span className="text-xs font-bold text-[#94A3B8]">{letter}</span> : null}
+              <input
+                type={multi ? 'checkbox' : 'radio'}
+                name={`q-${questionId}`}
+                data-attempt-choice=""
+                data-qid={questionId}
+                data-choice-index={index}
+                checked={checked}
+                disabled={disabled}
+                onChange={() => onSelectChoice?.(questionId, typeCode, index)}
+                className={showLetter ? 'h-4 w-4 accent-[#2AA8A2]' : 'h-5 w-5 shrink-0 accent-[#2AA8A2]'}
+              />
+            </span>
+          </label>
+        )
+      })}
+    </div>
+  )
+}
 
 function AttemptQuestionRenderer({
   question,
@@ -33,6 +126,7 @@ function AttemptQuestionRenderer({
   const imageUrl = getQuestionImageUrl(question)
   const choiceLetters = i18n.getResource(i18n.language, 'exams', 'choiceLetters') || []
   const sequential = variant === 'sequential'
+  const questionId = question.test_question_id
 
   if (sequential) {
     return (
@@ -61,46 +155,24 @@ function AttemptQuestionRenderer({
           {essay ? (
             <textarea
               value={answer?.answer_text || ''}
-              onChange={(e) => onEssayChange?.(question.test_question_id, e.target.value)}
+              onChange={(e) => onEssayChange?.(questionId, e.target.value)}
               disabled={disabled}
               rows={8}
               placeholder={t('attempt.essayPlaceholder')}
               className="mt-5 w-full rounded-2xl bg-[#F8FAFB] px-4 py-3 text-sm text-[#2A3433] outline-none ring-1 ring-[#E5E9EB] focus:ring-2 focus:ring-[#2AA8A2]/35 disabled:opacity-60"
             />
           ) : (
-            <div className="mt-5 space-y-3">
-              {choices.map((choice, index) => {
-                const label =
-                  typeof choice === 'string'
-                    ? choice
-                    : choice?.body ||
-                      choice?.text ||
-                      choice?.label ||
-                      `${t('attempt.choice')} ${index + 1}`
-                const checked = selected.includes(index)
-
-                return (
-                  <label
-                    key={`${question.test_question_id}-${index}`}
-                    className={`flex cursor-pointer items-center justify-between gap-3 rounded-2xl px-4 py-4 transition ${
-                      checked
-                        ? 'bg-[#E8F7F6] ring-2 ring-[#2AA8A2]'
-                        : 'bg-[#F3F6F7] ring-1 ring-transparent hover:bg-[#EEF2F4]'
-                    } ${disabled ? 'pointer-events-none opacity-60' : ''}`}
-                  >
-                    <span className="text-sm font-semibold leading-7 text-[#2A3433]">{label}</span>
-                    <input
-                      type={multi ? 'checkbox' : 'radio'}
-                      name={`q-${question.test_question_id}`}
-                      checked={checked}
-                      disabled={disabled}
-                      onChange={() => onSelectChoice?.(question.test_question_id, typeCode, index)}
-                      className="h-5 w-5 shrink-0 accent-[#2AA8A2]"
-                    />
-                  </label>
-                )
-              })}
-            </div>
+            <AttemptChoiceList
+              questionId={questionId}
+              choices={choices}
+              selected={selected}
+              multi={multi}
+              disabled={disabled}
+              onSelectChoice={onSelectChoice}
+              typeCode={typeCode}
+              checkedClassName="bg-[#E8F7F6] py-4 ring-2 ring-[#2AA8A2]"
+              uncheckedClassName="bg-[#F3F6F7] py-4 ring-1 ring-transparent hover:bg-[#EEF2F4]"
+            />
           )}
         </div>
       </article>
@@ -125,7 +197,7 @@ function AttemptQuestionRenderer({
         <button
           type="button"
           disabled={disabled}
-          onClick={() => onToggleMark?.(question.test_question_id)}
+          onClick={() => onToggleMark?.(questionId)}
           className={`inline-flex shrink-0 items-center gap-1.5 rounded-xl px-3 py-2 text-xs font-bold transition ${
             marked
               ? 'bg-[#FDF2F8] text-[#DB2777] ring-1 ring-[#FBCFE8]'
@@ -150,47 +222,26 @@ function AttemptQuestionRenderer({
       {essay ? (
         <textarea
           value={answer?.answer_text || ''}
-          onChange={(e) => onEssayChange?.(question.test_question_id, e.target.value)}
+          onChange={(e) => onEssayChange?.(questionId, e.target.value)}
           disabled={disabled}
           rows={8}
           placeholder={t('attempt.essayPlaceholder')}
           className="mt-5 w-full rounded-2xl bg-[#F8FAFB] px-4 py-3 text-sm text-[#2A3433] outline-none ring-1 ring-[#E5E9EB] focus:ring-2 focus:ring-[#2AA8A2]/35 disabled:opacity-60"
         />
       ) : (
-        <div className="mt-5 space-y-3">
-          {choices.map((choice, index) => {
-            const label =
-              typeof choice === 'string'
-                ? choice
-                : choice?.body || choice?.text || choice?.label || `${t('attempt.choice')} ${index + 1}`
-            const checked = selected.includes(index)
-            const letter = choiceLetters[index] || String.fromCharCode(97 + index)
-
-            return (
-              <label
-                key={`${question.test_question_id}-${index}`}
-                className={`flex cursor-pointer items-center justify-between gap-3 rounded-2xl px-4 py-3.5 ring-1 transition ${
-                  checked
-                    ? 'bg-white ring-2 ring-[#2AA8A2]'
-                    : 'bg-[#F8FAFB] ring-[#E5E9EB] hover:ring-[#CBD5E1]'
-                } ${disabled ? 'pointer-events-none opacity-60' : ''}`}
-              >
-                <span className="text-sm font-semibold leading-7 text-[#2A3433]">{label}</span>
-                <span className="flex items-center gap-2">
-                  <span className="text-xs font-bold text-[#94A3B8]">{letter}</span>
-                  <input
-                    type={multi ? 'checkbox' : 'radio'}
-                    name={`q-${question.test_question_id}`}
-                    checked={checked}
-                    disabled={disabled}
-                    onChange={() => onSelectChoice?.(question.test_question_id, typeCode, index)}
-                    className="h-4 w-4 accent-[#2AA8A2]"
-                  />
-                </span>
-              </label>
-            )
-          })}
-        </div>
+        <AttemptChoiceList
+          questionId={questionId}
+          choices={choices}
+          selected={selected}
+          multi={multi}
+          disabled={disabled}
+          onSelectChoice={onSelectChoice}
+          typeCode={typeCode}
+          showLetter
+          choiceLetters={choiceLetters}
+          checkedClassName="bg-white py-3.5 ring-2 ring-[#2AA8A2]"
+          uncheckedClassName="bg-[#F8FAFB] py-3.5 ring-1 ring-[#E5E9EB] hover:ring-[#CBD5E1]"
+        />
       )}
     </article>
   )

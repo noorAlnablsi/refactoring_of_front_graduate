@@ -252,6 +252,7 @@ function AttemptFooter({
         {isLast ? (
           <button
             type="button"
+            data-keyboard-primary=""
             onClick={onSubmit}
             disabled={submitting}
             className="inline-flex items-center gap-2 rounded-2xl bg-[#2AA8A2] px-6 py-3 text-sm font-extrabold text-white disabled:opacity-60"
@@ -262,6 +263,7 @@ function AttemptFooter({
         ) : (
           <button
             type="button"
+            data-keyboard-primary=""
             onClick={onNext}
             disabled={submitting}
             className="inline-flex items-center gap-2 rounded-2xl bg-[#2AA8A2] px-6 py-3 text-sm font-extrabold text-white disabled:opacity-60"

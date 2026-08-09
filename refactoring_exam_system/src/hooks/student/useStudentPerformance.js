@@ -1,9 +1,9 @@
 import { useCallback, useEffect, useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import {
-  buildPerformanceSummary,
   normalizeRecentExamsResponse,
   normalizeStudentResultsResponse,
+  pickPerformanceSummary,
   sortStudentResults,
 } from '../../lib/studentResultsModel'
 import {
@@ -93,7 +93,10 @@ export function useStudentPerformance() {
     }
   }, [t])
 
-  const summary = useMemo(() => buildPerformanceSummary(summaryResults), [summaryResults])
+  const summary = useMemo(
+    () => pickPerformanceSummary(summaryResults, tableItems),
+    [summaryResults, tableItems],
+  )
 
   const rows = useMemo(() => sortStudentResults(tableItems, sortBy), [tableItems, sortBy])
 

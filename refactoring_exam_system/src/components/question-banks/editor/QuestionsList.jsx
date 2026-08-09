@@ -6,6 +6,7 @@ import {
   getQuestionTopicLabel,
   getQuestionTypeLabel,
 } from '../../../lib/questionBanks'
+import { formatLocaleNumber } from '../../../lib/localeNumber'
 import { useToastStore } from '../../../store/toastStore'
 
 async function copyText(text, showToast, successMessage, errorMessages) {
@@ -69,7 +70,8 @@ function QuestionsList({
     <section className="rounded-2xl bg-white p-6 shadow-[0_2px_12px_rgba(15,23,42,0.04)] ring-1 ring-[#E5E9EB]">
       <div className="mb-5 flex flex-wrap items-center justify-between gap-3">
         <h3 className="text-lg font-extrabold text-[#2A3433]">
-          {readOnly ? t('editor.bankQuestionsTitle') : t('editor.addedQuestionsPreview')} ({questions.length})
+          {readOnly ? t('editor.bankQuestionsTitle') : t('editor.addedQuestionsPreview')} (
+          {formatLocaleNumber(questions.length)})
         </h3>
         {readOnly ? (
           <button
@@ -88,7 +90,7 @@ function QuestionsList({
           <article key={`${question.id || 'local'}-${index}`} className="rounded-xl bg-[#F8FAFB] p-4">
             <div className="mb-2 flex items-center justify-between gap-2">
               <span className="rounded-md bg-[#E8F7F6] px-2 py-1 text-xs font-bold text-[#2AA8A2]">
-                {index + 1}
+                {formatLocaleNumber(index + 1)}
               </span>
               <div className="flex items-center gap-2">
                 <div className="flex items-center gap-2 text-xs font-semibold text-[#64748B]">
@@ -133,7 +135,8 @@ function QuestionsList({
                     key={choice.id || choiceIndex}
                     className={choice.is_correct ? 'font-semibold text-[#0EA896]' : ''}
                   >
-                    {choiceIndex + 1}. <span dangerouslySetInnerHTML={{ __html: choice.body }} />
+                    {formatLocaleNumber(choiceIndex + 1)}.{' '}
+                    <span dangerouslySetInnerHTML={{ __html: choice.body }} />
                   </li>
                 ))}
               </ul>

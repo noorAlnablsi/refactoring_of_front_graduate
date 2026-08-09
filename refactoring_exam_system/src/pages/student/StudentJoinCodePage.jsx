@@ -74,6 +74,7 @@ function StudentJoinCodePage() {
 
       <button
         type="button"
+        data-keyboard-primary=""
         onClick={handleSubmit}
         disabled={loading}
         className="mt-8 h-12 w-full rounded-xl bg-[#2AA8A2] text-base font-bold text-white shadow-[0_12px_20px_rgba(42,168,162,0.22)] transition hover:opacity-95 disabled:opacity-70 md:w-[448px]"

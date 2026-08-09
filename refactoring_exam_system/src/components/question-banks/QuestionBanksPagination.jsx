@@ -1,5 +1,6 @@
 import { useTranslation } from 'react-i18next'
 import { ChevronLeft, ChevronRight } from 'lucide-react'
+import { formatLocaleNumber } from '../../lib/localeNumber'
 import { getPaginationItems } from '../../lib/pagination'
 
 function PageButton({ children, active, disabled, onClick, ariaLabel }) {
@@ -50,7 +51,7 @@ function QuestionBanksPagination({ page, totalPages, onPageChange }) {
             ariaLabel={t('pagination.page', { number: item.value })}
             onClick={() => onPageChange(item.value)}
           >
-            {item.value}
+            {formatLocaleNumber(item.value)}
           </PageButton>
         ),
       )}

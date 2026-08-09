@@ -1,6 +1,7 @@
 import { useTranslation } from 'react-i18next'
 import { ArrowLeft, ArrowRight, ClipboardList } from 'lucide-react'
 import ExamWizardFooter from '../ExamWizardFooter'
+import { formatLocaleNumber } from '../../../lib/localeNumber'
 import { getTestQuestionsCount, getTestTotalPoints } from '../../../lib/testDisplay'
 import { getTestId, getTestName } from '../../../lib/testModel'
 import ExamRandomGeneratedQuestionsPanel from '../ExamRandomGeneratedQuestionsPanel'
@@ -48,11 +49,13 @@ function ExamReviewStep({
           </div>
           <div className="rounded-xl bg-[#F6F8F9] p-4">
             <dt className="text-xs text-[#94A3B8]">{t('wizard.review.questionsCount')}</dt>
-            <dd className="mt-1 font-bold text-[#2AA8A2]">{displayQuestionsCount}</dd>
+            <dd className="mt-1 font-bold text-[#2AA8A2]">
+              {formatLocaleNumber(displayQuestionsCount ?? 0)}
+            </dd>
           </div>
           <div className="rounded-xl bg-[#F6F8F9] p-4">
             <dt className="text-xs text-[#94A3B8]">{t('wizard.review.totalPoints')}</dt>
-            <dd className="mt-1 font-bold text-[#2AA8A2]">{totalPoints}</dd>
+            <dd className="mt-1 font-bold text-[#2AA8A2]">{formatLocaleNumber(totalPoints)}</dd>
           </div>
           <div className="rounded-xl bg-[#F6F8F9] p-4">
             <dt className="text-xs text-[#94A3B8]">{t('wizard.review.duration')}</dt>
@@ -102,6 +105,7 @@ function ExamReviewStep({
             </button>
             <button
               type="button"
+              data-keyboard-primary=""
               onClick={onNext}
               className="inline-flex items-center gap-2 rounded-xl bg-[#2AA8A2] px-7 py-3 text-sm font-bold text-white"
             >

@@ -111,7 +111,9 @@
     "deleteEmailHint": "اكتب بريد حسابك بالكامل لتفعيل زر الحذف.",
     "deleteEmailPlaceholder": "name@example.com",
     "deleteEmailMismatch": "البريد المدخل لا يطابق بريد حسابك.",
-    "deleteConfirmAction": "حذف الحساب نهائياً"
+    "deleteConfirmAction": "حذف الحساب نهائياً",
+    "deleteSuccess": "تم حذف الحساب بنجاح",
+    "deleteFailed": "تعذر حذف الحساب"
   },
   "report": {
     "cardTitle": "الإبلاغ عن مشكلة",

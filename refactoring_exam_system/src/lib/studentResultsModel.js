@@ -7,20 +7,52 @@ function toNumber(value) {
 }
 
 /**
+ * Prefer explicit percentage; if missing/zero while earned score exists, derive from score/max.
+ */
+export function resolveResultPercentage({ percentage, score, maxScore } = {}) {
+  const pct = toNumber(percentage)
+  const earned = toNumber(score)
+  const maximum = toNumber(maxScore)
+
+  if (pct != null) {
+    if (pct === 0 && earned != null && earned > 0 && maximum != null && maximum > 0) {
+      return Math.round((earned / maximum) * 1000) / 10
+    }
+    return pct
+  }
+
+  if (earned != null && maximum != null && maximum > 0) {
+    return Math.round((earned / maximum) * 1000) / 10
+  }
+
+  return null
+}
+
+/**
  * Normalize GET /student/tests/results item (summary source).
  */
 export function normalizeStudentResultItem(raw) {
   if (!raw || typeof raw !== 'object') return null
 
-  const percentage = toNumber(raw.percentage)
-  const score = toNumber(raw.score)
-  const maxScore = toNumber(raw.max_score)
+  const scoreObj = raw.score && typeof raw.score === 'object' ? raw.score : null
+  const score = scoreObj ? toNumber(scoreObj.earned) : toNumber(raw.score)
+  const maxScore = scoreObj ? toNumber(scoreObj.maximum) : toNumber(raw.max_score)
+  const percentage = resolveResultPercentage({
+    percentage: scoreObj ? scoreObj.percentage : raw.percentage,
+    score,
+    maxScore,
+  })
+
+  const subject =
+    typeof raw.subject === 'object' && raw.subject
+      ? String(raw.subject.name || '').trim()
+      : String(raw.subject || '').trim()
 
   return {
     attemptId: raw.attempt_id,
     testId: raw.test_id,
     title: String(raw.title || '').trim() || '—',
-    subject: String(raw.subject || '').trim() || '—',
+    subject: subject || '—',
     teacherName: String(raw.teacher_name || '').trim() || '—',
     score,
     maxScore,
@@ -44,9 +76,13 @@ export function normalizeRecentExamItem(raw) {
   if (!raw || typeof raw !== 'object') return null
 
   const scoreObj = raw.score && typeof raw.score === 'object' ? raw.score : null
-  const percentage = scoreObj ? toNumber(scoreObj.percentage) : null
-  const score = scoreObj ? toNumber(scoreObj.earned) : null
-  const maxScore = scoreObj ? toNumber(scoreObj.maximum) : null
+  const score = scoreObj ? toNumber(scoreObj.earned) : toNumber(raw.score)
+  const maxScore = scoreObj ? toNumber(scoreObj.maximum) : toNumber(raw.max_score)
+  const percentage = resolveResultPercentage({
+    percentage: scoreObj ? scoreObj.percentage : raw.percentage,
+    score,
+    maxScore,
+  })
 
   const subject =
     typeof raw.subject === 'object' && raw.subject
@@ -92,7 +128,12 @@ export function normalizeRecentExamsResponse(data) {
  * Presentation-only summary from graded results list.
  */
 export function buildPerformanceSummary(results) {
-  const withPercentage = results.filter((row) => row.percentage != null)
+  const withPercentage = (results || [])
+    .map((row) => ({
+      ...row,
+      percentage: resolveResultPercentage(row),
+    }))
+    .filter((row) => row.percentage != null)
 
   const averageScore =
     withPercentage.length === 0
@@ -110,6 +151,7 @@ export function buildPerformanceSummary(results) {
   const subjectBuckets = new Map()
   for (const row of withPercentage) {
     const key = row.subject
+    if (!key || key === '—') continue
     if (!subjectBuckets.has(key)) subjectBuckets.set(key, [])
     subjectBuckets.get(key).push(row.percentage)
   }
@@ -129,8 +171,35 @@ export function buildPerformanceSummary(results) {
     averageScore,
     highestScore,
     subjectsNeedingImprovement,
-    totalCount: results.length,
+    totalCount: withPercentage.length,
   }
+}
+
+/**
+ * Prefer /tests/results when it has real graded percentages; otherwise use recent-exams
+ * rows (includes CLOSED tests that results often omits).
+ */
+export function pickPerformanceSummary(resultsList, recentRows) {
+  const fromResults = buildPerformanceSummary(resultsList)
+  const fromRecent = buildPerformanceSummary(recentRows)
+
+  const resultsUsable =
+    fromResults.averageScore != null || fromResults.highestScore != null
+  const recentUsable =
+    fromRecent.averageScore != null || fromRecent.highestScore != null
+
+  if (resultsUsable && recentUsable) {
+    const resultsLookEmpty =
+      (fromResults.averageScore === 0 || fromResults.averageScore == null) &&
+      (fromResults.highestScore === 0 || fromResults.highestScore == null) &&
+      fromRecent.averageScore > 0
+    if (resultsLookEmpty) return fromRecent
+    return fromResults
+  }
+
+  if (resultsUsable) return fromResults
+  if (recentUsable) return fromRecent
+  return fromResults
 }
 
 /** Sort within the current loaded page only (no server sort contract yet). */

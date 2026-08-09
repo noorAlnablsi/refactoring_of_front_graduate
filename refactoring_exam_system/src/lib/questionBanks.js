@@ -84,7 +84,7 @@ export function getCommunityBankTheme(bank) {
   return COMMUNITY_BANK_THEMES[index]
 }
 
-export function getCommunityBankAuthorName(bank) {
+export function getBankAuthorName(bank) {
   return (
     bank?.author_name ||
     bank?.created_by_name ||
@@ -92,11 +92,11 @@ export function getCommunityBankAuthorName(bank) {
     bank?.created_by?.full_name ||
     bank?.creator?.name ||
     bank?.creator_name ||
-    tQB('author.default')
+    null
   )
 }
 
-export function getCommunityBankAuthorAvatar(bank) {
+export function getBankAuthorAvatar(bank) {
   return (
     bank?.author_avatar_url ||
     bank?.created_by_avatar_url ||
@@ -107,6 +107,16 @@ export function getCommunityBankAuthorAvatar(bank) {
   )
 }
 
+/** Alias kept for older community imports. */
+export function getCommunityBankAuthorName(bank) {
+  return getBankAuthorName(bank)
+}
+
+/** Alias kept for older community imports. */
+export function getCommunityBankAuthorAvatar(bank) {
+  return getBankAuthorAvatar(bank)
+}
+
 export function getCommunityBankRating(bank) {
   const value = bank?.rating ?? bank?.average_rating ?? bank?.stars
   if (value == null || value === '') return 5
@@ -115,12 +125,23 @@ export function getCommunityBankRating(bank) {
   return Math.min(5, Math.max(0, numeric))
 }
 
-export function getCommunityBankUsageCount(bank) {
+/** Historical bank usage from BE `usage_count` (operation-based counter). */
+export function getBankUsageCount(bank) {
   const value =
     bank?.usage_count ?? bank?.uses_count ?? bank?.imports_count ?? bank?.download_count
 
-  if (value == null || value === '') return null
-  return Number(value)
+  if (value == null || value === '') return 0
+  const numeric = Number(value)
+  return Number.isNaN(numeric) ? 0 : numeric
+}
+
+export function getCommunityBankUsageCount(bank) {
+  return getBankUsageCount(bank)
+}
+
+export function formatBankUsageCount(bank) {
+  const count = getBankUsageCount(bank)
+  return tQB('counts.usage', { count: count.toLocaleString(getCountLocale()) })
 }
 
 export function formatCommunityQuestionsCount(bank) {
@@ -130,9 +151,7 @@ export function formatCommunityQuestionsCount(bank) {
 }
 
 export function formatCommunityUsageCount(bank) {
-  const count = getCommunityBankUsageCount(bank)
-  if (count == null || Number.isNaN(count)) return '—'
-  return tQB('counts.usage', { count: count.toLocaleString(getCountLocale()) })
+  return formatBankUsageCount(bank)
 }
 
 export function formatQuestionForCopy(question) {
@@ -298,7 +317,11 @@ export function getBankQuestionsCount(bank) {
     bank?.total_questions ??
     bank?.questions?.length
 
-  if (value == null || value === '') return null
+  if (value == null || value === '') {
+    // BE always sends questions_count now; treat explicit absence of the key as unknown.
+    if (bank && Object.prototype.hasOwnProperty.call(bank, 'questions_count')) return 0
+    return null
+  }
   return Number(value)
 }
 

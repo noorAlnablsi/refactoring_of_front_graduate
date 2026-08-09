@@ -33,8 +33,9 @@ function pickAttemptStudentName(raw) {
 
   const candidates = [
     raw?.student_name,
-    raw?.student_full_name,
     raw?.full_name,
+    raw?.user_name,
+    raw?.student_full_name,
     raw?.name,
     student?.full_name,
     student?.name,

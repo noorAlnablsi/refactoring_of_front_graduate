@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import {
+  formatAnalyticsCount,
   formatAnalyticsDate,
   formatAnalyticsPercent,
 } from '../../lib/institutionAnalyticsModel'
@@ -56,7 +57,7 @@ function IntegrityReportReviewModal({
               {t('integrity.detail.violations')}
             </dt>
             <dd className="mt-1 font-bold text-[var(--shell-text)]">
-              {report.violations_count}
+              {formatAnalyticsCount(report.violations_count)}
             </dd>
           </div>
           <div>

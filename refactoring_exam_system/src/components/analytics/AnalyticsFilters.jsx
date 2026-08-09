@@ -1,4 +1,5 @@
 import { useTranslation } from 'react-i18next'
+import { formatLocaleNumber } from '../../lib/localeNumber'
 import { getTeacherMembershipId } from '../../lib/workspaceTeachers'
 import { shellInputClass } from '../../lib/shellUi'
 
@@ -54,7 +55,7 @@ function AnalyticsFilters({
             if (!membershipId) return null
             return (
               <option key={membershipId} value={membershipId}>
-                {teacher.full_name || teacher.name || `#${membershipId}`}
+                {teacher.full_name || teacher.name || `#${formatLocaleNumber(membershipId)}`}
               </option>
             )
           })}

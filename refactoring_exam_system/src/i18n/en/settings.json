@@ -111,7 +111,9 @@
     "deleteEmailHint": "Type your account email exactly to enable the delete button.",
     "deleteEmailPlaceholder": "name@example.com",
     "deleteEmailMismatch": "The email you entered does not match your account email.",
-    "deleteConfirmAction": "Permanently delete account"
+    "deleteConfirmAction": "Permanently delete account",
+    "deleteSuccess": "Account deleted successfully",
+    "deleteFailed": "Could not delete account"
   },
   "report": {
     "cardTitle": "Report a problem",

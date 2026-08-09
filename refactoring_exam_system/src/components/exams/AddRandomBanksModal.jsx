@@ -2,6 +2,7 @@ import { useEffect, useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Globe, X } from 'lucide-react'
 import { QUESTION_BANK_TABS } from '../../lib/questionBanks'
+import { formatLocaleNumber } from '../../lib/localeNumber'
 import { showAppToast } from '../../lib/appToast'
 import {
   getWorkspaceQuestionBanks,
@@ -204,7 +205,7 @@ function AddRandomBanksModal({
               {t('banksModal.myBanks')}
               {!loading ? (
                 <span className="mr-2 rounded-full bg-[#E8F7F6] px-2 py-0.5 text-xs text-[#2AA8A2]">
-                  {myBanks.length}
+                  {formatLocaleNumber(myBanks.length)}
                 </span>
               ) : null}
               {activeTab === PICKER_TABS.MY ? (
@@ -223,7 +224,7 @@ function AddRandomBanksModal({
                 {t('banksModal.workspace')}
                 {!loading ? (
                   <span className="mr-2 rounded-full bg-[#E8F7F6] px-2 py-0.5 text-xs text-[#2AA8A2]">
-                    {workspaceBanks.length}
+                    {formatLocaleNumber(workspaceBanks.length)}
                   </span>
                 ) : null}
                 {activeTab === QUESTION_BANK_TABS.WORKSPACE ? (
@@ -242,7 +243,7 @@ function AddRandomBanksModal({
               {t('banksModal.community')}
               {!loading ? (
                 <span className="rounded-full bg-[#E8F7F6] px-2 py-0.5 text-xs text-[#2AA8A2]">
-                  {communityBanks.length}
+                  {formatLocaleNumber(communityBanks.length)}
                 </span>
               ) : null}
               {activeTab === PICKER_TABS.COMMUNITY ? (

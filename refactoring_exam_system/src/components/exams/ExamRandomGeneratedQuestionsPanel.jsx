@@ -3,6 +3,7 @@ import { useTranslation } from 'react-i18next'
 import { ArrowLeft, ArrowRight, Check, ClipboardList, Trash2 } from 'lucide-react'
 import ExamWizardFooter from './ExamWizardFooter'
 import { showAppToast } from '../../lib/appToast'
+import { formatLocaleNumber } from '../../lib/localeNumber'
 import { removeTestQuestion, updateTestQuestion } from '../../services/tests.service'
 import { useToastStore } from '../../store/toastStore'
 
@@ -84,7 +85,7 @@ function GeneratedQuestionCard({
             {t('wizard.questions.review.difficulty')} {t(`difficulty.${difficulty}`, { defaultValue: difficulty })}
           </span>
           <span className="rounded-full bg-[#E8F7F6] px-3 py-1 text-xs font-bold text-[#2AA8A2]">
-            {points}{' '}
+            {formatLocaleNumber(points)}{' '}
             {Number(points) === 1
               ? t('wizard.questions.review.points')
               : t('wizard.questions.review.pointsPlural')}
@@ -112,7 +113,8 @@ function GeneratedQuestionCard({
       {choices.length > 0 ? (
         <ul className="mt-5 space-y-3">
           {choices.map((choice, choiceIndex) => {
-            const letter = choiceLetters[choiceIndex] || String(choiceIndex + 1)
+            const letter =
+              choiceLetters[choiceIndex] || formatLocaleNumber(choiceIndex + 1)
             const isCorrect = Boolean(choice.is_correct)
 
             return (
@@ -248,7 +250,7 @@ function ExamRandomGeneratedQuestionsPanel({
           <ClipboardList className="h-5 w-5 text-[#2AA8A2]" strokeWidth={2.2} />
           <h3 className="text-base font-extrabold text-[#2A3433] md:text-lg">{resolvedSectionTitle}</h3>
           <span className="mr-2 rounded-full bg-[#E8F7F6] px-2.5 py-0.5 text-xs font-bold text-[#2AA8A2]">
-            {questions.length}
+            {formatLocaleNumber(questions.length)}
           </span>
         </div>
 
@@ -291,6 +293,7 @@ function ExamRandomGeneratedQuestionsPanel({
             </button>
             <button
               type="button"
+              data-keyboard-primary=""
               onClick={onContinue}
               disabled={questions.length < 1}
               className="inline-flex items-center gap-2 rounded-xl bg-[#2AA8A2] px-7 py-3 text-sm font-bold text-white shadow-[0_10px_20px_rgba(42,168,162,0.28)] transition hover:opacity-95 disabled:opacity-60"

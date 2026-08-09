@@ -3,6 +3,7 @@ import { useTranslation } from 'react-i18next'
 import { ArrowRight, Download, FileSpreadsheet, Upload } from 'lucide-react'
 import ExamWizardFooter from './ExamWizardFooter'
 import { showAppToast } from '../../lib/appToast'
+import { formatLocaleNumber } from '../../lib/localeNumber'
 import { getSubjectTopics } from '../../services/subjects.service'
 import {
   downloadExamQuestionsCsvTemplate,
@@ -117,7 +118,7 @@ function ExamCsvImportPanel({
                   key={topic.id}
                   className="inline-flex items-center gap-2 rounded-lg bg-white px-3 py-1.5 text-xs font-bold text-[#2A3433] ring-1 ring-[#E5E9EB]"
                 >
-                  <span className="text-[#2AA8A2]">#{topic.id}</span>
+                  <span className="text-[#2AA8A2]">#{formatLocaleNumber(topic.id)}</span>
                   <span>{topic.name}</span>
                 </li>
               ))}

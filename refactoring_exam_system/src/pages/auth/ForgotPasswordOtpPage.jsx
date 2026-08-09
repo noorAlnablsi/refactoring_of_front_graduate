@@ -45,6 +45,7 @@ function ForgotPasswordOtpPage() {
 
       <button
         type="button"
+        data-keyboard-primary=""
         onClick={verify}
         disabled={loading || otpValue.length !== 6}
         className={`mt-10 ${buttonClassName}`}

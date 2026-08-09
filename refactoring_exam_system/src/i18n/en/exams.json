@@ -21,6 +21,8 @@
     "questions": "{{count}} questions",
     "points": "{{count}} points",
     "minutes": "{{count}} minutes",
+    "participants": "{{count}} participants",
+    "averageScore": "Avg {{score}}%",
     "startsAt": "Starts: {{date}}",
     "continueEditing": "Continue editing",
     "edit": "Edit",
@@ -33,7 +35,17 @@
   "confirm": {
     "archive": "Archive exam \"{{name}}\"?",
     "close": "Close exam \"{{name}}\"?",
-    "delete": "Permanently delete exam \"{{name}}\"?"
+    "delete": "Permanently delete exam \"{{name}}\"?",
+    "itemLabel": "Exam",
+    "archiveTitle": "Confirm archive",
+    "archiveMessage": "Archive this exam? It will be hidden from active lists.",
+    "archiveNote": "You can return to it later from the archive if available.",
+    "closeTitle": "Confirm close exam",
+    "closeMessage": "Close this exam now? Students will not be able to continue afterward.",
+    "closeNote": "Closing stops ongoing attempts according to system settings.",
+    "deleteTitle": "Confirm deletion",
+    "deleteMessage": "Are you sure you want to delete this exam?",
+    "deleteNote": "Deletion is permanent and may not be reversible from the interface."
   },
   "toast": {
     "archived": "Exam archived",

@@ -135,6 +135,7 @@ function AttemptSequentialFooter({ isLast, submitting, onNext, onSubmit }) {
       {isLast ? (
         <button
           type="button"
+          data-keyboard-primary=""
           onClick={onSubmit}
           disabled={submitting}
           className="inline-flex items-center gap-2 rounded-2xl bg-[#2AA8A2] px-7 py-3.5 text-sm font-extrabold text-white shadow-[0_10px_20px_rgba(42,168,162,0.25)] disabled:opacity-60"
@@ -145,6 +146,7 @@ function AttemptSequentialFooter({ isLast, submitting, onNext, onSubmit }) {
       ) : (
         <button
           type="button"
+          data-keyboard-primary=""
           onClick={onNext}
           disabled={submitting}
           className="inline-flex items-center gap-2 rounded-2xl bg-[#2AA8A2] px-7 py-3.5 text-sm font-extrabold text-white shadow-[0_10px_20px_rgba(42,168,162,0.25)] disabled:opacity-60"

@@ -1,7 +1,8 @@
-import { useMemo, useState } from 'react'
+import { useState } from 'react'
 import { Navigate, useNavigate } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { Plus, Search } from 'lucide-react'
+import ConfirmActionDialog from '../../components/common/ConfirmActionDialog'
 import ExamCard from '../../components/exams/ExamCard'
 import { ROUTES } from '../../constants/routes'
 import { TEST_TABS } from '../../constants/tests'
@@ -24,70 +25,89 @@ import {
   shellTabsBarClass,
 } from '../../lib/shellUi'
 
+const EXAM_ACTION = {
+  ARCHIVE: 'archive',
+  CLOSE: 'close',
+  DELETE: 'delete',
+}
+
 function ExamsPage() {
   const { t } = useTranslation(['exams', 'common'])
   const navigate = useNavigate()
   const showToast = useToastStore((s) => s.showToast)
-  const tabs = useMemo(
-    () => [
-      { id: TEST_TABS.ALL, label: t('tabs.all', { ns: 'exams' }) },
-      { id: TEST_TABS.PUBLISHED, label: t('tabs.published', { ns: 'exams' }) },
-      { id: TEST_TABS.CORRECTED, label: t('tabs.corrected', { ns: 'exams' }) },
-      { id: TEST_TABS.DRAFTS, label: t('tabs.drafts', { ns: 'exams' }) },
-    ],
-    [t],
-  )
+  const tabs = [
+    { id: TEST_TABS.ALL, label: t('tabs.all', { ns: 'exams' }) },
+    { id: TEST_TABS.PUBLISHED, label: t('tabs.published', { ns: 'exams' }) },
+    { id: TEST_TABS.CORRECTED, label: t('tabs.corrected', { ns: 'exams' }) },
+    { id: TEST_TABS.DRAFTS, label: t('tabs.drafts', { ns: 'exams' }) },
+  ]
   const [activeTab, setActiveTab] = useState(TEST_TABS.ALL)
   const { filteredTests, loading, error, search, setSearch, refetch } = useTests(activeTab)
+  const [pendingAction, setPendingAction] = useState(null)
   const [actionLoading, setActionLoading] = useState(false)
 
-  if (!canAccessExams()) {
+  const allowed = canAccessExams()
+
+  const closeConfirm = () => {
+    if (actionLoading) return
+    setPendingAction(null)
+  }
+
+  const handleConfirmAction = async () => {
+    if (!pendingAction?.test || !pendingAction?.type) return
+    const { test, type } = pendingAction
+    const id = getTestId(test)
+    setActionLoading(true)
+    try {
+      if (type === EXAM_ACTION.ARCHIVE) {
+        await archiveTest(id)
+        showAppToast('toast.archived', 'success', { ns: 'exams' })
+      } else if (type === EXAM_ACTION.CLOSE) {
+        await closeTest(id)
+        showAppToast('toast.closed', 'success', { ns: 'exams' })
+      } else if (type === EXAM_ACTION.DELETE) {
+        await deleteTest(id)
+        showAppToast('toast.deleted', 'success', { ns: 'exams' })
+      }
+      setPendingAction(null)
+      refetch()
+    } catch (err) {
+      showToast(err.message, 'error')
+    } finally {
+      setActionLoading(false)
+    }
+  }
+
+  if (!allowed) {
     return <Navigate to={ROUTES.DASHBOARD} replace />
   }
 
-  const handleArchive = async (test) => {
-    const name = getTestName(test)
-    if (!window.confirm(t('confirm.archive', { ns: 'exams', name }))) return
-    setActionLoading(true)
-    try {
-      await archiveTest(getTestId(test))
-      showAppToast('toast.archived', 'success', { ns: 'exams' })
-      refetch()
-    } catch (err) {
-      showToast(err.message, 'error')
-    } finally {
-      setActionLoading(false)
-    }
-  }
+  const pendingName = pendingAction?.test ? getTestName(pendingAction.test) : ''
+  const dialogTone =
+    pendingAction?.type === EXAM_ACTION.DELETE ? 'danger' : 'accent'
 
-  const handleClose = async (test) => {
-    const name = getTestName(test)
-    if (!window.confirm(t('confirm.close', { ns: 'exams', name }))) return
-    setActionLoading(true)
-    try {
-      await closeTest(getTestId(test))
-      showAppToast('toast.closed', 'success', { ns: 'exams' })
-      refetch()
-    } catch (err) {
-      showToast(err.message, 'error')
-    } finally {
-      setActionLoading(false)
-    }
-  }
+  let dialogTitle = ''
+  let dialogMessage = ''
+  let dialogNote = ''
+  let dialogConfirmLabel = ''
+  let dialogLoadingLabel = t('loading.processing', { ns: 'common' })
 
-  const handleDelete = async (test) => {
-    const name = getTestName(test)
-    if (!window.confirm(t('confirm.delete', { ns: 'exams', name }))) return
-    setActionLoading(true)
-    try {
-      await deleteTest(getTestId(test))
-      showAppToast('toast.deleted', 'success', { ns: 'exams' })
-      refetch()
-    } catch (err) {
-      showToast(err.message, 'error')
-    } finally {
-      setActionLoading(false)
-    }
+  if (pendingAction?.type === EXAM_ACTION.ARCHIVE) {
+    dialogTitle = t('confirm.archiveTitle', { ns: 'exams' })
+    dialogMessage = t('confirm.archiveMessage', { ns: 'exams' })
+    dialogNote = t('confirm.archiveNote', { ns: 'exams' })
+    dialogConfirmLabel = t('card.archive', { ns: 'exams' })
+  } else if (pendingAction?.type === EXAM_ACTION.CLOSE) {
+    dialogTitle = t('confirm.closeTitle', { ns: 'exams' })
+    dialogMessage = t('confirm.closeMessage', { ns: 'exams' })
+    dialogNote = t('confirm.closeNote', { ns: 'exams' })
+    dialogConfirmLabel = t('card.closeExam', { ns: 'exams' })
+  } else if (pendingAction?.type === EXAM_ACTION.DELETE) {
+    dialogTitle = t('confirm.deleteTitle', { ns: 'exams' })
+    dialogMessage = t('confirm.deleteMessage', { ns: 'exams' })
+    dialogNote = t('confirm.deleteNote', { ns: 'exams' })
+    dialogConfirmLabel = t('card.delete', { ns: 'exams' })
+    dialogLoadingLabel = t('loading.deleting', { ns: 'common' })
   }
 
   return (
@@ -159,13 +179,28 @@ function ExamsPage() {
             <ExamCard
               key={getTestId(test)}
               test={test}
-              onArchive={handleArchive}
-              onClose={handleClose}
-              onDelete={handleDelete}
+              onArchive={(item) => setPendingAction({ type: EXAM_ACTION.ARCHIVE, test: item })}
+              onClose={(item) => setPendingAction({ type: EXAM_ACTION.CLOSE, test: item })}
+              onDelete={(item) => setPendingAction({ type: EXAM_ACTION.DELETE, test: item })}
             />
           ))}
         </div>
       )}
+
+      <ConfirmActionDialog
+        open={Boolean(pendingAction)}
+        title={dialogTitle}
+        message={dialogMessage}
+        note={dialogNote}
+        itemLabel={t('confirm.itemLabel', { ns: 'exams' })}
+        itemName={pendingName}
+        confirmLabel={dialogConfirmLabel}
+        loadingLabel={dialogLoadingLabel}
+        confirmTone={dialogTone}
+        loading={actionLoading}
+        onClose={closeConfirm}
+        onConfirm={handleConfirmAction}
+      />
     </div>
   )
 }

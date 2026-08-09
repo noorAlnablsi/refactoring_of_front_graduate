@@ -1,5 +1,6 @@
 import { useTranslation } from 'react-i18next'
 import {
+  formatAnalyticsCount,
   formatAnalyticsDate,
   formatAnalyticsPercent,
 } from '../../lib/institutionAnalyticsModel'
@@ -66,7 +67,9 @@ function IntegrityReportsTable({ reports = [], loading, onReview }) {
               <td className="px-4 py-3 font-bold text-rose-600">
                 {formatAnalyticsPercent(report.risk_percentage)}
               </td>
-              <td className={`px-4 py-3 ${shellBodyTextClass}`}>{report.violations_count}</td>
+              <td className={`px-4 py-3 ${shellBodyTextClass}`}>
+                {formatAnalyticsCount(report.violations_count)}
+              </td>
               <td className="px-4 py-3">
                 <StatusBadge status={report.status} />
               </td>

@@ -114,6 +114,20 @@ export function getTestTotalPoints(test) {
   return questions.reduce((sum, q) => sum + (Number(q.snapshot_points ?? q.points) || 0), 0)
 }
 
+export function getTestParticipantsCount(test) {
+  const value = test?.participants_count ?? test?.participantsCount
+  if (value == null || value === '') return null
+  const n = Number(value)
+  return Number.isFinite(n) && n >= 0 ? n : null
+}
+
+export function getTestAverageScore(test) {
+  const value = test?.average_score ?? test?.averageScore
+  if (value == null || value === '') return null
+  const n = Number(value)
+  return Number.isFinite(n) ? n : null
+}
+
 export function canEditTest(test) {
   if (!test) return false
   if (test.status !== TEST_STATUS.DRAFT) return false
