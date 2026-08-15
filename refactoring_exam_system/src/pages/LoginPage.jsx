@@ -8,6 +8,7 @@ import { resolvePostLoginRoute } from '../lib/postLoginNavigation'
 import { login } from '../services/auth.service'
 import { useAuthStore } from '../store/authStore'
 import { useRegistrationStore } from '../store/registrationStore'
+import AuthHeroPanel from '../components/auth/AuthHeroPanel'
 import loginHero from '../assets/auth/login-hero.png'
 
 function LoginPage() {
@@ -149,8 +150,8 @@ function LoginPage() {
             </form>
           </div>
 
-          <div className="relative hidden lg:block lg:h-[700px] lg:w-[576px]">
-            <img src={loginHero} alt={t('login.heroAlt')} className="absolute inset-0 h-full w-full object-cover" />
+          <div className="hidden lg:block">
+            <AuthHeroPanel image={loginHero} alt={t('login.heroAlt')} />
           </div>
         </div>
       </section>

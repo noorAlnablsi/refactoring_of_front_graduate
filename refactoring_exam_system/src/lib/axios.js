@@ -20,6 +20,10 @@ function isInvitePublicRoute(url = '') {
   )
 }
 
+function isPublicApiRoute(url = '') {
+  return url.includes('/api/public/') || url.startsWith('/public/')
+}
+
 function isAuthRoute(url = '') {
   return (
     url.includes('/auth/login') ||
@@ -35,8 +39,9 @@ function isAuthRoute(url = '') {
 
 api.interceptors.request.use(async (config) => {
   const url = config.url || ''
+  const skipAuthHeaders = isAuthRoute(url) || isInvitePublicRoute(url) || isPublicApiRoute(url)
 
-  if (!isAuthRoute(url) && !isInvitePublicRoute(url)) {
+  if (!skipAuthHeaders) {
     try {
       const token = await ensureValidAccessToken()
       if (token) {
@@ -47,7 +52,7 @@ api.interceptors.request.use(async (config) => {
     }
   }
 
-  if (!isAuthRoute(url) && !isInvitePublicRoute(url)) {
+  if (!skipAuthHeaders) {
     const workspaceId = getWorkspaceId()
     if (workspaceId) {
       config.headers['X-Workspace-Id'] = String(workspaceId)
@@ -67,7 +72,9 @@ api.interceptors.response.use(
       status === 401 &&
       originalRequest &&
       !originalRequest._retry &&
-      !isAuthRoute(originalRequest.url)
+      !isAuthRoute(originalRequest.url) &&
+      !isInvitePublicRoute(originalRequest.url) &&
+      !isPublicApiRoute(originalRequest.url)
     ) {
       const { refresh_token } = useAuthStore.getState()
 

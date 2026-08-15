@@ -1,10 +1,14 @@
 import { Link } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { ROUTES } from '../../constants/routes'
+import { usePlatformStats } from '../../hooks/usePlatformStats'
+import { formatPlatformCount } from '../../lib/localeNumber'
 import heroGrid from '../../assets/landing/hero-grid.png'
 
 function HeroSection() {
   const { t } = useTranslation('landing')
+  const { usersCount } = usePlatformStats()
+  const statValue = formatPlatformCount(usersCount) || t('hero.statValue')
 
   return (
     <section id="home" className="scroll-mt-24 bg-[#F4F6F8] px-4 py-12 md:px-8 md:py-16 lg:py-20">
@@ -47,7 +51,7 @@ function HeroSection() {
             <div className="absolute -bottom-7 right-4 flex items-center gap-4 rounded-3xl bg-white px-7 py-4 shadow-lg">
               <div className="flex h-11 w-11 items-center justify-center rounded-full bg-[#45C3BC] text-white">✦</div>
               <div>
-                <p className="text-4xl font-extrabold leading-none text-[#263247]">{t('hero.statValue')}</p>
+                <p className="text-4xl font-extrabold leading-none text-[#263247]">{statValue}</p>
                 <p className="text-sm text-[#7A8190]">{t('hero.statLabel')}</p>
               </div>
             </div>

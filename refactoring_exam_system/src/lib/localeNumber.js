@@ -32,3 +32,10 @@ export function formatLocalePaddedNumber(value, length = 2) {
 export function localizeDigits(input) {
   return localizeDigitsInString(input, isArabicUiLanguage())
 }
+
+/** Full count with leading +, locale digits (e.g. +1,250 / +١٬٢٥٠). */
+export function formatPlatformCount(count) {
+  const num = Number(count)
+  if (!Number.isFinite(num) || num < 0) return null
+  return `+${formatLocaleNumber(Math.trunc(num))}`
+}
