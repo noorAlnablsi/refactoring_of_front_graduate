@@ -435,5 +435,9 @@
   "Survey requires closed_at": "Survey requires a closing date",
   "Survey must not have duration_minutes": "Survey must not have a duration",
   "Survey closed_at must be in the future": "Survey closing date must be in the future",
-  "target total_score is required when auto_distribute_scores is enabled": "Total score is required when auto score distribution is enabled"
+  "PROCTORING_THRESHOLD_EXCEEDED": "Proctoring violation threshold exceeded",
+  "Automatic proctoring termination or high accumulated violation weight. Reason: {reason}": "Automatic proctoring termination or high accumulated violation weight. Reason: {reason}",
+  "Automatic proctoring termination or high accumulated violation weight. Reason: PROCTORING_THRESHOLD_EXCEEDED": "Automatic proctoring termination or high accumulated violation weight. Reason: Proctoring violation threshold exceeded",
+  "target total_score is required when auto_distribute_scores is enabled": "Total score is required when auto score distribution is enabled",
+  "total_score is calculated from question points when auto_distribute_scores is disabled": "Total score is calculated from question points when automatic score distribution is disabled"
 }

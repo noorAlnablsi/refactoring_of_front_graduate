@@ -5,6 +5,7 @@ import {
   formatAnalyticsDate,
   formatAnalyticsPercent,
 } from '../../lib/institutionAnalyticsModel'
+import { formatIntegrityMessage } from '../../lib/integrityDisplay'
 import { isIntegrityReportPending } from '../../lib/integrityReportsModel'
 import {
   shellAccentButtonClass,
@@ -81,7 +82,9 @@ function IntegrityReportReviewModal({
               <dt className="text-xs font-bold text-[var(--shell-text-muted)]">
                 {t('integrity.detail.termination')}
               </dt>
-              <dd className={`mt-1 ${shellBodyTextClass}`}>{report.termination_reason}</dd>
+              <dd className={`mt-1 ${shellBodyTextClass}`}>
+                {formatIntegrityMessage(report.termination_reason)}
+              </dd>
             </div>
           ) : null}
           {report.recommendation_reason ? (
@@ -89,7 +92,9 @@ function IntegrityReportReviewModal({
               <dt className="text-xs font-bold text-[var(--shell-text-muted)]">
                 {t('integrity.detail.reason')}
               </dt>
-              <dd className={`mt-1 ${shellBodyTextClass}`}>{report.recommendation_reason}</dd>
+              <dd className={`mt-1 ${shellBodyTextClass}`}>
+                {formatIntegrityMessage(report.recommendation_reason)}
+              </dd>
             </div>
           ) : null}
           <div className="sm:col-span-2">

@@ -53,6 +53,7 @@ function SendInviteModal({ open, onClose, defaultRole = 'STUDENT', onSuccess }) 
       showAppToast('send.success', 'success', { ns: 'invites' })
       setEmail('')
       onSuccess?.()
+      onClose?.()
     } catch (err) {
       showToast(err.message, 'error')
     } finally {

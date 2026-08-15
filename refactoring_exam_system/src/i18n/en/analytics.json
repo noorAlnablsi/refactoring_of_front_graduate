@@ -100,6 +100,9 @@
       "score": "Score",
       "termination": "Termination reason",
       "reason": "Recommendation reason"
+    },
+    "codes": {
+      "PROCTORING_THRESHOLD_EXCEEDED": "Proctoring violation threshold exceeded"
     }
   },
   "topStudents": {

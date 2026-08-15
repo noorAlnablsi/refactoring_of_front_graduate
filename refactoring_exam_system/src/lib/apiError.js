@@ -16,6 +16,8 @@ const FIELD_I18N_KEYS = {
   auto_distribute_scores: 'autoDistributeScores',
   'scoring_config.auto_distribute_scores': 'autoDistributeScores',
   subject_id: 'subject',
+  total_score: 'totalScore',
+  passing_score: 'passingScore',
 }
 
 export function getFieldLabel(field) {

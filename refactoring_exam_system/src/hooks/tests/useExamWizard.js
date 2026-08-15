@@ -182,7 +182,12 @@ export function useExamWizard({ isNew = false } = {}) {
         }
         const testId = getTestId(test)
         if (!testId) return
-        const data = await updateTest(testId, buildUpdateTestInfoPayloadFromStep1(payload))
+        const data = await updateTest(
+          testId,
+          buildUpdateTestInfoPayloadFromStep1(payload, {
+            autoDistribute: Boolean(test?.auto_distribute_scores),
+          }),
+        )
         setTest((prev) => mergeTestPreservingQuestions(prev, data.test || data))
         saveExamWizardProgress(testId, { step: currentStep })
         showAppToast('toast.draftSaved', 'success', { ns: 'exams' })
@@ -201,7 +206,12 @@ export function useExamWizard({ isNew = false } = {}) {
       if (!testId) return
       setSubmitting(true)
       try {
-        const data = await updateTest(testId, buildUpdateTestInfoPayloadFromStep1(payload))
+        const data = await updateTest(
+          testId,
+          buildUpdateTestInfoPayloadFromStep1(payload, {
+            autoDistribute: Boolean(test?.auto_distribute_scores),
+          }),
+        )
         setTest((prev) => mergeTestPreservingQuestions(prev, data.test || data))
         showAppToast('toast.infoSaved', 'success', { ns: 'exams' })
         goToStep(TEST_WIZARD_STEPS.QUESTIONS)
@@ -281,7 +291,7 @@ export function useExamWizard({ isNew = false } = {}) {
       duration_minutes: test.duration_minutes ?? 60,
       total_score: test.total_score ?? 100,
       passing_score: test.passing_score ?? 60,
-      auto_distribute_scores: test.auto_distribute_scores ?? true,
+      auto_distribute_scores: Boolean(test.auto_distribute_scores),
     }
   }, [test])
 

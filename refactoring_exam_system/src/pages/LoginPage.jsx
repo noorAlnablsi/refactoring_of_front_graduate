@@ -151,7 +151,11 @@ function LoginPage() {
           </div>
 
           <div className="hidden min-w-0 lg:block">
-            <AuthHeroPanel image={loginHero} alt={t('login.heroAlt')} />
+            <AuthHeroPanel
+              image={loginHero}
+              alt={t('login.heroAlt')}
+              headline={t('hero.headline')}
+            />
           </div>
         </div>
       </section>

@@ -2,6 +2,7 @@ import { ShieldAlert } from 'lucide-react'
 import { useTranslation } from 'react-i18next'
 import { useNavigate } from 'react-router-dom'
 import { ROUTES } from '../../../constants/routes'
+import { formatIntegrityMessage } from '../../../lib/integrityDisplay'
 import {
   shellAccentButtonClass,
   shellBodyTextClass,
@@ -40,8 +41,8 @@ function AttemptProctoringTerminatedScreen({ attempt, testName }) {
         ) : null}
 
         {attempt?.termination_reason ? (
-          <p className={`mt-2 text-[11px] ${shellSubtleTextClass}`} dir="ltr">
-            {attempt.termination_reason}
+          <p className={`mt-2 text-[11px] ${shellSubtleTextClass}`}>
+            {formatIntegrityMessage(attempt.termination_reason)}
           </p>
         ) : null}
 

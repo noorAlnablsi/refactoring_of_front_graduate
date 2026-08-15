@@ -100,6 +100,9 @@
       "score": "الدرجة",
       "termination": "سبب الإنهاء",
       "reason": "سبب التوصية"
+    },
+    "codes": {
+      "PROCTORING_THRESHOLD_EXCEEDED": "تجاوز حد مخالفات المراقبة"
     }
   },
   "topStudents": {

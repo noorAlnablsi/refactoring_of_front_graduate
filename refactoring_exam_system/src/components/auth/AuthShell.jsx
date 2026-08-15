@@ -9,6 +9,7 @@ function AuthShell({
   children,
   heroImage,
   heroAlt = '',
+  heroHeadline,
   heroImagePosition = 'center',
   contentAlign = 'center',
 }) {
@@ -48,7 +49,12 @@ function AuthShell({
           </div>
 
           <div className="hidden min-w-0 lg:block">
-            <AuthHeroPanel image={heroImage} alt={heroAlt} imagePosition={heroImagePosition} />
+            <AuthHeroPanel
+              image={heroImage}
+              alt={heroAlt}
+              headline={heroHeadline || heroAlt || undefined}
+              imagePosition={heroImagePosition}
+            />
           </div>
         </div>
       </section>

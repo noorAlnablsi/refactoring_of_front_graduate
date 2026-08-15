@@ -435,5 +435,9 @@
   "Survey requires closed_at": "الاستبيان يتطلب تاريخ إغلاق",
   "Survey must not have duration_minutes": "لا يجوز تحديد مدة زمنية للاستبيان",
   "Survey closed_at must be in the future": "يجب أن يكون تاريخ إغلاق الاستبيان في المستقبل",
-  "target total_score is required when auto_distribute_scores is enabled": "الدرجة الكلية مطلوبة عند تفعيل التوزيع التلقائي للدرجات"
+  "PROCTORING_THRESHOLD_EXCEEDED": "تجاوز حد مخالفات المراقبة",
+  "Automatic proctoring termination or high accumulated violation weight. Reason: {reason}": "إنهاء تلقائي بسبب المراقبة أو ارتفاع وزن المخالفات المتراكمة. السبب: {reason}",
+  "Automatic proctoring termination or high accumulated violation weight. Reason: PROCTORING_THRESHOLD_EXCEEDED": "إنهاء تلقائي بسبب المراقبة أو ارتفاع وزن المخالفات المتراكمة. السبب: تجاوز حد مخالفات المراقبة",
+  "target total_score is required when auto_distribute_scores is enabled": "الدرجة الكلية مطلوبة عند تفعيل التوزيع التلقائي للدرجات",
+  "total_score is calculated from question points when auto_distribute_scores is disabled": "الدرجة الكلية تُحسب من درجات الأسئلة عندما يكون التوزيع التلقائي للعلامات معطّلاً"
 }

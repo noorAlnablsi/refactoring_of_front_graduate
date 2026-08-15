@@ -92,7 +92,9 @@ function CreateReportModal({ open, onClose }) {
                   fieldErrors.category ? 'ring-1 ring-[#DC2626]' : ''
                 }`}
               >
-                <option value="">{t('report.categoryPlaceholder')}</option>
+                <option value="" disabled hidden>
+                  {t('report.categoryPlaceholder')}
+                </option>
                 {REPORT_CATEGORY_OPTIONS.map((value) => (
                   <option key={value} value={value}>
                     {t(`report.categories.${value}`)}

@@ -6,7 +6,8 @@
     "services": "خدماتنا",
     "about": "من نحن ؟",
     "openMenu": "فتح قائمة التنقل",
-    "closeMenu": "إغلاق قائمة التنقل"
+    "closeMenu": "إغلاق قائمة التنقل",
+    "switchLanguage": "تبديل اللغة"
   },
   "hero": {
     "badge": "مبدأ المنصة",

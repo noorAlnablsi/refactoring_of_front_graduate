@@ -111,7 +111,7 @@ function CreateQuestionBankModal({ open, onClose, onCreated }) {
               className={inputClassName}
               disabled={loadingSubjects}
             >
-              <option value="">
+              <option value="" disabled hidden>
                 {loadingSubjects
                   ? t('modals.create.loadingSubjects', { ns: 'questionBanks' })
                   : t('placeholders.selectSubject', { ns: 'forms' })}

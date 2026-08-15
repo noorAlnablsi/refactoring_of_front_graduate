@@ -88,6 +88,7 @@
       "totalScoreLabel": "Total score",
       "passingScoreLabel": "Passing score",
       "autoDistribute": "Enable automatic score distribution",
+      "autoDistributeLockedHint": "Automatic score distribution is set when the exam is created and cannot be changed later.",
       "manualScoresHint": "When auto-distribution is off, set each question's points in the Review step. Total score = sum of question points.",
       "saveDraft": "Save as DRAFT",
       "savingDraft": "Saving...",

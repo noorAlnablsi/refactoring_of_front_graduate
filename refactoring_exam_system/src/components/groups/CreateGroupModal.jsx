@@ -194,7 +194,9 @@ function CreateGroupModal({ open, subjects, initialSubjectId, onClose, onSuccess
                 onChange={(e) => setSubjectId(e.target.value)}
                 className={`h-11 w-full px-4 text-sm ${shellInputClass}`}
               >
-                <option value="">{t('create.subjectPlaceholder')}</option>
+                <option value="" disabled hidden>
+                  {t('create.subjectPlaceholder')}
+                </option>
                 {subjects.map((subject) => (
                   <option key={subject.id} value={subject.id}>
                     {subject.name}

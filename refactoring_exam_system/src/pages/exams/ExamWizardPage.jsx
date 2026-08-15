@@ -85,6 +85,7 @@ function ExamWizardPage({ isNew = false }) {
               onSaveDraft={wizard.handleSaveDraft}
               submitting={wizard.submitting}
               savingDraft={wizard.savingDraft}
+              autoDistributeLocked
             />
           ) : null}
 

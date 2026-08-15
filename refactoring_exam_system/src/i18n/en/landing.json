@@ -6,7 +6,8 @@
     "services": "Services",
     "about": "About us",
     "openMenu": "Open navigation menu",
-    "closeMenu": "Close navigation menu"
+    "closeMenu": "Close navigation menu",
+    "switchLanguage": "Switch language"
   },
   "hero": {
     "badge": "Platform principle",

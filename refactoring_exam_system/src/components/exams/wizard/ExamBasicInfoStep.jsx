@@ -14,6 +14,7 @@ function ExamBasicInfoStep({
   onDraftChange,
   submitting,
   savingDraft,
+  autoDistributeLocked = false,
 }) {
   const { t } = useTranslation(['exams', 'forms', 'common'])
   const [subjects, setSubjects] = useState([])
@@ -152,7 +153,9 @@ function ExamBasicInfoStep({
             onChange={(e) => setField('subject_id', e.target.value)}
             className={inputClassName}
           >
-            <option value="">{t('wizard.basicInfo.subjectPlaceholder', { ns: 'exams' })}</option>
+            <option value="" disabled hidden>
+              {t('wizard.basicInfo.subjectPlaceholder', { ns: 'exams' })}
+            </option>
             {subjects.map((subject) => (
               <option key={subject.id} value={subject.id}>
                 {subject.name}
@@ -185,17 +188,28 @@ function ExamBasicInfoStep({
         </div>
       </div>
 
-      <label className="flex cursor-pointer items-center gap-3 rounded-xl bg-[#F6F8F9] px-4 py-3">
+      <label
+        className={`flex items-center gap-3 rounded-xl bg-[#F6F8F9] px-4 py-3 ${
+          autoDistributeLocked ? 'cursor-not-allowed opacity-80' : 'cursor-pointer'
+        }`}
+      >
         <input
           type="checkbox"
           checked={form.auto_distribute_scores}
           onChange={(e) => setField('auto_distribute_scores', e.target.checked)}
-          className="h-5 w-5 accent-[#2AA8A2]"
+          disabled={autoDistributeLocked}
+          className="h-5 w-5 accent-[#2AA8A2] disabled:cursor-not-allowed"
         />
         <span className="text-sm font-bold text-[#374151]">
           {t('wizard.basicInfo.autoDistribute', { ns: 'exams' })}
         </span>
       </label>
+
+      {autoDistributeLocked ? (
+        <p className="text-xs leading-6 text-[#94A3B8]">
+          {t('wizard.basicInfo.autoDistributeLockedHint', { ns: 'exams' })}
+        </p>
+      ) : null}
 
       {!form.auto_distribute_scores ? (
         <p className="text-xs leading-6 text-[#94A3B8]">
