@@ -7,7 +7,7 @@ import { useInviteRegister } from '../../hooks/useInviteRegister'
 import loginHero from '../../assets/auth/login-hero.png'
 
 const inputClassName =
-  'h-12 w-full rounded-xl bg-[#EEF2F3] px-4 text-sm text-[#374151] outline-none placeholder:text-[#9CA3AF] focus:ring-2 focus:ring-[#2AA8A2]/40 md:w-[448px]'
+  'h-12 w-full rounded-xl bg-[#EEF2F3] px-4 text-sm text-[#374151] outline-none placeholder:text-[#9CA3AF] focus:ring-2 focus:ring-[#2AA8A2]/40 max-w-[448px]'
 
 function InviteRegisterPage() {
   const { t } = useTranslation(['invites', 'auth', 'forms'])
@@ -111,7 +111,7 @@ function InviteRegisterPage() {
             type="submit"
             data-keyboard-primary=""
             disabled={submitting || !preview}
-            className="mt-8 h-12 w-full rounded-xl bg-[#2AA8A2] text-base font-bold text-white shadow-[0_12px_20px_rgba(42,168,162,0.22)] transition hover:opacity-95 disabled:opacity-70 md:w-[448px]"
+            className="mt-8 h-12 w-full rounded-xl bg-[#2AA8A2] text-base font-bold text-white shadow-[0_12px_20px_rgba(42,168,162,0.22)] transition hover:opacity-95 disabled:opacity-70 max-w-[448px]"
           >
             {submitting ? t('register.submitting') : t('register.submit')}
           </button>

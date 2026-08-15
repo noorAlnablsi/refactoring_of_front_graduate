@@ -5,6 +5,7 @@ import { getVisibilityOptionsForWorkspace } from '../../lib/questionBanks'
 import { isInstitutionWorkspace } from '../../lib/workspaceContext'
 import { updateQuestionBank } from '../../services/questionBanks.service'
 import { showAppToast } from '../../lib/appToast'
+import { customModalOverlayClass, customModalPanelSafeClass } from '../../lib/shellUi'
 import { useToastStore } from '../../store/toastStore'
 
 const inputClassName =
@@ -59,8 +60,8 @@ function EditQuestionBankModal({ open, bank, onClose, onUpdated }) {
   }
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/45 p-4">
-      <div dir="rtl" className="w-full max-w-xl rounded-2xl bg-white p-6 shadow-xl">
+    <div className={customModalOverlayClass}>
+      <div dir="rtl" className={`w-full max-w-xl rounded-2xl bg-white p-6 shadow-xl ${customModalPanelSafeClass}`}>
         <div className="mb-6 flex items-center justify-between">
           <h2 className="text-xl font-extrabold text-[#2A3433]">
             {t('modals.edit.title', { ns: 'questionBanks' })}

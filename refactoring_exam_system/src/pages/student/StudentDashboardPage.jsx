@@ -46,7 +46,7 @@ function StudentDashboardPage() {
   }
 
   return (
-    <div className="space-y-6">
+    <div className="min-w-0 space-y-6">
       <WelcomeSection name={user?.full_name} />
       <StudentStatsCards stats={stats} />
       <div className="grid gap-5 lg:grid-cols-[minmax(0,1fr)_288px]">

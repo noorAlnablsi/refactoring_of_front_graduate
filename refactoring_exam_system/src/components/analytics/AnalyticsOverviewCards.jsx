@@ -30,9 +30,9 @@ function ChangeBadge({ value }) {
 
 function OverviewCard({ icon: Icon, title, value, change, loading }) {
   return (
-    <article className={`flex h-full min-h-[128px] flex-col p-5 ${shellCardClass}`}>
+    <article className={`flex h-full min-h-[128px] min-w-0 flex-col p-5 ${shellCardClass}`}>
       <div className="flex items-start justify-between gap-3">
-        <p className={`text-xs font-semibold leading-5 ${shellBodyTextClass}`}>{title}</p>
+        <p className={`min-w-0 text-xs font-semibold leading-snug ${shellBodyTextClass}`}>{title}</p>
         <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-[var(--shell-accent-bg)] text-[var(--shell-accent)]">
           <Icon className="h-5 w-5" strokeWidth={2} />
         </span>
@@ -98,7 +98,7 @@ function AnalyticsOverviewCards({ overview, loading }) {
   ]
 
   return (
-    <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-6">
+    <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
       {cards.map((card) => (
         <OverviewCard
           key={card.key}

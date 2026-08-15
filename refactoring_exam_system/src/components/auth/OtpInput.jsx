@@ -5,9 +5,9 @@ function OtpInput({ digits, onChange, disabled = false, variant = 'default' }) {
   const inputsRef = useRef([])
   const isPasswordReset = variant === 'password-reset'
   const boxClassName = isPasswordReset
-    ? 'h-[52px] w-[52px] rounded-xl border border-transparent bg-[#EEF2F3] text-center text-xl font-bold text-[#2A3433] outline-none focus:border-[#2AA8A2] focus:ring-2 focus:ring-[#2AA8A2]/25'
-    : 'h-14 w-12 rounded-xl border border-[#D9DEE0] bg-[#EEF2F3] text-center text-xl font-bold text-[#2A3433] outline-none focus:border-[#2AA8A2] focus:ring-2 focus:ring-[#2AA8A2]/30'
-  const gapClassName = isPasswordReset ? 'gap-2.5' : 'gap-3'
+    ? 'h-11 w-10 shrink-0 rounded-xl border border-transparent bg-[#EEF2F3] text-center text-lg font-bold text-[#2A3433] outline-none focus:border-[#2AA8A2] focus:ring-2 focus:ring-[#2AA8A2]/25 sm:h-[52px] sm:w-[52px] sm:text-xl'
+    : 'h-12 w-10 shrink-0 rounded-xl border border-[#D9DEE0] bg-[#EEF2F3] text-center text-lg font-bold text-[#2A3433] outline-none focus:border-[#2AA8A2] focus:ring-2 focus:ring-[#2AA8A2]/30 sm:h-14 sm:w-12 sm:text-xl'
+  const gapClassName = isPasswordReset ? 'gap-1.5 sm:gap-2.5' : 'gap-1.5 sm:gap-3'
 
   const handleChange = (index, value) => {
     const sanitized = value.replace(/\D/g, '').slice(-1)
@@ -34,7 +34,7 @@ function OtpInput({ digits, onChange, disabled = false, variant = 'default' }) {
   }
 
   return (
-    <div dir="ltr" className={`flex items-center justify-center ${gapClassName}`}>
+    <div dir="ltr" className={`flex max-w-full items-center justify-center ${gapClassName}`}>
       {digits.map((digit, index) => (
         <input
           key={index}

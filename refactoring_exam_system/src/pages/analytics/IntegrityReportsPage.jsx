@@ -21,7 +21,7 @@ import {
 import { useToastStore } from '../../store/toastStore'
 import { isInstitutionOwner } from '../../lib/workspaceContext'
 
-const selectClass = `h-11 ${shellInputClass} px-3 text-sm font-semibold`
+const selectClass = `h-11 w-full sm:w-auto ${shellInputClass} px-3 text-sm font-semibold`
 
 function IntegrityReportsPage() {
   const { t } = useTranslation(['analytics', 'common'])
@@ -90,8 +90,8 @@ function IntegrityReportsPage() {
   }
 
   return (
-    <div className="space-y-6">
-      <div>
+    <div className="min-w-0 space-y-6">
+      <div className="min-w-0">
         <Link
           to={backTo}
           className="text-xs font-bold text-[var(--shell-accent)] hover:underline"
@@ -104,8 +104,8 @@ function IntegrityReportsPage() {
         <p className={`mt-2 ${shellPageSubtitleClass}`}>{t('integrity.pageSubtitle')}</p>
       </div>
 
-      <div className="flex flex-wrap items-end gap-3">
-        <label className="flex min-w-[200px] flex-1 flex-col gap-1.5">
+      <div className="flex w-full min-w-0 flex-col gap-3 sm:flex-row sm:flex-wrap sm:items-end">
+        <label className="flex w-full min-w-0 flex-1 flex-col gap-1.5 sm:min-w-[200px]">
           <span className="text-xs font-bold text-[var(--shell-text-muted)]">
             {t('search')}
           </span>
@@ -117,7 +117,7 @@ function IntegrityReportsPage() {
           />
         </label>
 
-        <label className="flex flex-col gap-1.5">
+        <label className="flex w-full min-w-0 flex-col gap-1.5 sm:w-auto">
           <span className="text-xs font-bold text-[var(--shell-text-muted)]">
             {t('integrity.status')}
           </span>
@@ -142,7 +142,7 @@ function IntegrityReportsPage() {
           </select>
         </label>
 
-        <label className="flex flex-col gap-1.5">
+        <label className="flex w-full min-w-0 flex-col gap-1.5 sm:w-auto">
           <span className="text-xs font-bold text-[var(--shell-text-muted)]">
             {t('filters.subject')}
           </span>
@@ -176,11 +176,11 @@ function IntegrityReportsPage() {
         onReview={(report) => setSelectedReportId(report.id)}
       />
 
-      <div className="flex items-center justify-between gap-3">
+      <div className="flex flex-wrap items-center justify-between gap-3">
         <p className="text-xs font-semibold text-[var(--shell-text-muted)]">
           {formatLocaleNumber(total)} · {formatLocaleNumber(page)}/{formatLocaleNumber(pages)}
         </p>
-        <div className="flex gap-2">
+        <div className="flex flex-wrap gap-2">
           <button
             type="button"
             className={shellGhostButtonClass}

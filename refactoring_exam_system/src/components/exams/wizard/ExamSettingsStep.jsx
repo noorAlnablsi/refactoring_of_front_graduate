@@ -106,7 +106,7 @@ function ExamSettingsStep({
       <ExamDisplaySettingsSection cfg={cfg} onSetSetting={setSetting} />
       <ExamProctoringSettingsSection cfg={cfg} severity={severity} onSetSetting={setSetting} />
 
-      <ExamWizardFooter className="-mx-1 mt-2">
+      <ExamWizardFooter className="mt-2">
         <div className="flex flex-wrap items-center justify-between gap-3">
           <button
             type="button"

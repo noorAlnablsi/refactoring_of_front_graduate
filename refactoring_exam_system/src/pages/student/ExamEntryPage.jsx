@@ -179,7 +179,7 @@ function ExamEntryPage() {
         ) : null}
 
         <div className="grid gap-5 lg:grid-cols-[minmax(0,1.35fr)_minmax(0,0.95fr)] lg:items-start">
-          <div className="space-y-4">
+          <div className="order-1 space-y-4">
             <ExamEntryCameraCard
               stream={stream}
               live={live}
@@ -190,20 +190,23 @@ function ExamEntryPage() {
               onVideoRef={setVideoEl}
             />
             <SystemStatusGrid checks={checks} proctoringEnabled={proctoringEnabled} />
-            <StartExamButton
-              disabled={!canNavigate}
-              loading={starting}
-              onClick={handleStart}
-              isResume={Boolean(entry.student.resumeAttemptId || entry.student.alreadyStarted)}
-            />
           </div>
 
-          <div className="space-y-5">
+          <div className="order-2 space-y-5 lg:row-span-2">
             <ExamInformationCard entry={entry} />
             <ExamInstructionsCard
               instructions={instructions}
               agreed={agreed}
               onAgreedChange={setAgreed}
+            />
+          </div>
+
+          <div className="order-3">
+            <StartExamButton
+              disabled={!canNavigate}
+              loading={starting}
+              onClick={handleStart}
+              isResume={Boolean(entry.student.resumeAttemptId || entry.student.alreadyStarted)}
             />
           </div>
         </div>

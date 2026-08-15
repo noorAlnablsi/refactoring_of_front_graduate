@@ -49,17 +49,24 @@ export function parseQuestionBanksTab(value, allowedTabs = Object.values(QUESTIO
   return QUESTION_BANK_TABS.MY
 }
 
-/** Figma dimensions for بنوكي + ضمن المؤسسة cards */
+/** Figma dimensions for بنوكي + ضمن المؤسسة cards (desktop reference) */
 export const OWNED_QUESTION_BANK_CARD_SIZE = {
   width: 293.33,
   height: 321,
 }
 
-export const ownedQuestionBankCardClassName = `h-[321px] w-[293.33px] shrink-0`
+/**
+ * Responsive card shell: full width inside grid cell, Figma height preserved.
+ * Avoids fixed 293px width which overflowed ~360px viewports.
+ */
+export const ownedQuestionBankCardClassName = 'h-[321px] w-full min-w-0'
 
-/** Same Figma size for community cards */
+/** Same size for community cards */
 export const communityQuestionBankCardClassName = ownedQuestionBankCardClassName
 
+/** Shared responsive grid for bank cards (1 → 2 → 3 → 4 cols) */
+export const questionBanksGridClassName =
+  'grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4'
 const COMMUNITY_BANK_THEMES = [
   { accent: '#8B5CF6', badgeBg: '#F3E8FF', badgeText: '#7C3AED' },
   { accent: '#14B8A6', badgeBg: '#CCFBF1', badgeText: '#0D9488' },

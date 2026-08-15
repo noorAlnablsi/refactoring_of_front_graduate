@@ -1,5 +1,6 @@
 import { AlertCircle } from 'lucide-react'
 import { useAppTranslation } from '../../hooks/useAppTranslation'
+import { customModalOverlayClass, customModalPanelSafeClass } from '../../lib/shellUi'
 
 function AlertNoticeDialog({ open, message, onClose }) {
   const { t } = useAppTranslation('common')
@@ -7,8 +8,8 @@ function AlertNoticeDialog({ open, message, onClose }) {
   if (!open) return null
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/45 p-4">
-      <div dir="rtl" className="w-full max-w-md rounded-2xl bg-white p-6 shadow-xl">
+    <div className={customModalOverlayClass}>
+      <div dir="rtl" className={`w-full max-w-md rounded-2xl bg-white p-6 shadow-xl ${customModalPanelSafeClass}`}>
         <div className="flex items-start gap-3">
           <span className="mt-1 rounded-full bg-amber-50 p-2 text-amber-600">
             <AlertCircle className="h-5 w-5" />

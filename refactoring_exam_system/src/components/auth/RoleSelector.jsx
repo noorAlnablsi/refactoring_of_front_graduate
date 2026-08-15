@@ -18,7 +18,7 @@ function RoleSelector({ selected, onSelect }) {
   ]
 
   return (
-    <div className="grid grid-cols-2 gap-3">
+    <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
       {roles.map(({ kind, title, icon: Icon }) => {
         const isActive = selected === kind
         return (
@@ -26,14 +26,14 @@ function RoleSelector({ selected, onSelect }) {
             key={kind}
             type="button"
             onClick={() => onSelect(kind)}
-            className={`flex h-14 items-center justify-center gap-2 rounded-2xl bg-[#EEF2F3] text-sm font-bold transition ${
+            className={`flex h-14 min-w-0 items-center justify-center gap-2 rounded-2xl bg-[#EEF2F3] px-2 text-sm font-bold transition ${
               isActive
                 ? 'text-[#2AA8A2] ring-2 ring-[#2AA8A2]/35'
                 : 'text-[#374151] hover:bg-[#E8ECEE]'
             }`}
           >
-            <Icon className={`h-5 w-5 ${isActive ? 'text-[#2AA8A2]' : 'text-[#64748B]'}`} strokeWidth={2} />
-            <span>{title}</span>
+            <Icon className={`h-5 w-5 shrink-0 ${isActive ? 'text-[#2AA8A2]' : 'text-[#64748B]'}`} strokeWidth={2} />
+            <span className="min-w-0 truncate">{title}</span>
           </button>
         )
       })}

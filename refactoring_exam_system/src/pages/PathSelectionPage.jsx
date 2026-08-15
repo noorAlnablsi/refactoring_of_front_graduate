@@ -83,7 +83,7 @@ function PathSelectionPage() {
       <button
         type="button"
         onClick={handleGo}
-        className="mt-8 h-12 w-full rounded-xl bg-[#2AA8A2] text-base font-bold text-white shadow-[0_12px_20px_rgba(42,168,162,0.22)] transition hover:opacity-95 md:w-[448px]"
+        className="mt-8 h-12 w-full rounded-xl bg-[#2AA8A2] text-base font-bold text-white shadow-[0_12px_20px_rgba(42,168,162,0.22)] transition hover:opacity-95 max-w-[448px]"
       >
         {t('pathSelection.go')}
       </button>

@@ -30,7 +30,7 @@ function AddRandomBanksModal({
   onClose,
   onBanksSelected,
 }) {
-  const { t } = useTranslation(['exams', 'questionBanks'])
+  const { t } = useTranslation(['exams', 'questionBanks', 'common'])
   const showToast = useToastStore((s) => s.showToast)
   const showWorkspaceTab = isInstitutionWorkspace()
   const [activeTab, setActiveTab] = useState(PICKER_TABS.MY)
@@ -181,24 +181,37 @@ function AddRandomBanksModal({
   if (!open) return null
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/45 p-4">
+    <div className="fixed inset-0 z-50 flex items-center justify-center overflow-y-auto overscroll-contain bg-black/45 p-3 sm:p-4">
       <div
         dir="rtl"
-        className="flex h-[785px] w-full max-w-[896px] flex-col overflow-hidden rounded-[22px] bg-white shadow-[0_24px_60px_rgba(15,23,42,0.22)]"
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="add-random-banks-title"
+        className="my-auto flex h-[min(785px,90dvh)] w-full max-w-[896px] flex-col overflow-hidden rounded-[22px] bg-white shadow-[0_24px_60px_rgba(15,23,42,0.22)]"
       >
-        <div className="flex items-center justify-between px-6 py-5">
-          <button type="button" onClick={onClose} className="text-[#94A3B8] hover:text-[#64748B]">
+        <div className="flex shrink-0 items-center justify-between gap-3 px-4 py-4 sm:px-6 sm:py-5">
+          <button
+            type="button"
+            onClick={onClose}
+            className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl text-[#94A3B8] hover:bg-[#F1F5F9] hover:text-[#64748B]"
+            aria-label={t('actions.close', { ns: 'common' })}
+          >
             <X className="h-5 w-5" />
           </button>
-          <h2 className="text-[44px] font-extrabold leading-[1.2] text-[#2A3433]">{t('banksModal.title')}</h2>
+          <h2
+            id="add-random-banks-title"
+            className="min-w-0 text-end text-2xl font-extrabold leading-tight text-[#2A3433] sm:text-3xl md:text-[44px] md:leading-[1.2]"
+          >
+            {t('banksModal.title')}
+          </h2>
         </div>
 
-        <div className="border-b border-[#E5E9EB] px-6 pt-5">
-          <div className="flex items-center justify-start gap-8">
+        <div className="shrink-0 border-b border-[#E5E9EB] px-4 pt-3 sm:px-6 sm:pt-5">
+          <div className="flex items-center justify-start gap-4 overflow-x-auto sm:gap-8">
             <button
               type="button"
               onClick={() => setActiveTab(PICKER_TABS.MY)}
-              className={`relative pb-3 text-base font-bold transition ${
+              className={`relative shrink-0 pb-3 text-sm font-bold transition sm:text-base ${
                 activeTab === PICKER_TABS.MY ? 'text-[#2AA8A2]' : 'text-[#64748B]'
               }`}
             >
@@ -217,7 +230,7 @@ function AddRandomBanksModal({
               <button
                 type="button"
                 onClick={() => setActiveTab(QUESTION_BANK_TABS.WORKSPACE)}
-                className={`relative pb-3 text-base font-bold transition ${
+                className={`relative shrink-0 pb-3 text-sm font-bold transition sm:text-base ${
                   activeTab === QUESTION_BANK_TABS.WORKSPACE ? 'text-[#2AA8A2]' : 'text-[#64748B]'
                 }`}
               >
@@ -235,7 +248,7 @@ function AddRandomBanksModal({
             <button
               type="button"
               onClick={() => setActiveTab(PICKER_TABS.COMMUNITY)}
-              className={`relative inline-flex items-center gap-2 pb-3 text-base font-bold transition ${
+              className={`relative inline-flex shrink-0 items-center gap-2 pb-3 text-sm font-bold transition sm:text-base ${
                 activeTab === PICKER_TABS.COMMUNITY ? 'text-[#2AA8A2]' : 'text-[#64748B]'
               }`}
             >
@@ -253,17 +266,17 @@ function AddRandomBanksModal({
           </div>
         </div>
 
-        <div className="min-h-0 flex-1 overflow-y-auto px-6 py-8">
+        <div className="min-h-0 flex-1 overflow-y-auto px-4 py-5 sm:px-6 sm:py-8">
           {loading ? (
-            <div className="flex justify-center gap-4">
+            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3">
               {[1, 2, 3].map((item) => (
-                <div key={item} className="h-[324px] w-[255.67px] animate-pulse rounded-xl bg-[#F1F5F9]" />
+                <div key={item} className="h-[324px] w-full animate-pulse rounded-xl bg-[#F1F5F9]" />
               ))}
             </div>
           ) : paginatedBanks.length === 0 ? (
             <p className="py-16 text-center text-sm text-[#94A3B8]">{t('banksModal.empty')}</p>
           ) : (
-            <div className="flex justify-center gap-4">
+            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3">
               {paginatedBanks.map((bank) => (
                 <SelectableQuestionBankCard
                   key={bank.id}
@@ -277,15 +290,15 @@ function AddRandomBanksModal({
           )}
         </div>
 
-        <div className="space-y-4 border-t border-[#E5E9EB] px-6 py-5">
+        <div className="shrink-0 space-y-4 border-t border-[#E5E9EB] px-4 py-4 sm:px-6 sm:py-5">
           <QuestionBanksPagination page={page} totalPages={totalPages} onPageChange={setPage} />
 
-          <div className="flex justify-end">
+          <div className="flex justify-stretch sm:justify-end">
             <button
               type="button"
               onClick={handlePickDone}
               disabled={!selectedBankIds.length}
-              className="min-w-[126px] rounded-xl bg-[#2AA8A2] px-8 py-3 text-base font-bold text-white shadow-[0_8px_16px_rgba(42,168,162,0.2)] disabled:opacity-50"
+              className="w-full min-w-0 rounded-xl bg-[#2AA8A2] px-8 py-3 text-base font-bold text-white shadow-[0_8px_16px_rgba(42,168,162,0.2)] disabled:opacity-50 sm:w-auto sm:min-w-[126px]"
             >
               {t('banksModal.done')}
             </button>

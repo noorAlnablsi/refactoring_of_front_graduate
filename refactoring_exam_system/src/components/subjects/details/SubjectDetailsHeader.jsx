@@ -9,13 +9,13 @@ function SubjectDetailsHeader({ subject, onAssignTeacher, onAssignStudents }) {
 
   return (
     <div className="flex flex-col gap-6 lg:flex-row lg:items-start lg:justify-between">
-      <div className="flex items-start gap-4">
+      <div className="flex min-w-0 items-start gap-4">
         <span className="flex h-[72px] w-[72px] shrink-0 items-center justify-center rounded-2xl bg-[#2AA8A2] text-white shadow-[0_8px_20px_rgba(42,168,162,0.22)]">
           <FlaskConical className="h-8 w-8" strokeWidth={1.75} />
         </span>
         <div className="min-w-0 pt-1">
-          <h1 className="text-[28px] font-extrabold leading-tight text-[#2A3433]">{subject.name}</h1>
-          <p className="mt-3 max-w-3xl text-sm leading-7 text-[#64748B]">
+          <h1 className="break-words text-[28px] font-extrabold leading-tight text-[#2A3433]">{subject.name}</h1>
+          <p className="mt-3 max-w-3xl break-words text-sm leading-7 text-[#64748B]">
             {getSubjectSummary(subject.description)}
           </p>
         </div>

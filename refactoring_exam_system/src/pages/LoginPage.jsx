@@ -66,8 +66,8 @@ function LoginPage() {
       </header>
 
       <section className="mx-auto mt-8 w-full max-w-[1240px]">
-        <div dir="ltr" className="mx-auto overflow-hidden rounded-[24px] bg-white shadow-[0_10px_30px_rgba(0,0,0,0.06)] lg:grid lg:w-[1152px] lg:grid-cols-[576px_576px]">
-          <div dir="rtl" className="p-8 md:p-10 lg:h-[700px]">
+        <div dir="ltr" className="mx-auto w-full max-w-[1152px] overflow-hidden rounded-[24px] bg-white shadow-[0_10px_30px_rgba(0,0,0,0.06)] lg:grid lg:grid-cols-[minmax(0,576px)_minmax(0,576px)]">
+          <div dir="rtl" className="min-w-0 p-5 sm:p-8 md:p-10 lg:h-[700px]">
             <h1 className="text-right text-3xl font-extrabold text-[#2A3433] md:text-4xl">
               {t('login.welcomeBack')}
             </h1>
@@ -86,12 +86,12 @@ function LoginPage() {
                   onChange={(e) => setEmail(e.target.value)}
                   placeholder={t('login.emailPlaceholder')}
                   autoComplete="off"
-                  className="h-12 w-full rounded-xl bg-[#EEF2F3] px-4 text-sm text-[#374151] outline-none ring-1 ring-[#D9DEE0] placeholder:text-[#94A3B8] focus:ring-2 focus:ring-[#2AA8A2]/40 md:w-[448px]"
+                  className="h-12 w-full max-w-[448px] rounded-xl bg-[#EEF2F3] px-4 text-sm text-[#374151] outline-none ring-1 ring-[#D9DEE0] placeholder:text-[#94A3B8] focus:ring-2 focus:ring-[#2AA8A2]/40"
                 />
               </div>
 
               <div className="space-y-2">
-                <div dir="ltr" className="grid w-full grid-cols-2 items-center md:w-[448px]">
+                <div dir="ltr" className="grid w-full max-w-[448px] grid-cols-2 items-center gap-2">
                   <Link to={ROUTES.FORGOT_PASSWORD} className="justify-self-start text-sm font-semibold text-[#2AA8A2]">
                     {t('login.forgotPassword')}
                   </Link>
@@ -99,7 +99,7 @@ function LoginPage() {
                     {t('login.passwordLabel')}
                   </label>
                 </div>
-                <div className="relative w-full md:w-[448px]">
+                <div className="relative w-full max-w-[448px]">
                   <input
                     type={showPassword ? 'text' : 'password'}
                     name="login-password"
@@ -136,12 +136,12 @@ function LoginPage() {
                 type="submit"
                 data-keyboard-primary=""
                 disabled={loading}
-                className="h-12 w-full rounded-xl bg-[#2AA8A2] text-base font-bold text-white shadow-[0_12px_20px_rgba(42,168,162,0.22)] transition hover:opacity-95 disabled:opacity-70 md:w-[448px]"
+                className="h-12 w-full max-w-[448px] rounded-xl bg-[#2AA8A2] text-base font-bold text-white shadow-[0_12px_20px_rgba(42,168,162,0.22)] transition hover:opacity-95 disabled:opacity-70"
               >
                 {loading ? t('login.submitting') : t('login.submit')}
               </button>
 
-              <div className="flex items-center justify-center gap-2 text-sm text-[#6B7280]">
+              <div className="flex flex-wrap items-center justify-center gap-2 text-sm text-[#6B7280]">
                 <span>{t('login.newUser')}</span>
                 <Link to={ROUTES.WELCOME} className="font-bold text-[#2AA8A2]">
                   {t('login.createAccount')}
@@ -150,7 +150,7 @@ function LoginPage() {
             </form>
           </div>
 
-          <div className="hidden lg:block">
+          <div className="hidden min-w-0 lg:block">
             <AuthHeroPanel image={loginHero} alt={t('login.heroAlt')} />
           </div>
         </div>

@@ -8,6 +8,7 @@ import {
   validateQuestionChoiceRules,
 } from '../../../lib/questionBanks'
 import { isRichTextEmpty } from '../../../lib/richText'
+import { customModalOverlayClass, customModalPanelSafeClass } from '../../../lib/shellUi'
 import QuestionBodyEditor from './QuestionBodyEditor'
 
 const inputClassName =
@@ -156,8 +157,8 @@ function EditQuestionModal({ open, question, topics = [], submitting = false, on
   }
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/45 p-4">
-      <div dir="rtl" className="max-h-[90vh] w-full max-w-3xl overflow-y-auto rounded-2xl bg-white p-6 shadow-xl">
+    <div className={customModalOverlayClass}>
+      <div dir="rtl" className={`w-full max-w-3xl rounded-2xl bg-white p-6 shadow-xl ${customModalPanelSafeClass}`}>
         <div className="mb-5 flex items-center justify-between">
           <h2 className="text-xl font-extrabold text-[#2A3433]">{t('editor.editQuestionTitle')}</h2>
           <button type="button" onClick={onClose} className="text-[#94A3B8]">

@@ -88,19 +88,19 @@ function QuestionsList({
       <div className="space-y-3">
         {questions.map((question, index) => (
           <article key={`${question.id || 'local'}-${index}`} className="rounded-xl bg-[#F8FAFB] p-4">
-            <div className="mb-2 flex items-center justify-between gap-2">
+            <div className="mb-2 flex flex-wrap items-center justify-between gap-2">
               <span className="rounded-md bg-[#E8F7F6] px-2 py-1 text-xs font-bold text-[#2AA8A2]">
                 {formatLocaleNumber(index + 1)}
               </span>
-              <div className="flex items-center gap-2">
-                <div className="flex items-center gap-2 text-xs font-semibold text-[#64748B]">
+              <div className="flex min-w-0 flex-wrap items-center gap-2">
+                <div className="flex min-w-0 flex-wrap items-center justify-end gap-x-2 gap-y-1 text-xs font-semibold text-[#64748B]">
                   <span>{getQuestionTypeLabel(question.type_code)}</span>
                   <span>•</span>
                   <span>{getDifficultyLabel(question.difficulty)}</span>
                   <span>•</span>
                   <span>{t('counts.points', { count: question.points })}</span>
                   <span>•</span>
-                  <span>{getQuestionTopicLabel(question, topics)}</span>
+                  <span className="min-w-0 break-words">{getQuestionTopicLabel(question, topics)}</span>
                 </div>
                 {canEdit && question?.id ? (
                   <button

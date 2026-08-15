@@ -64,7 +64,7 @@ function ExamAttemptGradingPage() {
   }
 
   return (
-    <div className="space-y-6">
+    <div className="min-w-0 space-y-6">
       <header className="flex flex-wrap items-start justify-between gap-4">
         <div>
           <p className={shellPageEyebrowClass}>{t('grading.wizard.eyebrow')}</p>
@@ -87,7 +87,7 @@ function ExamAttemptGradingPage() {
         </button>
       </header>
 
-      <nav className="grid gap-2 sm:grid-cols-4">
+      <nav className="grid grid-cols-1 gap-2 sm:grid-cols-2 lg:grid-cols-4">
         {STEPS.map((item) => {
           const Icon = item.icon
           const active = grading.step === item.id
@@ -96,14 +96,14 @@ function ExamAttemptGradingPage() {
               key={item.id}
               type="button"
               onClick={() => grading.setStep(item.id)}
-              className={`flex items-center gap-2 rounded-xl px-4 py-3 text-right text-xs font-bold transition ${
+              className={`flex min-w-0 items-center gap-2 rounded-xl px-4 py-3 text-right text-xs font-bold transition ${
                 active
                   ? 'bg-[#2AA8A2] text-white shadow-[0_8px_18px_rgba(42,168,162,0.24)]'
                   : 'bg-white text-[#64748B] ring-1 ring-[#E5E9EB]'
               }`}
             >
               <Icon className="h-4 w-4 shrink-0" />
-              {t(`grading.wizard.steps.${item.key}`)}
+              <span className="min-w-0">{t(`grading.wizard.steps.${item.key}`)}</span>
             </button>
           )
         })}

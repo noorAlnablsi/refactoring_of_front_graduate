@@ -31,17 +31,19 @@ function ExamWizardPage({ isNew = false }) {
 
   if (isNew) {
     return (
-      <div className="space-y-6">
+      <div className="min-w-0 space-y-6">
         <WizardHeader onBack={wizard.exitToExams} title={t('wizard.createTitle')} />
         <ExamWizardStepper currentStep={TEST_WIZARD_STEPS.INFO} />
-        <div className="grid gap-6 lg:grid-cols-[1fr_300px]">
-          <ExamBasicInfoStep
-            onSubmit={wizard.handleCreate}
-            onSaveDraft={wizard.handleSaveDraft}
-            onDraftChange={wizard.setDraft}
-            submitting={wizard.submitting}
-            savingDraft={wizard.savingDraft}
-          />
+        <div className="grid min-w-0 gap-6 lg:grid-cols-[minmax(0,1fr)_300px]">
+          <div className="min-w-0">
+            <ExamBasicInfoStep
+              onSubmit={wizard.handleCreate}
+              onSaveDraft={wizard.handleSaveDraft}
+              onDraftChange={wizard.setDraft}
+              submitting={wizard.submitting}
+              savingDraft={wizard.savingDraft}
+            />
+          </div>
           <ExamSummarySidebar test={null} draft={wizard.draft} currentStep={TEST_WIZARD_STEPS.INFO} />
         </div>
       </div>
@@ -63,7 +65,7 @@ function ExamWizardPage({ isNew = false }) {
   const { test, currentStep, blueprintActive } = wizard
 
   return (
-    <div className="space-y-6">
+    <div className="min-w-0 space-y-6">
       {!blueprintActive ? (
         <>
           <WizardHeader
@@ -74,8 +76,8 @@ function ExamWizardPage({ isNew = false }) {
         </>
       ) : null}
 
-      <div className={`grid gap-6 ${blueprintActive ? '' : 'lg:grid-cols-[1fr_300px]'}`}>
-        <div>
+      <div className={`grid min-w-0 gap-6 ${blueprintActive ? '' : 'lg:grid-cols-[minmax(0,1fr)_300px]'}`}>
+        <div className="min-w-0">
           {currentStep === TEST_WIZARD_STEPS.INFO ? (
             <ExamBasicInfoStep
               initialValues={wizard.initialInfo}
@@ -152,17 +154,17 @@ function WizardHeader({ title, onBack }) {
   const { t } = useTranslation('exams')
 
   return (
-    <div className="flex items-center gap-4">
+    <div className="flex min-w-0 items-center gap-4">
       <button
         type="button"
         onClick={onBack}
-        className={`flex h-10 w-10 items-center justify-center rounded-xl text-[var(--shell-text-muted)] ${shellCardClass}`}
+        className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-xl text-[var(--shell-text-muted)] ${shellCardClass}`}
       >
         <ArrowRight className="h-5 w-5" />
       </button>
-      <div>
+      <div className="min-w-0">
         <p className={shellPageEyebrowClass}>{t('wizard.header.eyebrow')}</p>
-        <h1 className={`text-2xl ${shellPageTitleClass}`}>{title}</h1>
+        <h1 className={`truncate text-2xl ${shellPageTitleClass}`}>{title}</h1>
       </div>
     </div>
   )

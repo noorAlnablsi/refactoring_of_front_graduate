@@ -7,13 +7,15 @@ import {
   shellCardClass,
   shellSectionTitleClass,
   shellSubtleTextClass,
+  shellTableHostClass,
+  shellTableScrollClass,
 } from '../../lib/shellUi'
 
 function MembersGroupsPreview({ groups, loading }) {
   const { t } = useTranslation('groups')
 
   return (
-    <section className={shellCardClass}>
+    <section className={`${shellTableHostClass} ${shellCardClass}`}>
       <div className="flex items-center justify-between gap-3 border-b border-[var(--shell-border)] px-5 py-4">
         <h2 className={shellSectionTitleClass}>{t('preview.title')}</h2>
         <Link to={ROUTES.GROUPS} className="text-sm font-bold text-[var(--shell-accent)] transition hover:opacity-80">
@@ -26,7 +28,7 @@ function MembersGroupsPreview({ groups, loading }) {
       ) : groups.length === 0 ? (
         <p className={`px-5 py-8 text-center text-sm ${shellBodyTextClass}`}>{t('preview.empty')}</p>
       ) : (
-        <div className="overflow-x-auto">
+        <div className={shellTableScrollClass}>
           <table className="w-full min-w-[720px] text-right text-sm">
             <thead className="border-b border-[var(--shell-border)] text-xs text-[var(--shell-text-muted)]">
               <tr>

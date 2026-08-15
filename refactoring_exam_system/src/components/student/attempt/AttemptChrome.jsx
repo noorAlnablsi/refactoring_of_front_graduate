@@ -57,18 +57,18 @@ function AttemptExamHeader({
         </div>
 
         {studentName ? (
-          <div className="flex items-center gap-3">
-            <div className="text-end">
-              <p className="text-sm font-extrabold text-[#2A3433]">{studentName}</p>
+          <div className="flex min-w-0 max-w-[9rem] items-center gap-3 sm:max-w-xs">
+            <div className="min-w-0 text-end">
+              <p className="truncate text-sm font-extrabold text-[#2A3433]">{studentName}</p>
             </div>
             {safeAvatarUrl ? (
               <img
                 src={safeAvatarUrl}
                 alt=""
-                className="h-11 w-11 rounded-full object-cover ring-2 ring-[#E8F7F6]"
+                className="h-11 w-11 shrink-0 rounded-full object-cover ring-2 ring-[#E8F7F6]"
               />
             ) : (
-              <span className="flex h-11 w-11 items-center justify-center rounded-full bg-[#E8F7F6] text-sm font-extrabold text-[#2AA8A2]">
+              <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-[#E8F7F6] text-sm font-extrabold text-[#2AA8A2]">
                 {initials}
               </span>
             )}
@@ -105,7 +105,7 @@ function AttemptSidebar({
       >
         <Clock3 className={`h-5 w-5 ${lowTime ? 'text-[#DC2626]' : 'text-[#F87171]'}`} />
         <span
-          className={`font-mono text-xl font-extrabold tracking-widest ${
+          className={`font-mono text-lg font-extrabold tabular-nums tracking-wide lg:text-xl lg:tracking-widest ${
             lowTime ? 'text-[#DC2626]' : 'text-[#EF4444]'
           }`}
         >
@@ -115,7 +115,7 @@ function AttemptSidebar({
 
       <h2 className="mb-3 text-sm font-extrabold text-[#2A3433]">{t('attempt.questionIndex')}</h2>
 
-      <div className="grid grid-cols-5 gap-2">
+      <div className="grid max-h-[40vh] grid-cols-5 gap-2 overflow-y-auto overscroll-contain pr-1 lg:max-h-none lg:overflow-visible lg:pr-0">
         {questions.map((question, index) => {
           const answered = isAnswerProvided(
             answersMap[question.test_question_id],
@@ -221,12 +221,12 @@ function AttemptFooter({
   const { t } = useTranslation('student')
 
   return (
-    <div className="mt-6 flex flex-wrap items-center justify-between gap-3 border-t border-[#EEF2F4] pt-5">
+    <div className="mt-6 flex flex-col gap-3 border-t border-[#EEF2F4] pt-5 sm:flex-row sm:flex-wrap sm:items-center sm:justify-between">
       <button
         type="button"
         onClick={onSubmit}
         disabled={submitting}
-        className="inline-flex items-center gap-2 rounded-2xl bg-[#2AA8A2] px-6 py-3 text-sm font-extrabold text-white disabled:opacity-60"
+        className="inline-flex w-full items-center justify-center gap-2 rounded-2xl bg-[#2AA8A2] px-4 py-3 text-sm font-extrabold text-white disabled:opacity-60 sm:w-auto sm:px-6"
       >
         {submitting ? t('attempt.submitting') : t('attempt.submit')}
       </button>
@@ -236,15 +236,15 @@ function AttemptFooter({
         {t('attempt.footerHelp')}
       </div>
 
-      <div className="flex items-center gap-2">
+      <div className="flex w-full flex-wrap items-center gap-2 sm:w-auto sm:justify-end">
         {allowBack ? (
           <button
             type="button"
             onClick={onPrevious}
             disabled={isFirst || submitting}
-            className="inline-flex items-center gap-2 rounded-2xl bg-[#EEF2F4] px-5 py-3 text-sm font-bold text-[#64748B] disabled:opacity-50"
+            className="inline-flex min-w-0 flex-1 items-center justify-center gap-2 rounded-2xl bg-[#EEF2F4] px-4 py-3 text-sm font-bold text-[#64748B] disabled:opacity-50 sm:flex-none sm:px-5"
           >
-            <ArrowRight className="h-4 w-4" />
+            <ArrowRight className="h-4 w-4 shrink-0" />
             {t('attempt.previous')}
           </button>
         ) : null}
@@ -255,10 +255,10 @@ function AttemptFooter({
             data-keyboard-primary=""
             onClick={onSubmit}
             disabled={submitting}
-            className="inline-flex items-center gap-2 rounded-2xl bg-[#2AA8A2] px-6 py-3 text-sm font-extrabold text-white disabled:opacity-60"
+            className="inline-flex min-w-0 flex-1 items-center justify-center gap-2 rounded-2xl bg-[#2AA8A2] px-4 py-3 text-sm font-extrabold text-white disabled:opacity-60 sm:flex-none sm:px-6"
           >
             {t('attempt.finish')}
-            <ArrowLeft className="h-4 w-4" />
+            <ArrowLeft className="h-4 w-4 shrink-0" />
           </button>
         ) : (
           <button
@@ -266,10 +266,10 @@ function AttemptFooter({
             data-keyboard-primary=""
             onClick={onNext}
             disabled={submitting}
-            className="inline-flex items-center gap-2 rounded-2xl bg-[#2AA8A2] px-6 py-3 text-sm font-extrabold text-white disabled:opacity-60"
+            className="inline-flex min-w-0 flex-1 items-center justify-center gap-2 rounded-2xl bg-[#2AA8A2] px-4 py-3 text-sm font-extrabold text-white disabled:opacity-60 sm:flex-none sm:px-6"
           >
             {t('attempt.next')}
-            <ArrowLeft className="h-4 w-4" />
+            <ArrowLeft className="h-4 w-4 shrink-0" />
           </button>
         )}
       </div>

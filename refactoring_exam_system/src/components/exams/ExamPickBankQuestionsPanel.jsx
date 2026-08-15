@@ -32,7 +32,7 @@ function SelectableBankQuestionCard({ question, selected, onToggle, t, choiceLet
       }`}
     >
       <div className="flex items-start justify-between gap-4">
-        <div className="flex flex-1 flex-wrap items-center justify-start gap-2">
+        <div className="flex min-w-0 flex-1 flex-wrap items-center justify-start gap-2">
           <span className="rounded-full bg-[#E8F7F6] px-3 py-1 text-xs font-bold text-[#2AA8A2]">
             {topicName}
           </span>
@@ -85,11 +85,11 @@ function SelectableBankQuestionCard({ question, selected, onToggle, t, choiceLet
                     : 'bg-[#F6F8F9] text-[#64748B]'
                 }`}
               >
-                <span className="flex items-center gap-2">
+                <span className="flex min-w-0 flex-1 items-center gap-2">
                   {!isTrueFalse ? (
-                    <span className="text-xs font-bold text-[#94A3B8]">{letter})</span>
+                    <span className="shrink-0 text-xs font-bold text-[#94A3B8]">{letter})</span>
                   ) : null}
-                  <span dangerouslySetInnerHTML={{ __html: choice.body || choice.text || '' }} />
+                  <span className="min-w-0 break-words" dangerouslySetInnerHTML={{ __html: choice.body || choice.text || '' }} />
                 </span>
                 {isCorrect ? <Check className="h-4 w-4 shrink-0" strokeWidth={2.5} /> : null}
               </li>
@@ -212,22 +212,22 @@ function ExamPickBankQuestionsPanel({
           {t('wizard.pickBank.breadcrumb')} <span className="mx-1">›</span> {bank.title}
         </p>
         <div className="mt-3 flex flex-wrap items-start justify-between gap-4">
-          <div>
-            <h2 className="text-[28px] font-extrabold leading-tight text-[#2A3433] md:text-[32px]">
+          <div className="min-w-0">
+            <h2 className="truncate text-[28px] font-extrabold leading-tight text-[#2A3433] md:text-[32px]">
               {bank.title}
             </h2>
             <p className="mt-2 max-w-2xl text-sm leading-7 text-[#64748B]">
               {t('wizard.pickBank.subtitle', { name: examName })}
             </p>
           </div>
-          <span className="rounded-full bg-[#E8F7F6] px-4 py-2 text-sm font-bold text-[#2AA8A2]">
+          <span className="shrink-0 rounded-full bg-[#E8F7F6] px-4 py-2 text-sm font-bold text-[#2AA8A2]">
             {t('wizard.pickBank.questionsCount', { count: questions.length })}
           </span>
         </div>
       </header>
 
       <div className="flex flex-wrap items-center justify-between gap-3">
-        <div className="relative min-w-[240px] flex-1 max-w-md">
+        <div className="relative w-full min-w-0 flex-1 max-w-md sm:min-w-[240px]">
           <Search className="pointer-events-none absolute right-4 top-1/2 h-4 w-4 -translate-y-1/2 text-[#94A3B8]" />
           <input
             type="search"
@@ -276,7 +276,7 @@ function ExamPickBankQuestionsPanel({
         </div>
       )}
 
-      <ExamWizardFooter className="-mx-1 mt-2">
+      <ExamWizardFooter className="mt-2">
         <div className="flex flex-wrap items-center justify-between gap-4">
           <button
             type="button"

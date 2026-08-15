@@ -25,7 +25,7 @@ function TrustedSection() {
   return (
     <section className="bg-[#EDEFF0] px-4 py-14 md:px-8">
       <div className="mx-auto w-full max-w-6xl text-center">
-        <h2 className="mx-auto mb-10 h-4 w-[489px] max-w-full text-center text-base font-bold text-[#5A6062]">
+        <h2 className="mx-auto mb-10 max-w-full text-center text-base font-bold text-[#5A6062]">
           {t('trusted.title')}
         </h2>
         <div className="flex flex-wrap items-center justify-center gap-8">

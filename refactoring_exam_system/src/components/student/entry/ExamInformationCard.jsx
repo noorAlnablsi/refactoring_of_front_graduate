@@ -39,16 +39,16 @@ function ExamInformationCard({ entry }) {
         />
       </div>
 
-      <div className="mt-5 grid grid-cols-2 gap-3">
+      <div className="mt-5 grid grid-cols-1 gap-3 min-[380px]:grid-cols-2">
         <div className="rounded-xl bg-[#F6F8F9] px-3 py-3 text-start">
           <p className="text-[11px] font-semibold text-[#94A3B8]">{t('entry.duration')}</p>
-          <p className="mt-1 text-sm font-extrabold text-[#2A3433]">
+          <p className="mt-1 break-words text-sm font-extrabold text-[#2A3433]">
             {duration != null ? t('entry.durationValue', { minutes: duration }) : '—'}
           </p>
         </div>
         <div className="rounded-xl bg-[#F6F8F9] px-3 py-3 text-start">
           <p className="text-[11px] font-semibold text-[#94A3B8]">{t('entry.questions')}</p>
-          <p className="mt-1 text-sm font-extrabold text-[#2A3433]">
+          <p className="mt-1 break-words text-sm font-extrabold text-[#2A3433]">
             {t('entry.questionsValue', { count: questions ?? 0 })}
           </p>
         </div>

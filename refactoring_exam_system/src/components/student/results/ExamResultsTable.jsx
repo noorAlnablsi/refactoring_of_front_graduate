@@ -4,6 +4,7 @@ import SubjectsPagination from '../../subjects/SubjectsPagination'
 import { formatBankCardDate } from '../../../lib/questionBanks'
 import { localizeDigits } from '../../../lib/localeNumber'
 import { getPercentageBarTone, getResultDisplayDate } from '../../../lib/studentResultsModel'
+import { shellTableScrollClass } from '../../../lib/shellUi'
 
 const TONE_BAR = {
   success: 'bg-[var(--shell-accent)]',
@@ -79,7 +80,7 @@ function ExamResultsTable({
   const to = Math.min(page * perPage, total)
 
   return (
-    <section className="rounded-2xl bg-[var(--shell-surface)] p-5 shadow-[var(--shell-shadow-sm)] ring-1 ring-[var(--shell-border)] md:p-6">
+    <section className="min-w-0 overflow-hidden rounded-2xl bg-[var(--shell-surface)] p-5 shadow-[var(--shell-shadow-sm)] ring-1 ring-[var(--shell-border)] md:p-6">
       <div className="mb-5 flex flex-wrap items-center justify-between gap-3">
         <h2 className="text-base font-extrabold text-[var(--shell-text)]">
           {t('performance.table.title')}
@@ -107,7 +108,7 @@ function ExamResultsTable({
         </div>
       </div>
 
-      <div className="overflow-x-auto">
+      <div className={shellTableScrollClass}>
         <table className="w-full min-w-[920px] table-fixed border-collapse text-sm">
           <colgroup>
             <col className="w-[22%]" />

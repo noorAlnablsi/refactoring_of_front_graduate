@@ -77,8 +77,10 @@ function AttemptChoiceList({
               checked ? checkedClassName : uncheckedClassName
             } ${disabled ? 'pointer-events-none opacity-60' : ''}`}
           >
-            <span className="text-sm font-semibold leading-7 text-[#2A3433]">{label}</span>
-            <span className="flex items-center gap-2">
+            <span className="min-w-0 flex-1 break-words text-sm font-semibold leading-7 text-[#2A3433]">
+              {label}
+            </span>
+            <span className="flex shrink-0 items-center gap-2">
               {showLetter ? <span className="text-xs font-bold text-[#94A3B8]">{letter}</span> : null}
               <input
                 type={multi ? 'checkbox' : 'radio'}
@@ -138,7 +140,7 @@ function AttemptQuestionRenderer({
             </span>
           ) : null}
 
-          <h2 className="mt-3 text-start text-lg font-extrabold leading-8 text-[#2A3433] md:text-xl">
+          <h2 className="mt-3 min-w-0 break-words text-start text-lg font-extrabold leading-8 text-[#2A3433] md:text-xl">
             {question.snapshot_question_text || t('attempt.questionFallback')}
           </h2>
 
@@ -190,15 +192,15 @@ function AttemptQuestionRenderer({
         </span>
       </div>
 
-      <div className="flex items-start justify-between gap-3">
-        <h2 className="flex-1 text-start text-lg font-extrabold leading-8 text-[#2A3433] md:text-xl">
+      <div className="flex flex-col items-stretch gap-3 sm:flex-row sm:items-start sm:justify-between">
+        <h2 className="min-w-0 flex-1 break-words text-start text-lg font-extrabold leading-8 text-[#2A3433] md:text-xl">
           {question.snapshot_question_text || t('attempt.questionFallback')}
         </h2>
         <button
           type="button"
           disabled={disabled}
           onClick={() => onToggleMark?.(questionId)}
-          className={`inline-flex shrink-0 items-center gap-1.5 rounded-xl px-3 py-2 text-xs font-bold transition ${
+          className={`inline-flex w-full shrink-0 items-center justify-center gap-1.5 self-start rounded-xl px-3 py-2 text-xs font-bold transition sm:w-auto ${
             marked
               ? 'bg-[#FDF2F8] text-[#DB2777] ring-1 ring-[#FBCFE8]'
               : 'bg-[#F8FAFB] text-[#64748B] ring-1 ring-[#E5E9EB] hover:text-[#2AA8A2]'

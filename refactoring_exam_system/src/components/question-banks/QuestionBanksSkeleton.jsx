@@ -1,12 +1,13 @@
 import {
   communityQuestionBankCardClassName,
   ownedQuestionBankCardClassName,
+  questionBanksGridClassName,
 } from '../../lib/questionBanks'
 
 function QuestionBanksSkeleton({ ownedStyle = true }) {
   if (ownedStyle) {
     return (
-      <div className="flex flex-wrap gap-4">
+      <div className={questionBanksGridClassName}>
         {[1, 2, 3].map((item) => (
           <div
             key={item}
@@ -24,7 +25,7 @@ function QuestionBanksSkeleton({ ownedStyle = true }) {
           <div key={item} className="h-9 w-9 animate-pulse rounded-lg bg-white" />
         ))}
       </div>
-      <div className="flex flex-wrap gap-4">
+      <div className={questionBanksGridClassName}>
         {[1, 2, 3].map((item) => (
           <div
             key={item}

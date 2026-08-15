@@ -12,6 +12,7 @@ import {
   UsersRound,
 } from 'lucide-react'
 import SidebarSessionLogout from '../auth/SidebarSessionLogout'
+import MobileNavDrawer from '../common/MobileNavDrawer'
 import { ROUTES } from '../../constants/routes'
 import { useAppTranslation } from '../../hooks/useAppTranslation'
 import {
@@ -88,26 +89,28 @@ function SidebarBrand() {
   )
 }
 
-function Sidebar() {
-  const { t } = useAppTranslation('navigation')
-
-  const navItems = baseNavItems.filter((item) => {
+function useStaffNavItems() {
+  return baseNavItems.filter((item) => {
     if (item.requiresSubjectsModule && !canAccessSubjectsModule()) return false
     if (item.requiresMembersModule && !canAccessMembersModule()) return false
     if (item.requiresStudentGroups && !canShowStudentGroupsInSidebar()) return false
     if (item.requiresExams && !canAccessExams()) return false
     if (item.requiresInstitutionOwner && !isInstitutionOwner()) return false
-    // Teachers/SOLO/admin: inbox without full analytics. Owner uses Analytics → View all.
     if (item.requiresIntegrityInbox) {
       return canAccessIntegrityReports() && !isInstitutionOwner()
     }
     if (!item.requiresQuestionBanks) return true
     return canAccessQuestionBanks()
   })
+}
+
+function SidebarNav({ onNavigate, showBrand = true }) {
+  const { t } = useAppTranslation('navigation')
+  const navItems = useStaffNavItems()
 
   return (
-    <aside className="hidden h-screen w-[280px] shrink-0 flex-col border-e border-[var(--shell-border)] bg-[var(--shell-surface)] lg:flex">
-      <SidebarBrand />
+    <>
+      {showBrand ? <SidebarBrand /> : null}
 
       <nav className="min-h-0 flex-1 space-y-1.5 overflow-y-auto px-3.5 py-5">
         {navItems.map(({ to, labelKey, icon: Icon, end = true, disabled }) => {
@@ -126,6 +129,7 @@ function Sidebar() {
               key={to}
               to={to}
               end={end}
+              onClick={() => onNavigate?.()}
               className={({ isActive }) =>
                 `relative flex items-center gap-3 rounded-xl px-3.5 py-3 text-sm font-semibold transition ${
                   isActive
@@ -149,9 +153,34 @@ function Sidebar() {
       </nav>
 
       <div className="shrink-0 border-t border-[var(--shell-border)] px-4 py-5">
-        <SidebarSessionLogout className="text-[var(--shell-text-muted)] hover:bg-[var(--shell-hover)] hover:text-[var(--shell-accent)]" />
+        <SidebarSessionLogout
+          className="text-[var(--shell-text-muted)] hover:bg-[var(--shell-hover)] hover:text-[var(--shell-accent)]"
+          onNavigate={onNavigate}
+        />
       </div>
-    </aside>
+    </>
+  )
+}
+
+function Sidebar({ mobileOpen = false, onMobileClose }) {
+  const { t } = useAppTranslation('navigation')
+
+  return (
+    <>
+      <aside className="hidden h-screen w-[280px] shrink-0 flex-col border-e border-[var(--shell-border)] bg-[var(--shell-surface)] lg:flex">
+        <SidebarNav />
+      </aside>
+
+      <MobileNavDrawer
+        open={mobileOpen}
+        onClose={onMobileClose}
+        title={t('sidebar.brandTitle')}
+        closeLabel={t('topBar.closeMenu')}
+        widthClassName="w-[min(280px,85vw)]"
+      >
+        <SidebarNav onNavigate={onMobileClose} showBrand={false} />
+      </MobileNavDrawer>
+    </>
   )
 }
 

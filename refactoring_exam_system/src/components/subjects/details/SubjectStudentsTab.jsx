@@ -8,6 +8,8 @@ import {
   shellCardClass,
   shellDividerClass,
   shellPageTitleClass,
+  shellTableHostClass,
+  shellTableScrollClass,
 } from '../../../lib/shellUi'
 
 function SubjectStudentsTab({ students }) {
@@ -38,8 +40,8 @@ function SubjectStudentsTab({ students }) {
   }
 
   return (
-    <div className={`overflow-hidden ${shellCardClass}`}>
-      <div className="overflow-x-auto">
+    <div className={`${shellTableHostClass} ${shellCardClass}`}>
+      <div className={shellTableScrollClass}>
         <table className="w-full min-w-[720px] text-right text-sm">
           <thead
             className={`border-b bg-[var(--shell-input-bg)] text-[13px] text-[var(--shell-text-muted)] ${shellDividerClass}`}

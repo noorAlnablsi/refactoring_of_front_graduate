@@ -96,33 +96,35 @@ function AnalyticsPage() {
   }
 
   return (
-    <div className="space-y-6">
+    <div className="min-w-0 space-y-6">
       <div className="flex flex-col gap-5 lg:flex-row lg:items-end lg:justify-between lg:gap-6">
         <div className="min-w-0">
           <h1 className={`text-2xl md:text-[28px] ${shellPageTitleClass}`}>{t('title')}</h1>
           <p className={`mt-1.5 max-w-2xl ${shellPageSubtitleClass}`}>{t('subtitle')}</p>
         </div>
-        <AnalyticsFilters
-          subjects={subjects}
-          teachers={teachers}
-          subjectId={subjectId}
-          teacherMembershipId={teacherMembershipId}
-          datePreset={datePreset}
-          dateFrom={dateFrom}
-          dateTo={dateTo}
-          onSubjectChange={setSubjectId}
-          onTeacherChange={setTeacherMembershipId}
-          onDatePresetChange={applyDatePreset}
-          onDateFromChange={(value) => {
-            applyDatePreset('custom')
-            setDateFrom(value)
-          }}
-          onDateToChange={(value) => {
-            applyDatePreset('custom')
-            setDateTo(value)
-          }}
-          disabled={loading}
-        />
+        <div className="w-full min-w-0 lg:max-w-full lg:flex-1">
+          <AnalyticsFilters
+            subjects={subjects}
+            teachers={teachers}
+            subjectId={subjectId}
+            teacherMembershipId={teacherMembershipId}
+            datePreset={datePreset}
+            dateFrom={dateFrom}
+            dateTo={dateTo}
+            onSubjectChange={setSubjectId}
+            onTeacherChange={setTeacherMembershipId}
+            onDatePresetChange={applyDatePreset}
+            onDateFromChange={(value) => {
+              applyDatePreset('custom')
+              setDateFrom(value)
+            }}
+            onDateToChange={(value) => {
+              applyDatePreset('custom')
+              setDateTo(value)
+            }}
+            disabled={loading}
+          />
+        </div>
       </div>
 
       {error ? (

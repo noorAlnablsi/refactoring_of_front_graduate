@@ -342,7 +342,7 @@ function ExamAiGeneratePanel({ test, testId, onBack, onSuccess, onSaveDraft, sav
         </div>
       ) : null}
 
-      <ExamWizardFooter className="-mx-1">
+      <ExamWizardFooter>
         <div className="flex flex-wrap items-center justify-between gap-3">
           <button
             type="button"

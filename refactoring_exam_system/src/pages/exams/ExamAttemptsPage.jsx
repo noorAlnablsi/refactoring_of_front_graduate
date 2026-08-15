@@ -12,6 +12,8 @@ import {
   shellPageEyebrowClass,
   shellPageTitleClass,
   shellSubtleTextClass,
+  shellTableHostClass,
+  shellTableScrollClass,
 } from '../../lib/shellUi'
 
 function statusBadgeClass(status) {
@@ -45,7 +47,7 @@ function ExamAttemptsPage() {
         </button>
       </header>
 
-      <section className={`overflow-hidden ${shellCardClass}`}>
+      <section className={`${shellTableHostClass} ${shellCardClass}`}>
         <div className="flex items-center justify-between gap-3 border-b border-[#E5E9EB] px-5 py-4">
           <div className="flex items-center gap-2">
             <ClipboardCheck className="h-5 w-5 text-[#2AA8A2]" />
@@ -65,8 +67,8 @@ function ExamAttemptsPage() {
         ) : attempts.length === 0 ? (
           <p className={`px-5 py-8 text-sm ${shellSubtleTextClass}`}>{t('grading.attempts.empty')}</p>
         ) : (
-          <div className="overflow-x-auto">
-            <table className="min-w-full text-right text-sm">
+          <div className={shellTableScrollClass}>
+            <table className="w-full min-w-[720px] text-right text-sm">
               <thead className="bg-[#F8FAFB] text-xs font-bold text-[#94A3B8]">
                 <tr>
                   <th className="px-5 py-3">{t('grading.attempts.columns.student')}</th>

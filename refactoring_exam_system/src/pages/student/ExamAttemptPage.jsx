@@ -356,22 +356,24 @@ function ExamAttemptPage() {
       />
 
       <div className="mx-auto grid w-full max-w-7xl gap-5 px-4 py-5 md:px-6 lg:grid-cols-[280px_minmax(0,1fr)] lg:items-start">
-        <AttemptSidebar
-          remainingSeconds={remainingSeconds}
-          questions={questions}
-          answersMap={answersMap}
-          markedIds={markedIds}
-          currentIndex={currentIndex}
-          allowBack={navSettings.allowBackNavigation}
-          saving={saving}
-          submitting={submitting || answersFrozen}
-          onSelect={handleSelectIndex}
-          onSubmitClick={handleSubmitRequest}
-          cameraStream={proctoringRequired ? proctoring.cameraStream : null}
-          proctoringActive={proctoringActive}
-        />
+        <div className="order-2 min-w-0 lg:order-1">
+          <AttemptSidebar
+            remainingSeconds={remainingSeconds}
+            questions={questions}
+            answersMap={answersMap}
+            markedIds={markedIds}
+            currentIndex={currentIndex}
+            allowBack={navSettings.allowBackNavigation}
+            saving={saving}
+            submitting={submitting || answersFrozen}
+            onSelect={handleSelectIndex}
+            onSubmitClick={handleSubmitRequest}
+            cameraStream={proctoringRequired ? proctoring.cameraStream : null}
+            proctoringActive={proctoringActive}
+          />
+        </div>
 
-        <section className="min-w-0">
+        <section className="order-1 min-w-0 lg:order-2">
           {alerts}
 
           <AttemptQuestionRenderer

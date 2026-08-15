@@ -1,6 +1,7 @@
 import { useTranslation } from 'react-i18next'
 import { X } from 'lucide-react'
 import { getVisibilityOptionsForWorkspace } from '../../../lib/questionBanks'
+import { customModalOverlayClass, customModalPanelSafeClass } from '../../../lib/shellUi'
 import { isInstitutionWorkspace } from '../../../lib/workspaceContext'
 
 function PublishQuestionBankModal({ open, visibility, loading, onChangeVisibility, onClose, onPublish }) {
@@ -11,8 +12,8 @@ function PublishQuestionBankModal({ open, visibility, loading, onChangeVisibilit
   const visibilityOptions = getVisibilityOptionsForWorkspace(isInstitutionWorkspace())
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/45 p-4">
-      <div dir="rtl" className="w-full max-w-2xl rounded-2xl bg-white p-6 shadow-xl">
+    <div className={customModalOverlayClass}>
+      <div dir="rtl" className={`w-full max-w-2xl rounded-2xl bg-white p-6 shadow-xl ${customModalPanelSafeClass}`}>
         <div className="mb-5 flex items-center justify-between">
           <h2 className="text-4xl font-extrabold text-[#2A3433]">{t('editor.publishPrivacyTitle')}</h2>
           <button type="button" onClick={onClose} className="text-[#94A3B8]">

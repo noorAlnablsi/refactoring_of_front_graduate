@@ -14,6 +14,8 @@ import {
   shellPageEyebrowClass,
   shellPageTitleClass,
   shellSubtleTextClass,
+  shellTableHostClass,
+  shellTableScrollClass,
 } from '../../lib/shellUi'
 
 function translateEventType(t, eventType) {
@@ -84,7 +86,7 @@ function ExamMonitoringPage() {
   const stats = snapshot?.stats
 
   return (
-    <div className="space-y-6">
+    <div className="min-w-0 space-y-6">
       <header className="flex flex-wrap items-start justify-between gap-4">
         <div>
           <p className={shellPageEyebrowClass}>{t('monitoring.eyebrow')}</p>
@@ -134,8 +136,8 @@ function ExamMonitoringPage() {
             />
           </section>
 
-          <div className="grid gap-6 lg:grid-cols-[1.2fr_0.8fr]">
-            <section className={`overflow-hidden ${shellCardClass}`}>
+          <div className="grid min-w-0 gap-6 lg:grid-cols-[minmax(0,1.2fr)_minmax(0,0.8fr)]">
+            <section className={`${shellTableHostClass} ${shellCardClass}`}>
               <div className="flex items-center gap-2 border-b border-[#E5E9EB] px-5 py-4">
                 <Activity className="h-5 w-5 text-[#2AA8A2]" />
                 <h2 className="text-sm font-extrabold text-[#2A3433]">{t('monitoring.studentsTitle')}</h2>
@@ -143,8 +145,8 @@ function ExamMonitoringPage() {
               {(snapshot?.students || []).length === 0 ? (
                 <p className={`px-5 py-8 text-sm ${shellSubtleTextClass}`}>{t('monitoring.emptyStudents')}</p>
               ) : (
-                <div className="overflow-x-auto">
-                  <table className="min-w-full text-right text-sm">
+                <div className={shellTableScrollClass}>
+                  <table className="w-full min-w-[720px] text-right text-sm">
                     <thead className="bg-[#F8FAFB] text-xs font-bold text-[#94A3B8]">
                       <tr>
                         <th className="px-4 py-3">{t('monitoring.columns.student')}</th>

@@ -19,7 +19,7 @@ function SelectableQuestionBankCard({ bank, selected, onToggle, variant = 'owned
     <button
       type="button"
       onClick={() => onToggle(bank.id)}
-      className={`flex h-[324px] w-[255.67px] shrink-0 flex-col overflow-hidden rounded-xl bg-white text-right transition ${cardShadow} ${
+      className={`flex h-[324px] w-full min-w-0 flex-col overflow-hidden rounded-xl bg-white text-right transition ${cardShadow} ${
         selected
           ? 'ring-2 ring-[#2AA8A2]'
           : 'ring-1 ring-[#E5E9EB] hover:ring-[#2AA8A2]/40'
@@ -31,7 +31,7 @@ function SelectableQuestionBankCard({ bank, selected, onToggle, variant = 'owned
         <div className="flex items-start justify-between gap-3">
           <span className="h-10 w-10 shrink-0" aria-hidden="true" />
           <span
-            className="rounded-full bg-[#E8F7F3] px-3 py-1 text-xs font-medium"
+            className="max-w-[70%] truncate rounded-full bg-[#E8F7F3] px-3 py-1 text-xs font-medium"
             style={{ backgroundColor: badgeBg, color: badgeText }}
           >
             {bank.subject_name || t('bankCard.generalSubject')}
@@ -48,11 +48,11 @@ function SelectableQuestionBankCard({ bank, selected, onToggle, variant = 'owned
         </div>
 
         <div className="mt-5 flex items-center justify-between gap-3 pt-1 text-xs">
-          <div className="flex items-center gap-1.5 font-medium text-[#111827]">
-            <FileText className="h-4 w-4 text-[#0EA896]" strokeWidth={2} />
-            <span>{formatBankQuestionsCount(bank)}</span>
+          <div className="flex min-w-0 items-center gap-1.5 font-medium text-[#111827]">
+            <FileText className="h-4 w-4 shrink-0 text-[#0EA896]" strokeWidth={2} />
+            <span className="truncate">{formatBankQuestionsCount(bank)}</span>
           </div>
-          <div className="flex items-center gap-1.5 text-[#64748B]">
+          <div className="flex shrink-0 items-center gap-1.5 text-[#64748B]">
             <CalendarDays className="h-3.5 w-3.5 shrink-0" strokeWidth={2} />
             <span>{formatBankCardDate(bank.created_at)}</span>
           </div>

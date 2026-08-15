@@ -416,7 +416,7 @@ function ExamPublishStep({
         <p className="mt-1 text-xs text-[#94A3B8]">{t('wizard.publish.recipientsHint', { ns: 'exams' })}</p>
       </WizardSection>
 
-      <ExamWizardFooter className="-mx-1">
+      <ExamWizardFooter>
         <div className="flex flex-wrap items-center justify-between gap-3">
           <button
             type="button"

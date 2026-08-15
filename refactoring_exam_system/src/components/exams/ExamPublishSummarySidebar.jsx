@@ -39,9 +39,9 @@ function ExamPublishSummarySidebar({ test, settings }) {
   return (
     <div className="space-y-4">
       <aside className="rounded-2xl bg-white p-5 ring-1 ring-[#E5E9EB]">
-        <div className="flex items-center justify-between gap-3">
-          <h3 className="text-sm font-extrabold text-[#2A3433]">{t('wizard.summary.finalTitle')}</h3>
-          <span className="rounded-full bg-[#E8F7F6] px-3 py-1 text-xs font-bold text-[#2AA8A2]">
+        <div className="flex flex-wrap items-center justify-between gap-3">
+          <h3 className="min-w-0 text-sm font-extrabold text-[#2A3433]">{t('wizard.summary.finalTitle')}</h3>
+          <span className="shrink-0 rounded-full bg-[#E8F7F6] px-3 py-1 text-xs font-bold text-[#2AA8A2]">
             {t('wizard.summary.readyToPublish')}
           </span>
         </div>

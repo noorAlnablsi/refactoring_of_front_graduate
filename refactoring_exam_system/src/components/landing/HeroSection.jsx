@@ -17,17 +17,17 @@ function HeroSection() {
           <span className="inline-block rounded-full bg-[#DFF4F3] px-5 py-2 text-sm font-semibold leading-none text-[#2EAFAA]">
             {t('hero.badge')}
           </span>
-          <h1 className="text-4xl font-extrabold leading-[1.2] text-[#1E2432] md:text-6xl">
+          <h1 className="text-[2rem] font-extrabold leading-[1.2] text-[#1E2432] sm:text-4xl md:text-6xl">
             {t('hero.titleLine1')}
             <br />
             <span className="text-[#36BDB7]">{t('hero.titleLine2')}</span>
           </h1>
-          <p className="mx-auto max-w-[620px] text-lg leading-[1.8] text-[#626A79] lg:mx-0">
+          <p className="mx-auto max-w-[620px] text-base leading-[1.8] text-[#626A79] sm:text-lg lg:mx-0">
             {t('hero.subtitle')}
           </p>
           <Link
             to={ROUTES.WELCOME}
-            className="inline-flex w-full items-center justify-center rounded-2xl bg-gradient-to-r from-[#39C1BB] to-[#67CFC5] px-8 py-5 text-2xl font-bold leading-none text-white shadow-[0_12px_24px_rgba(57,193,187,0.2)] transition hover:opacity-95 sm:w-[420px]"
+            className="inline-flex w-full max-w-[420px] items-center justify-center rounded-2xl bg-gradient-to-r from-[#39C1BB] to-[#67CFC5] px-8 py-4 text-xl font-bold leading-none text-white shadow-[0_12px_24px_rgba(57,193,187,0.2)] transition hover:opacity-95 sm:py-5 sm:text-2xl"
           >
             {t('hero.cta')}
           </Link>
@@ -42,17 +42,17 @@ function HeroSection() {
         </div>
 
         <div className="order-1 lg:order-1">
-          <div className="relative mx-auto w-full max-w-[560px] rounded-[22px] bg-white p-4 shadow-[0_8px_28px_rgba(0,0,0,0.12)]">
+          <div className="relative mx-auto w-full max-w-[560px] rounded-[22px] bg-white p-3 shadow-[0_8px_28px_rgba(0,0,0,0.12)] sm:p-4">
             <img
               src={heroGrid}
               alt={t('hero.imageAlt')}
-              className="h-[420px] w-full rounded-2xl object-cover md:h-[500px] lg:h-[542px]"
+              className="h-[240px] w-full rounded-2xl object-cover sm:h-[320px] md:h-[500px] lg:h-[542px]"
             />
-            <div className="absolute -bottom-7 right-4 flex items-center gap-4 rounded-3xl bg-white px-7 py-4 shadow-lg">
-              <div className="flex h-11 w-11 items-center justify-center rounded-full bg-[#45C3BC] text-white">✦</div>
-              <div>
-                <p className="text-4xl font-extrabold leading-none text-[#263247]">{statValue}</p>
-                <p className="text-sm text-[#7A8190]">{t('hero.statLabel')}</p>
+            <div className="absolute inset-x-3 bottom-3 flex items-center gap-3 rounded-2xl bg-white/95 px-4 py-3 shadow-lg sm:inset-x-auto sm:-bottom-7 sm:right-4 sm:gap-4 sm:rounded-3xl sm:px-7 sm:py-4">
+              <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-[#45C3BC] text-white sm:h-11 sm:w-11">✦</div>
+              <div className="min-w-0">
+                <p className="text-2xl font-extrabold leading-none text-[#263247] sm:text-4xl">{statValue}</p>
+                <p className="truncate text-xs text-[#7A8190] sm:text-sm">{t('hero.statLabel')}</p>
               </div>
             </div>
           </div>

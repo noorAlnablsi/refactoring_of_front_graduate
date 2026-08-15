@@ -49,7 +49,7 @@ function ExamRandomBlueprintPanel({
         </p>
       </header>
 
-      <div className="grid gap-6 xl:grid-cols-[1fr_300px]">
+      <div className="grid min-w-0 gap-6 xl:grid-cols-[minmax(0,1fr)_300px]">
         <BlueprintBanksEditor
           blueprints={blueprints}
           onUpdateBank={updateBank}
@@ -65,7 +65,7 @@ function ExamRandomBlueprintPanel({
         />
       </div>
 
-      <ExamWizardFooter className="-mx-1 mt-2">
+      <ExamWizardFooter className="mt-2">
         <div className="flex flex-wrap items-center justify-between gap-3">
           <button
             type="button"

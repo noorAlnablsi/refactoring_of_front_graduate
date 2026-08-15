@@ -27,7 +27,7 @@ function WelcomeOptionSelector({ selected, onSelect }) {
             key={id}
             type="button"
             onClick={() => onSelect(id)}
-            className={`flex h-[54px] w-full items-center justify-start gap-3 rounded-2xl bg-[#EEF2F3] px-5 text-sm font-bold transition md:w-[448px] ${
+            className={`flex h-[54px] w-full max-w-[448px] items-center justify-start gap-3 rounded-2xl bg-[#EEF2F3] px-5 text-sm font-bold transition ${
               isCreateSpace ? '-mt-3' : ''
             } ${
               isActive
@@ -35,8 +35,8 @@ function WelcomeOptionSelector({ selected, onSelect }) {
                 : 'text-[#374151] hover:bg-[#E8ECEE]'
             }`}
           >
-            <Icon className={`h-5 w-5 ${isActive ? 'text-[#2AA8A2]' : 'text-[#64748B]'}`} strokeWidth={2} />
-            <span>{title}</span>
+            <Icon className={`h-5 w-5 shrink-0 ${isActive ? 'text-[#2AA8A2]' : 'text-[#64748B]'}`} strokeWidth={2} />
+            <span className="min-w-0 truncate">{title}</span>
           </button>
         )
       })}

@@ -94,12 +94,12 @@ function StudentGroupsPage() {
         onChange={setSelectedSubjectId}
       />
 
-      <div className="flex items-center justify-between gap-3">
-        <h2 className={`text-base ${shellPageTitleClass}`}>{t('activeListTitle')}</h2>
+      <div className="flex flex-wrap items-center justify-between gap-3">
+        <h2 className={`min-w-0 text-base ${shellPageTitleClass}`}>{t('activeListTitle')}</h2>
         <select
           value={sortKey}
           onChange={(e) => setSortKey(e.target.value)}
-          className={`${shellGhostButtonClass} h-10 px-3`}
+          className={`${shellGhostButtonClass} h-10 w-full max-w-full px-3 sm:w-auto`}
           aria-label={t('sort.label')}
         >
           <option value="newest">{t('sort.label')}: {t('sort.newest')}</option>

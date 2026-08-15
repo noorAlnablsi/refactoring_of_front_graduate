@@ -1,5 +1,6 @@
 import { useTranslation } from 'react-i18next'
 import { SlidersHorizontal } from 'lucide-react'
+import { shellTableScrollClass } from '../../../lib/shellUi'
 
 const STATUS_STYLES = {
   approved: 'bg-[#E8F7F6] text-[#2AA8A2]',
@@ -10,7 +11,7 @@ function LatestResultsSection({ results }) {
   const { t } = useTranslation(['student', 'forms'])
 
   return (
-    <section className="rounded-2xl bg-white p-5 shadow-[0_1px_3px_rgba(16,24,40,0.06)] ring-1 ring-[#E5E9EB]/80">
+    <section className="min-w-0 overflow-hidden rounded-2xl bg-white p-5 shadow-[0_1px_3px_rgba(16,24,40,0.06)] ring-1 ring-[#E5E9EB]/80">
       <div className="mb-4 flex items-center justify-between gap-3">
         <h2 className="text-base font-extrabold text-[#2A3433]">{t('latestResults.title')}</h2>
         <button
@@ -22,7 +23,7 @@ function LatestResultsSection({ results }) {
         </button>
       </div>
 
-      <div className="overflow-x-auto">
+      <div className={shellTableScrollClass}>
         <table className="w-full min-w-[560px] text-right text-sm">
           <thead>
             <tr className="border-b border-[#EEF2F4] text-xs font-semibold text-[#94A3B8]">

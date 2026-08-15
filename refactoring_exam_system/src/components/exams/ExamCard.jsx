@@ -69,13 +69,13 @@ function ExamCard({ test, onArchive, onClose, onDelete }) {
     navigate(ROUTES.EXAM_MONITORING.replace(':id', testId))
   }
 
-  const primaryButtonClass = `w-full justify-center ${shellAccentButtonClass} h-11 px-3 py-2.5 text-sm`
+  const primaryButtonClass = `w-full justify-center whitespace-normal text-center leading-tight ${shellAccentButtonClass} h-auto min-h-11 px-3 py-2.5 text-sm`
   const softMonitorClass =
-    'inline-flex h-11 w-full items-center justify-center gap-1.5 rounded-xl border border-[var(--shell-accent)]/25 bg-[var(--shell-accent-bg)] px-3 text-sm font-bold text-[var(--shell-accent)] transition hover:bg-[var(--shell-accent-bg-strong)]'
+    'inline-flex h-auto min-h-11 w-full items-center justify-center gap-1.5 whitespace-normal rounded-xl border border-[var(--shell-accent)]/25 bg-[var(--shell-accent-bg)] px-3 py-2.5 text-center text-sm font-bold leading-tight text-[var(--shell-accent)] transition hover:bg-[var(--shell-accent-bg-strong)]'
   const neutralOutlineClass =
-    'inline-flex h-11 w-full items-center justify-center gap-1.5 rounded-xl border border-[var(--shell-border)] bg-[var(--shell-surface)] px-3 text-sm font-bold text-[var(--shell-text-muted)] transition hover:bg-[var(--shell-hover)]'
+    'inline-flex h-auto min-h-11 w-full items-center justify-center gap-1.5 whitespace-normal rounded-xl border border-[var(--shell-border)] bg-[var(--shell-surface)] px-3 py-2.5 text-center text-sm font-bold leading-tight text-[var(--shell-text-muted)] transition hover:bg-[var(--shell-hover)]'
   const dangerOutlineClass =
-    'inline-flex h-11 w-full items-center justify-center gap-1.5 rounded-xl border border-[var(--shell-border)] bg-[var(--shell-surface)] px-3 text-sm font-bold text-[var(--shell-danger-text)] transition hover:bg-[var(--shell-danger-bg)]'
+    'inline-flex h-auto min-h-11 w-full items-center justify-center gap-1.5 whitespace-normal rounded-xl border border-[var(--shell-border)] bg-[var(--shell-surface)] px-3 py-2.5 text-center text-sm font-bold leading-tight text-[var(--shell-danger-text)] transition hover:bg-[var(--shell-danger-bg)]'
 
   const publishedGrid = isPublished && showGrade && showMonitor
 
@@ -132,7 +132,7 @@ function ExamCard({ test, onArchive, onClose, onDelete }) {
 
       <div className={`mt-auto flex flex-col gap-2.5 border-t pt-4 ${shellDividerClass}`}>
         {publishedGrid ? (
-          <div className="grid grid-cols-2 gap-2.5">
+          <div className="grid grid-cols-1 gap-2.5 sm:grid-cols-2">
             <button type="button" onClick={openAttempts} className={primaryButtonClass}>
               <ClipboardCheck className="h-4 w-4 shrink-0" />
               {t('card.gradeAttempts')}
@@ -151,7 +151,7 @@ function ExamCard({ test, onArchive, onClose, onDelete }) {
               <button
                 type="button"
                 onClick={() => onArchive?.(test)}
-                className={`${dangerOutlineClass}${!showClose ? ' col-span-2' : ''}`}
+                className={`${dangerOutlineClass}${!showClose ? ' sm:col-span-2' : ''}`}
               >
                 <Archive className="h-4 w-4 shrink-0" />
                 {t('card.archive')}
@@ -175,7 +175,7 @@ function ExamCard({ test, onArchive, onClose, onDelete }) {
             ) : null}
 
             {showDelete && showArchive ? (
-              <div className="grid grid-cols-2 gap-2.5">
+              <div className="grid grid-cols-1 gap-2.5 sm:grid-cols-2">
                 <button type="button" onClick={() => onArchive?.(test)} className={dangerOutlineClass}>
                   <Archive className="h-4 w-4 shrink-0" />
                   {t('card.archive')}

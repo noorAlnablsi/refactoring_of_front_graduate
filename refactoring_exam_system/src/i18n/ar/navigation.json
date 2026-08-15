@@ -31,7 +31,9 @@
     "searchPlaceholder": "البحث في المنصة...",
     "defaultUser": "مستخدم",
     "help": "مساعدة",
-    "notifications": "إشعارات"
+    "notifications": "إشعارات",
+    "openMenu": "فتح قائمة التنقل",
+    "closeMenu": "إغلاق قائمة التنقل"
   },
   "breadcrumbs": {
     "home": "الرئيسية",

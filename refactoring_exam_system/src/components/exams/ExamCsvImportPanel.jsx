@@ -164,7 +164,7 @@ function ExamCsvImportPanel({
         </div>
       </div>
 
-      <ExamWizardFooter className="-mx-1">
+      <ExamWizardFooter>
         <div className="flex flex-wrap items-center justify-between gap-3">
           <button
             type="button"

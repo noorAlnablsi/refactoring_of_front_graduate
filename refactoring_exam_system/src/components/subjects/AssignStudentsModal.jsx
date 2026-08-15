@@ -3,6 +3,7 @@ import { useTranslation } from 'react-i18next'
 import { X } from 'lucide-react'
 import { assignStudentsToSubject } from '../../services/subjects.service'
 import { getWorkspaceStudents } from '../../services/workspaces.service'
+import { customModalOverlayMutedClass, customModalPanelSafeClass } from '../../lib/shellUi'
 import { useToastStore } from '../../store/toastStore'
 import { getStudentMembershipId } from '../../lib/workspaceStudents'
 
@@ -90,8 +91,8 @@ function AssignStudentsModalContent({ subjectId, enrolledIds, onClose, onSuccess
   }
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 p-4">
-      <div dir="rtl" className="w-full max-w-lg rounded-2xl bg-white p-6 shadow-xl">
+    <div className={customModalOverlayMutedClass}>
+      <div dir="rtl" className={`w-full max-w-lg rounded-2xl bg-white p-6 shadow-xl ${customModalPanelSafeClass}`}>
         <div className="mb-6 flex items-center justify-between">
           <h2 className="text-xl font-extrabold text-[#2AA8A2]">{t('assignStudents.title')}</h2>
           <button type="button" onClick={onClose} className="text-[#94A3B8]">

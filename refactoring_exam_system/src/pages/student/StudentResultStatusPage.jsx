@@ -10,7 +10,7 @@ function StudentResultStatusPage({ mode = 'results' }) {
   const isPending = mode === 'pending'
 
   return (
-    <div className="mx-auto max-w-2xl rounded-2xl bg-white p-8 text-center shadow-sm ring-1 ring-[#E5E9EB]">
+    <div className="mx-auto max-w-2xl rounded-2xl bg-white p-5 text-center shadow-sm ring-1 ring-[#E5E9EB] sm:p-8">
       <div
         className={`mx-auto flex h-16 w-16 items-center justify-center rounded-full ${
           isPending ? 'bg-[#FFF7ED] text-[#C2410C]' : 'bg-[#E8F7F6] text-[#2AA8A2]'
@@ -22,7 +22,7 @@ function StudentResultStatusPage({ mode = 'results' }) {
       <h1 className="mt-5 text-2xl font-extrabold text-[#2A3433]">
         {isPending ? t('results.pendingTitle') : t('results.readyTitle')}
       </h1>
-      <p className="mt-3 text-sm leading-7 text-[#64748B]">
+      <p className="mt-3 break-words text-sm leading-7 text-[#64748B]">
         {submit?.message ||
           (isPending ? t('results.pendingDescription') : t('results.readyDescription'))}
       </p>

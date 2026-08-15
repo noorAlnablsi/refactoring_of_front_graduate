@@ -20,17 +20,17 @@ function StudentExamsPage() {
       : t('examCenter.greeting.empty', { name: firstName })
 
   return (
-    <div className="space-y-6">
-      <header>
+    <div className="min-w-0 space-y-6">
+      <header className="min-w-0">
         <h1 className="text-2xl font-extrabold text-[#2A3433] md:text-[28px]">{t('examCenter.title')}</h1>
         <p className="mt-2 text-sm leading-7 text-[#64748B]">{greeting}</p>
       </header>
 
-      <div className="flex items-center gap-6 border-b border-[#E5E9EB]">
+      <div className="flex items-center gap-4 overflow-x-auto border-b border-[#E5E9EB]">
         <button
           type="button"
           onClick={() => setTab('available')}
-          className={`relative inline-flex items-center gap-2 pb-3 text-sm font-bold transition ${
+          className={`relative inline-flex shrink-0 items-center gap-2 pb-3 text-sm font-bold transition ${
             tab === 'available' ? 'text-[#2AA8A2]' : 'text-[#64748B] hover:text-[#2A3433]'
           }`}
         >
@@ -43,7 +43,7 @@ function StudentExamsPage() {
         <button
           type="button"
           onClick={() => setTab('recent')}
-          className={`relative inline-flex items-center gap-2 pb-3 text-sm font-bold transition ${
+          className={`relative inline-flex shrink-0 items-center gap-2 pb-3 text-sm font-bold transition ${
             tab === 'recent' ? 'text-[#2AA8A2]' : 'text-[#64748B] hover:text-[#2A3433]'
           }`}
         >

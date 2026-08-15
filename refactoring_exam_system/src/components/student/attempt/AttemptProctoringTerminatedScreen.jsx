@@ -23,7 +23,7 @@ function AttemptProctoringTerminatedScreen({ attempt, testName }) {
       className="flex min-h-screen items-center justify-center bg-[#F6F8F9] px-4 py-10"
       data-a11y-scale-root
     >
-      <section className={`w-full max-w-lg p-8 text-center ${shellCardClass}`}>
+      <section className={`w-full max-w-lg p-5 text-center sm:p-8 ${shellCardClass}`}>
         <span className="mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-[#FEE2E2]">
           <ShieldAlert className="h-8 w-8 text-[#DC2626]" strokeWidth={2.2} />
         </span>

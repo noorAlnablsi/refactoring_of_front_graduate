@@ -12,6 +12,8 @@ import {
   shellCardClass,
   shellSectionTitleClass,
   shellSubtleTextClass,
+  shellTableHostClass,
+  shellTableScrollClass,
 } from '../../lib/shellUi'
 
 function ScoreBar({ value }) {
@@ -35,7 +37,7 @@ function AnalyticsTeacherActivity({ teachers = [], loading }) {
   const { t } = useTranslation('analytics')
 
   return (
-    <section className={`p-5 ${shellCardClass}`}>
+    <section className={`p-5 ${shellTableHostClass} ${shellCardClass}`}>
       <div className="flex items-center justify-between gap-3">
         <div className="flex items-center gap-2">
           <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-[var(--shell-accent-bg)] text-[var(--shell-accent)]">
@@ -56,8 +58,8 @@ function AnalyticsTeacherActivity({ teachers = [], loading }) {
       ) : teachers.length === 0 ? (
         <p className={`mt-6 text-sm ${shellBodyTextClass}`}>{t('empty')}</p>
       ) : (
-        <div className="mt-4 overflow-x-auto">
-          <table className="min-w-full text-sm">
+        <div className={`mt-4 ${shellTableScrollClass}`}>
+          <table className="w-full min-w-[720px] text-sm">
             <thead>
               <tr className={`border-b border-[var(--shell-border)] text-xs ${shellSubtleTextClass}`}>
                 <th className="px-2 py-3 text-start font-bold">{t('teachers.teacher')}</th>

@@ -38,7 +38,7 @@ function StudentPerformancePage() {
   }
 
   return (
-    <div className="mx-auto max-w-6xl space-y-6">
+    <div className="mx-auto min-w-0 max-w-6xl space-y-6">
       <header className="text-start">
         <h1 className="text-2xl font-extrabold text-[var(--shell-text)] md:text-3xl">
           {t('performance.title')}

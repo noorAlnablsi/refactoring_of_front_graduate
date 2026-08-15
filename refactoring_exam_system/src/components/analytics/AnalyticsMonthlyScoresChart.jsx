@@ -21,9 +21,9 @@ function AnalyticsMonthlyScoresChart({ monthlyScores = [], loading }) {
 
   return (
     <section className={`flex h-full flex-col p-5 ${shellCardClass}`}>
-      <div className="flex items-start justify-between gap-3">
-        <h2 className={shellSectionTitleClass}>{t('monthly.title')}</h2>
-        <div className="flex items-center gap-2">
+      <div className="flex min-w-0 items-start justify-between gap-3">
+        <h2 className={`min-w-0 ${shellSectionTitleClass}`}>{t('monthly.title')}</h2>
+        <div className="flex shrink-0 items-center gap-2">
           <span className="h-2.5 w-2.5 rounded-full bg-[var(--shell-accent)]" />
           <span className={`text-xs font-semibold ${shellSubtleTextClass}`}>
             {t('monthly.legend')}
@@ -36,7 +36,7 @@ function AnalyticsMonthlyScoresChart({ monthlyScores = [], loading }) {
       ) : monthlyScores.length === 0 ? (
         <p className={`mt-10 text-sm ${shellBodyTextClass}`}>{t('empty')}</p>
       ) : (
-        <div className="mt-4 h-56 w-full min-h-[14rem]">
+        <div className="mt-4 h-56 w-full min-h-[14rem] min-w-0">
           <ResponsiveContainer width="100%" height="100%">
             <BarChart data={monthlyScores} margin={{ top: 8, right: 8, left: 0, bottom: 0 }}>
               <CartesianGrid vertical={false} stroke="var(--shell-border)" strokeDasharray="4 4" />

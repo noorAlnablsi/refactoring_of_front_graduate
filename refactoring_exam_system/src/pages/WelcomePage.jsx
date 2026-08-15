@@ -64,7 +64,7 @@ function WelcomePage() {
           </p>
         </div>
 
-        <div className="mb-5 w-full md:w-[448px]">
+        <div className="mb-5 w-full max-w-[448px]">
           <button
             type="button"
             onClick={handleNext}

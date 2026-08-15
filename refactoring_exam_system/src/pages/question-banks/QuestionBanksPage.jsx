@@ -17,7 +17,11 @@ import { useCommunityBanksView } from '../../hooks/question-banks/useCommunityBa
 import { useQuestionBanks } from '../../hooks/question-banks/useQuestionBanks'
 import { showAppToast } from '../../lib/appToast'
 import { formatLocaleNumber } from '../../lib/localeNumber'
-import { parseQuestionBanksTab, QUESTION_BANK_TABS } from '../../lib/questionBanks'
+import {
+  parseQuestionBanksTab,
+  QUESTION_BANK_TABS,
+  questionBanksGridClassName,
+} from '../../lib/questionBanks'
 import {
   canAccessQuestionBanks,
   canEditQuestionBank,
@@ -133,7 +137,9 @@ function QuestionBanksPage() {
       <div className="flex flex-wrap items-start justify-between gap-4">
         <div>
           <p className={shellPageEyebrowClass}>{t('page.eyebrow', { ns: 'questionBanks' })}</p>
-          <h1 className={`mt-1 text-4xl ${shellPageTitleClass}`}>{t('page.title', { ns: 'questionBanks' })}</h1>
+          <h1 className={`mt-1 text-2xl sm:text-3xl md:text-4xl ${shellPageTitleClass}`}>
+            {t('page.title', { ns: 'questionBanks' })}
+          </h1>
           <p className={`mt-2 ${shellBodyTextClass}`}>{t('page.subtitle', { ns: 'questionBanks' })}</p>
         </div>
         <button
@@ -146,13 +152,13 @@ function QuestionBanksPage() {
         </button>
       </div>
 
-      <div className={shellTabsBarClass}>
+      <div className={`${shellTabsBarClass} gap-4 overflow-x-auto`}>
         {visibleTabs.map((tab) => (
           <button
             key={tab.id}
             type="button"
             onClick={() => handleTabChange(tab.id)}
-            className={shellTabButtonClass(activeTab === tab.id)}
+            className={`${shellTabButtonClass(activeTab === tab.id)} shrink-0`}
           >
             {tab.label}
             {activeTab === tab.id && !loading ? (
@@ -183,7 +189,7 @@ function QuestionBanksPage() {
       {loading ? <QuestionBanksSkeleton ownedStyle={isOwnedStyleTab} /> : null}
 
       {!loading && isOwnedStyleTab ? (
-        <div className="flex flex-wrap gap-4">
+        <div className={questionBanksGridClassName}>
           {activeTab === QUESTION_BANK_TABS.MY ? (
             <QuestionBankCreateCard onClick={() => setCreateOpen(true)} />
           ) : null}
@@ -208,7 +214,7 @@ function QuestionBanksPage() {
             onPageChange={setCommunityPage}
           />
 
-          <div className="flex flex-wrap gap-4">
+          <div className={questionBanksGridClassName}>
             <QuestionBankCreateCard onClick={() => setCreateOpen(true)} />
             {paginatedCommunityBanks.map((bank) => (
               <CommunityQuestionBankCard

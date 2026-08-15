@@ -10,7 +10,7 @@ function QuestionBankCreateCard({ onClick }) {
       type="button"
       dir="rtl"
       onClick={onClick}
-      className={`flex shrink-0 flex-col items-center justify-center rounded-xl border-2 border-dashed border-[#A7E3DA] bg-white p-6 text-center transition hover:border-[#22C1A3]/70 hover:bg-[#F8FCFB] active:scale-[0.995] ${ownedQuestionBankCardClassName}`}
+      className={`flex w-full min-w-0 flex-col items-center justify-center rounded-xl border-2 border-dashed border-[#A7E3DA] bg-white p-6 text-center transition hover:border-[#22C1A3]/70 hover:bg-[#F8FCFB] active:scale-[0.995] ${ownedQuestionBankCardClassName}`}
     >
       <span className="flex h-14 w-14 items-center justify-center rounded-full bg-[#E8F7F3] text-[#0EA896]">
         <Plus className="h-7 w-7" strokeWidth={2} />

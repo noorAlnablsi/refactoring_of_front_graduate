@@ -1,4 +1,5 @@
-import { Outlet } from 'react-router-dom'
+import { useEffect, useState } from 'react'
+import { Outlet, useLocation } from 'react-router-dom'
 import Toast from '../../common/Toast'
 import { getLanguageDirection } from '../../../lib/language'
 import { useLanguageStore } from '../../../store/languageStore'
@@ -8,6 +9,12 @@ import StudentTopBar from './StudentTopBar'
 function StudentDashboardLayout() {
   const language = useLanguageStore((s) => s.language)
   const dir = getLanguageDirection(language)
+  const location = useLocation()
+  const [mobileNavOpen, setMobileNavOpen] = useState(false)
+
+  useEffect(() => {
+    setMobileNavOpen(false)
+  }, [location.pathname])
 
   return (
     <div
@@ -15,10 +22,13 @@ function StudentDashboardLayout() {
       data-app-shell="dashboard"
       className="flex h-screen overflow-hidden bg-[var(--shell-bg)] font-sans text-[var(--shell-text)]"
     >
-      <StudentSidebar />
+      <StudentSidebar mobileOpen={mobileNavOpen} onMobileClose={() => setMobileNavOpen(false)} />
       <div className="flex min-h-0 min-w-0 flex-1 flex-col">
-        <StudentTopBar />
-        <main className="flex-1 overflow-y-auto p-4 md:p-6">
+        <StudentTopBar
+          menuOpen={mobileNavOpen}
+          onMenuClick={() => setMobileNavOpen((open) => !open)}
+        />
+        <main className="min-w-0 flex-1 overflow-y-auto p-4 md:p-6">
           <Outlet />
         </main>
       </div>

@@ -4,6 +4,7 @@ import { useTranslation } from 'react-i18next'
 import { getSubjects } from '../../services/subjects.service'
 import { createQuestionBank } from '../../services/questionBanks.service'
 import { showAppToast } from '../../lib/appToast'
+import { customModalOverlayClass, customModalPanelSafeClass } from '../../lib/shellUi'
 import { useToastStore } from '../../store/toastStore'
 
 const inputClassName =
@@ -75,8 +76,8 @@ function CreateQuestionBankModal({ open, onClose, onCreated }) {
   }
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/45 p-4">
-      <div dir="rtl" className="w-full max-w-xl rounded-2xl bg-white p-6 shadow-xl">
+    <div className={customModalOverlayClass}>
+      <div dir="rtl" className={`w-full max-w-xl rounded-2xl bg-white p-6 shadow-xl ${customModalPanelSafeClass}`}>
         <div className="mb-6 flex items-center justify-between">
           <h2 className="text-3xl font-extrabold text-[#2A3433]">
             {t('modals.create.title', { ns: 'questionBanks' })}

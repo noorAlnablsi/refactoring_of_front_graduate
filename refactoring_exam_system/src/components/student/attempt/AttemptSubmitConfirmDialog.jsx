@@ -27,12 +27,12 @@ function AttemptSubmitConfirmDialog({ open, loading, onClose, onConfirm }) {
           </div>
         </div>
 
-        <div className="mt-7 flex items-center justify-end gap-3">
+        <div className="mt-7 flex flex-wrap items-center justify-end gap-3">
           <button
             type="button"
             onClick={onClose}
             disabled={loading}
-            className="text-sm font-bold text-[#64748B]"
+            className="w-full text-sm font-bold text-[#64748B] sm:w-auto"
           >
             {t('attempt.submitConfirmCancel')}
           </button>
@@ -40,7 +40,7 @@ function AttemptSubmitConfirmDialog({ open, loading, onClose, onConfirm }) {
             type="button"
             onClick={onConfirm}
             disabled={loading}
-            className="rounded-xl bg-[#2AA8A2] px-5 py-2.5 text-sm font-bold text-white disabled:opacity-70"
+            className="w-full rounded-xl bg-[#2AA8A2] px-5 py-2.5 text-sm font-bold text-white disabled:opacity-70 sm:w-auto"
           >
             {loading ? t('attempt.submitting') : t('attempt.submitConfirmAction')}
           </button>

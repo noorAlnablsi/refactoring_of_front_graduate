@@ -18,7 +18,7 @@ function ExamSettingsSummarySidebar({ test, settings }) {
         <dl className="mt-5 space-y-4 text-sm">
           <div>
             <dt className="text-xs font-semibold text-[#94A3B8]">{t('wizard.summary.examName')}</dt>
-            <dd className="mt-1 font-bold text-[#2A3433]">{getTestName(test) || '—'}</dd>
+            <dd className="mt-1 truncate font-bold text-[#2A3433]">{getTestName(test) || '—'}</dd>
           </div>
           <div className="flex items-center justify-between gap-3">
             <dt className="text-xs font-semibold text-[#94A3B8]">{t('wizard.summary.questionsCount')}</dt>

@@ -11,7 +11,7 @@ import WizardSection from '../WizardSection'
 import { SettingsRadio, SettingsSwitch } from './SettingsControls'
 
 const inputClassName =
-  'h-12 w-full rounded-xl border border-[#E5E9EB] bg-white px-4 text-center text-lg font-extrabold text-[#2A3433] outline-none focus:border-[#2AA8A2] focus:ring-2 focus:ring-[#2AA8A2]/20'
+  'h-12 w-full min-w-0 max-w-full rounded-xl border border-[#E5E9EB] bg-white px-4 text-center text-sm font-extrabold text-[#2A3433] outline-none focus:border-[#2AA8A2] focus:ring-2 focus:ring-[#2AA8A2]/20 sm:text-lg'
 
 function AvailabilityModeCard({ selected, icon: Icon, title, description, onSelect }) {
   return (

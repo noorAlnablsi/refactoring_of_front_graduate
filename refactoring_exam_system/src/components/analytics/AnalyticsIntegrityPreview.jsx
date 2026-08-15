@@ -29,15 +29,15 @@ function AnalyticsIntegrityPreview({
   return (
     <section className={`flex h-full flex-col p-5 ${shellCardClass}`}>
       <div className="flex items-center justify-between gap-3">
-        <div className="flex items-center gap-2">
-          <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-rose-50 text-rose-600">
+        <div className="flex min-w-0 items-center gap-2">
+          <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-rose-50 text-rose-600">
             <FileWarning className="h-4 w-4" />
           </span>
-          <h2 className={shellSectionTitleClass}>{t('integrity.title')}</h2>
+          <h2 className={`min-w-0 truncate ${shellSectionTitleClass}`}>{t('integrity.title')}</h2>
         </div>
         <Link
           to={ROUTES.ANALYTICS_INTEGRITY_REPORTS}
-          className="text-xs font-bold text-[var(--shell-accent)] hover:underline"
+          className="shrink-0 text-xs font-bold text-[var(--shell-accent)] hover:underline"
         >
           {t('viewAll')}
         </Link>
@@ -61,7 +61,7 @@ function AnalyticsIntegrityPreview({
                       <p className="truncate text-sm font-extrabold text-[var(--shell-text)]">
                         {exam.test_name}
                       </p>
-                      <p className={`mt-2 text-xs ${shellSubtleTextClass}`}>
+                      <p className={`mt-2 truncate text-xs ${shellSubtleTextClass}`}>
                         {exam.subject_name || exam.teacher_name || '—'}
                         {' · '}
                         {t('integrity.reportsCount', {

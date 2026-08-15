@@ -41,9 +41,30 @@ export const shellTabIndicatorClass =
   'absolute inset-x-0 bottom-0 h-0.5 rounded-full bg-[var(--shell-accent)]'
 
 export const shellModalPanelClass =
-  'w-full rounded-2xl bg-[var(--shell-surface)] p-6 shadow-[var(--shell-shadow)] ring-1 ring-[var(--shell-border)]'
+  'my-auto w-full max-h-[min(90dvh,920px)] overflow-y-auto rounded-2xl bg-[var(--shell-surface)] p-6 shadow-[var(--shell-shadow)] ring-1 ring-[var(--shell-border)]'
 
-export const shellModalOverlayClass = 'fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4 backdrop-blur-[2px]'
+export const shellModalOverlayClass =
+  'fixed inset-0 z-50 flex items-center justify-center overflow-y-auto overscroll-contain bg-black/60 p-4 backdrop-blur-[2px]'
+
+/** Legacy/custom modal overlays (non-shell token panels). */
+export const customModalOverlayClass =
+  'fixed inset-0 z-50 flex items-center justify-center overflow-y-auto overscroll-contain bg-black/45 p-4'
+
+export const customModalOverlayMutedClass =
+  'fixed inset-0 z-50 flex items-center justify-center overflow-y-auto overscroll-contain bg-black/40 p-4'
+
+/** Keep custom white panels inside the viewport; scroll inside the panel. */
+export const customModalPanelSafeClass = 'my-auto max-h-[min(90dvh,920px)] overflow-y-auto'
+
+/**
+ * Horizontal scroll for wide tables only.
+ * Requires a width-bounded ancestor (min-w-0 / overflow-hidden host).
+ */
+export const shellTableScrollClass =
+  'min-w-0 w-full max-w-full overflow-x-auto overscroll-x-contain'
+
+/** Outer host for a scrollable table (card/section). */
+export const shellTableHostClass = 'min-w-0 max-w-full overflow-hidden'
 
 export const shellIconWrapClass =
   'flex items-center justify-center rounded-xl bg-[var(--shell-accent-bg)] text-[var(--shell-accent)]'

@@ -30,8 +30,8 @@ function StaffFallbackDashboard({ greeting }) {
   const [inviteModalOpen, setInviteModalOpen] = useState(false)
 
   return (
-    <div className="space-y-6">
-      <div>
+    <div className="min-w-0 space-y-6">
+      <div className="min-w-0">
         <h1 className={`text-2xl md:text-3xl ${shellPageTitleClass}`}>{t('title')}</h1>
         <p className={`mt-2 ${shellPageSubtitleClass}`}>{greeting}</p>
       </div>
@@ -117,8 +117,8 @@ function DashboardPage() {
   }
 
   return (
-    <div className="space-y-6">
-      <div>
+    <div className="min-w-0 space-y-6">
+      <div className="min-w-0">
         <h1 className={`text-2xl md:text-[28px] ${shellPageTitleClass}`}>{greeting}</h1>
         <p className={`mt-2 max-w-3xl ${shellPageSubtitleClass}`}>{subtitle}</p>
       </div>

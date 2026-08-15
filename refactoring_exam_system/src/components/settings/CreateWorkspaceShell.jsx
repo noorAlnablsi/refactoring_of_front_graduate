@@ -9,13 +9,13 @@ function CreateWorkspaceShell({ children }) {
   return (
     <main dir="rtl" className="flex min-h-screen flex-col bg-[#F6F8F9] font-sans text-[#1F2533]">
       <header className="border-b border-[#E5E7EB] bg-white px-4 py-4 md:px-10">
-        <div className="mx-auto flex max-w-[960px] items-center justify-between gap-4">
+        <div className="mx-auto flex max-w-[960px] flex-wrap items-center justify-between gap-4">
           <Link
             to={ROUTES.SETTINGS}
-            className="inline-flex items-center gap-3 text-[#2AA8A2] transition hover:opacity-90"
+            className="inline-flex min-w-0 items-center gap-3 text-[#2AA8A2] transition hover:opacity-90"
           >
             <ArrowRight className="h-5 w-5 shrink-0" strokeWidth={2.2} />
-            <span>
+            <span className="min-w-0">
               <span className="block text-base font-extrabold">{t('createWorkspace.shellTitle')}</span>
               <span className="block text-xs font-semibold text-[#9CA3AF]">{t('createWorkspace.shellSubtitle')}</span>
             </span>
@@ -23,10 +23,10 @@ function CreateWorkspaceShell({ children }) {
 
           <button
             type="button"
-            className="inline-flex items-center gap-1.5 text-sm font-semibold text-[#6B7280] transition hover:text-[#2AA8A2]"
+            className="inline-flex shrink-0 items-center gap-1.5 text-sm font-semibold text-[#6B7280] transition hover:text-[#2AA8A2]"
           >
             <HelpCircle className="h-4 w-4" />
-            {t('createWorkspace.help')}
+            <span className="hidden sm:inline">{t('createWorkspace.help')}</span>
           </button>
         </div>
       </header>

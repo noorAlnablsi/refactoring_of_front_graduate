@@ -3,7 +3,8 @@ import { formatLocaleNumber } from '../../lib/localeNumber'
 import { getTeacherMembershipId } from '../../lib/workspaceTeachers'
 import { shellInputClass } from '../../lib/shellUi'
 
-const selectClass = `h-11 min-w-[140px] ${shellInputClass} px-3 text-sm font-semibold`
+const selectClass = `h-11 w-full sm:w-auto sm:min-w-[140px] ${shellInputClass} px-3 text-sm font-semibold`
+const filterFieldClass = 'flex w-full min-w-0 flex-col gap-1.5 sm:w-auto sm:min-w-[148px]'
 
 function AnalyticsFilters({
   subjects = [],
@@ -23,8 +24,8 @@ function AnalyticsFilters({
   const { t } = useTranslation('analytics')
 
   return (
-    <div className="flex flex-wrap items-end justify-end gap-3">
-      <label className="flex min-w-[148px] flex-col gap-1.5">
+    <div className="flex w-full min-w-0 flex-col gap-3 sm:flex-row sm:flex-wrap sm:items-end sm:justify-end">
+      <label className={filterFieldClass}>
         <span className="text-xs font-bold text-[var(--shell-text-muted)]">{t('filters.subject')}</span>
         <select
           className={selectClass}
@@ -41,7 +42,7 @@ function AnalyticsFilters({
         </select>
       </label>
 
-      <label className="flex min-w-[148px] flex-col gap-1.5">
+      <label className={filterFieldClass}>
         <span className="text-xs font-bold text-[var(--shell-text-muted)]">{t('filters.teacher')}</span>
         <select
           className={selectClass}
@@ -62,7 +63,7 @@ function AnalyticsFilters({
         </select>
       </label>
 
-      <label className="flex min-w-[148px] flex-col gap-1.5">
+      <label className={filterFieldClass}>
         <span className="text-xs font-bold text-[var(--shell-text-muted)]">{t('filters.dateRange')}</span>
         <select
           className={selectClass}
@@ -79,7 +80,7 @@ function AnalyticsFilters({
 
       {datePreset === 'custom' ? (
         <>
-          <label className="flex min-w-[148px] flex-col gap-1.5">
+          <label className={filterFieldClass}>
             <span className="text-xs font-bold text-[var(--shell-text-muted)]">{t('filters.dateFrom')}</span>
             <input
               type="date"
@@ -89,7 +90,7 @@ function AnalyticsFilters({
               onChange={(e) => onDateFromChange(e.target.value)}
             />
           </label>
-          <label className="flex min-w-[148px] flex-col gap-1.5">
+          <label className={filterFieldClass}>
             <span className="text-xs font-bold text-[var(--shell-text-muted)]">{t('filters.dateTo')}</span>
             <input
               type="date"

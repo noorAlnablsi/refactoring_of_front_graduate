@@ -49,8 +49,8 @@ function AnalyticsPassFailChart({ passFail, loading }) {
                 </Pie>
               </PieChart>
             </ResponsiveContainer>
-            <div className="pointer-events-none absolute inset-0 flex items-center justify-center">
-              <p className="text-center text-lg font-extrabold text-[var(--shell-accent)]">
+            <div className="pointer-events-none absolute inset-0 flex items-center justify-center px-2">
+              <p className="max-w-[70%] text-center text-sm font-extrabold leading-tight text-[var(--shell-accent)] sm:text-lg">
                 {t('passFail.passCenter', { rate: formatAnalyticsPercent(passRate) })}
               </p>
             </div>

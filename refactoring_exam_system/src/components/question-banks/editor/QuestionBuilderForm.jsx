@@ -12,24 +12,24 @@ const inputClassName =
 
 function ChoiceRow({ choice, index, onChange, onRemove, removable, selectable, multiple, placeholder }) {
   return (
-    <div className="flex items-center gap-3">
+    <div className="flex min-w-0 items-center gap-3">
       {selectable ? (
         <input
           type={multiple ? 'checkbox' : 'radio'}
           name="correct_choice"
           checked={choice.is_correct}
           onChange={(event) => onChange(index, 'is_correct', event.target.checked)}
-          className="h-4 w-4 accent-[#2AA8A2]"
+          className="h-4 w-4 shrink-0 accent-[#2AA8A2]"
         />
       ) : null}
       <input
         value={choice.body}
         onChange={(event) => onChange(index, 'body', event.target.value)}
         placeholder={placeholder}
-        className={inputClassName}
+        className={`${inputClassName} min-w-0 flex-1`}
       />
       {removable ? (
-        <button type="button" onClick={() => onRemove(index)} className="text-red-600">
+        <button type="button" onClick={() => onRemove(index)} className="shrink-0 text-red-600">
           <Trash2 className="h-4 w-4" />
         </button>
       ) : null}

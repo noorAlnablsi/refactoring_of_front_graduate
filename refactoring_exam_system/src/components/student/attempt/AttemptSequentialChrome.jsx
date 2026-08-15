@@ -49,7 +49,7 @@ function AttemptSequentialProgress({ currentIndex, total, answeredCount }) {
             style={{ width: `${percent}%` }}
           />
         </div>
-        <span className="shrink-0 text-sm font-extrabold text-[#059669]">
+        <span className="max-w-[4.5rem] shrink-0 text-end text-xs font-extrabold leading-tight text-[#059669] sm:max-w-none sm:text-sm">
           {t('attempt.completedPercent', { percent })}
         </span>
       </div>
@@ -131,14 +131,14 @@ function AttemptSequentialFooter({ isLast, submitting, onNext, onSubmit }) {
   const { t } = useTranslation('student')
 
   return (
-    <div className="mx-auto mt-6 flex w-full max-w-4xl justify-end px-4 pb-10 md:px-6">
+    <div className="mx-auto mt-6 flex w-full max-w-4xl justify-stretch px-4 pb-10 sm:justify-end md:px-6">
       {isLast ? (
         <button
           type="button"
           data-keyboard-primary=""
           onClick={onSubmit}
           disabled={submitting}
-          className="inline-flex items-center gap-2 rounded-2xl bg-[#2AA8A2] px-7 py-3.5 text-sm font-extrabold text-white shadow-[0_10px_20px_rgba(42,168,162,0.25)] disabled:opacity-60"
+          className="inline-flex w-full items-center justify-center gap-2 rounded-2xl bg-[#2AA8A2] px-7 py-3.5 text-sm font-extrabold text-white shadow-[0_10px_20px_rgba(42,168,162,0.25)] disabled:opacity-60 sm:w-auto"
         >
           {submitting ? t('attempt.submitting') : t('attempt.finish')}
           <ArrowLeft className="h-4 w-4" />
@@ -149,7 +149,7 @@ function AttemptSequentialFooter({ isLast, submitting, onNext, onSubmit }) {
           data-keyboard-primary=""
           onClick={onNext}
           disabled={submitting}
-          className="inline-flex items-center gap-2 rounded-2xl bg-[#2AA8A2] px-7 py-3.5 text-sm font-extrabold text-white shadow-[0_10px_20px_rgba(42,168,162,0.25)] disabled:opacity-60"
+          className="inline-flex w-full items-center justify-center gap-2 rounded-2xl bg-[#2AA8A2] px-7 py-3.5 text-sm font-extrabold text-white shadow-[0_10px_20px_rgba(42,168,162,0.25)] disabled:opacity-60 sm:w-auto"
         >
           {t('attempt.nextQuestion')}
           <ArrowLeft className="h-4 w-4" />

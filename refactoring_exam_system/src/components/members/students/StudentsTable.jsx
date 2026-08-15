@@ -11,6 +11,8 @@ import {
   shellPageTitleClass,
   shellSearchInputClass,
   shellSubtleTextClass,
+  shellTableHostClass,
+  shellTableScrollClass,
 } from '../../../lib/shellUi'
 
 const actionButtonClassName =
@@ -37,7 +39,7 @@ function StudentsTable({
 
   if (loading) {
     return (
-      <div className={`overflow-hidden ${shellCardClass}`}>
+      <div className={`${shellTableHostClass} ${shellCardClass}`}>
         <div className={`border-b px-5 py-4 ${shellDividerClass}`}>
           <div className="shell-skeleton h-9 w-full max-w-xs animate-pulse rounded-lg" />
         </div>
@@ -51,7 +53,7 @@ function StudentsTable({
   }
 
   return (
-    <div className={`overflow-hidden ${shellCardClass}`}>
+    <div className={`${shellTableHostClass} ${shellCardClass}`}>
       <div
         className={`flex flex-wrap items-center justify-between gap-4 border-b px-5 py-4 ${shellDividerClass}`}
       >
@@ -88,7 +90,7 @@ function StudentsTable({
         </div>
       ) : (
         <>
-          <div className="overflow-x-auto">
+          <div className={shellTableScrollClass}>
             <table className="w-full min-w-[920px] text-right text-sm">
               <thead
                 className={`border-b bg-[var(--shell-input-bg)] text-[13px] text-[var(--shell-text-muted)] ${shellDividerClass}`}

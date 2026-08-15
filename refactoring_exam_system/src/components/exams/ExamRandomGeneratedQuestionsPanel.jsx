@@ -126,11 +126,11 @@ function GeneratedQuestionCard({
                     : 'bg-[#F6F8F9] text-[#64748B]'
                 }`}
               >
-                <span className="flex items-center gap-2">
+                <span className="flex min-w-0 flex-1 items-center gap-2">
                   {!isTrueFalse ? (
-                    <span className="text-xs font-bold text-[#94A3B8]">{letter})</span>
+                    <span className="shrink-0 text-xs font-bold text-[#94A3B8]">{letter})</span>
                   ) : null}
-                  <span dangerouslySetInnerHTML={{ __html: choice.body || choice.text || '' }} />
+                  <span className="min-w-0 break-words" dangerouslySetInnerHTML={{ __html: choice.body || choice.text || '' }} />
                 </span>
                 {isCorrect ? <Check className="h-4 w-4 shrink-0" strokeWidth={2.5} /> : null}
               </li>
@@ -271,7 +271,7 @@ function ExamRandomGeneratedQuestionsPanel({
         </div>
       </div>
 
-      <ExamWizardFooter className="-mx-1 mt-2">
+      <ExamWizardFooter className="mt-2">
         <div className="flex flex-wrap items-center justify-between gap-3">
           <button
             type="button"

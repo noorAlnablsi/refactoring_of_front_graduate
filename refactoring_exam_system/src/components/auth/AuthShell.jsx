@@ -42,12 +42,14 @@ function AuthShell({
         >
           <div
             dir={dir}
-            className={`flex w-full flex-col p-8 md:px-10 md:py-10 lg:h-[700px] lg:w-[576px] lg:overflow-y-auto lg:py-12 ${contentClassName}`}
+            className={`flex w-full min-w-0 flex-col p-5 sm:p-8 md:px-10 md:py-10 lg:h-[700px] lg:w-[576px] lg:overflow-y-auto lg:py-12 ${contentClassName}`}
           >
             {children}
           </div>
 
-          <AuthHeroPanel image={heroImage} alt={heroAlt} imagePosition={heroImagePosition} />
+          <div className="hidden min-w-0 lg:block">
+            <AuthHeroPanel image={heroImage} alt={heroAlt} imagePosition={heroImagePosition} />
+          </div>
         </div>
       </section>
 

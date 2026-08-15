@@ -10,6 +10,8 @@ import {
   shellBodyTextClass,
   shellCardClass,
   shellSubtleTextClass,
+  shellTableHostClass,
+  shellTableScrollClass,
 } from '../../lib/shellUi'
 
 function StatusBadge({ status }) {
@@ -44,51 +46,53 @@ function IntegrityReportsTable({ reports = [], loading, onReview }) {
   }
 
   return (
-    <div className={`overflow-x-auto ${shellCardClass}`}>
-      <table className="min-w-full text-sm">
-        <thead>
-          <tr className={`border-b border-[var(--shell-border)] text-xs ${shellSubtleTextClass}`}>
-            <th className="px-4 py-3 text-start font-bold">{t('integrity.student')}</th>
-            <th className="px-4 py-3 text-start font-bold">{t('integrity.test')}</th>
-            <th className="px-4 py-3 text-start font-bold">{t('integrity.subject')}</th>
-            <th className="px-4 py-3 text-start font-bold">{t('integrity.detail.risk')}</th>
-            <th className="px-4 py-3 text-start font-bold">{t('integrity.violations')}</th>
-            <th className="px-4 py-3 text-start font-bold">{t('integrity.status')}</th>
-            <th className="px-4 py-3 text-start font-bold">{t('integrity.createdAt')}</th>
-            <th className="px-4 py-3 text-start font-bold">{t('integrity.actions')}</th>
-          </tr>
-        </thead>
-        <tbody>
-          {reports.map((report) => (
-            <tr key={report.id} className="border-b border-[var(--shell-border)]/70 last:border-0">
-              <td className="px-4 py-3 font-bold text-[var(--shell-text)]">{report.student_name}</td>
-              <td className={`px-4 py-3 ${shellBodyTextClass}`}>{report.test_name}</td>
-              <td className={`px-4 py-3 ${shellBodyTextClass}`}>{report.subject_name}</td>
-              <td className="px-4 py-3 font-bold text-rose-600">
-                {formatAnalyticsPercent(report.risk_percentage)}
-              </td>
-              <td className={`px-4 py-3 ${shellBodyTextClass}`}>
-                {formatAnalyticsCount(report.violations_count)}
-              </td>
-              <td className="px-4 py-3">
-                <StatusBadge status={report.status} />
-              </td>
-              <td className={`px-4 py-3 ${shellBodyTextClass}`}>
-                {formatAnalyticsDate(report.created_at || report.submitted_at)}
-              </td>
-              <td className="px-4 py-3">
-                <button
-                  type="button"
-                  className={shellAccentSoftButtonClass}
-                  onClick={() => onReview?.(report)}
-                >
-                  {isIntegrityReportPending(report) ? t('integrity.review') : t('view')}
-                </button>
-              </td>
+    <div className={`${shellTableHostClass} ${shellCardClass}`}>
+      <div className={shellTableScrollClass}>
+        <table className="w-full min-w-[960px] text-sm">
+          <thead>
+            <tr className={`border-b border-[var(--shell-border)] text-xs ${shellSubtleTextClass}`}>
+              <th className="px-4 py-3 text-start font-bold">{t('integrity.student')}</th>
+              <th className="px-4 py-3 text-start font-bold">{t('integrity.test')}</th>
+              <th className="px-4 py-3 text-start font-bold">{t('integrity.subject')}</th>
+              <th className="px-4 py-3 text-start font-bold">{t('integrity.detail.risk')}</th>
+              <th className="px-4 py-3 text-start font-bold">{t('integrity.violations')}</th>
+              <th className="px-4 py-3 text-start font-bold">{t('integrity.status')}</th>
+              <th className="px-4 py-3 text-start font-bold">{t('integrity.createdAt')}</th>
+              <th className="px-4 py-3 text-start font-bold">{t('integrity.actions')}</th>
             </tr>
-          ))}
-        </tbody>
-      </table>
+          </thead>
+          <tbody>
+            {reports.map((report) => (
+              <tr key={report.id} className="border-b border-[var(--shell-border)]/70 last:border-0">
+                <td className="px-4 py-3 font-bold text-[var(--shell-text)]">{report.student_name}</td>
+                <td className={`px-4 py-3 ${shellBodyTextClass}`}>{report.test_name}</td>
+                <td className={`px-4 py-3 ${shellBodyTextClass}`}>{report.subject_name}</td>
+                <td className="px-4 py-3 font-bold text-rose-600">
+                  {formatAnalyticsPercent(report.risk_percentage)}
+                </td>
+                <td className={`px-4 py-3 ${shellBodyTextClass}`}>
+                  {formatAnalyticsCount(report.violations_count)}
+                </td>
+                <td className="px-4 py-3">
+                  <StatusBadge status={report.status} />
+                </td>
+                <td className={`px-4 py-3 ${shellBodyTextClass}`}>
+                  {formatAnalyticsDate(report.created_at || report.submitted_at)}
+                </td>
+                <td className="px-4 py-3">
+                  <button
+                    type="button"
+                    className={shellAccentSoftButtonClass}
+                    onClick={() => onReview?.(report)}
+                  >
+                    {isIntegrityReportPending(report) ? t('integrity.review') : t('view')}
+                  </button>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
     </div>
   )
 }

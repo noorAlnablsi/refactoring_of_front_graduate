@@ -4,7 +4,9 @@
     "home": "Home",
     "solutions": "Solutions",
     "services": "Services",
-    "about": "About us"
+    "about": "About us",
+    "openMenu": "Open navigation menu",
+    "closeMenu": "Close navigation menu"
   },
   "hero": {
     "badge": "Platform principle",

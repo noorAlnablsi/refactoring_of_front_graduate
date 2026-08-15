@@ -18,6 +18,8 @@ import {
   shellIconWrapClass,
   shellPageTitleClass,
   shellSubtleTextClass,
+  shellTableHostClass,
+  shellTableScrollClass,
 } from '../../lib/shellUi'
 import SubjectsPagination from './SubjectsPagination'
 import SubjectsSortSelect from './SubjectsSortSelect'
@@ -49,7 +51,7 @@ function SubjectsTable({
 
   if (loading) {
     return (
-      <div className={`overflow-hidden ${shellCardClass}`}>
+      <div className={`${shellTableHostClass} ${shellCardClass}`}>
         <div className={`border-b px-5 py-4 ${shellDividerClass}`}>
           <div className="shell-skeleton h-9 w-40 animate-pulse rounded-lg" />
         </div>
@@ -64,19 +66,19 @@ function SubjectsTable({
 
   if (!subjects.length && totalCount === 0) {
     return (
-      <div className={`overflow-hidden p-12 text-center ${shellCardClass}`}>
+      <div className={`${shellTableHostClass} p-12 text-center ${shellCardClass}`}>
         <p className={shellBodyTextClass}>{t('table.empty')}</p>
       </div>
     )
   }
 
   return (
-    <div className={`overflow-hidden ${shellCardClass}`}>
+    <div className={`${shellTableHostClass} ${shellCardClass}`}>
       <div className={`flex items-center border-b px-5 py-4 ${shellDividerClass}`}>
         <SubjectsSortSelect value={sortKey} onChange={onSortChange} />
       </div>
 
-      <div className="overflow-x-auto">
+      <div className={shellTableScrollClass}>
         <table className="w-full min-w-[760px] table-fixed text-right text-sm">
           <colgroup>
             <col className="w-[38%]" />

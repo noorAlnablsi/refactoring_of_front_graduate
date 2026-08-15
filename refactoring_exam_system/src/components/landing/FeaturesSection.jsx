@@ -9,12 +9,12 @@ function FeaturesSection() {
     <section id="about" className="scroll-mt-24 bg-white px-4 py-16 md:px-8 lg:py-20">
       <div className="mx-auto w-full max-w-6xl">
         <div className="mb-12 text-center lg:text-right">
-          <h2 className="text-4xl font-black leading-tight text-[#202636] md:text-5xl">
+          <h2 className="text-3xl font-black leading-tight text-[#202636] sm:text-4xl md:text-5xl">
             {t('features.titleLine1')}
             <br />
             <span className="text-[#2AA8A2]">{t('features.titleLine2')}</span>
           </h2>
-          <p className="mt-4 text-lg text-[#666D7C] md:text-xl">{t('features.subtitle')}</p>
+          <p className="mt-4 text-base text-[#666D7C] sm:text-lg md:text-xl">{t('features.subtitle')}</p>
         </div>
 
         <div className="grid gap-6" dir="ltr">
@@ -59,7 +59,7 @@ function FeaturesSection() {
 
           <div className="grid gap-6 lg:grid-cols-[2fr_1fr]">
             <article className="overflow-hidden rounded-[24px] bg-[#DEE3E6] p-5 ring-1 ring-[#ADB3B5]/60 shadow-[0_1px_10px_rgba(0,0,0,0.03)] md:p-6">
-              <div className="grid items-center gap-5 md:grid-cols-[minmax(240px,42%)_1fr] md:gap-6">
+              <div className="grid items-center gap-5 lg:grid-cols-[minmax(0,42%)_minmax(0,1fr)] lg:gap-6">
                 <div className="overflow-hidden rounded-2xl">
                   <img
                     src={safeBoxImage}

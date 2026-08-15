@@ -22,6 +22,8 @@ import {
   shellPageSubtitleClass,
   shellPageTitleClass,
   shellSubtleTextClass,
+  shellTableHostClass,
+  shellTableScrollClass,
 } from '../../lib/shellUi'
 import { deleteGroup, removeGroupMember } from '../../services/studentGroups.service'
 import { useToastStore } from '../../store/toastStore'
@@ -136,9 +138,9 @@ function GroupDetailsPage() {
         ) : null}
       </div>
 
-      <div className="grid gap-4 md:grid-cols-[1.45fr_0.75fr]">
-        <section className="rounded-2xl bg-[var(--shell-accent)] p-6 text-white shadow-[var(--shell-shadow-accent)]">
-          <h2 className="text-xl font-extrabold leading-8 md:text-2xl">{groupTitle}</h2>
+      <div className="grid min-w-0 gap-4 md:grid-cols-[minmax(0,1.45fr)_minmax(0,0.75fr)]">
+        <section className="min-w-0 rounded-2xl bg-[var(--shell-accent)] p-6 text-white shadow-[var(--shell-shadow-accent)]">
+          <h2 className="break-words text-xl font-extrabold leading-8 md:text-2xl">{groupTitle}</h2>
           {group.description ? <p className="mt-2 text-sm leading-7 opacity-90">{group.description}</p> : null}
           <div className="mt-6 space-y-3 text-sm font-semibold">
             <p className="flex items-center gap-2.5">
@@ -169,12 +171,12 @@ function GroupDetailsPage() {
         </section>
       </div>
 
-      <section className={shellCardClass}>
+      <section className={`${shellTableHostClass} ${shellCardClass}`}>
         <div className="flex flex-wrap items-center justify-between gap-3 border-b border-[var(--shell-border)] px-5 py-4">
           <h2 className={`text-base ${shellPageTitleClass}`}>{t('details.studentsTitle')}</h2>
         </div>
 
-        <div className="overflow-x-auto">
+        <div className={shellTableScrollClass}>
           <table className="w-full min-w-[560px] text-right text-sm">
             <thead className="border-b border-[var(--shell-border)] text-xs text-[var(--shell-text-muted)]">
               <tr>

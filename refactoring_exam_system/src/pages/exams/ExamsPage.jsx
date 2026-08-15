@@ -111,11 +111,11 @@ function ExamsPage() {
   }
 
   return (
-    <div className="space-y-6">
+    <div className="min-w-0 space-y-6">
       <div className="flex flex-wrap items-start justify-between gap-4">
-        <div>
+        <div className="min-w-0">
           <p className={shellPageEyebrowClass}>{t('page.eyebrow', { ns: 'exams' })}</p>
-          <h1 className={`mt-1 text-4xl ${shellPageTitleClass}`}>{t('page.title', { ns: 'exams' })}</h1>
+          <h1 className={`mt-1 text-3xl sm:text-4xl ${shellPageTitleClass}`}>{t('page.title', { ns: 'exams' })}</h1>
           <p className={`mt-2 ${shellPageSubtitleClass}`}>{t('page.subtitle', { ns: 'exams' })}</p>
         </div>
         {canCreateExam() ? (
@@ -126,13 +126,13 @@ function ExamsPage() {
         ) : null}
       </div>
 
-      <div className={shellTabsBarClass}>
+      <div className={`${shellTabsBarClass} gap-4 overflow-x-auto`}>
         {tabs.map((tab) => (
           <button
             key={tab.id}
             type="button"
             onClick={() => setActiveTab(tab.id)}
-            className={shellTabButtonClass(activeTab === tab.id)}
+            className={`shrink-0 ${shellTabButtonClass(activeTab === tab.id)}`}
           >
             {tab.label}
             {activeTab === tab.id ? <span className={shellTabIndicatorClass} /> : null}

@@ -8,13 +8,15 @@ import {
   shellCardClass,
   shellSectionTitleClass,
   shellSubtleTextClass,
+  shellTableHostClass,
+  shellTableScrollClass,
 } from '../../lib/shellUi'
 
 function AnalyticsEngagedSubjects({ subjects = [], loading }) {
   const { t } = useTranslation('analytics')
 
   return (
-    <section className={`p-5 ${shellCardClass}`}>
+    <section className={`p-5 ${shellTableHostClass} ${shellCardClass}`}>
       <h2 className={shellSectionTitleClass}>{t('engagedSubjects.title')}</h2>
 
       {loading ? (
@@ -22,8 +24,8 @@ function AnalyticsEngagedSubjects({ subjects = [], loading }) {
       ) : subjects.length === 0 ? (
         <p className={`mt-6 text-sm ${shellBodyTextClass}`}>{t('empty')}</p>
       ) : (
-        <div className="mt-4 overflow-x-auto">
-          <table className="min-w-full text-sm">
+        <div className={`mt-4 ${shellTableScrollClass}`}>
+          <table className="w-full min-w-[640px] text-sm">
             <thead>
               <tr className={`border-b border-[var(--shell-border)] text-xs ${shellSubtleTextClass}`}>
                 <th className="px-2 py-3 text-start font-bold">{t('engagedSubjects.subject')}</th>

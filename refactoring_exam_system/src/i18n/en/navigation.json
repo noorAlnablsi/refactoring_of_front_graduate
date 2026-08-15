@@ -31,7 +31,9 @@
     "searchPlaceholder": "Search the platform...",
     "defaultUser": "User",
     "help": "Help",
-    "notifications": "Notifications"
+    "notifications": "Notifications",
+    "openMenu": "Open navigation menu",
+    "closeMenu": "Close navigation menu"
   },
   "breadcrumbs": {
     "home": "Home",

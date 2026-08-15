@@ -1,4 +1,4 @@
-import { Bell, HelpCircle, Search } from 'lucide-react'
+import { HelpCircle, Menu, Search } from 'lucide-react'
 import { useAppTranslation } from '../../hooks/useAppTranslation'
 import { getLanguageDirection } from '../../lib/language'
 import { getActiveMembership } from '../../lib/workspaceContext'
@@ -7,7 +7,7 @@ import { useAuthStore } from '../../store/authStore'
 import { useLanguageStore } from '../../store/languageStore'
 import UserAvatar from './UserAvatar'
 
-function TopBar({ searchPlaceholder }) {
+function TopBar({ searchPlaceholder, onMenuClick, menuOpen = false }) {
   const { t } = useAppTranslation('navigation')
   const language = useLanguageStore((s) => s.language)
   const dir = getLanguageDirection(language)
@@ -17,12 +17,25 @@ function TopBar({ searchPlaceholder }) {
   const placeholder = searchPlaceholder ?? t('topBar.searchPlaceholder')
 
   return (
-    <header className="flex h-16 shrink-0 items-center bg-[var(--shell-surface)] px-[37px]">
-      <div className="flex w-full items-center gap-6">
-        <div className="flex shrink-0 items-center gap-4">
-          <div className="flex items-center gap-2">
+    <header className="flex h-16 shrink-0 items-center bg-[var(--shell-surface)] px-4 md:px-6 lg:px-[37px]">
+      <div className="flex w-full min-w-0 items-center gap-3 md:gap-6">
+        <div className="flex min-w-0 shrink-0 items-center gap-2 sm:gap-4">
+          {onMenuClick ? (
+            <button
+              type="button"
+              onClick={onMenuClick}
+              className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl text-[var(--shell-text-muted)] transition hover:bg-[var(--shell-hover)] hover:text-[var(--shell-text)] lg:hidden"
+              aria-label={t('topBar.openMenu')}
+              aria-expanded={menuOpen}
+              aria-controls="app-mobile-nav"
+            >
+              <Menu className="h-5 w-5" strokeWidth={2} />
+            </button>
+          ) : null}
+
+          <div className="flex min-w-0 items-center gap-2">
             <UserAvatar user={user} size="xs" rounded />
-            <div className="text-start">
+            <div className="hidden min-w-0 text-start sm:block">
               <p className="truncate text-sm font-medium leading-tight text-[var(--shell-accent)]">
                 {user?.full_name || t('topBar.defaultUser')}
               </p>
@@ -36,19 +49,10 @@ function TopBar({ searchPlaceholder }) {
 
           <button
             type="button"
-            className="relative flex shrink-0 items-center justify-center text-[var(--shell-text-muted)]"
+            className="relative hidden shrink-0 items-center justify-center text-[var(--shell-text-muted)] sm:flex"
             aria-label={t('topBar.help')}
           >
             <HelpCircle className="h-[18px] w-[18px]" strokeWidth={1.9} />
-          </button>
-
-          <button
-            type="button"
-            className="relative flex shrink-0 items-center justify-center text-[var(--shell-text-muted)]"
-            aria-label={t('topBar.notifications')}
-          >
-            <Bell className="h-[18px] w-[18px]" strokeWidth={1.9} />
-            <span className="absolute -end-0.5 -top-0.5 h-1.5 w-1.5 rounded-full bg-[#EF4444]" />
           </button>
         </div>
 

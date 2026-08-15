@@ -11,6 +11,8 @@ import {
   shellCardClass,
   shellDividerClass,
   shellSubtleTextClass,
+  shellTableHostClass,
+  shellTableScrollClass,
 } from '../../lib/shellUi'
 import { Eye, Pencil, Trash2, Users } from 'lucide-react'
 import { useTranslation } from 'react-i18next'
@@ -39,7 +41,7 @@ function GroupsTable({
 
   if (loading) {
     return (
-      <div className={`overflow-hidden ${shellCardClass}`}>
+      <div className={`${shellTableHostClass} ${shellCardClass}`}>
         <div className="space-y-0 p-2">
           {Array.from({ length: GROUPS_PAGE_SIZE }, (_, i) => (
             <div key={i} className="shell-skeleton mx-3 my-2 h-16 animate-pulse rounded-xl" />
@@ -50,8 +52,8 @@ function GroupsTable({
   }
 
   return (
-    <div className={`overflow-hidden ${shellCardClass}`}>
-      <div className="overflow-x-auto">
+    <div className={`${shellTableHostClass} ${shellCardClass}`}>
+      <div className={shellTableScrollClass}>
         <table className="w-full min-w-[760px] table-fixed text-right text-sm">
           <colgroup>
             <col className="w-[26%]" />

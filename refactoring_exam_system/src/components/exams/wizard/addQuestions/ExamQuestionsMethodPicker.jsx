@@ -70,7 +70,7 @@ function ExamQuestionsMethodPicker({
         </div>
       </div>
 
-      <div className="flex justify-between">
+      <div className="flex flex-wrap items-center justify-between gap-3">
         <button
           type="button"
           onClick={onBack}

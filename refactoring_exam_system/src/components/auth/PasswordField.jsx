@@ -18,7 +18,7 @@ function PasswordField({
   return (
     <div className="space-y-2">
       <label className="block text-right text-sm font-semibold text-[#374151]">{label}</label>
-      <div className="relative w-full md:w-[448px]">
+      <div className="relative w-full max-w-[448px]">
         <input
           type={showPassword ? 'text' : 'password'}
           name={name}
