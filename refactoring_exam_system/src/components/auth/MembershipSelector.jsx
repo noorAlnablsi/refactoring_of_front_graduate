@@ -3,7 +3,7 @@ import { getMembershipLabel } from '../../lib/membershipLabel'
 
 function MembershipSelector({ memberships, selectedId, onSelect }) {
   return (
-    <div className="space-y-3">
+    <div className="space-y-3" data-keyboard-option-group="membership">
       {memberships.map((membership) => {
         const isActive = selectedId === membership.membership_id
         const Icon = membership.role === 'STUDENT' ? GraduationCap : UserRound
@@ -12,6 +12,8 @@ function MembershipSelector({ memberships, selectedId, onSelect }) {
           <button
             key={membership.membership_id}
             type="button"
+            data-keyboard-option=""
+            aria-pressed={isActive}
             onClick={() => onSelect(membership.membership_id)}
             className={`flex h-14 w-full max-w-[448px] items-center justify-start gap-3 rounded-2xl px-5 text-sm font-bold transition ${
               isActive

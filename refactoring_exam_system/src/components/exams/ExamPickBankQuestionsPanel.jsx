@@ -304,6 +304,7 @@ function ExamPickBankQuestionsPanel({
             </button>
             <button
               type="button"
+              data-keyboard-primary=""
               onClick={handleSubmit}
               disabled={submitting || !selectedIds.length}
               className="inline-flex items-center gap-2 rounded-xl bg-[#2AA8A2] px-7 py-3 text-sm font-bold text-white shadow-[0_10px_20px_rgba(42,168,162,0.28)] disabled:opacity-50"

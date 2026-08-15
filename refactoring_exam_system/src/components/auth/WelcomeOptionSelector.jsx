@@ -18,7 +18,7 @@ function WelcomeOptionSelector({ selected, onSelect }) {
   ]
 
   return (
-    <div className="space-y-7">
+    <div className="space-y-7" data-keyboard-option-group="welcome">
       {options.map(({ id, title, icon: Icon }) => {
         const isActive = selected === id
         const isCreateSpace = id === WELCOME_SELECTION.CREATE_SPACE
@@ -26,6 +26,8 @@ function WelcomeOptionSelector({ selected, onSelect }) {
           <button
             key={id}
             type="button"
+            data-keyboard-option=""
+            aria-pressed={isActive}
             onClick={() => onSelect(id)}
             className={`flex h-[54px] w-full max-w-[448px] items-center justify-start gap-3 rounded-2xl bg-[#EEF2F3] px-5 text-sm font-bold transition ${
               isCreateSpace ? '-mt-3' : ''

@@ -6,7 +6,7 @@ import { useAppTranslation } from '../../../hooks/useAppTranslation'
 const linkClassName =
   'inline-flex items-center gap-2 text-sm font-bold text-[#2AA8A2] transition hover:opacity-80'
 
-function BackToLoginLink({ onClick, className = '' }) {
+function BackToLoginLink({ onClick, className = '', keyboardPrimary = false }) {
   const { t } = useAppTranslation('auth')
 
   const content = (
@@ -18,14 +18,23 @@ function BackToLoginLink({ onClick, className = '' }) {
 
   if (onClick) {
     return (
-      <button type="button" onClick={onClick} className={`${linkClassName} ${className}`}>
+      <button
+        type="button"
+        onClick={onClick}
+        {...(keyboardPrimary ? { 'data-keyboard-primary': '' } : {})}
+        className={`${linkClassName} ${className}`}
+      >
         {content}
       </button>
     )
   }
 
   return (
-    <Link to={ROUTES.LOGIN} className={`${linkClassName} ${className}`}>
+    <Link
+      to={ROUTES.LOGIN}
+      {...(keyboardPrimary ? { 'data-keyboard-primary': '' } : {})}
+      className={`${linkClassName} ${className}`}
+    >
       {content}
     </Link>
   )

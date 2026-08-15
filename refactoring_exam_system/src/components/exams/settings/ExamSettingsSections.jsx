@@ -17,6 +17,8 @@ function AvailabilityModeCard({ selected, icon: Icon, title, description, onSele
   return (
     <button
       type="button"
+      data-keyboard-option=""
+      aria-pressed={selected}
       onClick={onSelect}
       className={`flex w-full items-start gap-3 rounded-2xl border bg-white p-4 text-right transition ${
         selected
@@ -74,7 +76,7 @@ export function ExamAvailabilitySettingsSection({ form, onFormChange }) {
 
   return (
     <WizardSection icon={CalendarClock} title={t('settings.availability.title')}>
-      <div className="grid gap-3 md:grid-cols-2">
+      <div className="grid gap-3 md:grid-cols-2" data-keyboard-option-group="availability-mode">
         <AvailabilityModeCard
           selected={!isScheduled}
           icon={Clock3}

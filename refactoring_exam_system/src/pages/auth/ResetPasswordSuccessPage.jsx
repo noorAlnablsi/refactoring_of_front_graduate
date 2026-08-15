@@ -41,7 +41,7 @@ function ResetPasswordSuccessPage() {
       </div>
 
       <div className="mt-14 text-center">
-        <BackToLoginLink onClick={handleBackToLogin} />
+        <BackToLoginLink onClick={handleBackToLogin} keyboardPrimary />
       </div>
     </PasswordResetShell>
   )

@@ -362,6 +362,7 @@ function ExamAiGeneratePanel({ test, testId, onBack, onSuccess, onSaveDraft, sav
           </button>
           <button
             type="button"
+            data-keyboard-primary=""
             onClick={handleImport}
             disabled={importing || !selectedIds.length}
             className="rounded-xl bg-[#2AA8A2] px-7 py-3 text-sm font-bold text-white disabled:opacity-60"

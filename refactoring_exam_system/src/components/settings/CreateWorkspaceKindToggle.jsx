@@ -18,7 +18,7 @@ function CreateWorkspaceKindToggle({ selected, onSelect }) {
   ]
 
   return (
-    <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
+    <div className="grid grid-cols-1 gap-3 sm:grid-cols-2" data-keyboard-option-group="workspace-kind">
       {options.map(({ kind, title, icon: Icon }) => {
         const isActive = selected === kind
 
@@ -26,6 +26,8 @@ function CreateWorkspaceKindToggle({ selected, onSelect }) {
           <button
             key={kind}
             type="button"
+            data-keyboard-option=""
+            aria-pressed={isActive}
             onClick={() => onSelect(kind)}
             className={`flex h-auto min-h-12 items-center justify-center gap-2 rounded-xl border px-2 py-2 text-sm font-bold transition ${
               isActive

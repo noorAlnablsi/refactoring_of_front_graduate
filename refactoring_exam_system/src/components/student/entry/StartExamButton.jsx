@@ -8,6 +8,7 @@ function StartExamButton({ disabled, onClick, isResume, loading = false }) {
     <div className="space-y-2">
       <button
         type="button"
+        data-keyboard-primary=""
         disabled={disabled || loading}
         onClick={onClick}
         className="flex w-full items-center justify-center gap-2 rounded-2xl bg-[#2AA8A2] px-5 py-4 text-base font-extrabold text-white shadow-[0_12px_24px_rgba(42,168,162,0.28)] transition hover:opacity-95 disabled:cursor-not-allowed disabled:opacity-50"

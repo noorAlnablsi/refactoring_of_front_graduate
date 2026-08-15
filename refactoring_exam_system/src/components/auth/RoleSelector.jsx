@@ -18,13 +18,15 @@ function RoleSelector({ selected, onSelect }) {
   ]
 
   return (
-    <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
+    <div className="grid grid-cols-1 gap-3 sm:grid-cols-2" data-keyboard-option-group="role">
       {roles.map(({ kind, title, icon: Icon }) => {
         const isActive = selected === kind
         return (
           <button
             key={kind}
             type="button"
+            data-keyboard-option=""
+            aria-pressed={isActive}
             onClick={() => onSelect(kind)}
             className={`flex h-14 min-w-0 items-center justify-center gap-2 rounded-2xl bg-[#EEF2F3] px-2 text-sm font-bold transition ${
               isActive

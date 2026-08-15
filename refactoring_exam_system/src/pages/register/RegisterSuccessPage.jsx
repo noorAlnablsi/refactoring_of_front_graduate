@@ -116,6 +116,7 @@ function RegisterSuccessPage() {
         institutionRejected ? (
           <button
             type="button"
+            data-keyboard-primary=""
             onClick={handleGoHome}
             className="mt-10 h-12 w-full rounded-xl bg-[#2AA8A2] text-base font-bold text-white shadow-[0_12px_20px_rgba(42,168,162,0.22)] transition hover:opacity-95 max-w-[448px]"
           >
@@ -124,6 +125,7 @@ function RegisterSuccessPage() {
         ) : institutionApproved ? (
           <button
             type="button"
+            data-keyboard-primary=""
             onClick={() => handleGoLogin({ institutionApproved: true })}
             className="mt-10 h-12 w-full rounded-xl bg-[#2AA8A2] text-base font-bold text-white shadow-[0_12px_20px_rgba(42,168,162,0.22)] transition hover:opacity-95 max-w-[448px]"
           >
@@ -132,6 +134,7 @@ function RegisterSuccessPage() {
         ) : (
           <button
             type="button"
+            data-keyboard-primary=""
             onClick={handleGoHome}
             className="mt-10 h-12 w-full rounded-xl bg-[#2AA8A2] text-base font-bold text-white shadow-[0_12px_20px_rgba(42,168,162,0.22)] transition hover:opacity-95 max-w-[448px]"
           >
@@ -142,6 +145,7 @@ function RegisterSuccessPage() {
         <>
           <button
             type="button"
+            data-keyboard-primary=""
             onClick={() => handleGoLogin()}
             className="mt-10 h-12 w-full rounded-xl bg-[#2AA8A2] text-base font-bold text-white shadow-[0_12px_20px_rgba(42,168,162,0.22)] transition hover:opacity-95 max-w-[448px]"
           >

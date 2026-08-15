@@ -44,12 +44,14 @@ function ExamQuestionsMethodPicker({
           </p>
         )}
 
-        <div className="mt-5 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+        <div className="mt-5 grid gap-3 sm:grid-cols-2 lg:grid-cols-3" data-keyboard-option-group="exam-methods">
           {EXAM_QUESTION_METHODS.map(({ id, titleKey, descriptionKey, icon: Icon, enabled, comingSoon }) => (
             <button
               key={id}
               type="button"
               disabled={!enabled}
+              {...(enabled ? { 'data-keyboard-option': '' } : {})}
+              aria-pressed={activeMethod === id}
               onClick={() => enabled && onSelectMethod(id)}
               className={`relative rounded-2xl border p-4 text-right transition ${
                 enabled

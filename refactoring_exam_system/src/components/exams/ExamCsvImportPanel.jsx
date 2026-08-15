@@ -184,6 +184,7 @@ function ExamCsvImportPanel({
           </button>
           <button
             type="button"
+            data-keyboard-primary=""
             onClick={handleImport}
             disabled={loading || !file}
             className="rounded-xl bg-[#2AA8A2] px-7 py-3 text-sm font-bold text-white disabled:opacity-60"
