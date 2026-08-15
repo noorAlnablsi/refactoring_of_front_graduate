@@ -25,6 +25,7 @@ function AuthShell({
     <main
       dir={dir}
       className="min-h-screen bg-[var(--shell-bg)] px-4 py-6 font-sans text-[var(--shell-text)] md:px-8"
+      data-app-shell="auth"
     >
       <header dir="ltr" className="mx-auto flex w-full max-w-[1240px] items-center justify-between">
         <p className="text-sm text-[var(--shell-text-muted)]">{t('brand.tagline')}</p>

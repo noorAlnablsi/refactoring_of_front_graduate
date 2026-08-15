@@ -59,7 +59,10 @@ function LoginPage() {
   }
 
   return (
-    <main className="min-h-screen bg-[#F6F8F9] px-4 py-6 font-sans text-[#1F2533] md:px-8">
+    <main
+      className="min-h-screen bg-[var(--shell-bg)] px-4 py-6 font-sans text-[var(--shell-text)] md:px-8"
+      data-app-shell="auth"
+    >
       <header dir="ltr" className="mx-auto flex w-full max-w-[1240px] items-center justify-between">
         <p className="text-sm text-[#6B7280]">{t('login.tagline')}</p>
         <span className="text-2xl font-extrabold text-[#2AA8A2]">QuizHub</span>

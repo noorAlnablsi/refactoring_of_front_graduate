@@ -14,11 +14,8 @@
     <script>
       ;(function () {
         try {
-          var stored = localStorage.getItem('quizhub-theme')
-          if (stored) {
-            var mode = JSON.parse(stored).state && JSON.parse(stored).state.mode
-            if (mode === 'dark') document.documentElement.classList.add('dark')
-          }
+          var active = localStorage.getItem('quizhub-theme-active')
+          if (active === 'dark') document.documentElement.classList.add('dark')
         } catch (e) {}
 
         try {

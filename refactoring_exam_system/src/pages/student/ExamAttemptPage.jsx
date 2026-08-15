@@ -213,7 +213,7 @@ function ExamAttemptPage() {
 
   if (loading) {
     return (
-      <main className="flex min-h-screen items-center justify-center bg-[#F6F8F9] px-4" data-a11y-scale-root>
+      <main className="flex min-h-screen items-center justify-center bg-[var(--shell-bg)] px-4" data-a11y-scale-root data-app-shell="exam">
         <p className="text-sm font-semibold text-[#64748B]">{t('attempt.loading')}</p>
       </main>
     )
@@ -230,8 +230,8 @@ function ExamAttemptPage() {
 
   if (error && !questions.length) {
     return (
-      <main className="flex min-h-screen items-center justify-center bg-[#F6F8F9] px-4" data-a11y-scale-root>
-        <div className="w-full max-w-md rounded-2xl bg-white p-6 text-center shadow-sm ring-1 ring-[#E5E9EB]">
+      <main className="flex min-h-screen items-center justify-center bg-[var(--shell-bg)] px-4" data-a11y-scale-root data-app-shell="exam">
+        <div className="w-full max-w-md rounded-2xl bg-[var(--shell-surface)] p-6 text-center shadow-sm ring-1 ring-[var(--shell-border)]">
           <p className="text-sm font-semibold text-red-600">{error}</p>
           <div className="mt-4 flex flex-wrap items-center justify-center gap-3">
             <button
@@ -280,7 +280,7 @@ function ExamAttemptPage() {
 
   if (!isFreeNavigation) {
     return (
-      <main className="min-h-screen bg-[#F6F8F9]" data-a11y-scale-root>
+      <main className="min-h-screen bg-[var(--shell-bg)]" data-a11y-scale-root data-app-shell="exam">
         <ProctoringWarning warning={proctoring.warning} onDismiss={proctoring.clearWarning} />
 
         <AttemptSequentialHeader
@@ -344,7 +344,7 @@ function ExamAttemptPage() {
   }
 
   return (
-    <main className="min-h-screen bg-[#F6F8F9]" data-a11y-scale-root>
+    <main className="min-h-screen bg-[var(--shell-bg)]" data-a11y-scale-root data-app-shell="exam">
       <ProctoringWarning warning={proctoring.warning} onDismiss={proctoring.clearWarning} />
 
       <AttemptExamHeader

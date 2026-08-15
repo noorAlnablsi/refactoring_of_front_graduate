@@ -13,7 +13,7 @@ function LandingPage() {
   const dir = getLanguageDirection(language)
 
   return (
-    <main dir={dir} className="min-h-screen bg-[#F6F8F9] font-sans text-[#1F2533]">
+    <main dir={dir} className="min-h-screen bg-[var(--shell-bg)] font-sans text-[var(--shell-text)]" data-app-shell="public">
       <Header />
       <HeroSection />
       <TrustedSection />

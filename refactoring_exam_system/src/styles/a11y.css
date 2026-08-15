@@ -6,7 +6,7 @@
  */
 
 /* ---------- Font scale (content only) ---------- */
-[data-app-shell='dashboard'] main,
+[data-app-shell] main,
 [data-a11y-scale-root] {
   zoom: var(--a11y-font-scale, 1);
 }
@@ -40,29 +40,29 @@ html[data-a11y-contrast='high'] :focus-visible {
 }
 
 /* Legacy hex text utilities — boost readability only (no border/card changes) */
-html[data-a11y-contrast='high'] [data-app-shell='dashboard'] .text-\[\#1F2533\],
-html[data-a11y-contrast='high'] [data-app-shell='dashboard'] .text-\[\#2A3433\],
-html[data-a11y-contrast='high'] [data-app-shell='dashboard'] .text-\[\#374151\] {
+html[data-a11y-contrast='high'] [data-app-shell] .text-\[\#1F2533\],
+html[data-a11y-contrast='high'] [data-app-shell] .text-\[\#2A3433\],
+html[data-a11y-contrast='high'] [data-app-shell] .text-\[\#374151\] {
   color: var(--shell-text) !important;
 }
 
-html[data-a11y-contrast='high'] [data-app-shell='dashboard'] .text-\[\#64748B\],
-html[data-a11y-contrast='high'] [data-app-shell='dashboard'] .text-\[\#6B7280\] {
+html[data-a11y-contrast='high'] [data-app-shell] .text-\[\#64748B\],
+html[data-a11y-contrast='high'] [data-app-shell] .text-\[\#6B7280\] {
   color: var(--shell-text-muted) !important;
 }
 
-html[data-a11y-contrast='high'] [data-app-shell='dashboard'] .text-\[\#94A3B8\],
-html[data-a11y-contrast='high'] [data-app-shell='dashboard'] .text-\[\#9CA3AF\],
-html[data-a11y-contrast='high'] [data-app-shell='dashboard'] .text-\[\#CBD5E1\] {
+html[data-a11y-contrast='high'] [data-app-shell] .text-\[\#94A3B8\],
+html[data-a11y-contrast='high'] [data-app-shell] .text-\[\#9CA3AF\],
+html[data-a11y-contrast='high'] [data-app-shell] .text-\[\#CBD5E1\] {
   color: var(--shell-text-subtle) !important;
 }
 
-html[data-a11y-contrast='high'] [data-app-shell='dashboard'] .text-\[\#2AA8A2\] {
+html[data-a11y-contrast='high'] [data-app-shell] .text-\[\#2AA8A2\] {
   color: var(--shell-accent) !important;
 }
 
-html[data-a11y-contrast='high'] [data-app-shell='dashboard'] .text-\[\#DC2626\],
-html[data-a11y-contrast='high'] [data-app-shell='dashboard'] .text-\[\#F43F5E\] {
+html[data-a11y-contrast='high'] [data-app-shell] .text-\[\#DC2626\],
+html[data-a11y-contrast='high'] [data-app-shell] .text-\[\#F43F5E\] {
   color: var(--shell-danger-text) !important;
 }
 

@@ -1,18 +1,37 @@
-import { THEME_BY_USER_STORAGE_KEY, THEME_MODE, THEME_STORAGE_KEY } from '../constants/theme'
+import {
+  THEME_ACTIVE_STORAGE_KEY,
+  THEME_BY_USER_STORAGE_KEY,
+  THEME_MODE,
+  THEME_STORAGE_KEY,
+} from '../constants/theme'
 
 export function applyTheme(mode) {
+  const nextMode = normalizeThemeMode(mode)
   const root = document.documentElement
 
-  if (mode === THEME_MODE.DARK) {
+  if (nextMode === THEME_MODE.DARK) {
     root.classList.add('dark')
-    return
+  } else {
+    root.classList.remove('dark')
   }
 
-  root.classList.remove('dark')
+  try {
+    localStorage.setItem(THEME_ACTIVE_STORAGE_KEY, nextMode)
+  } catch {
+    // ignore
+  }
 }
 
 export function normalizeThemeMode(mode) {
   return mode === THEME_MODE.DARK ? THEME_MODE.DARK : THEME_MODE.LIGHT
+}
+
+export function readActiveThemeMode() {
+  try {
+    return normalizeThemeMode(localStorage.getItem(THEME_ACTIVE_STORAGE_KEY))
+  } catch {
+    return THEME_MODE.LIGHT
+  }
 }
 
 function readPreferencesMap() {
@@ -39,12 +58,15 @@ export function writeUserThemeMode(userId, mode) {
   localStorage.setItem(THEME_BY_USER_STORAGE_KEY, JSON.stringify(next))
 }
 
-/** Guest / login screens always start from light until a user syncs. */
+/**
+ * Apply last known theme immediately (avoids light flash), then auth sync refines per user.
+ * Guests / logout still end on light via syncForUser(null).
+ */
 export function initTheme() {
   try {
     localStorage.removeItem(THEME_STORAGE_KEY)
   } catch {
     // ignore
   }
-  applyTheme(THEME_MODE.LIGHT)
+  applyTheme(readActiveThemeMode())
 }

@@ -50,7 +50,7 @@ function CreateWorkspacePage() {
   return (
     <CreateWorkspaceShell>
       <div className="text-right">
-        <h1 className="text-2xl font-extrabold text-[#2A3433] md:text-[2rem] md:leading-tight">
+        <h1 className="text-2xl font-extrabold text-[var(--shell-text)] md:text-[2rem] md:leading-tight">
           {t('createWorkspace.title')}
         </h1>
         <p className="mt-3 text-sm leading-7 text-[#6B7280] md:text-base">
@@ -63,7 +63,7 @@ function CreateWorkspacePage() {
           <Info className="h-4 w-4" strokeWidth={2.2} />
         </span>
         <p className="text-sm leading-7 text-[#4B5563]">
-          <span className="font-bold text-[#2A3433]">{t('createWorkspace.accountNoticeTitle')}</span>{' '}
+          <span className="font-bold text-[var(--shell-text)]">{t('createWorkspace.accountNoticeTitle')}</span>{' '}
           {t('createWorkspace.accountNotice')}
         </p>
       </div>

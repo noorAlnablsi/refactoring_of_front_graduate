@@ -137,7 +137,11 @@ function ExamEntryPage() {
   })
 
   return (
-    <div className="min-h-screen bg-[#F6F8F9] px-4 py-5 md:px-6 md:py-6" data-a11y-scale-root>
+    <div
+      className="min-h-screen bg-[var(--shell-bg)] px-4 py-5 text-[var(--shell-text)] md:px-6 md:py-6"
+      data-a11y-scale-root
+      data-app-shell="exam"
+    >
       <div className="mx-auto max-w-6xl space-y-5">
         <header className="flex flex-wrap items-center justify-between gap-3">
           <div className="flex min-w-0 items-center gap-3">
@@ -145,7 +149,7 @@ function ExamEntryPage() {
               <BookMarked className="h-5 w-5" />
             </span>
             <div className="min-w-0 text-start">
-              <h1 className="truncate text-lg font-extrabold text-[#2A3433] md:text-xl">
+              <h1 className="truncate text-lg font-extrabold text-[var(--shell-text)] md:text-xl">
                 {entry.title}
               </h1>
               <p className="truncate text-sm text-[#64748B]">{entry.subjectLabel}</p>
@@ -153,7 +157,7 @@ function ExamEntryPage() {
           </div>
 
           {durationLabel ? (
-            <span className="inline-flex items-center gap-2 rounded-xl bg-white px-3 py-2 text-sm font-bold text-[#2A3433] shadow-sm ring-1 ring-[#E5E9EB]">
+            <span className="inline-flex items-center gap-2 rounded-xl bg-[var(--shell-surface)] px-3 py-2 text-sm font-bold text-[var(--shell-text)] shadow-sm ring-1 ring-[var(--shell-border)]">
               <Clock3 className="h-4 w-4 text-[#2AA8A2]" />
               {durationLabel}
             </span>

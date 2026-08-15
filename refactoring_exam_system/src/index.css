@@ -29,6 +29,7 @@
   }
 
   .dark {
+    color-scheme: dark;
     --shell-bg: #0a0e14;
     --shell-surface: #111827;
     --shell-border: #1f2937;
@@ -72,7 +73,7 @@
 }
 
 @layer components {
-  [data-app-shell='dashboard'] .shell-skeleton {
+  [data-app-shell] .shell-skeleton {
     background-color: var(--shell-hover);
   }
 

@@ -7,7 +7,10 @@ function PasswordResetShell({ children, cardClassName = '' }) {
   const { t } = useTranslation(['landing', 'auth', 'common'])
 
   return (
-    <main className="relative flex min-h-screen flex-col bg-gradient-to-br from-[#F8FAFB] via-[#F6F8F9] to-[#EEF6F5] px-4 py-6 font-sans text-[#1F2533] md:px-10 md:py-8">
+    <main
+      className="relative flex min-h-screen flex-col bg-[var(--shell-bg)] px-4 py-6 font-sans text-[var(--shell-text)] md:px-10 md:py-8"
+      data-app-shell="auth"
+    >
       <div className="pointer-events-none absolute -left-32 top-8 h-80 w-80 rounded-full bg-[#2AA8A2]/12 blur-3xl" />
       <div className="pointer-events-none absolute -right-32 bottom-8 h-96 w-96 rounded-full bg-[#2AA8A2]/10 blur-3xl" />
 

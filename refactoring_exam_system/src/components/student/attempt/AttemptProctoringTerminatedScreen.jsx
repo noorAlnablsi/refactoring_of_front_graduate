@@ -21,8 +21,9 @@ function AttemptProctoringTerminatedScreen({ attempt, testName }) {
 
   return (
     <main
-      className="flex min-h-screen items-center justify-center bg-[#F6F8F9] px-4 py-10"
+      className="flex min-h-screen items-center justify-center bg-[var(--shell-bg)] px-4 py-10 text-[var(--shell-text)]"
       data-a11y-scale-root
+      data-app-shell="exam"
     >
       <section className={`w-full max-w-lg p-5 text-center sm:p-8 ${shellCardClass}`}>
         <span className="mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-[#FEE2E2]">
