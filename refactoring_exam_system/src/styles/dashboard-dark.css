@@ -3,6 +3,37 @@
   color-scheme: dark;
 }
 
+/*
+ * Marketing landing must stay light-branded even when the signed-in user
+ * prefers dark for dashboards. Without this, header (bg-white) remaps to
+ * dark surface while hero hex backgrounds stay light → mixed look.
+ */
+.dark [data-app-shell='public'] {
+  color-scheme: light;
+  --shell-bg: #f6f8f9;
+  --shell-surface: #ffffff;
+  --shell-border: #e5e9eb;
+  --shell-text: #1f2533;
+  --shell-text-muted: #64748b;
+  --shell-text-subtle: #94a3b8;
+  --shell-hover: #eef2f3;
+  --shell-accent-bg: #e8f7f6;
+  --shell-accent-bg-strong: #d4f3ef;
+  --shell-accent: #2aa8a2;
+  --shell-input-bg: #f6f8f9;
+  --shell-search-bg: #f1f5f9;
+  --shell-elevated: #ffffff;
+  --shell-brand-bg: #d1fae5;
+  --shell-shadow-sm: 0 1px 3px rgba(16, 24, 40, 0.06), 0 1px 2px rgba(16, 24, 40, 0.04);
+  --shell-shadow: 0 8px 24px rgba(15, 23, 42, 0.08);
+  --shell-shadow-accent: 0 8px 16px rgba(42, 168, 162, 0.22);
+  --shell-danger-bg: #fef2f2;
+  --shell-danger-text: #dc2626;
+  --shell-info-bg: #eff6ff;
+  --shell-info-text: #3b82f6;
+  --shell-accent-contrast: #ffffff;
+}
+
 .dark [data-app-shell] .bg-white,
 .dark [data-app-shell] .bg-white\/95 {
   background-color: var(--shell-surface) !important;

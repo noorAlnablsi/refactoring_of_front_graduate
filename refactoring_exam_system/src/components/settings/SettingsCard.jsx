@@ -7,9 +7,9 @@ function SettingsCard({ title, icon: Icon, badge, children, className = '', head
     >
       {showHeader ? (
         <div className={`mb-4 flex items-center justify-between gap-3 ${headerClassName}`}>
-          <div className="flex items-center gap-2.5">
-            {Icon ? <Icon className="h-5 w-5 shrink-0 text-[var(--shell-accent)]" strokeWidth={2} /> : null}
-            {title ? <h2 className="text-base font-extrabold text-[var(--shell-text)]">{title}</h2> : null}
+          <div className="flex items-center gap-2">
+            {Icon ? <Icon className="h-4 w-4 shrink-0 text-[var(--shell-accent)]" strokeWidth={2} /> : null}
+            {title ? <h2 className="text-sm font-extrabold text-[var(--shell-text)]">{title}</h2> : null}
           </div>
           {badge ? (
             <span className="rounded-full bg-[var(--shell-accent-bg)] px-3 py-1 text-xs font-bold text-[var(--shell-accent)]">

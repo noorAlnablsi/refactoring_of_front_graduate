@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { Navigate } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
+import { Building2 } from 'lucide-react'
 import AnalyticsBestWeakSubjects from '../../components/analytics/AnalyticsBestWeakSubjects'
 import AnalyticsEngagedSubjects from '../../components/analytics/AnalyticsEngagedSubjects'
 import AnalyticsFilters from '../../components/analytics/AnalyticsFilters'
@@ -19,6 +20,7 @@ import {
   useIntegrityReportReview,
 } from '../../hooks/analytics/useIntegrityReports'
 import { tUI } from '../../lib/appToast'
+import { buildDateRangePreset } from '../../lib/institutionAnalyticsModel'
 import {
   shellPageSubtitleClass,
   shellPageTitleClass,
@@ -67,6 +69,25 @@ function AnalyticsPage() {
     return <Navigate to={ROUTES.DASHBOARD} replace />
   }
 
+  const handleApplyFilters = (draft) => {
+    setSubjectId(draft.subjectId)
+    setTeacherMembershipId(draft.teacherMembershipId)
+
+    if (draft.datePreset === 'custom') {
+      applyDatePreset('custom')
+      setDateFrom(draft.dateFrom)
+      setDateTo(draft.dateTo)
+      return
+    }
+
+    const range = buildDateRangePreset(draft.datePreset)
+    applyDatePreset(draft.datePreset)
+    if (range) {
+      setDateFrom(range.date_from)
+      setDateTo(range.date_to)
+    }
+  }
+
   const handleConfirm = async (note) => {
     try {
       await submitReview(selectedReportId, {
@@ -97,35 +118,27 @@ function AnalyticsPage() {
 
   return (
     <div className="min-w-0 space-y-6">
-      <div className="flex flex-col gap-5 lg:flex-row lg:items-end lg:justify-between lg:gap-6">
+      <header className="flex flex-wrap items-start gap-4">
+        <span className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-[var(--shell-accent-bg)] text-[var(--shell-accent)]">
+          <Building2 className="h-6 w-6" strokeWidth={2.1} />
+        </span>
         <div className="min-w-0">
           <h1 className={`text-2xl md:text-[28px] ${shellPageTitleClass}`}>{t('title')}</h1>
           <p className={`mt-1.5 max-w-2xl ${shellPageSubtitleClass}`}>{t('subtitle')}</p>
         </div>
-        <div className="w-full min-w-0 lg:max-w-full lg:flex-1">
-          <AnalyticsFilters
-            subjects={subjects}
-            teachers={teachers}
-            subjectId={subjectId}
-            teacherMembershipId={teacherMembershipId}
-            datePreset={datePreset}
-            dateFrom={dateFrom}
-            dateTo={dateTo}
-            onSubjectChange={setSubjectId}
-            onTeacherChange={setTeacherMembershipId}
-            onDatePresetChange={applyDatePreset}
-            onDateFromChange={(value) => {
-              applyDatePreset('custom')
-              setDateFrom(value)
-            }}
-            onDateToChange={(value) => {
-              applyDatePreset('custom')
-              setDateTo(value)
-            }}
-            disabled={loading}
-          />
-        </div>
-      </div>
+      </header>
+
+      <AnalyticsFilters
+        subjects={subjects}
+        teachers={teachers}
+        subjectId={subjectId}
+        teacherMembershipId={teacherMembershipId}
+        datePreset={datePreset}
+        dateFrom={dateFrom}
+        dateTo={dateTo}
+        onApply={handleApplyFilters}
+        disabled={loading}
+      />
 
       {error ? (
         <div className="rounded-2xl bg-rose-50 px-4 py-3 text-sm font-semibold text-rose-700">

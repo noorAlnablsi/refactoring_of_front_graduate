@@ -14,7 +14,7 @@ import SettingsCard from './SettingsCard'
 import ThemeModeToggle from './ThemeModeToggle'
 
 const settingsRowClass =
-  'flex w-full items-center justify-between gap-3 rounded-xl bg-[var(--shell-input-bg)] px-4 py-3.5 text-start transition hover:brightness-[0.98]'
+  'flex w-full items-center justify-between gap-3 rounded-xl bg-[var(--shell-input-bg)] px-4 py-3 text-start transition hover:brightness-[0.98]'
 
 function SettingsAppearanceCard() {
   const { t } = useTranslation(['common', 'settings'])
@@ -27,7 +27,7 @@ function SettingsAppearanceCard() {
       <SettingsCard title={t('appearance.title', { ns: 'common' })}>
         <div className="space-y-3">
           <label className={settingsRowClass}>
-            <span className="text-sm font-semibold text-[var(--shell-text)]">
+            <span className="text-sm font-medium text-[var(--shell-text)]">
               {t('language.label', { ns: 'common' })}
             </span>
             <div className="relative min-w-[7.5rem]">
@@ -47,25 +47,25 @@ function SettingsAppearanceCard() {
           </label>
 
           <Link to={ROUTES.SETTINGS_CHANGE_PASSWORD} className={settingsRowClass}>
-            <span className="text-sm font-semibold text-[var(--shell-text)]">
+            <span className="text-sm font-medium text-[var(--shell-text)]">
               {t('appearance.changePassword', { ns: 'settings' })}
             </span>
             <ChevronLeft className="h-4 w-4 shrink-0 text-[var(--shell-text-subtle)]" aria-hidden="true" />
           </Link>
 
           <div className={settingsRowClass}>
-            <span className="text-sm font-semibold text-[var(--shell-text)]">
+            <span className="text-sm font-medium text-[var(--shell-text)]">
               {t('appearance.theme', { ns: 'settings' })}
             </span>
             <ThemeModeToggle />
           </div>
 
           <div className="pt-2">
-            <h3 className="mb-3 text-sm font-extrabold text-[var(--shell-text)]">
+            <h3 className="mb-2 text-xs font-bold text-[var(--shell-text-muted)]">
               {t('report.cardTitle', { ns: 'settings' })}
             </h3>
             <button type="button" onClick={() => setReportOpen(true)} className={settingsRowClass}>
-              <span className="text-sm font-semibold text-[var(--shell-text)]">
+              <span className="text-sm font-medium text-[var(--shell-text)]">
                 {t('report.contactTitle', { ns: 'settings' })}
               </span>
               <ChevronLeft className="h-4 w-4 shrink-0 text-[var(--shell-text-subtle)]" aria-hidden="true" />
@@ -104,7 +104,7 @@ function SettingsPrivacyCard() {
             type="button"
             onClick={logoutAllSessions}
             disabled={busy}
-            className="flex w-full items-center justify-center gap-2 rounded-xl bg-[var(--shell-input-bg)] px-4 py-3.5 text-sm font-bold text-[var(--shell-danger-text)] transition hover:bg-[var(--shell-hover)] disabled:opacity-60"
+            className="flex w-full items-center justify-center gap-2 rounded-xl bg-[var(--shell-input-bg)] px-4 py-3 text-sm font-semibold text-[var(--shell-danger-text)] transition hover:bg-[var(--shell-hover)] disabled:opacity-60"
           >
             <LogOut className="h-4 w-4" />
             {logoutLoading ? t('privacy.loggingOut') : t('privacy.logoutAll')}
@@ -114,7 +114,7 @@ function SettingsPrivacyCard() {
             type="button"
             onClick={() => setDeleteConfirmOpen(true)}
             disabled={busy}
-            className="flex w-full items-center justify-center gap-2 rounded-xl bg-[#DC2626] px-4 py-3.5 text-sm font-bold text-white transition hover:brightness-95 disabled:opacity-70"
+            className="flex w-full items-center justify-center gap-2 rounded-xl bg-[#DC2626] px-4 py-3 text-sm font-semibold text-white transition hover:brightness-95 disabled:opacity-70"
           >
             <Trash2 className="h-4 w-4" />
             {deleteLoading ? t('privacy.deleting') : t('privacy.deleteAccount')}

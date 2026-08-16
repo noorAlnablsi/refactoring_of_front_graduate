@@ -7,6 +7,34 @@ import {
   shellPageTitleClass,
 } from '../../../lib/shellUi'
 
+const CARD_CLASS = `relative flex min-h-[120px] flex-col overflow-hidden ${shellCardClass}`
+
+function SummaryCard({ label, value, description, icon: Icon, accentClassName, iconBg }) {
+  return (
+    <div className={CARD_CLASS}>
+      <div className={`absolute inset-y-0 start-0 w-1 ${accentClassName}`} aria-hidden="true" />
+      <div className="flex flex-1 flex-col justify-between gap-3 px-5 py-4 ps-6">
+        <div className="flex items-start justify-between gap-3">
+          <p className={`text-sm font-semibold ${shellBodyTextClass}`}>{label}</p>
+          <span
+            className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-xl ${iconBg}`}
+          >
+            <Icon className="h-[18px] w-[18px]" strokeWidth={2} />
+          </span>
+        </div>
+        <div>
+          <p className={`text-[32px] leading-none text-[var(--shell-accent)] ${shellPageTitleClass}`}>
+            {value}
+          </p>
+          {description ? (
+            <p className={`mt-2 text-xs ${shellBodyTextClass}`}>{description}</p>
+          ) : null}
+        </div>
+      </div>
+    </div>
+  )
+}
+
 function StudentsSummaryCards({ total, activeTotal, loading }) {
   const { t } = useTranslation('members')
   const totalValue = loading ? '…' : formatStatValue(total)
@@ -14,30 +42,21 @@ function StudentsSummaryCards({ total, activeTotal, loading }) {
 
   return (
     <div className="grid gap-4 md:grid-cols-2">
-      <div className={`flex min-h-[120px] items-center justify-between gap-4 px-5 py-4 ${shellCardClass}`}>
-        <div>
-          <p className={`text-sm font-semibold ${shellBodyTextClass}`}>{t('students.total')}</p>
-          <p className={`mt-3 text-[32px] leading-none text-[var(--shell-accent)] ${shellPageTitleClass}`}>
-            {totalValue}
-          </p>
-        </div>
-        <span className="flex h-12 w-12 items-center justify-center rounded-full bg-[var(--shell-accent-bg)] text-[var(--shell-accent)]">
-          <Users className="h-6 w-6" strokeWidth={2} />
-        </span>
-      </div>
-
-      <div className={`flex min-h-[120px] items-center justify-between gap-4 px-5 py-4 ${shellCardClass}`}>
-        <div>
-          <p className={`text-sm font-semibold ${shellBodyTextClass}`}>{t('students.activeNow')}</p>
-          <p className={`mt-3 text-[32px] leading-none text-[var(--shell-accent)] ${shellPageTitleClass}`}>
-            {activeValue}
-          </p>
-          <p className={`mt-2 text-xs ${shellBodyTextClass}`}>{t('students.activeDescription')}</p>
-        </div>
-        <span className="flex h-12 w-12 items-center justify-center rounded-full bg-[var(--shell-input-bg)] text-[var(--shell-text-muted)]">
-          <UserCheck className="h-6 w-6" strokeWidth={2} />
-        </span>
-      </div>
+      <SummaryCard
+        label={t('students.total')}
+        value={totalValue}
+        icon={Users}
+        iconBg="bg-[var(--shell-accent-bg)] text-[var(--shell-accent)]"
+        accentClassName="bg-[var(--shell-accent)]"
+      />
+      <SummaryCard
+        label={t('students.activeNow')}
+        value={activeValue}
+        description={t('students.activeDescription')}
+        icon={UserCheck}
+        iconBg="bg-[var(--shell-info-bg)] text-[var(--shell-info-text)]"
+        accentClassName="bg-[var(--shell-info-text)]"
+      />
     </div>
   )
 }

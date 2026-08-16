@@ -190,9 +190,7 @@ function QuestionBanksPage() {
 
       {!loading && isOwnedStyleTab ? (
         <div className={questionBanksGridClassName}>
-          {activeTab === QUESTION_BANK_TABS.MY ? (
-            <QuestionBankCreateCard onClick={() => setCreateOpen(true)} />
-          ) : null}
+          <QuestionBankCreateCard onClick={() => setCreateOpen(true)} />
           {filteredBanks.map((bank) => (
             <QuestionBankCard
               key={bank.id}
@@ -231,7 +229,7 @@ function QuestionBanksPage() {
 
       {!loading &&
       filteredBanks.length === 0 &&
-      !(activeTab === QUESTION_BANK_TABS.MY && !hasSearch) &&
+      !(isOwnedStyleTab && !hasSearch) &&
       !(activeTab === QUESTION_BANK_TABS.COMMUNITY && !hasSearch) ? (
         <QuestionBanksEmptyState
           searching={hasSearch}

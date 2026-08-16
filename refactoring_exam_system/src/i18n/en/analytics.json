@@ -6,6 +6,7 @@
   "search": "Search",
   "empty": "No data for the selected range",
   "filters": {
+    "apply": "Apply filters",
     "subject": "Subject",
     "allSubjects": "All",
     "teacher": "Teacher",

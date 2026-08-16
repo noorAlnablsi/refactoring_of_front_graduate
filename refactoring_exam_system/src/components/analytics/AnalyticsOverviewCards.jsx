@@ -19,10 +19,14 @@ function ChangeBadge({ value }) {
   if (!label) return null
   const num = Number(value)
   const tone =
-    num > 0 ? 'text-emerald-600 bg-emerald-50' : num < 0 ? 'text-rose-600 bg-rose-50' : 'text-[var(--shell-text-muted)] bg-[var(--shell-hover)]'
+    num > 0
+      ? 'text-[var(--shell-accent)] bg-[var(--shell-accent-bg)]'
+      : num < 0
+        ? 'text-[var(--shell-danger-text)] bg-[var(--shell-danger-bg)]'
+        : 'text-[var(--shell-text-muted)] bg-[var(--shell-hover)]'
 
   return (
-    <span className={`mt-2 inline-flex rounded-full px-2 py-0.5 text-[11px] font-bold ${tone}`}>
+    <span className={`mt-3 inline-flex rounded-lg px-2.5 py-1 text-xs font-bold ${tone}`}>
       {label}
     </span>
   )
@@ -30,18 +34,22 @@ function ChangeBadge({ value }) {
 
 function OverviewCard({ icon: Icon, title, value, change, loading }) {
   return (
-    <article className={`flex h-full min-h-[128px] min-w-0 flex-col p-5 ${shellCardClass}`}>
+    <article className={`flex h-full min-h-[138px] min-w-0 flex-col p-5 ${shellCardClass}`}>
       <div className="flex items-start justify-between gap-3">
-        <p className={`min-w-0 text-xs font-semibold leading-snug ${shellBodyTextClass}`}>{title}</p>
-        <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-[var(--shell-accent-bg)] text-[var(--shell-accent)]">
-          <Icon className="h-5 w-5" strokeWidth={2} />
+        <p className={`min-w-0 pt-0.5 text-sm font-semibold leading-snug ${shellBodyTextClass}`}>
+          {title}
+        </p>
+        <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-[var(--shell-accent-bg)] text-[var(--shell-accent)]">
+          <Icon className="h-5 w-5" strokeWidth={2.1} />
         </span>
       </div>
       {loading ? (
-        <div className="shell-skeleton mt-auto h-8 w-20 animate-pulse rounded-lg" />
+        <div className="shell-skeleton mt-auto h-9 w-20 animate-pulse rounded-lg" />
       ) : (
-        <div className="mt-auto pt-3">
-          <p className="text-2xl font-extrabold leading-none text-[var(--shell-text)]">{value}</p>
+        <div className="mt-auto pt-4">
+          <p className="text-[28px] font-extrabold leading-none tracking-tight text-[var(--shell-text)]">
+            {value}
+          </p>
           <ChangeBadge value={change} />
         </div>
       )}
@@ -98,7 +106,7 @@ function AnalyticsOverviewCards({ overview, loading }) {
   ]
 
   return (
-    <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+    <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
       {cards.map((card) => (
         <OverviewCard
           key={card.key}
