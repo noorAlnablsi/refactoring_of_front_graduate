@@ -1,11 +1,15 @@
 import { useCallback, useEffect, useMemo, useState } from 'react'
 import { useNavigate, useParams, useSearchParams } from 'react-router-dom'
 import { ROUTES } from '../../constants/routes'
-import { TEST_STATUS, TEST_WIZARD_STEPS } from '../../constants/tests'
+import { TEST_KIND, TEST_STATUS, TEST_WIZARD_STEPS } from '../../constants/tests'
 import { saveExamWizardProgress } from '../../lib/examWizardProgress'
 import { canEditTest, getEditBlockedMessage } from '../../lib/testDisplay'
 import { getTestId, getTestName, mergeTestPreservingQuestions } from '../../lib/testModel'
-import { buildUpdateTestInfoPayloadFromStep1 } from '../../lib/testPayload'
+import {
+  buildUpdateSurveyInfoPayloadFromStep1,
+  buildUpdateTestInfoPayloadFromStep1,
+} from '../../lib/testPayload'
+import { isSurveyTest, getSurveyAudienceScope, getSurveyWizardEditPath } from '../../lib/surveys'
 import { normalizeSettingsConfig } from '../../lib/testSettings'
 import {
   createTest,
@@ -30,7 +34,7 @@ async function persistNewTest(payload) {
   return data.test || data
 }
 
-export function useExamWizard({ isNew = false } = {}) {
+export function useExamWizard({ isNew = false, kind = TEST_KIND.EXAM } = {}) {
   const { id } = useParams()
   const navigate = useNavigate()
   const [searchParams, setSearchParams] = useSearchParams()
@@ -46,6 +50,14 @@ export function useExamWizard({ isNew = false } = {}) {
   const [blueprintActive, setBlueprintActive] = useState(false)
   const [settingsPreview, setSettingsPreview] = useState(null)
 
+  const isSurvey = isNew ? kind === TEST_KIND.SURVEY : isSurveyTest(test) || kind === TEST_KIND.SURVEY
+  const toastNs = isSurvey ? 'surveys' : 'exams'
+  const listRoute = isSurvey ? ROUTES.SURVEYS : ROUTES.EXAMS
+  const editPathFor = useCallback(
+    (testId) => (isSurvey ? getSurveyWizardEditPath(testId) : ROUTES.EXAM_EDIT.replace(':id', testId)),
+    [isSurvey],
+  )
+
   const goToStep = useCallback(
     (step) => {
       if (currentStep === TEST_WIZARD_STEPS.SETTINGS && step !== TEST_WIZARD_STEPS.SETTINGS) {
@@ -60,9 +72,9 @@ export function useExamWizard({ isNew = false } = {}) {
     [setSearchParams, test, currentStep],
   )
 
-  const exitToExams = useCallback(() => {
-    navigate(ROUTES.EXAMS)
-  }, [navigate])
+  const exitToList = useCallback(() => {
+    navigate(listRoute)
+  }, [navigate, listRoute])
 
   const handleSaveWizardDraftProgress = useCallback(
     async (step, extra = {}) => {
@@ -72,13 +84,13 @@ export function useExamWizard({ isNew = false } = {}) {
       setSavingDraft(true)
       try {
         saveExamWizardProgress(testId, { step, questions: null, ...extra })
-        showAppToast('toast.draftSaved', 'success', { ns: 'exams' })
-        navigate(ROUTES.EXAMS)
+        showAppToast('toast.draftSaved', 'success', { ns: toastNs })
+        navigate(listRoute)
       } finally {
         setSavingDraft(false)
       }
     },
-    [navigate, showToast, test],
+    [navigate, showToast, test, listRoute, toastNs],
   )
 
   const handleSaveSettingsDraft = useCallback(
@@ -91,15 +103,15 @@ export function useExamWizard({ isNew = false } = {}) {
         const data = await updateTest(testId, payload)
         setTest((prev) => mergeTestPreservingQuestions(prev, data.test || data))
         saveExamWizardProgress(testId, { step: TEST_WIZARD_STEPS.SETTINGS, questions: null })
-        showAppToast('toast.draftSaved', 'success', { ns: 'exams' })
-        navigate(ROUTES.EXAMS)
+        showAppToast('toast.draftSaved', 'success', { ns: toastNs })
+        navigate(listRoute)
       } catch (err) {
         showToast(err.message, 'error')
       } finally {
         setSavingDraft(false)
       }
     },
-    [navigate, showToast, test],
+    [navigate, showToast, test, listRoute, toastNs],
   )
 
   const handleSaveQuestionsDraftProgress = useCallback(
@@ -113,13 +125,13 @@ export function useExamWizard({ isNew = false } = {}) {
           step: currentStep,
           ...progressSlice,
         })
-        showAppToast('toast.draftSaved', 'success', { ns: 'exams' })
-        navigate(ROUTES.EXAMS)
+        showAppToast('toast.draftSaved', 'success', { ns: toastNs })
+        navigate(listRoute)
       } finally {
         setSavingDraft(false)
       }
     },
-    [currentStep, navigate, showToast, test],
+    [currentStep, navigate, showToast, test, listRoute, toastNs],
   )
 
   const loadTest = useCallback(
@@ -138,13 +150,13 @@ export function useExamWizard({ isNew = false } = {}) {
         return fetched
       } catch (err) {
         showToast(err.message, 'error')
-        navigate(ROUTES.EXAMS, { replace: true })
+        navigate(listRoute, { replace: true })
         return null
       } finally {
         if (!silent) setLoading(false)
       }
     },
-    [id, navigate, showToast],
+    [id, navigate, showToast, listRoute],
   )
 
   useEffect(() => {
@@ -158,15 +170,15 @@ export function useExamWizard({ isNew = false } = {}) {
       setSubmitting(true)
       try {
         const created = await persistNewTest(payload)
-        showAppToast('toast.created', 'success', { ns: 'exams' })
-        navigate(ROUTES.EXAM_EDIT.replace(':id', getTestId(created)) + '?step=2', { replace: true })
+        showAppToast('toast.created', 'success', { ns: toastNs })
+        navigate(editPathFor(getTestId(created)) + '?step=2', { replace: true })
       } catch (err) {
         showToast(err.message, 'error')
       } finally {
         setSubmitting(false)
       }
     },
-    [navigate, showToast],
+    [editPathFor, navigate, showToast, toastNs],
   )
 
   const handleSaveDraft = useCallback(
@@ -176,28 +188,30 @@ export function useExamWizard({ isNew = false } = {}) {
         if (isNew) {
           const created = await persistNewTest(payload)
           saveExamWizardProgress(getTestId(created), { step: TEST_WIZARD_STEPS.INFO })
-          showAppToast('toast.draftSaved', 'success', { ns: 'exams' })
-          navigate(ROUTES.EXAM_EDIT.replace(':id', getTestId(created)), { replace: true })
+          showAppToast('toast.draftSaved', 'success', { ns: toastNs })
+          navigate(editPathFor(getTestId(created)), { replace: true })
           return
         }
         const testId = getTestId(test)
         if (!testId) return
         const data = await updateTest(
           testId,
-          buildUpdateTestInfoPayloadFromStep1(payload, {
-            autoDistribute: Boolean(test?.auto_distribute_scores),
-          }),
+          isSurvey
+            ? buildUpdateSurveyInfoPayloadFromStep1(payload)
+            : buildUpdateTestInfoPayloadFromStep1(payload, {
+                autoDistribute: Boolean(test?.auto_distribute_scores),
+              }),
         )
         setTest((prev) => mergeTestPreservingQuestions(prev, data.test || data))
         saveExamWizardProgress(testId, { step: currentStep })
-        showAppToast('toast.draftSaved', 'success', { ns: 'exams' })
+        showAppToast('toast.draftSaved', 'success', { ns: toastNs })
       } catch (err) {
         showToast(err.message, 'error')
       } finally {
         setSavingDraft(false)
       }
     },
-    [currentStep, isNew, navigate, showToast, test],
+    [currentStep, editPathFor, isNew, isSurvey, navigate, showToast, test, toastNs],
   )
 
   const handleUpdateInfo = useCallback(
@@ -208,12 +222,14 @@ export function useExamWizard({ isNew = false } = {}) {
       try {
         const data = await updateTest(
           testId,
-          buildUpdateTestInfoPayloadFromStep1(payload, {
-            autoDistribute: Boolean(test?.auto_distribute_scores),
-          }),
+          isSurvey
+            ? buildUpdateSurveyInfoPayloadFromStep1(payload)
+            : buildUpdateTestInfoPayloadFromStep1(payload, {
+                autoDistribute: Boolean(test?.auto_distribute_scores),
+              }),
         )
         setTest((prev) => mergeTestPreservingQuestions(prev, data.test || data))
-        showAppToast('toast.infoSaved', 'success', { ns: 'exams' })
+        showAppToast('toast.infoSaved', 'success', { ns: toastNs })
         goToStep(TEST_WIZARD_STEPS.QUESTIONS)
       } catch (err) {
         showToast(err.message, 'error')
@@ -221,7 +237,7 @@ export function useExamWizard({ isNew = false } = {}) {
         setSubmitting(false)
       }
     },
-    [goToStep, showToast, test],
+    [goToStep, isSurvey, showToast, test, toastNs],
   )
 
   const handleUpdateSettings = useCallback(
@@ -233,7 +249,7 @@ export function useExamWizard({ isNew = false } = {}) {
         const data = await updateTest(testId, payload)
         setTest((prev) => mergeTestPreservingQuestions(prev, data.test || data))
         saveExamWizardProgress(testId, { step: TEST_WIZARD_STEPS.REVIEW, questions: null })
-        showAppToast('toast.settingsSaved', 'success', { ns: 'exams' })
+        showAppToast('toast.settingsSaved', 'success', { ns: toastNs })
         goToStep(TEST_WIZARD_STEPS.REVIEW)
       } catch (err) {
         showToast(err.message, 'error')
@@ -241,7 +257,7 @@ export function useExamWizard({ isNew = false } = {}) {
         setSubmitting(false)
       }
     },
-    [goToStep, showToast, test],
+    [goToStep, showToast, test, toastNs],
   )
 
   const handlePublishNow = useCallback(async () => {
@@ -250,14 +266,14 @@ export function useExamWizard({ isNew = false } = {}) {
     setPublishing(true)
     try {
       await publishTestNow(testId)
-      showAppToast('toast.published', 'success', { ns: 'exams' })
-      navigate(ROUTES.EXAMS)
+      showAppToast('toast.published', 'success', { ns: toastNs })
+      navigate(listRoute)
     } catch (err) {
       showToast(err.message, 'error')
     } finally {
       setPublishing(false)
     }
-  }, [navigate, showToast, test])
+  }, [listRoute, navigate, showToast, test, toastNs])
 
   const handleSchedule = useCallback(
     async (payload) => {
@@ -266,15 +282,15 @@ export function useExamWizard({ isNew = false } = {}) {
       setPublishing(true)
       try {
         await scheduleTestPublication(testId, payload)
-        showAppToast('toast.scheduled', 'success', { ns: 'exams' })
-        navigate(ROUTES.EXAMS)
+        showAppToast('toast.scheduled', 'success', { ns: toastNs })
+        navigate(listRoute)
       } catch (err) {
         showToast(err.message, 'error')
       } finally {
         setPublishing(false)
       }
     },
-    [navigate, showToast, test],
+    [listRoute, navigate, showToast, test, toastNs],
   )
 
   const handleQuestionsNext = useCallback(async () => {
@@ -292,6 +308,7 @@ export function useExamWizard({ isNew = false } = {}) {
       total_score: test.total_score ?? 100,
       passing_score: test.passing_score ?? 60,
       auto_distribute_scores: Boolean(test.auto_distribute_scores),
+      audience_scope: getSurveyAudienceScope(test),
     }
   }, [test])
 
@@ -323,7 +340,8 @@ export function useExamWizard({ isNew = false } = {}) {
     initialInfo,
     settingsSidebarConfig,
     goToStep,
-    exitToExams,
+    exitToExams: exitToList,
+    isSurvey,
     loadTest,
     handleCreate,
     handleSaveDraft,

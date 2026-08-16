@@ -64,6 +64,7 @@
     "questionSavedLocally": "Question saved locally",
     "published": "Question bank published successfully",
     "questionUpdated": "Question updated successfully",
+    "questionDeleted": "Question deleted successfully",
     "minOneQuestion": "Add at least one question before publishing"
   },
   "validation": {
@@ -142,6 +143,11 @@
     "noSessionQuestions": "No questions saved in this session",
     "copyAll": "Copy all",
     "editQuestionAria": "Edit question {{number}}",
+    "deleteQuestionAria": "Delete question {{number}}",
+    "deleteQuestionTitle": "Delete question",
+    "deleteQuestionMessage": "Are you sure you want to delete this question? This action is not easily undone.",
+    "deleteQuestionItemLabel": "Question",
+    "deletingQuestion": "Deleting...",
     "copyQuestionAria": "Copy question {{number}}",
     "essayNoChoices": "Essay question with no choices.",
     "questionNumber": "Question {{number}}",

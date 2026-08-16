@@ -19,6 +19,7 @@ import arQuestionBanks from './ar/questionBanks.json'
 import arSettings from './ar/settings.json'
 import arStudent from './ar/student.json'
 import arSubjects from './ar/subjects.json'
+import arSurveys from './ar/surveys.json'
 import enAnalytics from './en/analytics.json'
 import enAuth from './en/auth.json'
 import enBackendMessages from './en/backendMessages.json'
@@ -35,6 +36,7 @@ import enQuestionBanks from './en/questionBanks.json'
 import enSettings from './en/settings.json'
 import enStudent from './en/student.json'
 import enSubjects from './en/subjects.json'
+import enSurveys from './en/surveys.json'
 
 const localizeDigitsPostProcessor = {
   name: 'localizeDigits',
@@ -65,6 +67,7 @@ const resources = {
     settings: arSettings,
     student: arStudent,
     subjects: arSubjects,
+    surveys: arSurveys,
   },
   en: {
     analytics: enAnalytics,
@@ -83,6 +86,7 @@ const resources = {
     settings: enSettings,
     student: enStudent,
     subjects: enSubjects,
+    surveys: enSurveys,
   },
 }
 
@@ -109,6 +113,7 @@ i18n
       'exams',
       'settings',
       'student',
+      'surveys',
       'invites',
       'landing',
     ],

@@ -1,6 +1,7 @@
-import { TEST_AVAILABILITY_TIME_MODE } from '../constants/tests'
+import { SURVEY_AUDIENCE_SCOPE, TEST_AVAILABILITY_TIME_MODE } from '../constants/tests'
 import { tUI } from './appToast'
 import { toNaiveLocalDateTime } from './examPublishTime'
+import { getSurveyAudienceScope } from './surveys'
 
 export function getDefaultSeverityPolicy() {
   return {
@@ -241,9 +242,12 @@ export function fromDatetimeLocalValue(localValue) {
 }
 
 function resolveAvailabilityTimeMode(test) {
-  const mode = test?.availability_time_mode || test?.availability_mode
+  const mode = String(test?.availability_time_mode || test?.availability_mode || '').toUpperCase()
   if (mode === TEST_AVAILABILITY_TIME_MODE.SCHEDULED) {
     return TEST_AVAILABILITY_TIME_MODE.SCHEDULED
+  }
+  if (mode === TEST_AVAILABILITY_TIME_MODE.SURVEY) {
+    return TEST_AVAILABILITY_TIME_MODE.SURVEY
   }
   return TEST_AVAILABILITY_TIME_MODE.FLEXIBLE
 }
@@ -259,12 +263,16 @@ export function buildTestSettingsFormState(test) {
     duration_minutes: durationMinutes,
     max_attempts: cfg.max_attempts ?? 1,
     availability_time_mode: mode,
+    audience_scope: getSurveyAudienceScope(test),
     starts_at: mode === TEST_AVAILABILITY_TIME_MODE.SCHEDULED ? test?.starts_at || null : null,
     entry_window_minutes:
       mode === TEST_AVAILABILITY_TIME_MODE.SCHEDULED
         ? clampEntryWindowMinutes(test?.entry_window_minutes ?? maxEntry, durationMinutes)
         : null,
-    closed_at: mode === TEST_AVAILABILITY_TIME_MODE.FLEXIBLE ? test?.closed_at || null : null,
+    closed_at:
+      mode === TEST_AVAILABILITY_TIME_MODE.FLEXIBLE || mode === TEST_AVAILABILITY_TIME_MODE.SURVEY
+        ? test?.closed_at || null
+        : null,
     settings_config: cfg,
   }
 }
@@ -300,4 +308,38 @@ export function buildTestSettingsPayload(form) {
   }
 
   return payload
+}
+
+/** PATCH survey settings. Never send duration, scores, or enabled proctoring. */
+export function buildSurveySettingsPayload(form) {
+  const flat = syncAiProctoringFlag({
+    ...form.settings_config,
+    max_attempts: Number(form.max_attempts) || 1,
+    ai_proctoring_enabled: false,
+    face_tracking_enabled: false,
+    ambient_sound_monitoring: false,
+    browser_window_tracking: false,
+    prevent_copy_paste: false,
+    fullscreen_required: false,
+  })
+
+  const settingsConfig = serializeSettingsConfig(flat)
+  settingsConfig.proctoring = {
+    ...settingsConfig.proctoring,
+    enabled: false,
+    face_tracking_enabled: false,
+    ambient_sound_monitoring: false,
+    browser_window_tracking: false,
+    prevent_copy_paste: false,
+    fullscreen_required: false,
+  }
+
+  return {
+    availability_time_mode: TEST_AVAILABILITY_TIME_MODE.SURVEY,
+    audience_scope: form.audience_scope || SURVEY_AUDIENCE_SCOPE.WORKSPACE,
+    closed_at: form.closed_at || null,
+    starts_at: null,
+    entry_window_minutes: null,
+    settings_config: settingsConfig,
+  }
 }

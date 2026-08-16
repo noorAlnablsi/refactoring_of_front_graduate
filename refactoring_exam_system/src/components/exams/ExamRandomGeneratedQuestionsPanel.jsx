@@ -18,6 +18,7 @@ function GeneratedQuestionCard({
   index,
   testId,
   allowPointsEdit = false,
+  hideGrading = false,
   onRemoved,
   onUpdated,
   t,
@@ -84,12 +85,14 @@ function GeneratedQuestionCard({
           <span className={`rounded-full px-3 py-1 text-xs font-bold ${getDifficultyBadgeClass(difficulty)}`}>
             {t('wizard.questions.review.difficulty')} {t(`difficulty.${difficulty}`, { defaultValue: difficulty })}
           </span>
-          <span className="rounded-full bg-[#E8F7F6] px-3 py-1 text-xs font-bold text-[#2AA8A2]">
-            {formatLocaleNumber(points)}{' '}
-            {Number(points) === 1
-              ? t('wizard.questions.review.points')
-              : t('wizard.questions.review.pointsPlural')}
-          </span>
+          {hideGrading ? null : (
+            <span className="rounded-full bg-[#E8F7F6] px-3 py-1 text-xs font-bold text-[#2AA8A2]">
+              {formatLocaleNumber(points)}{' '}
+              {Number(points) === 1
+                ? t('wizard.questions.review.points')
+                : t('wizard.questions.review.pointsPlural')}
+            </span>
+          )}
         </div>
 
         {testId && questionId ? (
@@ -121,7 +124,7 @@ function GeneratedQuestionCard({
               <li
                 key={choice.id || `${index}-${choiceIndex}`}
                 className={`flex items-center justify-between gap-3 rounded-xl px-4 py-3 text-sm font-semibold ${
-                  isCorrect
+                  isCorrect && !hideGrading
                     ? 'bg-[#E8F7F6] text-[#2AA8A2] ring-1 ring-[#CFECE9]'
                     : 'bg-[#F6F8F9] text-[#64748B]'
                 }`}
@@ -132,7 +135,7 @@ function GeneratedQuestionCard({
                   ) : null}
                   <span className="min-w-0 break-words" dangerouslySetInnerHTML={{ __html: choice.body || choice.text || '' }} />
                 </span>
-                {isCorrect ? <Check className="h-4 w-4 shrink-0" strokeWidth={2.5} /> : null}
+                {isCorrect && !hideGrading ? <Check className="h-4 w-4 shrink-0" strokeWidth={2.5} /> : null}
               </li>
             )
           })}
@@ -187,6 +190,7 @@ function ExamRandomGeneratedQuestionsPanel({
   questions: initialQuestions,
   testId,
   allowPointsEdit = false,
+  hideGrading = false,
   onBack,
   onSaveDraft,
   onContinue,
@@ -261,7 +265,8 @@ function ExamRandomGeneratedQuestionsPanel({
               question={question}
               index={index}
               testId={testId}
-              allowPointsEdit={allowPointsEdit}
+              allowPointsEdit={allowPointsEdit && !hideGrading}
+              hideGrading={hideGrading}
               onRemoved={handleRemoved}
               onUpdated={handleUpdated}
               t={t}

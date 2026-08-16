@@ -6,21 +6,32 @@ function normalizeTestsResponse(data) {
   return data?.tests || data?.items || []
 }
 
-/** Paginate GET /workspaces/tests (institution owner list). */
-export async function fetchInstitutionWorkspaceTests() {
+async function fetchAllTestPages(fetchPage) {
   const perPage = 50
   let page = 1
   let pages = 1
   const tests = []
 
   do {
-    const data = await getWorkspaceTests({ page, per_page: perPage })
+    const data = await fetchPage({ page, per_page: perPage })
     tests.push(...normalizeTestsResponse(data))
-    pages = Number(data.pages) || 1
+    pages = Math.max(Number(data.pages) || 1, 1)
+    if (!data.pages && normalizeTestsResponse(data).length < perPage) break
     page += 1
   } while (page <= pages)
 
   return tests
+}
+
+/** Paginate GET /workspaces/tests (institution owner list). */
+export async function fetchInstitutionWorkspaceTests({ search } = {}) {
+  const trimmed = typeof search === 'string' ? search.trim() : ''
+  return fetchAllTestPages((pageParams) =>
+    getWorkspaceTests({
+      ...pageParams,
+      ...(trimmed ? { search: trimmed } : {}),
+    }),
+  )
 }
 
 /**
@@ -28,13 +39,19 @@ export async function fetchInstitutionWorkspaceTests() {
  * INSTITUTION → GET /workspaces/tests
  * SOLO → GET /tests/my
  */
-export async function fetchTestsForActiveWorkspace() {
+export async function fetchTestsForActiveWorkspace({ search } = {}) {
+  const trimmed = typeof search === 'string' ? search.trim() : ''
+
   if (isInstitutionWorkspace()) {
-    return fetchInstitutionWorkspaceTests()
+    return fetchInstitutionWorkspaceTests({ search: trimmed })
   }
 
-  const data = await getMyTests()
-  return normalizeTestsResponse(data)
+  return fetchAllTestPages((pageParams) =>
+    getMyTests({
+      ...pageParams,
+      ...(trimmed ? { search: trimmed } : {}),
+    }),
+  )
 }
 
 export function filterTestsBySubjectId(tests = [], subjectId) {

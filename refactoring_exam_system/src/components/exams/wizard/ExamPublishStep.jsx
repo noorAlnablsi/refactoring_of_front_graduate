@@ -16,12 +16,20 @@ import { getExamShareLink } from '../../../lib/testDisplay'
 import { getTestId } from '../../../lib/testModel'
 import { normalizeStudentGroup } from '../../../lib/studentGroupsModel'
 import { getStudentMembershipId } from '../../../lib/workspaceStudents'
+import { getTeacherMembershipId } from '../../../lib/workspaceTeachers'
+import {
+  getSurveyAudienceScope,
+  getSurveyShareLink,
+  isActiveWorkspaceMember,
+} from '../../../lib/surveys'
+import { SURVEY_AUDIENCE_SCOPE } from '../../../constants/tests'
 import {
   assignStudentsToTest,
   getAssignedStudents,
 } from '../../../services/tests.service'
 import { getSubjectStudents } from '../../../services/subjects.service'
 import { getSubjectGroups } from '../../../services/studentGroups.service'
+import { getWorkspaceStudents, getWorkspaceTeachers } from '../../../services/workspaces.service'
 import { showAppToast } from '../../../lib/appToast'
 import { useToastStore } from '../../../store/toastStore'
 
@@ -80,6 +88,7 @@ function GroupCard({ group, checked, onToggle, studentsLabel }) {
 
 function ExamPublishStep({
   test,
+  isSurvey = false,
   onPublishNow,
   onSchedule,
   publishing,
@@ -87,10 +96,13 @@ function ExamPublishStep({
   onBack,
   onSaveDraft,
 }) {
-  const { t } = useTranslation(['exams', 'common'])
+  const { t } = useTranslation(['exams', 'surveys', 'common'])
   const showToast = useToastStore((s) => s.showToast)
   const testId = getTestId(test)
   const subjectId = test?.subject_id
+  const audience = getSurveyAudienceScope(test)
+  const showAssign = !isSurvey || audience === SURVEY_AUDIENCE_SCOPE.TARGETED
+  const showGroups = showAssign && Boolean(subjectId)
   const [publishDate, setPublishDate] = useState('')
   const [publishTime, setPublishTime] = useState('')
   const [recipientTab, setRecipientTab] = useState(RECIPIENT_TABS.GROUPS)
@@ -100,13 +112,22 @@ function ExamPublishStep({
   const [selectedStudentIds, setSelectedStudentIds] = useState([])
   const [selectedGroupIds, setSelectedGroupIds] = useState([])
   const [loadingRecipients, setLoadingRecipients] = useState(true)
+  const activeRecipientTab = showGroups ? recipientTab : RECIPIENT_TABS.INDIVIDUALS
 
-  const shareLink = useMemo(() => getExamShareLink(test), [test])
+  const shareLink = useMemo(
+    () => (isSurvey ? getSurveyShareLink(test) : getExamShareLink(test)),
+    [isSurvey, test],
+  )
 
   useEffect(() => {
     let cancelled = false
 
     async function load() {
+      if (!showAssign) {
+        setLoadingRecipients(false)
+        return
+      }
+
       if (!subjectId && !testId) {
         setLoadingRecipients(false)
         return
@@ -114,6 +135,47 @@ function ExamPublishStep({
 
       setLoadingRecipients(true)
       try {
+        if (isSurvey && !subjectId) {
+          const [studentsRes, teachersRes, assignedRes] = await Promise.all([
+            getWorkspaceStudents().catch(() => ({ students: [] })),
+            getWorkspaceTeachers().catch(() => ({ teachers: [] })),
+            testId ? getAssignedStudents(testId).catch(() => ({ students: [] })) : Promise.resolve({ students: [] }),
+          ])
+
+          if (cancelled) return
+
+          const members = [
+            ...(studentsRes.students || []).map((student) => ({
+              ...student,
+              membership_id: getStudentMembershipId(student) ?? student.membership_id,
+            })),
+            ...(teachersRes.teachers || []).map((teacher) => ({
+              full_name: teacher.full_name,
+              email: teacher.email,
+              membership_id: getTeacherMembershipId(teacher) ?? teacher.membership_id,
+            })),
+          ].filter((member) => member.membership_id && isActiveWorkspaceMember(member))
+
+          const unique = []
+          const seen = new Set()
+          members.forEach((member) => {
+            const id = Number(member.membership_id)
+            if (!id || seen.has(id)) return
+            seen.add(id)
+            unique.push({ ...member, membership_id: id })
+          })
+
+          setStudents(unique)
+          setGroups([])
+          setRecipientTab(RECIPIENT_TABS.INDIVIDUALS)
+
+          const assignedIds = (assignedRes.students || [])
+            .map((student) => Number(student.membership_id))
+            .filter(Boolean)
+          setSelectedStudentIds(assignedIds)
+          return
+        }
+
         const [subjectStudentsRes, assignedRes, groupsRes] = await Promise.all([
           subjectId
             ? getSubjectStudents(subjectId)
@@ -156,7 +218,7 @@ function ExamPublishStep({
     return () => {
       cancelled = true
     }
-  }, [subjectId, testId, showToast])
+  }, [isSurvey, showAssign, subjectId, testId, showToast])
 
   const filteredStudents = useMemo(() => {
     const query = searchQuery.trim().toLowerCase()
@@ -188,7 +250,11 @@ function ExamPublishStep({
   const handleCopyLink = async () => {
     try {
       await navigator.clipboard.writeText(shareLink)
-      showAppToast('wizard.publish.linkCopied', 'success', { ns: 'exams' })
+      showAppToast(
+        isSurvey ? 'toast.linkCopied' : 'wizard.publish.linkCopied',
+        'success',
+        { ns: isSurvey ? 'surveys' : 'exams' },
+      )
     } catch {
       showAppToast('wizard.publish.linkCopyFailed', 'error', { ns: 'exams' })
     }
@@ -221,6 +287,18 @@ function ExamPublishStep({
     event.preventDefault()
 
     try {
+      if (isSurvey) {
+        if (audience === SURVEY_AUDIENCE_SCOPE.TARGETED) {
+          if (selectedStudentIds.length === 0 && selectedGroupIds.length === 0) {
+            showAppToast('toast.targetedRequired', 'error', { ns: 'surveys' })
+            return
+          }
+          await syncAssignments()
+        }
+        onPublishNow?.()
+        return
+      }
+
       await syncAssignments()
 
       if (!publishDate && !publishTime) {
@@ -254,15 +332,18 @@ function ExamPublishStep({
   return (
     <form onSubmit={handleSubmit} className="space-y-6">
       <header className="text-right">
-        <p className="text-sm font-bold text-[#2AA8A2]">{t('wizard.publish.eyebrow', { ns: 'exams' })}</p>
+        <p className="text-sm font-bold text-[#2AA8A2]">
+          {isSurvey ? t('wizard.publish.eyebrow', { ns: 'surveys' }) : t('wizard.publish.eyebrow', { ns: 'exams' })}
+        </p>
         <h2 className="mt-2 text-[28px] font-extrabold leading-tight text-[#2A3433] md:text-[32px]">
-          {t('wizard.publish.title', { ns: 'exams' })}
+          {isSurvey ? t('wizard.publish.title', { ns: 'surveys' }) : t('wizard.publish.title', { ns: 'exams' })}
         </h2>
         <p className="mt-3 max-w-3xl text-sm leading-8 text-[#64748B]">
-          {t('wizard.publish.subtitle', { ns: 'exams' })}
+          {isSurvey ? t('wizard.publish.subtitle', { ns: 'surveys' }) : t('wizard.publish.subtitle', { ns: 'exams' })}
         </p>
       </header>
 
+      {!isSurvey ? (
       <WizardSection icon={CalendarClock} title={t('wizard.publish.scheduleTitle', { ns: 'exams' })}>
         <p className="text-sm leading-7 text-[#64748B]">
           {t('wizard.publish.scheduleHint', { ns: 'exams' })}
@@ -295,8 +376,12 @@ function ExamPublishStep({
 
         <p className="mt-3 text-xs text-[#94A3B8]">{t('wizard.publish.immediateHint', { ns: 'exams' })}</p>
       </WizardSection>
+      ) : null}
 
-      <WizardSection icon={Link2} title={t('wizard.publish.shareTitle', { ns: 'exams' })}>
+      <WizardSection
+        icon={Link2}
+        title={isSurvey ? t('wizard.publish.shareTitle', { ns: 'surveys' }) : t('wizard.publish.shareTitle', { ns: 'exams' })}
+      >
         <label className="mb-2 block text-xs font-semibold text-[#94A3B8]">
           {t('wizard.publish.directLink', { ns: 'exams' })}
         </label>
@@ -316,9 +401,24 @@ function ExamPublishStep({
             {t('wizard.publish.copy', { ns: 'exams' })}
           </button>
         </div>
+        {isSurvey ? (
+          <p className="mt-3 text-xs leading-6 text-[#94A3B8]">
+            {t('wizard.publish.shareHint', { ns: 'surveys' })}
+          </p>
+        ) : null}
       </WizardSection>
 
-      <WizardSection icon={Users} title={t('wizard.publish.recipientsTitle', { ns: 'exams' })}>
+      {showAssign ? (
+      <WizardSection
+        icon={Users}
+        title={isSurvey ? t('wizard.publish.assignTitle', { ns: 'surveys' }) : t('wizard.publish.recipientsTitle', { ns: 'exams' })}
+      >
+        {isSurvey ? (
+          <p className="mb-4 text-sm leading-7 text-[#64748B]">
+            {t('wizard.publish.assignHint', { ns: 'surveys' })}
+          </p>
+        ) : null}
+        {showGroups ? (
         <div className="mb-4 flex gap-2 rounded-xl bg-[#F6F8F9] p-1">
           <button
             type="button"
@@ -349,6 +449,7 @@ function ExamPublishStep({
             {t('wizard.publish.tabIndividuals', { ns: 'exams' })}
           </button>
         </div>
+        ) : null}
 
         <div className="relative mb-4">
           <Search className="pointer-events-none absolute right-4 top-1/2 h-4 w-4 -translate-y-1/2 text-[#94A3B8]" />
@@ -357,7 +458,7 @@ function ExamPublishStep({
             value={searchQuery}
             onChange={(event) => setSearchQuery(event.target.value)}
             placeholder={
-              recipientTab === RECIPIENT_TABS.GROUPS
+              activeRecipientTab === RECIPIENT_TABS.GROUPS
                 ? t('wizard.publish.searchGroupPlaceholder', { ns: 'exams' })
                 : t('wizard.publish.searchStudentPlaceholder', { ns: 'exams' })
             }
@@ -367,7 +468,7 @@ function ExamPublishStep({
 
         {loadingRecipients ? (
           <p className="text-sm text-[#64748B]">{t('wizard.publish.loadingRecipients', { ns: 'exams' })}</p>
-        ) : recipientTab === RECIPIENT_TABS.GROUPS ? (
+        ) : activeRecipientTab === RECIPIENT_TABS.GROUPS ? (
           filteredGroups.length === 0 ? (
             <p className="text-sm text-[#64748B]">{t('wizard.publish.noGroups', { ns: 'exams' })}</p>
           ) : (
@@ -413,8 +514,13 @@ function ExamPublishStep({
         <p className="mt-4 text-sm font-bold text-[#2A3433]">
           {t('wizard.publish.totalRecipients', { ns: 'exams', count: estimatedRecipients })}
         </p>
-        <p className="mt-1 text-xs text-[#94A3B8]">{t('wizard.publish.recipientsHint', { ns: 'exams' })}</p>
+        <p className="mt-1 text-xs text-[#94A3B8]">
+          {isSurvey
+            ? t('wizard.publish.identityNote', { ns: 'surveys' })
+            : t('wizard.publish.recipientsHint', { ns: 'exams' })}
+        </p>
       </WizardSection>
+      ) : null}
 
       <ExamWizardFooter>
         <div className="flex flex-wrap items-center justify-between gap-3">
@@ -446,7 +552,9 @@ function ExamPublishStep({
           >
             {publishing
               ? t('wizard.publish.publishing', { ns: 'exams' })
-              : t('wizard.publish.publishExam', { ns: 'exams' })}
+              : isSurvey
+                ? t('wizard.publish.publishNow', { ns: 'surveys' })
+                : t('wizard.publish.publishExam', { ns: 'exams' })}
             <Rocket className="h-4 w-4" />
           </button>
         </div>

@@ -35,6 +35,21 @@
     "openMenu": "فتح قائمة التنقل",
     "closeMenu": "إغلاق قائمة التنقل"
   },
+  "globalSearch": {
+    "loading": "جاري البحث...",
+    "empty": "لا توجد نتائج مطابقة.",
+    "untitled": "بدون عنوان",
+    "sections": {
+      "subjects": "المواد",
+      "tests": "الامتحانات",
+      "surveys": "الاستبيانات",
+      "question_banks": "بنوك الأسئلة",
+      "groups": "المجموعات",
+      "students": "الطلاب",
+      "teachers": "المعلمون",
+      "results": "النتائج"
+    }
+  },
   "breadcrumbs": {
     "home": "الرئيسية",
     "settings": "الإعدادات",

@@ -118,3 +118,39 @@ export async function exportWorkspaceTeachersCsv({ search } = {}) {
     fallbackFilename: `teachers_${today}.csv`,
   })
 }
+
+/** POST /workspaces/members/import-csv — multipart field `csv_file`. */
+export async function importWorkspaceMembersCsv(csvFile) {
+  const formData = new FormData()
+  formData.append('csv_file', csvFile)
+
+  const { data } = await api.post('/workspaces/members/import-csv', formData, {
+    headers: { 'Content-Type': 'multipart/form-data' },
+  })
+  return data
+}
+
+/** GET /templates/workspace-members-csv */
+export async function downloadWorkspaceMembersCsvTemplate() {
+  const response = await api.get('/templates/workspace-members-csv', {
+    responseType: 'blob',
+    headers: { Accept: 'text/csv' },
+  })
+
+  const filename = filenameFromDisposition(
+    response.headers?.['content-disposition'],
+    'workspace_members_template.csv',
+  )
+
+  const blob = new Blob([response.data], { type: 'text/csv;charset=utf-8' })
+  const url = window.URL.createObjectURL(blob)
+  const link = document.createElement('a')
+  link.href = url
+  link.download = filename
+  document.body.appendChild(link)
+  link.click()
+  link.remove()
+  window.URL.revokeObjectURL(url)
+
+  return { filename }
+}

@@ -1,13 +1,17 @@
 import { useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { ArrowLeft, ArrowRight } from 'lucide-react'
-import { TEST_AVAILABILITY_TIME_MODE } from '../../../constants/tests'
+import { TEST_AVAILABILITY_TIME_MODE, TEST_STATUS } from '../../../constants/tests'
 import { showAppToast } from '../../../lib/appToast'
 import {
+  buildSurveySettingsPayload,
   buildTestSettingsFormState,
   buildTestSettingsPayload,
+  fromDatetimeLocalValue,
   getDefaultSeverityPolicy,
+  toDatetimeLocalValue,
 } from '../../../lib/testSettings'
+import SurveyAudienceSection from '../../surveys/SurveyAudienceSection'
 import ExamWizardFooter from '../ExamWizardFooter'
 import {
   ExamAnswerRulesSection,
@@ -18,8 +22,12 @@ import {
 } from '../settings/ExamSettingsSections'
 import { ExamProctoringSettingsSection } from '../settings/ExamProctoringSettingsSection'
 
+const inputClassName =
+  'h-12 w-full min-w-0 max-w-full rounded-xl border border-[#E5E9EB] bg-white px-4 text-center text-sm font-extrabold text-[#2A3433] outline-none focus:border-[#2AA8A2] focus:ring-2 focus:ring-[#2AA8A2]/20 sm:text-lg'
+
 function ExamSettingsStep({
   test,
+  isSurvey = false,
   onSubmit,
   submitting,
   savingDraft = false,
@@ -27,8 +35,9 @@ function ExamSettingsStep({
   onSaveDraft,
   onFormChange,
 }) {
-  const { t } = useTranslation(['exams', 'common'])
+  const { t } = useTranslation(['exams', 'surveys', 'common'])
   const [form, setForm] = useState(() => buildTestSettingsFormState(test))
+  const audienceLocked = isSurvey && test?.status && test.status !== TEST_STATUS.DRAFT
 
   useEffect(() => {
     const next = buildTestSettingsFormState(test)
@@ -75,15 +84,18 @@ function ExamSettingsStep({
     return false
   }
 
+  const buildPayload = () =>
+    isSurvey ? buildSurveySettingsPayload(form) : buildTestSettingsPayload(form)
+
   const handleSubmit = (event) => {
     event.preventDefault()
-    if (!validateAvailability()) return
-    onSubmit(buildTestSettingsPayload(form))
+    if (!isSurvey && !validateAvailability()) return
+    onSubmit(buildPayload())
   }
 
   const handleSaveDraftClick = () => {
-    if (!validateAvailability()) return
-    onSaveDraft?.(buildTestSettingsPayload(form))
+    if (!isSurvey && !validateAvailability()) return
+    onSaveDraft?.(buildPayload())
   }
 
   const cfg = form.settings_config
@@ -92,19 +104,56 @@ function ExamSettingsStep({
   return (
     <form onSubmit={handleSubmit} className="space-y-6">
       <header className="text-right">
-        <p className="text-sm font-bold text-[#2AA8A2]">{t('wizard.settings.eyebrow')}</p>
+        <p className="text-sm font-bold text-[#2AA8A2]">
+          {isSurvey ? t('wizard.settings.eyebrow', { ns: 'surveys' }) : t('wizard.settings.eyebrow')}
+        </p>
         <h2 className="mt-2 text-[28px] font-extrabold leading-tight text-[#2A3433] md:text-[32px]">
-          {t('wizard.settings.title')}
+          {isSurvey ? t('wizard.settings.title', { ns: 'surveys' }) : t('wizard.settings.title')}
         </h2>
-        <p className="mt-3 max-w-3xl text-sm leading-8 text-[#64748B]">{t('wizard.settings.subtitle')}</p>
+        <p className="mt-3 max-w-3xl text-sm leading-8 text-[#64748B]">
+          {isSurvey ? t('wizard.settings.subtitle', { ns: 'surveys' }) : t('wizard.settings.subtitle')}
+        </p>
       </header>
 
-      <ExamAvailabilitySettingsSection form={form} onFormChange={setForm} />
-      <ExamAttemptSettingsSection form={form} onFormChange={setForm} />
-      <ExamNavigationSettingsSection cfg={cfg} onSetNavigationMode={setNavigationMode} />
-      <ExamAnswerRulesSection cfg={cfg} onSetAnswerRule={setAnswerRule} />
-      <ExamDisplaySettingsSection cfg={cfg} onSetSetting={setSetting} />
-      <ExamProctoringSettingsSection cfg={cfg} severity={severity} onSetSetting={setSetting} />
+      {isSurvey ? (
+        <>
+          <SurveyAudienceSection
+            value={form.audience_scope}
+            locked={audienceLocked}
+            onChange={(audience_scope) => setForm((prev) => ({ ...prev, audience_scope }))}
+          />
+          <div className="max-w-md rounded-2xl bg-white p-5 ring-1 ring-[#E5E9EB]">
+            <label className="mb-2 block text-sm font-bold text-[#374151]">
+              {t('wizard.settings.closedAt', { ns: 'surveys' })}
+            </label>
+            <input
+              type="datetime-local"
+              value={toDatetimeLocalValue(form.closed_at)}
+              onChange={(event) =>
+                setForm((prev) => ({
+                  ...prev,
+                  closed_at: fromDatetimeLocalValue(event.target.value),
+                }))
+              }
+              className={`${inputClassName} text-sm font-bold`}
+            />
+            <p className="mt-2 text-xs leading-6 text-[#94A3B8]">
+              {t('wizard.settings.closedAtHint', { ns: 'surveys' })}
+            </p>
+          </div>
+          <ExamNavigationSettingsSection cfg={cfg} onSetNavigationMode={setNavigationMode} />
+          <ExamDisplaySettingsSection cfg={cfg} onSetSetting={setSetting} />
+        </>
+      ) : (
+        <>
+          <ExamAvailabilitySettingsSection form={form} onFormChange={setForm} />
+          <ExamAttemptSettingsSection form={form} onFormChange={setForm} />
+          <ExamNavigationSettingsSection cfg={cfg} onSetNavigationMode={setNavigationMode} />
+          <ExamAnswerRulesSection cfg={cfg} onSetAnswerRule={setAnswerRule} />
+          <ExamDisplaySettingsSection cfg={cfg} onSetSetting={setSetting} />
+          <ExamProctoringSettingsSection cfg={cfg} severity={severity} onSetSetting={setSetting} />
+        </>
+      )}
 
       <ExamWizardFooter className="mt-2">
         <div className="flex flex-wrap items-center justify-between gap-3">

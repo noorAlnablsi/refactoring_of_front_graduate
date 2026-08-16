@@ -37,7 +37,7 @@ function ChoiceRow({ choice, index, onChange, onRemove, removable, selectable, m
   )
 }
 
-function QuestionBuilderForm({ value, onChange, onSave, onAddAnother, topics = [] }) {
+function QuestionBuilderForm({ value, onChange, onSave, onAddAnother, topics = [], hideGrading = false }) {
   const { t } = useTranslation(['questionBanks', 'common'])
   const isEssay = value.type_code === 'ESSAY'
   const isTrueFalse = value.type_code === 'TRUE_FALSE'
@@ -134,21 +134,23 @@ function QuestionBuilderForm({ value, onChange, onSave, onAddAnother, topics = [
           topicId={value.topic_id}
           onTopicChange={(topicId) => setField('topic_id', topicId)}
         />
-        {topics.length === 0 ? (
+        {topics.length === 0 && !hideGrading ? (
           <p className="text-xs text-[#C2410C]">{t('editor.noTopicsWarning')}</p>
         ) : null}
       </div>
 
-      <div className="mt-4 space-y-2">
-        <label className="text-sm font-semibold text-[#374151]">{t('labels.points')}</label>
-        <input
-          type="number"
-          min="1"
-          value={value.points}
-          onChange={(event) => setField('points', Number(event.target.value))}
-          className={inputClassName}
-        />
-      </div>
+      {hideGrading ? null : (
+        <div className="mt-4 space-y-2">
+          <label className="text-sm font-semibold text-[#374151]">{t('labels.points')}</label>
+          <input
+            type="number"
+            min="1"
+            value={value.points}
+            onChange={(event) => setField('points', Number(event.target.value))}
+            className={inputClassName}
+          />
+        </div>
+      )}
 
       {showChoices ? (
         <div className="mt-5 space-y-3">
@@ -162,7 +164,7 @@ function QuestionBuilderForm({ value, onChange, onSave, onAddAnother, topics = [
                 onChange={updateChoice}
                 onRemove={removeChoice}
                 removable={!isTrueFalse && value.choices.length > 2}
-                selectable={true}
+                selectable={!hideGrading}
                 multiple={isMultiple}
                 placeholder={t('choices.placeholder', { number: index + 1 })}
               />

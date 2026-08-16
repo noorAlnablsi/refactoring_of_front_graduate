@@ -1,5 +1,5 @@
 export function getTestId(test) {
-  return test?.test_id ?? test?.id
+  return test?.test_id ?? test?.survey_id ?? test?.id
 }
 
 export function getTestName(test) {

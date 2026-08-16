@@ -20,7 +20,9 @@
     "duration": "Exam duration",
     "totalScore": "Total score",
     "passingScore": "Passing score",
-    "theme": "Theme"
+    "theme": "Theme",
+    "membershipId": "Membership ID",
+    "membershipIds": "Membership IDs"
   },
   "placeholders": {
     "fullName": "Enter your full name",

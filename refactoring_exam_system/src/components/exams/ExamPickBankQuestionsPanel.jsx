@@ -14,7 +14,7 @@ function getDifficultyBadgeClass(difficulty) {
   return 'bg-[#FEF3C7] text-[#D97706]'
 }
 
-function SelectableBankQuestionCard({ question, selected, onToggle, t, choiceLetters }) {
+function SelectableBankQuestionCard({ question, selected, onToggle, t, choiceLetters, hideGrading = false }) {
   const choices = Array.isArray(question.choices) ? question.choices : []
   const points = question.points ?? 0
   const isTrueFalse = question.type_code === 'TRUE_FALSE'
@@ -44,10 +44,12 @@ function SelectableBankQuestionCard({ question, selected, onToggle, t, choiceLet
           <span className="rounded-full bg-[#DBEAFE] px-3 py-1 text-xs font-bold text-[#2563EB]">
             {t(`questionTypes.${question.type_code}`, { defaultValue: question.type_code })}
           </span>
-          <span className="rounded-full bg-[#E8F7F6] px-3 py-1 text-xs font-bold text-[#2AA8A2]">
-            {formatLocaleNumber(points)}{' '}
-            {points === 1 ? t('wizard.questions.review.points') : t('wizard.questions.review.pointsPlural')}
-          </span>
+          {hideGrading ? null : (
+            <span className="rounded-full bg-[#E8F7F6] px-3 py-1 text-xs font-bold text-[#2AA8A2]">
+              {formatLocaleNumber(points)}{' '}
+              {points === 1 ? t('wizard.questions.review.points') : t('wizard.questions.review.pointsPlural')}
+            </span>
+          )}
         </div>
 
         <button
@@ -80,7 +82,7 @@ function SelectableBankQuestionCard({ question, selected, onToggle, t, choiceLet
               <li
                 key={choice.id || `${question.id}-${choiceIndex}`}
                 className={`flex items-center justify-between gap-3 rounded-xl px-4 py-3 text-sm font-semibold ${
-                  isCorrect
+                  isCorrect && !hideGrading
                     ? 'bg-[#E8F7F6] text-[#2AA8A2] ring-1 ring-[#CFECE9]'
                     : 'bg-[#F6F8F9] text-[#64748B]'
                 }`}
@@ -91,7 +93,7 @@ function SelectableBankQuestionCard({ question, selected, onToggle, t, choiceLet
                   ) : null}
                   <span className="min-w-0 break-words" dangerouslySetInnerHTML={{ __html: choice.body || choice.text || '' }} />
                 </span>
-                {isCorrect ? <Check className="h-4 w-4 shrink-0" strokeWidth={2.5} /> : null}
+                {isCorrect && !hideGrading ? <Check className="h-4 w-4 shrink-0" strokeWidth={2.5} /> : null}
               </li>
             )
           })}
@@ -105,6 +107,7 @@ function ExamPickBankQuestionsPanel({
   bank,
   test,
   testId,
+  hideGrading = false,
   initialSelectedIds = [],
   onBack,
   onSaveDraft,
@@ -271,6 +274,7 @@ function ExamPickBankQuestionsPanel({
               onToggle={() => toggleQuestion(question.id)}
               t={t}
               choiceLetters={choiceLetters}
+              hideGrading={hideGrading}
             />
           ))}
         </div>
@@ -289,8 +293,12 @@ function ExamPickBankQuestionsPanel({
 
           <div className="flex flex-wrap items-center gap-4 text-sm font-bold text-[#374151]">
             <span>{t('wizard.pickBank.selectedCount', { count: selectedIds.length })}</span>
-            <span className="text-[#94A3B8]">·</span>
-            <span>{t('wizard.pickBank.totalPoints', { count: totalSelectedPoints })}</span>
+            {hideGrading ? null : (
+              <>
+                <span className="text-[#94A3B8]">·</span>
+                <span>{t('wizard.pickBank.totalPoints', { count: totalSelectedPoints })}</span>
+              </>
+            )}
           </div>
 
           <div className="flex flex-wrap items-center gap-4">

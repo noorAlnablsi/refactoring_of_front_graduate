@@ -1,4 +1,5 @@
 import { Navigate, Route, Routes } from 'react-router-dom'
+import RequireAuth from './components/auth/RequireAuth'
 import DashboardGuard from './components/dashboard/DashboardGuard'
 import DashboardLayout from './components/dashboard/DashboardLayout'
 import LandingPage from './pages/LandingPage'
@@ -30,7 +31,9 @@ import SubjectDetailsPage from './pages/subjects/SubjectDetailsPage'
 import QuestionBanksPage from './pages/question-banks/QuestionBanksPage'
 import QuestionBankEditorPage from './pages/question-banks/QuestionBankEditorPage'
 import ExamsPage from './pages/exams/ExamsPage'
-import ExamWizardPage, { ExamCreatePage } from './pages/exams/ExamWizardPage'
+import ExamWizardPage, { ExamCreatePage, SurveyCreatePage, SurveyEditPage } from './pages/exams/ExamWizardPage'
+import SurveysPage from './pages/surveys/SurveysPage'
+import SurveyRespondPage from './pages/surveys/SurveyRespondPage'
 import ExamAttemptsPage from './pages/exams/ExamAttemptsPage'
 import ExamAttemptGradingPage from './pages/exams/ExamAttemptGradingPage'
 import ExamMonitoringPage from './pages/exams/ExamMonitoringPage'
@@ -70,6 +73,11 @@ function App() {
       <Route path={ROUTES.PATH_SELECTION} element={<PathSelectionPage />} />
       <Route path={ROUTES.SETTINGS_CREATE_WORKSPACE} element={<CreateWorkspacePage />} />
 
+      {/* Survey respondent — auth only so share links work for any signed-in user */}
+      <Route element={<RequireAuth />}>
+        <Route path={ROUTES.SURVEY_RESPOND} element={<SurveyRespondPage />} />
+      </Route>
+
       <Route element={<DashboardGuard />}>
         <Route element={<DashboardLayout />}>
           <Route path={ROUTES.DASHBOARD} element={<DashboardPage />} />
@@ -85,6 +93,9 @@ function App() {
           <Route path={ROUTES.EXAMS} element={<ExamsPage />} />
           <Route path={ROUTES.EXAM_CREATE} element={<ExamCreatePage />} />
           <Route path={ROUTES.EXAM_EDIT} element={<ExamWizardPage />} />
+          <Route path={ROUTES.SURVEYS} element={<SurveysPage />} />
+          <Route path={ROUTES.SURVEY_CREATE} element={<SurveyCreatePage />} />
+          <Route path={ROUTES.SURVEY_EDIT} element={<SurveyEditPage />} />
           <Route path={ROUTES.EXAM_ATTEMPTS} element={<ExamAttemptsPage />} />
           <Route path={ROUTES.EXAM_ATTEMPT_GRADE} element={<ExamAttemptGradingPage />} />
           <Route path={ROUTES.EXAM_MONITORING} element={<ExamMonitoringPage />} />

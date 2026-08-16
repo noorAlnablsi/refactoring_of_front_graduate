@@ -31,7 +31,7 @@ export function canShowCloseExamButton(test, nowMs = Date.now()) {
     test.availability_time_mode || test.availability_mode || '',
   ).toUpperCase()
 
-  if (mode === TEST_AVAILABILITY_TIME_MODE.FLEXIBLE || (!mode && test.closed_at)) {
+  if (mode === TEST_AVAILABILITY_TIME_MODE.FLEXIBLE || mode === TEST_AVAILABILITY_TIME_MODE.SURVEY || (!mode && test.closed_at)) {
     const closedAtMs = parseLocalDateTimeMs(test.closed_at)
     if (closedAtMs != null && nowMs >= closedAtMs) return false
   }
@@ -75,6 +75,9 @@ export function filterTestsByTab(tests = [], tab) {
     return tests.filter(
       (test) => test.status === TEST_STATUS.DRAFT || test.status === TEST_STATUS.SCHEDULED,
     )
+  }
+  if (tab === TEST_TABS.CLOSED) {
+    return tests.filter((test) => test.status === TEST_STATUS.CLOSED)
   }
   return tests
 }

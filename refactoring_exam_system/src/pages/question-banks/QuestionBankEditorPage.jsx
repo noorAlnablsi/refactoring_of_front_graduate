@@ -2,6 +2,7 @@ import { useEffect, useMemo, useState } from 'react'
 import { Navigate, useLocation, useNavigate, useParams } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { Eye } from 'lucide-react'
+import ConfirmActionDialog from '../../components/common/ConfirmActionDialog'
 import BankInfoSummary from '../../components/question-banks/editor/BankInfoSummary'
 import EditQuestionModal from '../../components/question-banks/editor/EditQuestionModal'
 import QuestionsLoadErrorBanner from '../../components/question-banks/editor/QuestionsLoadErrorBanner'
@@ -21,6 +22,7 @@ import {
 } from '../../lib/questionBanks'
 import {
   createQuestionBankQuestions,
+  deleteQuestionInBank,
   findQuestionBankById,
   loadQuestionBankQuestionsForView,
   updateQuestionInBank,
@@ -88,6 +90,8 @@ function QuestionBankEditorPage() {
   const [publishing, setPublishing] = useState(false)
   const [editingQuestion, setEditingQuestion] = useState(null)
   const [updatingQuestion, setUpdatingQuestion] = useState(false)
+  const [pendingDeleteQuestion, setPendingDeleteQuestion] = useState(null)
+  const [deletingQuestion, setDeletingQuestion] = useState(false)
   const [topics, setTopics] = useState([])
   const [questionsLoadError, setQuestionsLoadError] = useState(null)
 
@@ -259,6 +263,34 @@ function QuestionBankEditorPage() {
     }
   }
 
+  const handleConfirmDeleteQuestion = async () => {
+    if (!bank || !pendingDeleteQuestion || !canEditBank) return
+
+    const question = pendingDeleteQuestion
+
+    if (!question?.id) {
+      setLocalQuestions((prev) => prev.filter((item) => item !== question))
+      setPendingDeleteQuestion(null)
+      showAppToast('toast.questionDeleted', 'success', { ns: 'questionBanks' })
+      return
+    }
+
+    setDeletingQuestion(true)
+    try {
+      await deleteQuestionInBank(bank.id, question.id)
+      setServerQuestions((prev) => prev.filter((item) => String(item.id) !== String(question.id)))
+      if (String(editingQuestion?.id) === String(question.id)) {
+        setEditingQuestion(null)
+      }
+      setPendingDeleteQuestion(null)
+      showAppToast('toast.questionDeleted', 'success', { ns: 'questionBanks' })
+    } catch (err) {
+      showToast(err.message, 'error')
+    } finally {
+      setDeletingQuestion(false)
+    }
+  }
+
   if (loading || !bank) {
     return <div className="h-64 animate-pulse rounded-2xl bg-white" />
   }
@@ -285,6 +317,7 @@ function QuestionBankEditorPage() {
         topics={topics}
         canEdit={canEditBank}
         onEditQuestion={setEditingQuestion}
+        onDeleteQuestion={(question) => setPendingDeleteQuestion(question)}
         emptyMessage={
           questionsLoadError
             ? t('editor.loadError', { ns: 'questionBanks' })
@@ -327,6 +360,26 @@ function QuestionBankEditorPage() {
         submitting={updatingQuestion}
         onClose={() => setEditingQuestion(null)}
         onSubmit={handleUpdateQuestion}
+      />
+      <ConfirmActionDialog
+        open={Boolean(pendingDeleteQuestion)}
+        title={t('editor.deleteQuestionTitle')}
+        message={t('editor.deleteQuestionMessage')}
+        itemLabel={t('editor.deleteQuestionItemLabel')}
+        itemName={
+          pendingDeleteQuestion
+            ? t('editor.questionNumber', {
+                number: allQuestions.findIndex((item) => item === pendingDeleteQuestion) + 1 || 1,
+              })
+            : undefined
+        }
+        confirmLabel={t('actions.delete', { ns: 'common' })}
+        loadingLabel={t('editor.deletingQuestion')}
+        loading={deletingQuestion}
+        onClose={() => {
+          if (!deletingQuestion) setPendingDeleteQuestion(null)
+        }}
+        onConfirm={handleConfirmDeleteQuestion}
       />
       <PublishQuestionBankModal
         open={publishOpen}

@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 import { tUI } from '../../lib/appToast'
 import { buildLatestMembers } from '../../lib/workspaceMembers'
 import { isInstitutionWorkspace } from '../../lib/workspaceContext'
@@ -12,47 +12,37 @@ export function useMembersOverview() {
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState('')
 
-  useEffect(() => {
-    let cancelled = false
+  const refetch = useCallback(async () => {
+    setLoading(true)
+    setError('')
 
-    async function load() {
-      setLoading(true)
-      setError('')
+    try {
+      const studentsRes = await getWorkspaceStudents({ page: 1, per_page: 5 })
+      let teachersRes = null
 
-      try {
-        const studentsRes = await getWorkspaceStudents({ page: 1, per_page: 5 })
-        let teachersRes = null
-
-        if (isInstitution) {
-          try {
-            teachersRes = await getWorkspaceTeachers({ page: 1, per_page: 5 })
-          } catch {
-            teachersRes = { teachers: [], total: 0 }
-          }
+      if (isInstitution) {
+        try {
+          teachersRes = await getWorkspaceTeachers({ page: 1, per_page: 5 })
+        } catch {
+          teachersRes = { teachers: [], total: 0 }
         }
-
-        if (cancelled) return
-
-        setStudentsTotal(studentsRes.total ?? studentsRes.count ?? 0)
-        setTeachersTotal(isInstitution ? (teachersRes?.total ?? teachersRes?.count ?? 0) : null)
-        setLatestMembers(
-          buildLatestMembers(studentsRes.students || [], teachersRes?.teachers || []),
-        )
-      } catch (err) {
-        if (!cancelled) {
-          setError(err.message || tUI('errors.loadOverview', { ns: 'members' }))
-        }
-      } finally {
-        if (!cancelled) setLoading(false)
       }
-    }
 
-    load()
-
-    return () => {
-      cancelled = true
+      setStudentsTotal(studentsRes.total ?? studentsRes.count ?? 0)
+      setTeachersTotal(isInstitution ? (teachersRes?.total ?? teachersRes?.count ?? 0) : null)
+      setLatestMembers(
+        buildLatestMembers(studentsRes.students || [], teachersRes?.teachers || []),
+      )
+    } catch (err) {
+      setError(err.message || tUI('errors.loadOverview', { ns: 'members' }))
+    } finally {
+      setLoading(false)
     }
   }, [isInstitution])
+
+  useEffect(() => {
+    refetch()
+  }, [refetch])
 
   return {
     studentsTotal,
@@ -61,5 +51,6 @@ export function useMembersOverview() {
     loading,
     error,
     isInstitution,
+    refetch,
   }
 }

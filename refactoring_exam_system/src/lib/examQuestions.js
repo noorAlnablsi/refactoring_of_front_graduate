@@ -18,21 +18,32 @@ export function createDefaultExamQuestion() {
   }
 }
 
-export function normalizeManualQuestionForApi(question) {
+export function ensureSurveyChoicesForApi(choices = []) {
+  if (!choices.length) return []
+  const hasCorrect = choices.some((choice) => choice.is_correct)
+  return choices.map((choice, index) => ({
+    body: choice.body.trim(),
+    is_correct: hasCorrect ? Boolean(choice.is_correct) : index === 0,
+  }))
+}
+
+export function normalizeManualQuestionForApi(question, { surveyMode = false } = {}) {
   const payload = {
     body: question.body.trim(),
     type_code: question.type_code,
     difficulty: question.difficulty,
-    points: Number(question.points) || 1,
+    points: surveyMode ? 1 : Number(question.points) || 1,
     explanation: question.explanation?.trim() || '',
     image_path: question.image_path || question.image_url || '',
   }
 
   if (question.type_code !== 'ESSAY') {
-    payload.choices = question.choices.map((choice) => ({
-      body: choice.body.trim(),
-      is_correct: Boolean(choice.is_correct),
-    }))
+    payload.choices = surveyMode
+      ? ensureSurveyChoicesForApi(question.choices)
+      : question.choices.map((choice) => ({
+          body: choice.body.trim(),
+          is_correct: Boolean(choice.is_correct),
+        }))
   } else {
     payload.choices = []
   }
@@ -44,12 +55,12 @@ export function normalizeManualQuestionForApi(question) {
   return payload
 }
 
-export function validateManualQuestionForExam(question, { requireTopic = false } = {}) {
+export function validateManualQuestionForExam(question, { requireTopic = false, surveyMode = false } = {}) {
   if (isRichTextEmpty(question.body)) {
     return tUI('validation.questionTextRequired', { ns: 'exams' })
   }
 
-  if (!question.points || Number(question.points) < 1) {
+  if (!surveyMode && (!question.points || Number(question.points) < 1)) {
     return tUI('validation.pointsRequired', { ns: 'exams' })
   }
 
@@ -59,9 +70,11 @@ export function validateManualQuestionForExam(question, { requireTopic = false }
       return tUI('validation.allChoicesRequired', { ns: 'exams' })
     }
 
-    const choiceError = validateQuestionChoiceRules(question.type_code, question.choices)
-    if (choiceError) {
-      return choiceError
+    if (!surveyMode) {
+      const choiceError = validateQuestionChoiceRules(question.type_code, question.choices)
+      if (choiceError) {
+        return choiceError
+      }
     }
   }
 

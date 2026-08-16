@@ -5,9 +5,41 @@ import {
 } from '../lib/subjectDisplay'
 import { getStudentMembershipId } from '../lib/workspaceStudents'
 
-export async function getSubjects() {
-  const { data } = await api.get('/subjects')
+export async function getSubjects(params = {}) {
+  const query = {}
+  if (params.page != null) query.page = params.page
+  if (params.per_page != null) query.per_page = params.per_page
+  if (params.search != null && String(params.search).trim()) {
+    query.search = String(params.search).trim()
+  }
+  const { data } = await api.get('/subjects', { params: query })
   return data
+}
+
+/** Fetch every page of GET /subjects (optional server search). */
+export async function listAllSubjects({ search } = {}) {
+  const perPage = 100
+  let page = 1
+  let pages = 1
+  const subjects = []
+
+  do {
+    const data = await getSubjects({
+      page,
+      per_page: perPage,
+      search: search || undefined,
+    })
+    const chunk = data.subjects || []
+    subjects.push(...chunk)
+    pages = Math.max(Number(data.pages) || 1, 1)
+    if (!data.pages && chunk.length < perPage) break
+    page += 1
+  } while (page <= pages)
+
+  return {
+    subjects,
+    count: subjects.length,
+  }
 }
 
 async function fetchSubjectListStats(subjectId) {
@@ -25,8 +57,8 @@ async function fetchSubjectListStats(subjectId) {
   }
 }
 
-export async function getSubjectsWithStats() {
-  const data = await getSubjects()
+export async function getSubjectsWithStats({ search } = {}) {
+  const data = await listAllSubjects({ search })
   const subjects = data.subjects || []
 
   const enrichedSubjects = await Promise.all(
@@ -138,13 +170,9 @@ function resolveMembershipIds(studentOrMembershipIds) {
   return membershipIds
 }
 
-/** Enroll one student (legacy body: membership_id). */
+/** Enroll one student — always sends membership_ids (backend contract). */
 export async function assignStudentToSubject(subjectId, studentOrMembershipId) {
-  const membershipId = resolveMembershipIds(studentOrMembershipId)[0]
-  const { data } = await api.post(`/subjects/${normalizeSubjectId(subjectId)}/students`, {
-    membership_id: membershipId,
-  })
-  return data
+  return assignStudentsToSubject(subjectId, studentOrMembershipId)
 }
 
 /** Enroll students in bulk (body: membership_ids). Single id still uses membership_ids array. */

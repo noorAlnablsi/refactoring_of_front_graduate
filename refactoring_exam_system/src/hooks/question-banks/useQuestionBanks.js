@@ -1,18 +1,27 @@
-import { useCallback, useEffect, useMemo, useState } from 'react'
-import { filterBanksBySearch } from '../../lib/questionBanks'
+import { useCallback, useEffect, useState } from 'react'
 import { fetchQuestionBanksForTab } from '../../services/questionBanks.service'
+
+const SEARCH_DEBOUNCE_MS = 300
 
 export function useQuestionBanks(activeTab) {
   const [banks, setBanks] = useState([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState('')
+  const [searchInput, setSearchInput] = useState('')
   const [search, setSearch] = useState('')
+
+  useEffect(() => {
+    const timer = window.setTimeout(() => {
+      setSearch(searchInput.trim())
+    }, SEARCH_DEBOUNCE_MS)
+    return () => window.clearTimeout(timer)
+  }, [searchInput])
 
   const fetchBanks = useCallback(async () => {
     setLoading(true)
     setError('')
     try {
-      const items = await fetchQuestionBanksForTab(activeTab)
+      const items = await fetchQuestionBanksForTab(activeTab, { search })
       setBanks(items)
     } catch (err) {
       setError(err.message)
@@ -20,41 +29,20 @@ export function useQuestionBanks(activeTab) {
     } finally {
       setLoading(false)
     }
-  }, [activeTab])
+  }, [activeTab, search])
 
   useEffect(() => {
-    let cancelled = false
-
-    fetchQuestionBanksForTab(activeTab)
-      .then((items) => {
-        if (cancelled) return
-        setBanks(items)
-        setError('')
-      })
-      .catch((err) => {
-        if (cancelled) return
-        setError(err.message)
-        setBanks([])
-      })
-      .finally(() => {
-        if (cancelled) return
-        setLoading(false)
-      })
-
-    return () => {
-      cancelled = true
-    }
-  }, [activeTab])
-
-  const filteredBanks = useMemo(() => filterBanksBySearch(banks, search), [banks, search])
+    fetchBanks()
+  }, [fetchBanks])
 
   return {
     banks,
-    filteredBanks,
+    filteredBanks: banks,
     loading,
     error,
-    search,
-    setSearch,
+    search: searchInput,
+    setSearch: setSearchInput,
+    debouncedSearch: search,
     refetch: fetchBanks,
   }
 }

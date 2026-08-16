@@ -153,6 +153,23 @@ export function canExportWorkspaceTeachers(membership = getActiveMembership()) {
 }
 
 /**
+ * POST /workspaces/members/import-csv — owner or ADMIN (INSTITUTION or SOLO).
+ * Role limits: SOLO → STUDENT only; INSTITUTION → STUDENT|TEACHER|ADMIN.
+ */
+export function canBulkImportWorkspaceMembers(membership = getActiveMembership()) {
+  if (!membership) return false
+  const kind = membership.workspace?.kind
+  if (kind !== 'INSTITUTION' && kind !== 'SOLO') return false
+  return Boolean(membership.is_owner || membership.role === 'ADMIN')
+}
+
+export function getBulkImportAllowedRoles(membership = getActiveMembership()) {
+  if (!canBulkImportWorkspaceMembers(membership)) return []
+  if (membership.workspace?.kind === 'SOLO') return ['STUDENT']
+  return ['STUDENT', 'TEACHER', 'ADMIN']
+}
+
+/**
  * Integrity reports inbox (GET /proctoring/integrity-reports).
  * Owner sees all; test creators see their tests (BE filters). Students blocked.
  */

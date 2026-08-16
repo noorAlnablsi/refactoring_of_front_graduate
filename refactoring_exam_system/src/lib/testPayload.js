@@ -1,3 +1,11 @@
+import { SURVEY_AUDIENCE_SCOPE, TEST_AVAILABILITY_TIME_MODE } from '../constants/tests'
+
+function optionalSubjectId(form) {
+  const subjectId = Number(form.subject_id)
+  if (Number.isFinite(subjectId) && subjectId > 0) return subjectId
+  return null
+}
+
 function buildTestCoreFields(form, { includeTotalScore = true } = {}) {
   const payload = {
     name: form.name.trim(),
@@ -73,4 +81,45 @@ export function buildUpdateTestInfoPayloadFromStep1({ create }, options = {}) {
   }
 
   return payload
+}
+
+/** POST /tests — Survey create. Do not send duration or scoring fields. */
+export function buildCreateSurveyPayload(form) {
+  const payload = {
+    name: String(form.name || '').trim(),
+    availability_time_mode: TEST_AVAILABILITY_TIME_MODE.SURVEY,
+    audience_scope: form.audience_scope || SURVEY_AUDIENCE_SCOPE.WORKSPACE,
+  }
+
+  const description = form.description?.trim()
+  if (description) payload.description = description
+
+  const subjectId = optionalSubjectId(form)
+  if (subjectId) payload.subject_id = subjectId
+
+  return payload
+}
+
+export function buildSurveyStep1Payload(form) {
+  return {
+    create: buildCreateSurveyPayload(form),
+  }
+}
+
+export function buildUpdateSurveyInfoPayload(form) {
+  const payload = {
+    name: String(form.name || '').trim(),
+    description: form.description?.trim() || null,
+    subject_id: optionalSubjectId(form),
+  }
+
+  if (form.audience_scope) {
+    payload.audience_scope = form.audience_scope
+  }
+
+  return payload
+}
+
+export function buildUpdateSurveyInfoPayloadFromStep1({ create } = {}) {
+  return buildUpdateSurveyInfoPayload(create || {})
 }

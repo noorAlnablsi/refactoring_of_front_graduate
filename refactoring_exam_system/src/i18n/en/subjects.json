@@ -2,6 +2,7 @@
   "pageTitle": "Academic subjects",
   "pageSubtitle": "Manage subjects and assign responsible teachers within your institution efficiently and professionally.",
   "addSubject": "Add new subject",
+  "searchPlaceholder": "Search subjects...",
   "deleteItemLabel": "Subject",
   "toasts": {
     "deleted": "Subject deleted",
@@ -31,6 +32,7 @@
   },
   "table": {
     "empty": "No academic subjects yet",
+    "emptySearch": "No matching search results",
     "name": "Name",
     "teachersCount": "Teachers",
     "questionBanks": "Question banks",

@@ -10,6 +10,18 @@ export const TEST_STATUS = {
 export const TEST_AVAILABILITY_TIME_MODE = {
   FLEXIBLE: 'FLEXIBLE',
   SCHEDULED: 'SCHEDULED',
+  SURVEY: 'SURVEY',
+}
+
+export const SURVEY_AUDIENCE_SCOPE = {
+  COMMUNITY: 'COMMUNITY',
+  WORKSPACE: 'WORKSPACE',
+  TARGETED: 'TARGETED',
+}
+
+export const TEST_KIND = {
+  EXAM: 'exam',
+  SURVEY: 'survey',
 }
 
 export const TEST_TABS = {
@@ -17,6 +29,7 @@ export const TEST_TABS = {
   PUBLISHED: 'published',
   CORRECTED: 'corrected',
   DRAFTS: 'drafts',
+  CLOSED: 'closed',
 }
 
 export const TEST_WIZARD_STEPS = {

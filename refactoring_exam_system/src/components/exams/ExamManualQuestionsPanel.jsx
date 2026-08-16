@@ -17,6 +17,7 @@ import { useToastStore } from '../../store/toastStore'
 function ExamManualQuestionsPanel({
   test,
   testId,
+  surveyMode = false,
   onBack,
   onSaveDraft,
   onSuccess,
@@ -52,6 +53,7 @@ function ExamManualQuestionsPanel({
   const validate = () => {
     const error = validateManualQuestionForExam(draft, {
       requireTopic: topics.length > 0,
+      surveyMode,
     })
     if (error) {
       showToast(error, 'error')
@@ -65,7 +67,7 @@ function ExamManualQuestionsPanel({
     setSubmitting(true)
     try {
       await addManualQuestions(testId, {
-        questions: [normalizeManualQuestionForApi(draft)],
+        questions: [normalizeManualQuestionForApi(draft, { surveyMode })],
       })
       showAppToast('wizard.manual.questionAdded', 'success', { ns: 'exams' })
       if (resetAfter) {
@@ -97,6 +99,7 @@ function ExamManualQuestionsPanel({
         onSave={() => saveQuestion(false)}
         onAddAnother={() => saveQuestion(true)}
         topics={topics}
+        hideGrading={surveyMode}
       />
 
       <ExamWizardFooter>

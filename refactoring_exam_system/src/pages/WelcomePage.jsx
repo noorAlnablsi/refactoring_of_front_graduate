@@ -49,22 +49,27 @@ function WelcomePage() {
           <h1 className="text-right text-[32px] font-extrabold leading-[1.2] text-[#2A3433] md:text-[34px]">
             {t('welcome.title')}
           </h1>
-          <p className="mt-2 text-right text-sm leading-7 text-[#6B7280] md:text-[15px]">{t('welcome.subtitle')}</p>
         </div>
 
-        <div className="flex flex-1 flex-col justify-center py-6">
-          <WelcomeOptionSelector selected={welcome_selection} onSelect={setWelcomeSelection} />
-          {error ? <p className="mt-3 text-sm text-red-600">{error}</p> : null}
-
-          <p className="mt-7 text-right text-sm text-[#6B7280]">
-            {t('welcome.hasAccount')}{' '}
-            <Link to={ROUTES.LOGIN} className="font-bold text-[#2AA8A2]">
-              {t('welcome.loginLink')}
-            </Link>
+        <div className="mt-16">
+          <p className="text-right text-sm leading-7 text-[#6B7280] md:text-[15px]">
+            {t('welcome.subtitle')}
           </p>
+
+          <div className="mt-3">
+            <WelcomeOptionSelector selected={welcome_selection} onSelect={setWelcomeSelection} />
+            {error ? <p className="mt-3 text-sm text-red-600">{error}</p> : null}
+
+            <p className="mt-7 text-right text-sm text-[#6B7280]">
+              {t('welcome.hasAccount')}{' '}
+              <Link to={ROUTES.LOGIN} className="font-bold text-[#2AA8A2]">
+                {t('welcome.loginLink')}
+              </Link>
+            </p>
+          </div>
         </div>
 
-        <div className="mb-5 w-full max-w-[448px]">
+        <div className="mb-5 mt-auto w-full max-w-[448px] pt-8">
           <button
             type="button"
             data-keyboard-primary=""

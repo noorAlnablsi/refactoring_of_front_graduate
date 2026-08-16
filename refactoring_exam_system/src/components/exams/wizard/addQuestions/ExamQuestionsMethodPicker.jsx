@@ -5,6 +5,7 @@ import { EXAM_QUESTION_METHODS } from './examAddQuestionsConstants'
 
 function ExamQuestionsMethodPicker({
   test,
+  surveyMode = false,
   activeMethod,
   onSelectMethod,
   questionsCount,
@@ -19,6 +20,10 @@ function ExamQuestionsMethodPicker({
 }) {
   const { t } = useTranslation(['exams', 'common'])
   const canContinue = questionsCount > 0
+  const hasSubject = Boolean(test?.subject_id)
+  const methods = surveyMode
+    ? EXAM_QUESTION_METHODS.filter((method) => method.id === 'manual')
+    : EXAM_QUESTION_METHODS
 
   const handleNext = () => {
     if (!canContinue) {
@@ -44,17 +49,22 @@ function ExamQuestionsMethodPicker({
           </p>
         )}
 
-        <div className="mt-5 grid gap-3 sm:grid-cols-2 lg:grid-cols-3" data-keyboard-option-group="exam-methods">
-          {EXAM_QUESTION_METHODS.map(({ id, titleKey, descriptionKey, icon: Icon, enabled, comingSoon }) => (
+        <div
+          className={`mt-5 grid gap-3 ${surveyMode ? 'sm:grid-cols-1 max-w-md' : 'sm:grid-cols-2 lg:grid-cols-3'}`}
+          data-keyboard-option-group="exam-methods"
+        >
+          {methods.map(({ id, titleKey, descriptionKey, icon: Icon, enabled, comingSoon }) => {
+            const methodEnabled = enabled && (surveyMode || id === 'manual' || hasSubject)
+            return (
             <button
               key={id}
               type="button"
-              disabled={!enabled}
-              {...(enabled ? { 'data-keyboard-option': '' } : {})}
+              disabled={!methodEnabled}
+              {...(methodEnabled ? { 'data-keyboard-option': '' } : {})}
               aria-pressed={activeMethod === id}
-              onClick={() => enabled && onSelectMethod(id)}
+              onClick={() => methodEnabled && onSelectMethod(id)}
               className={`relative rounded-2xl border p-4 text-right transition ${
-                enabled
+                methodEnabled
                   ? 'border-[#E5E9EB] hover:border-[#2AA8A2] hover:bg-[#F8FDFC]'
                   : 'cursor-not-allowed border-[#F1F5F9] bg-[#FAFBFC] opacity-70'
               } ${activeMethod === id ? 'border-[#2AA8A2] bg-[#E8F7F6]' : ''}`}
@@ -68,7 +78,8 @@ function ExamQuestionsMethodPicker({
               <p className="mt-3 text-sm font-extrabold text-[#2A3433]">{t(titleKey, { ns: 'exams' })}</p>
               <p className="mt-1 text-xs leading-5 text-[#64748B]">{t(descriptionKey, { ns: 'exams' })}</p>
             </button>
-          ))}
+            )
+          })}
         </div>
       </div>
 

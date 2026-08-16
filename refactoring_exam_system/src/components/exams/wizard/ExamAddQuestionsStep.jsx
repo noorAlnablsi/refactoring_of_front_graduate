@@ -15,6 +15,7 @@ import { restoreExamQuestionsProgress } from './addQuestions/restoreExamQuestion
 
 function ExamAddQuestionsStep({
   test,
+  surveyMode = false,
   onRefresh,
   onNext,
   onBack,
@@ -80,6 +81,17 @@ function ExamAddQuestionsStep({
 
         if (cancelled) return
 
+        if (surveyMode) {
+          if (result.kind === 'review') {
+            setReviewSource(result.reviewSource || 'manual')
+            setShowGeneratedView(true)
+          } else {
+            setShowManualView(true)
+            setActiveMethod('manual')
+          }
+          return
+        }
+
         switch (result.kind) {
           case 'review':
             setReviewSource(result.reviewSource)
@@ -120,7 +132,14 @@ function ExamAddQuestionsStep({
     }
     // Only re-run when the exam identity changes — not on every questions length flicker.
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [testId])
+  }, [testId, surveyMode])
+
+  useEffect(() => {
+    if (!surveyMode || restoring) return
+    if (showManualView || showGeneratedView) return
+    setShowManualView(true)
+    setActiveMethod('manual')
+  }, [surveyMode, restoring, showManualView, showGeneratedView])
 
   useEffect(() => {
     onBlueprintActiveChange?.(subFlowActive)
@@ -215,6 +234,7 @@ function ExamAddQuestionsStep({
         questions={generatedQuestions?.length ? generatedQuestions : questions}
         testId={testId}
         allowPointsEdit={false}
+        hideGrading={surveyMode}
         eyebrow={reviewCopy.eyebrow}
         title={reviewCopy.title}
         description={reviewCopy.description}
@@ -244,6 +264,7 @@ function ExamAddQuestionsStep({
         bank={selectedFromBank}
         test={test}
         testId={testId}
+        hideGrading={surveyMode}
         initialSelectedIds={fromBankSelectedIds}
         savingDraft={savingDraft}
         onBack={() => {
@@ -270,8 +291,13 @@ function ExamAddQuestionsStep({
       <ExamManualQuestionsPanel
         test={test}
         testId={testId}
+        surveyMode={surveyMode}
         savingDraft={savingDraft}
         onBack={() => {
+          if (surveyMode) {
+            onBack?.()
+            return
+          }
           setShowManualView(false)
           setActiveMethod(null)
         }}
@@ -375,6 +401,7 @@ function ExamAddQuestionsStep({
   return (
     <ExamQuestionsMethodPicker
       test={test}
+      surveyMode={surveyMode}
       activeMethod={activeMethod}
       onSelectMethod={setActiveMethod}
       questionsCount={questions.length}

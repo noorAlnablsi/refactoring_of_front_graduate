@@ -4,31 +4,37 @@ import ExamWizardFooter from '../ExamWizardFooter'
 import { formatLocaleNumber } from '../../../lib/localeNumber'
 import { getTestQuestionsCount, getTestTotalPoints } from '../../../lib/testDisplay'
 import { getTestId, getTestName } from '../../../lib/testModel'
+import { getSurveyAudienceI18nKey, getSurveyAudienceScope } from '../../../lib/surveys'
 import ExamRandomGeneratedQuestionsPanel from '../ExamRandomGeneratedQuestionsPanel'
 
 function ExamReviewStep({
   test,
+  isSurvey = false,
   onNext,
   onBack,
   onSaveDraft,
   onRefresh,
   savingDraft = false,
 }) {
-  const { t } = useTranslation(['exams', 'common'])
+  const { t } = useTranslation(['exams', 'surveys', 'common'])
   const questions = test?.questions || []
   const totalPoints = getTestTotalPoints(test)
   const displayQuestionsCount = getTestQuestionsCount(test)
   const testId = getTestId(test)
-  const allowPointsEdit = test?.auto_distribute_scores === false
+  const allowPointsEdit = !isSurvey && test?.auto_distribute_scores === false
 
   return (
     <div className="space-y-6">
       <header className="text-right">
-        <p className="text-sm font-bold text-[#2AA8A2]">{t('wizard.review.eyebrow')}</p>
+        <p className="text-sm font-bold text-[#2AA8A2]">
+          {isSurvey ? t('wizard.review.eyebrow', { ns: 'surveys' }) : t('wizard.review.eyebrow')}
+        </p>
         <h2 className="mt-2 text-[28px] font-extrabold leading-tight text-[#2A3433] md:text-[32px]">
-          {t('wizard.review.title')}
+          {isSurvey ? t('wizard.review.title', { ns: 'surveys' }) : t('wizard.review.title')}
         </h2>
-        <p className="mt-3 max-w-3xl text-sm leading-8 text-[#64748B]">{t('wizard.review.subtitle')}</p>
+        <p className="mt-3 max-w-3xl text-sm leading-8 text-[#64748B]">
+          {isSurvey ? t('wizard.review.subtitle', { ns: 'surveys' }) : t('wizard.review.subtitle')}
+        </p>
         {allowPointsEdit ? (
           <p className="mt-2 max-w-3xl text-xs leading-6 text-[#2AA8A2]">
             {t('wizard.review.manualPointsHint')}
@@ -44,7 +50,9 @@ function ExamReviewStep({
 
         <dl className="grid gap-3 text-sm sm:grid-cols-2 lg:grid-cols-4">
           <div className="rounded-xl bg-[#F6F8F9] p-4">
-            <dt className="text-xs text-[#94A3B8]">{t('wizard.review.examName')}</dt>
+            <dt className="text-xs text-[#94A3B8]">
+              {isSurvey ? t('wizard.review.surveyName', { ns: 'surveys' }) : t('wizard.review.examName')}
+            </dt>
             <dd className="mt-1 font-bold text-[#2A3433]">{getTestName(test)}</dd>
           </div>
           <div className="rounded-xl bg-[#F6F8F9] p-4">
@@ -53,18 +61,29 @@ function ExamReviewStep({
               {formatLocaleNumber(displayQuestionsCount ?? 0)}
             </dd>
           </div>
-          <div className="rounded-xl bg-[#F6F8F9] p-4">
-            <dt className="text-xs text-[#94A3B8]">{t('wizard.review.totalPoints')}</dt>
-            <dd className="mt-1 font-bold text-[#2AA8A2]">{formatLocaleNumber(totalPoints)}</dd>
-          </div>
-          <div className="rounded-xl bg-[#F6F8F9] p-4">
-            <dt className="text-xs text-[#94A3B8]">{t('wizard.review.duration')}</dt>
-            <dd className="mt-1 font-bold text-[#2A3433]">
-              {test?.duration_minutes
-                ? t('wizard.review.durationMinutes', { count: test.duration_minutes })
-                : '—'}
-            </dd>
-          </div>
+          {isSurvey ? (
+            <div className="rounded-xl bg-[#F6F8F9] p-4">
+              <dt className="text-xs text-[#94A3B8]">{t('wizard.review.audience', { ns: 'surveys' })}</dt>
+              <dd className="mt-1 font-bold text-[#2AA8A2]">
+                {t(getSurveyAudienceI18nKey(getSurveyAudienceScope(test)), { ns: 'surveys' })}
+              </dd>
+            </div>
+          ) : (
+            <>
+              <div className="rounded-xl bg-[#F6F8F9] p-4">
+                <dt className="text-xs text-[#94A3B8]">{t('wizard.review.totalPoints')}</dt>
+                <dd className="mt-1 font-bold text-[#2AA8A2]">{formatLocaleNumber(totalPoints)}</dd>
+              </div>
+              <div className="rounded-xl bg-[#F6F8F9] p-4">
+                <dt className="text-xs text-[#94A3B8]">{t('wizard.review.duration')}</dt>
+                <dd className="mt-1 font-bold text-[#2A3433]">
+                  {test?.duration_minutes
+                    ? t('wizard.review.durationMinutes', { count: test.duration_minutes })
+                    : '—'}
+                </dd>
+              </div>
+            </>
+          )}
         </dl>
       </div>
 
@@ -74,6 +93,7 @@ function ExamReviewStep({
           testId={testId}
           questions={questions}
           allowPointsEdit={allowPointsEdit}
+          hideGrading={isSurvey}
           sectionTitle={t('wizard.review.questionList')}
           continueLabel={t('wizard.review.nextPublish')}
           onBack={onBack}

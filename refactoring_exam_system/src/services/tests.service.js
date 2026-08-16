@@ -5,8 +5,15 @@ export async function createTest(payload) {
   return data
 }
 
-export async function getMyTests() {
-  const { data } = await api.get('/tests/my')
+export async function getMyTests(params = {}) {
+  const query = {}
+  if (params.page != null) query.page = params.page
+  if (params.per_page != null) query.per_page = params.per_page
+  if (params.include_archived != null) query.include_archived = Boolean(params.include_archived)
+  if (params.search != null && String(params.search).trim()) {
+    query.search = String(params.search).trim()
+  }
+  const { data } = await api.get('/tests/my', { params: query })
   return data
 }
 

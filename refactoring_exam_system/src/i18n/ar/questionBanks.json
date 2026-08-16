@@ -64,6 +64,7 @@
     "questionSavedLocally": "تم حفظ السؤال محلياً",
     "published": "تم نشر بنك الأسئلة بنجاح",
     "questionUpdated": "تم تعديل السؤال بنجاح",
+    "questionDeleted": "تم حذف السؤال بنجاح",
     "minOneQuestion": "أضف سؤالاً واحداً على الأقل قبل النشر"
   },
   "validation": {
@@ -142,6 +143,11 @@
     "noSessionQuestions": "لا توجد أسئلة محفوظة في هذه الجلسة",
     "copyAll": "نسخ الكل",
     "editQuestionAria": "تعديل السؤال {{number}}",
+    "deleteQuestionAria": "حذف السؤال {{number}}",
+    "deleteQuestionTitle": "حذف السؤال",
+    "deleteQuestionMessage": "هل أنت متأكد من حذف هذا السؤال؟ لا يمكن التراجع عن هذا الإجراء بسهولة.",
+    "deleteQuestionItemLabel": "السؤال",
+    "deletingQuestion": "جاري الحذف...",
     "copyQuestionAria": "نسخ السؤال {{number}}",
     "essayNoChoices": "سؤال مقالي بدون خيارات.",
     "questionNumber": "سؤال {{number}}",

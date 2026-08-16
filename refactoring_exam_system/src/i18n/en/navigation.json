@@ -35,6 +35,21 @@
     "openMenu": "Open navigation menu",
     "closeMenu": "Close navigation menu"
   },
+  "globalSearch": {
+    "loading": "Searching...",
+    "empty": "No matching results.",
+    "untitled": "Untitled",
+    "sections": {
+      "subjects": "Subjects",
+      "tests": "Exams",
+      "surveys": "Surveys",
+      "question_banks": "Question banks",
+      "groups": "Groups",
+      "students": "Students",
+      "teachers": "Teachers",
+      "results": "Results"
+    }
+  },
   "breadcrumbs": {
     "home": "Home",
     "settings": "Settings",

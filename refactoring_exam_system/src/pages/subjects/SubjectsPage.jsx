@@ -1,6 +1,6 @@
 import { useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import { Plus } from 'lucide-react'
+import { Plus, Search } from 'lucide-react'
 import SoftDeleteConfirmDialog from '../../components/common/SoftDeleteConfirmDialog'
 import CreateSubjectModal from '../../components/subjects/CreateSubjectModal'
 import EditSubjectModal from '../../components/subjects/EditSubjectModal'
@@ -13,12 +13,19 @@ import { useSubjectsListView } from '../../hooks/subjects/useSubjectsListView'
 import { useWorkspaceTeachersCount } from '../../hooks/subjects/useWorkspaceTeachersCount'
 import { deleteSubject } from '../../services/subjects.service'
 import { useToastStore } from '../../store/toastStore'
-import { shellAccentButtonClass, shellPageSubtitleClass, shellPageTitleClass } from '../../lib/shellUi'
+import {
+  shellAccentButtonClass,
+  shellCardClass,
+  shellPageSubtitleClass,
+  shellPageTitleClass,
+  shellSearchInputClass,
+} from '../../lib/shellUi'
 
 function SubjectsPage() {
   const { t } = useTranslation('subjects')
   const showToast = useToastStore((s) => s.showToast)
-  const { subjects, loading, error, refetch } = useSubjects()
+  const [searchInput, setSearchInput] = useState('')
+  const { subjects, loading, error, refetch, debouncedSearch } = useSubjects({ search: searchInput })
   const activeSubjects = useMemo(
     () => subjects.filter((subject) => !subject.is_archived),
     [subjects],
@@ -95,6 +102,19 @@ function SubjectsPage() {
         examsCount={totalExamsCount}
       />
 
+      <div className={`p-4 ${shellCardClass}`}>
+        <div className="relative max-w-md">
+          <Search className="pointer-events-none absolute right-3 top-1/2 h-4 w-4 -translate-y-1/2 text-[var(--shell-text-subtle)]" />
+          <input
+            type="search"
+            value={searchInput}
+            onChange={(e) => setSearchInput(e.target.value)}
+            placeholder={t('searchPlaceholder')}
+            className={shellSearchInputClass}
+          />
+        </div>
+      </div>
+
       {error ? <p className="text-sm text-red-600">{error}</p> : null}
 
       <SubjectsTable
@@ -108,6 +128,7 @@ function SubjectsPage() {
         totalCount={totalCount}
         rangeStart={rangeStart}
         rangeEnd={rangeEnd}
+        emptyMessage={debouncedSearch ? t('table.emptySearch') : undefined}
         onEdit={handleEdit}
         onDelete={setDeleteSubjectItem}
       />

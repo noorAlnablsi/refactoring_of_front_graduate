@@ -1,63 +1,54 @@
 import { useCallback, useEffect, useMemo, useState } from 'react'
 import { fetchTestsForActiveWorkspace } from '../../lib/fetchWorkspaceTests'
+import { isSurveyTest } from '../../lib/surveys'
 import { filterTestsByTab } from '../../lib/testDisplay'
-import { getTestName } from '../../lib/testModel'
+
+const SEARCH_DEBOUNCE_MS = 300
 
 export function useTests(activeTab) {
   const [tests, setTests] = useState([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState('')
+  const [searchInput, setSearchInput] = useState('')
   const [search, setSearch] = useState('')
+
+  useEffect(() => {
+    const timer = window.setTimeout(() => {
+      setSearch(searchInput.trim())
+    }, SEARCH_DEBOUNCE_MS)
+    return () => window.clearTimeout(timer)
+  }, [searchInput])
 
   const fetchTests = useCallback(async () => {
     setLoading(true)
     setError('')
     try {
-      const nextTests = await fetchTestsForActiveWorkspace()
+      const nextTests = (await fetchTestsForActiveWorkspace({ search })).filter(
+        (test) => !isSurveyTest(test),
+      )
       setTests(nextTests)
     } catch (err) {
+      setTests([])
       setError(err.message)
     } finally {
       setLoading(false)
     }
-  }, [])
+  }, [search])
 
   useEffect(() => {
-    let cancelled = false
+    fetchTests()
+  }, [fetchTests])
 
-    fetchTestsForActiveWorkspace()
-      .then((nextTests) => {
-        if (cancelled) return
-        setTests(nextTests)
-      })
-      .catch((err) => {
-        if (cancelled) return
-        setError(err.message)
-      })
-      .finally(() => {
-        if (cancelled) return
-        setLoading(false)
-      })
+  const filteredTests = useMemo(() => filterTestsByTab(tests, activeTab), [tests, activeTab])
 
-    return () => {
-      cancelled = true
-    }
-  }, [])
-
-  const filteredTests = useMemo(() => {
-    const byTab = filterTestsByTab(tests, activeTab)
-    const query = search.trim().toLowerCase()
-    if (!query) return byTab
-    return byTab.filter(
-      (test) =>
-        String(getTestName(test))
-          .toLowerCase()
-          .includes(query) ||
-        String(test.subject_name || '')
-          .toLowerCase()
-          .includes(query),
-    )
-  }, [tests, activeTab, search])
-
-  return { tests, filteredTests, loading, error, search, setSearch, refetch: fetchTests }
+  return {
+    tests,
+    filteredTests,
+    loading,
+    error,
+    search: searchInput,
+    setSearch: setSearchInput,
+    debouncedSearch: search,
+    refetch: fetchTests,
+  }
 }

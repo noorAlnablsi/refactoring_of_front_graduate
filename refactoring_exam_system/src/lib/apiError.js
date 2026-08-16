@@ -18,6 +18,8 @@ const FIELD_I18N_KEYS = {
   subject_id: 'subject',
   total_score: 'totalScore',
   passing_score: 'passingScore',
+  membership_id: 'membershipId',
+  membership_ids: 'membershipIds',
 }
 
 export function getFieldLabel(field) {

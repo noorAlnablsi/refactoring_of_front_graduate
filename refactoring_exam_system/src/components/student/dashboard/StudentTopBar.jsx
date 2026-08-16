@@ -1,15 +1,12 @@
-import { Menu, Search } from 'lucide-react'
+import { Menu } from 'lucide-react'
 import { useTranslation } from 'react-i18next'
-import { getLanguageDirection } from '../../../lib/language'
 import { getActiveMembership } from '../../../lib/workspaceContext'
 import { useAuthStore } from '../../../store/authStore'
-import { useLanguageStore } from '../../../store/languageStore'
+import GlobalSearchBox from '../../dashboard/GlobalSearchBox'
 import UserAvatar from '../../dashboard/UserAvatar'
 
 function StudentTopBar({ onMenuClick, menuOpen = false }) {
   const { t } = useTranslation(['student', 'auth', 'navigation'])
-  const language = useLanguageStore((s) => s.language)
-  const dir = getLanguageDirection(language)
   const user = useAuthStore((s) => s.user)
   const membership = getActiveMembership()
   const workspaceName = membership?.workspace?.name || t('brand.quizHub', { ns: 'auth' })
@@ -34,18 +31,10 @@ function StudentTopBar({ onMenuClick, menuOpen = false }) {
           {workspaceName}
         </p>
 
-        <div className="relative min-w-0 flex-1">
-          <Search
-            className="pointer-events-none absolute end-3 top-1/2 h-4 w-4 -translate-y-1/2 text-[var(--shell-text-subtle)]"
-            strokeWidth={2}
-          />
-          <input
-            type="search"
-            dir={dir}
-            placeholder={t('topbar.searchPlaceholder')}
-            className="h-9 w-full rounded-full border-0 bg-[var(--shell-search-bg)] pt-[3px] pe-10 ps-4 pb-1 text-sm text-[var(--shell-text)] outline-none placeholder:text-sm placeholder:text-[var(--shell-text-subtle)] focus:ring-2 focus:ring-[var(--shell-accent)]/25"
-          />
-        </div>
+        <GlobalSearchBox
+          placeholder={t('topbar.searchPlaceholder')}
+          className="relative min-w-0 flex-1"
+        />
 
         <div className="flex shrink-0 items-center gap-3">
           <div className="flex min-w-0 items-center gap-2">

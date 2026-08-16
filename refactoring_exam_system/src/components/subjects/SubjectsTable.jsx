@@ -41,6 +41,7 @@ function SubjectsTable({
   rangeStart = 0,
   rangeEnd = 0,
   pageSize = SUBJECTS_PAGE_SIZE,
+  emptyMessage,
   onEdit,
   onDelete,
 }) {
@@ -67,7 +68,7 @@ function SubjectsTable({
   if (!subjects.length && totalCount === 0) {
     return (
       <div className={`${shellTableHostClass} p-12 text-center ${shellCardClass}`}>
-        <p className={shellBodyTextClass}>{t('table.empty')}</p>
+        <p className={shellBodyTextClass}>{emptyMessage || t('table.empty')}</p>
       </div>
     )
   }

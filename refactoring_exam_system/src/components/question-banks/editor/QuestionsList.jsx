@@ -1,4 +1,4 @@
-import { Copy, Pencil } from 'lucide-react'
+import { Copy, Pencil, Trash2 } from 'lucide-react'
 import { useTranslation } from 'react-i18next'
 import {
   formatQuestionForCopy,
@@ -30,6 +30,7 @@ function QuestionsList({
   topics = [],
   canEdit = false,
   onEditQuestion,
+  onDeleteQuestion,
 }) {
   const { t } = useTranslation('questionBanks')
   const showToast = useToastStore((s) => s.showToast)
@@ -110,6 +111,16 @@ function QuestionsList({
                     aria-label={t('editor.editQuestionAria', { number: index + 1 })}
                   >
                     <Pencil className="h-4 w-4" />
+                  </button>
+                ) : null}
+                {canEdit ? (
+                  <button
+                    type="button"
+                    onClick={() => onDeleteQuestion?.(question, index)}
+                    className="rounded-lg p-1.5 text-[#64748B] hover:bg-white hover:text-red-600"
+                    aria-label={t('editor.deleteQuestionAria', { number: index + 1 })}
+                  >
+                    <Trash2 className="h-4 w-4" />
                   </button>
                 ) : null}
                 {readOnly ? (

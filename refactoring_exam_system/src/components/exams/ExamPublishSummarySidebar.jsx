@@ -2,6 +2,7 @@ import { useTranslation } from 'react-i18next'
 import { BookOpen, CheckCircle2, ClipboardList, Eye, Sparkles } from 'lucide-react'
 import { getTestQuestionsCount, getTestTotalPoints } from '../../lib/testDisplay'
 import { isAiMonitoringActive, normalizeSettingsConfig } from '../../lib/testSettings'
+import { getSurveyAudienceI18nKey, getSurveyAudienceScope } from '../../lib/surveys'
 
 function SummaryStatCard({ icon: Icon, label, value, highlight = false }) {
   return (
@@ -27,14 +28,15 @@ function SummaryStatCard({ icon: Icon, label, value, highlight = false }) {
   )
 }
 
-function ExamPublishSummarySidebar({ test, settings }) {
-  const { t } = useTranslation('exams')
+function ExamPublishSummarySidebar({ test, settings, isSurvey = false }) {
+  const { t } = useTranslation(['exams', 'surveys'])
   const questionsCount = getTestQuestionsCount(test)
   const totalPoints = test?.total_score ?? getTestTotalPoints(test)
-  const subjectName = test?.subject_name || '—'
+  const subjectName = test?.subject_name || (isSurvey ? t('card.noSubject', { ns: 'surveys' }) : '—')
   const monitoringActive = isAiMonitoringActive(
     normalizeSettingsConfig(settings || test?.settings_config || {}),
   )
+  const audience = getSurveyAudienceScope(test)
 
   return (
     <div className="space-y-4">
@@ -53,19 +55,30 @@ function ExamPublishSummarySidebar({ test, settings }) {
             value={t('wizard.summary.questionsValue', { count: questionsCount })}
             highlight
           />
-          <SummaryStatCard
-            icon={Sparkles}
-            label={t('wizard.summary.totalPoints')}
-            value={t('wizard.summary.pointsValue', { count: totalPoints })}
-            highlight
-          />
+          {isSurvey ? (
+            <SummaryStatCard
+              icon={Sparkles}
+              label={t('wizard.sidebar.audience', { ns: 'surveys' })}
+              value={t(getSurveyAudienceI18nKey(audience), { ns: 'surveys' })}
+              highlight
+            />
+          ) : (
+            <SummaryStatCard
+              icon={Sparkles}
+              label={t('wizard.summary.totalPoints')}
+              value={t('wizard.summary.pointsValue', { count: totalPoints })}
+              highlight
+            />
+          )}
           <SummaryStatCard icon={BookOpen} label={t('wizard.summary.subject')} value={subjectName} />
-          <SummaryStatCard
-            icon={Eye}
-            label={t('wizard.summary.monitoringStatus')}
-            value={monitoringActive ? t('wizard.summary.active') : t('wizard.summary.inactive')}
-            highlight={monitoringActive}
-          />
+          {isSurvey ? null : (
+            <SummaryStatCard
+              icon={Eye}
+              label={t('wizard.summary.monitoringStatus')}
+              value={monitoringActive ? t('wizard.summary.active') : t('wizard.summary.inactive')}
+              highlight={monitoringActive}
+            />
+          )}
         </div>
       </aside>
 

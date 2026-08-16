@@ -1,0 +1,167 @@
+{
+  "page": {
+    "eyebrow": "Feedback",
+    "title": "Surveys",
+    "subtitle": "Create and publish workspace surveys without duration, scores, or proctoring.",
+    "createSurvey": "Create survey",
+    "viewSurveys": "View surveys",
+    "searchPlaceholder": "Search surveys...",
+    "processing": "Processing...",
+    "empty": "No surveys",
+    "emptySearch": "No matching search results.",
+    "emptyHint": "Start by creating your first survey.",
+    "assignedEmpty": "No surveys are assigned to you yet.",
+    "assignedHint": "When a survey you can answer is published, it will appear here."
+  },
+  "tabs": {
+    "managed": "I manage",
+    "assigned": "Assigned to me",
+    "all": "All",
+    "published": "Published",
+    "drafts": "Drafts",
+    "closed": "Closed"
+  },
+  "card": {
+    "untitled": "Untitled",
+    "noSubject": "No subject",
+    "questions": "{{count}} questions",
+    "closeSurvey": "Close survey",
+    "copyLink": "Copy link",
+    "continueEditing": "Continue editing",
+    "delete": "Delete",
+    "archive": "Archive"
+  },
+  "audience": {
+    "title": "Audience",
+    "subtitle": "Choose who can respond to this survey.",
+    "community": "Platform community",
+    "communityDesc": "Any signed-in QuizHub user, including people outside this workspace.",
+    "workspace": "All workspace members",
+    "workspaceDesc": "Every active member: student, teacher, and admin.",
+    "targeted": "Specific members",
+    "targetedDesc": "Only the people you select before publishing.",
+    "lockedHint": "Audience cannot be changed after publishing."
+  },
+  "kind": {
+    "title": "What do you want to create?",
+    "exam": "Exam",
+    "examDesc": "A timed, scored, graded assessment.",
+    "survey": "Survey",
+    "surveyDesc": "Collect responses with no duration, scores, or proctoring."
+  },
+  "confirm": {
+    "itemLabel": "Survey",
+    "archiveTitle": "Confirm archive",
+    "archiveMessage": "Archive this survey? It will be hidden from active lists.",
+    "archiveNote": "You can return to it later from the archive if available.",
+    "closeTitle": "Confirm close survey",
+    "closeMessage": "Close this survey now? No one will be able to respond afterward.",
+    "closeNote": "Closing stops new responses. Submitted responses stay as they are.",
+    "deleteTitle": "Confirm deletion",
+    "deleteMessage": "Are you sure you want to delete this survey?",
+    "deleteNote": "Deletion is permanent and may not be reversible from the interface."
+  },
+  "toast": {
+    "archived": "Survey archived",
+    "closed": "Survey closed",
+    "deleted": "Survey deleted",
+    "draftSaved": "Survey draft saved",
+    "created": "Survey created",
+    "infoSaved": "Survey details saved",
+    "settingsSaved": "Survey settings saved",
+    "published": "Survey published successfully",
+    "linkCopied": "Survey link copied",
+    "targetedRequired": "A targeted survey needs at least one assigned member before publishing."
+  },
+  "wizard": {
+    "createTitle": "Create a new survey",
+    "editTitle": "Edit survey",
+    "loading": "Loading survey...",
+    "header": {
+      "eyebrow": "Survey wizard"
+    },
+    "basicInfo": {
+      "title": "Survey basics",
+      "subtitle": "Add a title and description. Subject is optional.",
+      "nameLabel": "Survey name",
+      "namePlaceholder": "Example: Student satisfaction survey",
+      "descriptionLabel": "Description",
+      "descriptionPlaceholder": "Write a short intro respondents will see.",
+      "subjectLabel": "Subject",
+      "subjectOptional": "No subject",
+      "subjectHint": "Link the survey to a subject when relevant, or leave it unlinked."
+    },
+    "settings": {
+      "eyebrow": "Survey settings",
+      "title": "Audience and closing date",
+      "subtitle": "Choose who can respond, and optionally when the survey closes.",
+      "closedAt": "Closing date (optional)",
+      "closedAtHint": "Leave empty to keep it open until you close it manually."
+    },
+    "review": {
+      "eyebrow": "Review survey",
+      "title": "Review before publishing",
+      "subtitle": "Check the questions and audience. There are no scores or duration.",
+      "surveyName": "Survey name",
+      "audience": "Audience"
+    },
+    "publish": {
+      "eyebrow": "Publish survey",
+      "title": "Publish and share the link",
+      "subtitle": "Publish the survey, then copy the link for respondents.",
+      "shareTitle": "Survey link",
+      "shareHint": "This link can be shared. Community respondents do not need to join the workspace.",
+      "assignTitle": "Specific members",
+      "assignHint": "Choose who can respond to this survey.",
+      "publishNow": "Publish survey",
+      "identityNote": "Responses are associated with respondent accounts (name and email)."
+    },
+    "sidebar": {
+      "summary": "Survey summary",
+      "audience": "Audience",
+      "subject": "Subject"
+    }
+  },
+  "assigned": {
+    "openSurvey": "Ready to answer",
+    "openCta": "Open survey"
+  },
+  "respond": {
+    "eyebrow": "Survey",
+    "loading": "Loading survey...",
+    "loadErrorTitle": "Could not open survey",
+    "back": "Back",
+    "saving": "Saving...",
+    "unsaved": "Unsaved changes",
+    "savedHint": "Answers saved",
+    "progress": "{{answered}} / {{total}} answered",
+    "introTitle": "Ready to begin?",
+    "introMessage": "Press Start to open the questions. You can save and submit later.",
+    "start": "Start",
+    "starting": "Starting...",
+    "save": "Save answers",
+    "submit": "Submit survey",
+    "submitting": "Submitting...",
+    "submitTitle": "Confirm submission",
+    "submitMessage": "Submit this survey now? You will not be able to edit answers after submitting.",
+    "submitMessagePartial": "You still have {{count}} unanswered question(s). Submit now?",
+    "submitNote": "After submission, answers become final.",
+    "completedTitle": "Your response was submitted",
+    "completedMessage": "Thank you for participating. You can review your answers below without editing.",
+    "questionNumber": "Question {{number}}",
+    "essayPlaceholder": "Write your answer here...",
+    "choicesAria": "Answer choices",
+    "types": {
+      "mcq": "Multiple choice",
+      "true_false": "True / False",
+      "multi_select": "Multi select",
+      "essay": "Essay"
+    },
+    "toast": {
+      "started": "Survey started",
+      "saved": "Answers saved",
+      "nothingToSave": "Answer at least one question before saving",
+      "submitted": "Survey submitted successfully"
+    }
+  }
+}

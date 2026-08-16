@@ -20,7 +20,9 @@
     "duration": "مدة الاختبار",
     "totalScore": "الدرجة الكلية",
     "passingScore": "علامة النجاح",
-    "theme": "النمط"
+    "theme": "النمط",
+    "membershipId": "معرّف العضوية",
+    "membershipIds": "معرّفات العضوية"
   },
   "placeholders": {
     "fullName": "أدخل اسمك الكامل",
