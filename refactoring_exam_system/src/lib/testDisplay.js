@@ -68,18 +68,30 @@ export function filterTestsByTab(tests = [], tab) {
   if (tab === TEST_TABS.PUBLISHED) {
     return tests.filter((test) => test.status === TEST_STATUS.PUBLISHED)
   }
-  if (tab === TEST_TABS.CORRECTED) {
-    return tests.filter((test) => test.status === TEST_STATUS.CLOSED)
-  }
-  if (tab === TEST_TABS.DRAFTS) {
+  if (tab === TEST_TABS.DRAFT || tab === TEST_TABS.DRAFTS) {
+    if (tab === TEST_TABS.DRAFT) {
+      return tests.filter((test) => test.status === TEST_STATUS.DRAFT)
+    }
     return tests.filter(
       (test) => test.status === TEST_STATUS.DRAFT || test.status === TEST_STATUS.SCHEDULED,
     )
+  }
+  if (tab === TEST_TABS.SCHEDULED) {
+    return tests.filter((test) => test.status === TEST_STATUS.SCHEDULED)
   }
   if (tab === TEST_TABS.CLOSED) {
     return tests.filter((test) => test.status === TEST_STATUS.CLOSED)
   }
   return tests
+}
+
+/** Map exams UI tab → GET /tests/my|/workspaces/tests query (server-side). */
+export function getExamListStatusQuery(tab) {
+  if (tab === TEST_TABS.DRAFT) return { status: TEST_STATUS.DRAFT }
+  if (tab === TEST_TABS.SCHEDULED) return { status: TEST_STATUS.SCHEDULED }
+  if (tab === TEST_TABS.PUBLISHED) return { status: TEST_STATUS.PUBLISHED }
+  if (tab === TEST_TABS.CLOSED) return { status: TEST_STATUS.CLOSED }
+  return {}
 }
 
 export function getTestQuestionsCount(test) {

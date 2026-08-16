@@ -60,8 +60,18 @@ export function useStudentGroupsPage() {
   const [error, setError] = useState('')
   const [selectedSubjectId, setSelectedSubjectId] = useState('')
   const [sortKey, setSortKey] = useState('newest')
+  const [searchInput, setSearchInput] = useState('')
+  const [search, setSearch] = useState('')
   const [page, setPage] = useState(1)
   const canMutate = canMutateStudentGroups()
+
+  useEffect(() => {
+    const timer = window.setTimeout(() => {
+      setSearch(searchInput.trim())
+      setPage(1)
+    }, 250)
+    return () => window.clearTimeout(timer)
+  }, [searchInput])
 
   const fetchAll = useCallback(async () => {
     setLoading(true)
@@ -138,17 +148,28 @@ export function useStudentGroupsPage() {
   }, [fetchAll])
 
   const filteredGroups = useMemo(() => {
-    if (!selectedSubjectId) return sortGroups(groups, sortKey)
-    const list = groups.filter((group) => Number(group.subjectId) === Number(selectedSubjectId))
+    let list = groups
+    if (selectedSubjectId) {
+      list = list.filter((group) => Number(group.subjectId) === Number(selectedSubjectId))
+    }
+    if (search) {
+      const q = search.toLowerCase()
+      list = list.filter((group) => {
+        const name = String(group.name || '').toLowerCase()
+        const subjectName = String(group.subject?.name || '').toLowerCase()
+        const ownerName = String(group.ownerName || '').toLowerCase()
+        return name.includes(q) || subjectName.includes(q) || ownerName.includes(q)
+      })
+    }
     return sortGroups(list, sortKey)
-  }, [groups, selectedSubjectId, sortKey])
+  }, [groups, selectedSubjectId, sortKey, search])
 
   const totalCount = filteredGroups.length
   const totalPages = Math.max(1, Math.ceil(totalCount / GROUPS_PAGE_SIZE))
 
   useEffect(() => {
     setPage(1)
-  }, [selectedSubjectId, sortKey, totalCount])
+  }, [selectedSubjectId, sortKey, search, totalCount])
 
   useEffect(() => {
     if (page > totalPages) setPage(totalPages)
@@ -173,6 +194,9 @@ export function useStudentGroupsPage() {
     setSelectedSubjectId,
     sortKey,
     setSortKey,
+    searchInput,
+    setSearchInput,
+    search,
     page,
     setPage,
     totalPages,

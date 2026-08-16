@@ -135,8 +135,10 @@ export async function getSubjectQuestionBanks(subjectId) {
   return data
 }
 
-export async function getSubjectStudents(subjectId) {
-  const { data } = await api.get(`/subjects/${subjectId}/students`)
+export async function getSubjectStudents(subjectId, { search } = {}) {
+  const params = {}
+  if (search != null && String(search).trim()) params.search = String(search).trim()
+  const { data } = await api.get(`/subjects/${subjectId}/students`, { params })
   return data
 }
 

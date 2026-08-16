@@ -143,8 +143,10 @@ export async function loadQuestionBankQuestionsForView(bankId, { bank } = {}) {
   return getQuestionBankQuestions(bankId)
 }
 
-export async function getQuestionBankQuestions(bankId) {
-  const { data } = await api.get(`/question-banks/${bankId}/questions`)
+export async function getQuestionBankQuestions(bankId, { search } = {}) {
+  const params = {}
+  if (search != null && String(search).trim()) params.search = String(search).trim()
+  const { data } = await api.get(`/question-banks/${bankId}/questions`, { params })
   return data
 }
 

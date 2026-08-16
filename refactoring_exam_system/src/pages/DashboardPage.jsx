@@ -1,82 +1,58 @@
 import { useState } from 'react'
-import { Link } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
-import { BookOpen, LayoutGrid, UserPlus } from 'lucide-react'
+import TeacherDashboardRecentTests from '../components/dashboard/TeacherDashboardRecentTests'
+import TeacherDashboardStats from '../components/dashboard/TeacherDashboardStats'
+import TeacherDashboardSubjects from '../components/dashboard/TeacherDashboardSubjects'
+import TeacherDashboardWeakTopics from '../components/dashboard/TeacherDashboardWeakTopics'
 import WorkspaceDashboardQuestionBanks from '../components/dashboard/WorkspaceDashboardQuestionBanks'
 import WorkspaceDashboardRecentMembers from '../components/dashboard/WorkspaceDashboardRecentMembers'
 import WorkspaceDashboardStats from '../components/dashboard/WorkspaceDashboardStats'
 import WorkspaceDashboardSubjectsCard from '../components/dashboard/WorkspaceDashboardSubjectsCard'
 import WorkspaceDashboardTrendChart from '../components/dashboard/WorkspaceDashboardTrendChart'
 import WorkspaceDashboardUpcomingExams from '../components/dashboard/WorkspaceDashboardUpcomingExams'
-import SendInviteModal from '../components/invites/SendInviteModal'
 import CreateSubjectModal from '../components/subjects/CreateSubjectModal'
-import { ROUTES } from '../constants/routes'
+import { useTeacherDashboard } from '../hooks/useTeacherDashboard'
 import { useWorkspaceDashboard } from '../hooks/useWorkspaceDashboard'
-import {
-  shellBodyTextClass,
-  shellCardInteractiveClass,
-  shellIconWrapClass,
-  shellPageSubtitleClass,
-  shellPageTitleClass,
-  shellSectionTitleClass,
-} from '../lib/shellUi'
-import { canAccessSubjectsModule, canSendInvites, getActiveMembership } from '../lib/workspaceContext'
+import { shellPageSubtitleClass, shellPageTitleClass } from '../lib/shellUi'
+import { getActiveMembership } from '../lib/workspaceContext'
 import { useAuthStore } from '../store/authStore'
 
-function StaffFallbackDashboard({ greeting }) {
+function TeacherScopedDashboard({ greeting, subtitle }) {
   const { t } = useTranslation('dashboard')
-  const showSubjectsCard = canAccessSubjectsModule()
-  const showInviteCard = canSendInvites()
-  const [inviteModalOpen, setInviteModalOpen] = useState(false)
+  const { summary, subjects, upcomingTests, recentTests, loading, error, refetch } =
+    useTeacherDashboard({ recent_limit: 5, upcoming_limit: 10 })
 
   return (
     <div className="min-w-0 space-y-6">
       <div className="min-w-0">
-        <h1 className={`text-2xl md:text-3xl ${shellPageTitleClass}`}>{t('title')}</h1>
-        <p className={`mt-2 ${shellPageSubtitleClass}`}>{greeting}</p>
+        <h1 className={`text-2xl md:text-[28px] ${shellPageTitleClass}`}>{greeting}</h1>
+        <p className={`mt-2 max-w-3xl ${shellPageSubtitleClass}`}>{subtitle}</p>
       </div>
 
-      <div className="grid gap-4 md:grid-cols-2">
-        {showSubjectsCard ? (
-          <Link to={ROUTES.SUBJECTS} className={`flex items-center gap-4 p-6 ${shellCardInteractiveClass}`}>
-            <span className={`h-12 w-12 ${shellIconWrapClass}`}>
-              <BookOpen className="h-6 w-6" />
-            </span>
-            <div>
-              <p className={shellSectionTitleClass}>{t('subjects.title')}</p>
-              <p className={shellBodyTextClass}>{t('subjects.description')}</p>
-            </div>
-          </Link>
-        ) : null}
-
-        {showInviteCard ? (
+      {error ? (
+        <div className="rounded-2xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">
+          <p>{error}</p>
           <button
             type="button"
-            onClick={() => setInviteModalOpen(true)}
-            className={`flex items-center gap-4 p-6 text-right ${shellCardInteractiveClass}`}
+            onClick={refetch}
+            className="mt-2 font-bold text-[var(--shell-accent)]"
           >
-            <span className={`h-12 w-12 ${shellIconWrapClass}`}>
-              <UserPlus className="h-6 w-6" />
-            </span>
-            <div>
-              <p className={shellSectionTitleClass}>{t('invite.title')}</p>
-              <p className={shellBodyTextClass}>{t('invite.description')}</p>
-            </div>
+            {t('errors.retry')}
           </button>
-        ) : null}
-
-        <div className={`flex items-center gap-4 p-6 opacity-60 ${shellCardInteractiveClass}`}>
-          <span className="flex h-12 w-12 items-center justify-center rounded-xl bg-[var(--shell-hover)] text-[var(--shell-text-muted)]">
-            <LayoutGrid className="h-6 w-6" />
-          </span>
-          <div>
-            <p className={shellSectionTitleClass}>{t('otherModules.title')}</p>
-            <p className={shellBodyTextClass}>{t('otherModules.comingSoon')}</p>
-          </div>
         </div>
+      ) : null}
+
+      <TeacherDashboardStats summary={summary} loading={loading} />
+
+      <div className="grid gap-4 xl:grid-cols-2">
+        <TeacherDashboardSubjects subjects={subjects} loading={loading} />
+        <TeacherDashboardWeakTopics topics={summary?.weak_topics} loading={loading} />
       </div>
 
-      <SendInviteModal open={inviteModalOpen} onClose={() => setInviteModalOpen(false)} />
+      <div className="grid gap-4 xl:grid-cols-[minmax(0,1.15fr)_minmax(280px,0.7fr)]">
+        <TeacherDashboardRecentTests tests={recentTests} loading={loading} />
+        <WorkspaceDashboardUpcomingExams tests={upcomingTests} loading={loading} />
+      </div>
     </div>
   )
 }
@@ -109,11 +85,16 @@ function DashboardPage() {
       : t('welcome.subtitle')
 
   if (!canAccess) {
-    const fallbackGreeting =
-      workspaceName && workspaceName !== fullName
-        ? t('greetingWithWorkspace', { name: fullName, workspace: workspaceName })
-        : t('greeting', { name: fullName })
-    return <StaffFallbackDashboard greeting={fallbackGreeting} />
+    return (
+      <TeacherScopedDashboard
+        greeting={greeting}
+        subtitle={
+          workspaceName && workspaceName !== fullName
+            ? t('teacher.subtitleWithWorkspace', { workspace: workspaceName })
+            : t('teacher.subtitle')
+        }
+      />
+    )
   }
 
   return (

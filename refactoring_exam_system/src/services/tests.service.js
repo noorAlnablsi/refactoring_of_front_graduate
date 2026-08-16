@@ -10,6 +10,9 @@ export async function getMyTests(params = {}) {
   if (params.page != null) query.page = params.page
   if (params.per_page != null) query.per_page = params.per_page
   if (params.include_archived != null) query.include_archived = Boolean(params.include_archived)
+  if (params.status != null && String(params.status).trim()) {
+    query.status = String(params.status).trim().toUpperCase()
+  }
   if (params.search != null && String(params.search).trim()) {
     query.search = String(params.search).trim()
   }

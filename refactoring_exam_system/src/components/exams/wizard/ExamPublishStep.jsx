@@ -107,6 +107,7 @@ function ExamPublishStep({
   const [publishTime, setPublishTime] = useState('')
   const [recipientTab, setRecipientTab] = useState(RECIPIENT_TABS.GROUPS)
   const [searchQuery, setSearchQuery] = useState('')
+  const [debouncedSearch, setDebouncedSearch] = useState('')
   const [students, setStudents] = useState([])
   const [groups, setGroups] = useState([])
   const [selectedStudentIds, setSelectedStudentIds] = useState([])
@@ -118,6 +119,11 @@ function ExamPublishStep({
     () => (isSurvey ? getSurveyShareLink(test) : getExamShareLink(test)),
     [isSurvey, test],
   )
+
+  useEffect(() => {
+    const timer = window.setTimeout(() => setDebouncedSearch(searchQuery.trim()), 300)
+    return () => window.clearTimeout(timer)
+  }, [searchQuery])
 
   useEffect(() => {
     let cancelled = false
@@ -165,26 +171,36 @@ function ExamPublishStep({
             unique.push({ ...member, membership_id: id })
           })
 
-          setStudents(unique)
+          const query = debouncedSearch.toLowerCase()
+          const filteredMembers = query
+            ? unique.filter((member) => {
+                const name = (member.full_name || '').toLowerCase()
+                const email = (member.email || '').toLowerCase()
+                return name.includes(query) || email.includes(query)
+              })
+            : unique
+
+          setStudents(filteredMembers)
           setGroups([])
           setRecipientTab(RECIPIENT_TABS.INDIVIDUALS)
 
           const assignedIds = (assignedRes.students || [])
             .map((student) => Number(student.membership_id))
             .filter(Boolean)
-          setSelectedStudentIds(assignedIds)
+          setSelectedStudentIds((prev) => (prev.length ? prev : assignedIds))
           return
         }
 
+        const searchParam = debouncedSearch || undefined
         const [subjectStudentsRes, assignedRes, groupsRes] = await Promise.all([
           subjectId
-            ? getSubjectStudents(subjectId)
+            ? getSubjectStudents(subjectId, { search: searchParam })
             : Promise.resolve({ students: [] }),
           testId
             ? getAssignedStudents(testId).catch(() => ({ students: [] }))
             : Promise.resolve({ students: [] }),
           subjectId
-            ? getSubjectGroups(subjectId).catch(() => ({ groups: [] }))
+            ? getSubjectGroups(subjectId, { search: searchParam }).catch(() => ({ groups: [] }))
             : Promise.resolve({ groups: [] }),
         ])
 
@@ -206,7 +222,7 @@ function ExamPublishStep({
           .map((student) => Number(student.membership_id))
           .filter(Boolean)
 
-        setSelectedStudentIds(assignedIds)
+        setSelectedStudentIds((prev) => (prev.length ? prev : assignedIds))
       } catch (err) {
         if (!cancelled) showToast(err.message, 'error')
       } finally {
@@ -218,27 +234,10 @@ function ExamPublishStep({
     return () => {
       cancelled = true
     }
-  }, [isSurvey, showAssign, subjectId, testId, showToast])
+  }, [isSurvey, showAssign, subjectId, testId, showToast, debouncedSearch])
 
-  const filteredStudents = useMemo(() => {
-    const query = searchQuery.trim().toLowerCase()
-    if (!query) return students
-    return students.filter((student) => {
-      const name = (student.full_name || '').toLowerCase()
-      const email = (student.email || '').toLowerCase()
-      return name.includes(query) || email.includes(query)
-    })
-  }, [searchQuery, students])
-
-  const filteredGroups = useMemo(() => {
-    const query = searchQuery.trim().toLowerCase()
-    if (!query) return groups
-    return groups.filter((group) => {
-      const name = (group.name || '').toLowerCase()
-      const description = (group.description || '').toLowerCase()
-      return name.includes(query) || description.includes(query)
-    })
-  }, [searchQuery, groups])
+  const filteredStudents = students
+  const filteredGroups = groups
 
   const estimatedRecipients = useMemo(() => {
     const fromGroups = groups

@@ -14,9 +14,12 @@
   },
   "tabs": {
     "all": "الكل",
-    "published": "المنشورة",
-    "corrected": "المصححة",
-    "drafts": "المسودات"
+    "draft": "مسودة",
+    "scheduled": "مجدولة",
+    "published": "منشورة",
+    "closed": "مغلقة",
+    "drafts": "المسودات",
+    "corrected": "المصححة"
   },
   "card": {
     "untitled": "بدون عنوان",

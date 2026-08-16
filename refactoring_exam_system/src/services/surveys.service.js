@@ -58,3 +58,12 @@ export async function submitSurveyResponse(surveyId, responseId) {
   const { data } = await api.post(`/surveys/${surveyId}/responses/${responseId}/submit`)
   return data
 }
+
+/**
+ * GET /tests/{surveyId}/survey-responses — manager summary (no answer payloads).
+ * Auth: Bearer + X-Workspace-Id.
+ */
+export async function getSurveyResponsesForManager(surveyId) {
+  const { data } = await api.get(`/tests/${surveyId}/survey-responses`)
+  return data
+}

@@ -18,6 +18,7 @@ export const ROUTES = {
   SURVEYS: '/surveys',
   SURVEY_CREATE: '/surveys/new',
   SURVEY_EDIT: '/surveys/:id/edit',
+  SURVEY_RESPONSES: '/surveys/:id/responses',
   SURVEY_RESPOND: '/surveys/:id',
   EXAM_ATTEMPTS: '/exams/:id/attempts',
   EXAM_ATTEMPT_GRADE: '/exams/:id/attempts/:attemptId/grade',

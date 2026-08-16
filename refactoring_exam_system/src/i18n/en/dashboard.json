@@ -69,6 +69,37 @@
     "title": "Send invite",
     "description": "Invite a student, teacher, or admin by email"
   },
+  "teacher": {
+    "subtitle": "A focused view of your subjects, students, and exams in your teaching scope.",
+    "subtitleWithWorkspace": "A focused view of your subjects and students in “{{workspace}}”.",
+    "stats": {
+      "totalStudents": "Students in your subjects",
+      "averagePerformance": "Average performance",
+      "weakTopics": "Topics needing improvement",
+      "weakTopicsHint": "Based on graded attempts in your subjects"
+    },
+    "subjects": {
+      "title": "Your subjects",
+      "empty": "No subjects are assigned to you yet.",
+      "manageGroups": "Groups",
+      "students": "{{count}} students",
+      "gradedTests": "{{count}} graded exams",
+      "avg": "Average",
+      "success": "Success rate",
+      "weakPreview": "Weak: {{names}}"
+    },
+    "weakTopics": {
+      "title": "Weak topics",
+      "empty": "No standout weak topics right now.",
+      "mastery": "Mastery {{value}}",
+      "affected": "{{count}} students"
+    },
+    "recent": {
+      "title": "Your recent exams",
+      "empty": "You have not created exams yet.",
+      "viewAll": "View all exams"
+    }
+  },
   "otherModules": {
     "title": "Other modules",
     "comingSoon": "Coming soon"

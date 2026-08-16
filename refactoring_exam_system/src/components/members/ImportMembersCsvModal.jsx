@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Download, FileSpreadsheet, Upload, X } from 'lucide-react'
+import { translateBackendMessage } from '../../i18n/translateBackendMessage'
 import { formatLocaleNumber } from '../../lib/localeNumber'
 import { getBulkImportAllowedRoles } from '../../lib/workspaceContext'
 import {
@@ -13,8 +14,25 @@ import {
 } from '../../services/workspaces.service'
 import { useToastStore } from '../../store/toastStore'
 
+function translateCsvImportResult(data) {
+  if (!data || typeof data !== 'object') return data
+
+  const failedRows = Array.isArray(data.failed_rows)
+    ? data.failed_rows.map((row) => ({
+        ...row,
+        error: translateBackendMessage(row?.error || '') || row?.error || '',
+      }))
+    : []
+
+  return {
+    ...data,
+    message: data.message ? translateBackendMessage(data.message) : data.message,
+    failed_rows: failedRows,
+  }
+}
+
 function ImportMembersCsvModal({ open, onClose, onSuccess }) {
-  const { t } = useTranslation(['members', 'common'])
+  const { t, i18n } = useTranslation(['members', 'common'])
   const showToast = useToastStore((s) => s.showToast)
   const inputRef = useRef(null)
   const [file, setFile] = useState(null)
@@ -39,7 +57,7 @@ function ImportMembersCsvModal({ open, onClose, onSuccess }) {
       await downloadWorkspaceMembersCsvTemplate()
       showToast(t('csv.templateDownloaded'), 'success')
     } catch (err) {
-      showToast(err.message, 'error')
+      showToast(translateBackendMessage(err.message) || err.message, 'error')
     } finally {
       setDownloadingTemplate(false)
     }
@@ -53,17 +71,20 @@ function ImportMembersCsvModal({ open, onClose, onSuccess }) {
 
     setLoading(true)
     try {
-      const data = await importWorkspaceMembersCsv(file)
+      const data = translateCsvImportResult(await importWorkspaceMembersCsv(file))
       setResult(data)
       const failed = data.failed_count ?? data.failed_rows?.length ?? 0
       if (failed > 0) {
-        showToast(t('csv.importedWithFailures', { failed: formatLocaleNumber(failed) }), 'error')
+        showToast(
+          data.message || t('csv.importedWithFailures', { failed: formatLocaleNumber(failed) }),
+          'error',
+        )
       } else {
-        showToast(t('csv.imported'), 'success')
+        showToast(data.message || t('csv.imported'), 'success')
       }
       onSuccess?.(data)
     } catch (err) {
-      showToast(err.message, 'error')
+      showToast(translateBackendMessage(err.message) || err.message, 'error')
     } finally {
       setLoading(false)
     }
@@ -72,7 +93,7 @@ function ImportMembersCsvModal({ open, onClose, onSuccess }) {
   return (
     <div className={customModalOverlayMutedClass}>
       <div
-        dir="rtl"
+        dir={i18n.dir()}
         className={`w-full max-w-xl rounded-2xl bg-white p-6 shadow-xl ${customModalPanelSafeClass}`}
         role="dialog"
         aria-modal="true"
@@ -145,6 +166,9 @@ function ImportMembersCsvModal({ open, onClose, onSuccess }) {
         {result ? (
           <div className="mt-4 space-y-3 rounded-xl bg-[#F8FAFB] px-4 py-3 ring-1 ring-[#E5E9EB]">
             <p className="text-sm font-bold text-[#2A3433]">{t('csv.summaryTitle')}</p>
+            {result.message ? (
+              <p className="text-xs font-semibold leading-6 text-[#2AA8A2]">{result.message}</p>
+            ) : null}
             <ul className="grid gap-1 text-xs font-semibold text-[#64748B] sm:grid-cols-2">
               <li>{t('csv.summary.total', { count: formatLocaleNumber(result.total_rows ?? 0) })}</li>
               <li>

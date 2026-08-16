@@ -26,10 +26,13 @@ export const TEST_KIND = {
 
 export const TEST_TABS = {
   ALL: 'all',
+  /** Maps 1:1 to Test.status for exams list server filter */
+  DRAFT: 'draft',
+  SCHEDULED: 'scheduled',
   PUBLISHED: 'published',
-  CORRECTED: 'corrected',
-  DRAFTS: 'drafts',
   CLOSED: 'closed',
+  /** Surveys managed list (client tab; may include DRAFT+SCHEDULED) */
+  DRAFTS: 'drafts',
 }
 
 export const TEST_WIZARD_STEPS = {

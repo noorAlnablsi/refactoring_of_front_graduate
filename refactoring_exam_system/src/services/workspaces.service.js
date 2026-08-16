@@ -38,13 +38,32 @@ export async function getWorkspaceTeachers(params = {}) {
 
 /** Institution workspace exams list (owner/admin/teacher with access). */
 export async function getWorkspaceTests(params = {}) {
-  const { data } = await api.get('/workspaces/tests', { params })
+  const query = {}
+  if (params.page != null) query.page = params.page
+  if (params.per_page != null) query.per_page = params.per_page
+  if (params.include_archived != null) query.include_archived = Boolean(params.include_archived)
+  if (params.status != null && String(params.status).trim()) {
+    query.status = String(params.status).trim().toUpperCase()
+  }
+  if (params.search != null && String(params.search).trim()) {
+    query.search = String(params.search).trim()
+  }
+  const { data } = await api.get('/workspaces/tests', { params: query })
   return data
 }
 
 /** Workspace admin dashboard (INSTITUTION + SOLO owner/admin). */
 export async function getWorkspaceDashboard(params = {}) {
   const { data } = await api.get('/workspaces/dashboard', { params })
+  return data
+}
+
+/** Teacher-scoped dashboard — GET /workspaces/teacher-dashboard. */
+export async function getTeacherDashboard(params = {}) {
+  const query = {}
+  if (params.recent_limit != null) query.recent_limit = params.recent_limit
+  if (params.upcoming_limit != null) query.upcoming_limit = params.upcoming_limit
+  const { data } = await api.get('/workspaces/teacher-dashboard', { params: query })
   return data
 }
 

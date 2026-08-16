@@ -34,6 +34,7 @@ function GroupsTable({
   rangeEnd,
   onEdit,
   onDelete,
+  emptyMessage,
 }) {
   const { t } = useTranslation('groups')
   const navigate = useNavigate()
@@ -77,7 +78,7 @@ function GroupsTable({
             {groups.length === 0 ? (
               <tr>
                 <td colSpan={5} className={`px-5 py-10 text-center ${shellBodyTextClass}`}>
-                  {t('table.empty')}
+                  {emptyMessage || t('table.empty')}
                 </td>
               </tr>
             ) : (

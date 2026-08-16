@@ -1,7 +1,7 @@
-import { useCallback, useEffect, useMemo, useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 import { fetchTestsForActiveWorkspace } from '../../lib/fetchWorkspaceTests'
+import { getExamListStatusQuery } from '../../lib/testDisplay'
 import { isSurveyTest } from '../../lib/surveys'
-import { filterTestsByTab } from '../../lib/testDisplay'
 
 const SEARCH_DEBOUNCE_MS = 300
 
@@ -23,9 +23,13 @@ export function useTests(activeTab) {
     setLoading(true)
     setError('')
     try {
-      const nextTests = (await fetchTestsForActiveWorkspace({ search })).filter(
-        (test) => !isSurveyTest(test),
-      )
+      const statusQuery = getExamListStatusQuery(activeTab)
+      const nextTests = (
+        await fetchTestsForActiveWorkspace({
+          search,
+          ...statusQuery,
+        })
+      ).filter((test) => !isSurveyTest(test))
       setTests(nextTests)
     } catch (err) {
       setTests([])
@@ -33,17 +37,15 @@ export function useTests(activeTab) {
     } finally {
       setLoading(false)
     }
-  }, [search])
+  }, [activeTab, search])
 
   useEffect(() => {
     fetchTests()
   }, [fetchTests])
 
-  const filteredTests = useMemo(() => filterTestsByTab(tests, activeTab), [tests, activeTab])
-
   return {
     tests,
-    filteredTests,
+    filteredTests: tests,
     loading,
     error,
     search: searchInput,

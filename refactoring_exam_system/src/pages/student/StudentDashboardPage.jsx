@@ -1,6 +1,7 @@
 import { useTranslation } from 'react-i18next'
 import { useAuthStore } from '../../store/authStore'
 import AvailableExamsSection from '../../components/student/dashboard/AvailableExamsSection'
+import AvailableSurveysSection from '../../components/student/dashboard/AvailableSurveysSection'
 import LatestResultsSection from '../../components/student/dashboard/LatestResultsSection'
 import StudentCalendarCard from '../../components/student/dashboard/StudentCalendarCard'
 import StudentStatsCards from '../../components/student/dashboard/StudentStatsCards'
@@ -16,6 +17,7 @@ function StudentDashboardPage() {
     error,
     stats,
     availableExams,
+    availableSurveys,
     upcomingExams,
     latestResults,
     getEventDaysForMonth,
@@ -52,6 +54,7 @@ function StudentDashboardPage() {
       <div className="grid gap-5 lg:grid-cols-[minmax(0,1fr)_288px]">
         <div className="min-w-0 space-y-6">
           <AvailableExamsSection exams={availableExams} />
+          <AvailableSurveysSection surveys={availableSurveys} />
           <LatestResultsSection results={latestResults} />
         </div>
         <aside className="w-full space-y-4 lg:w-[288px] lg:shrink-0">

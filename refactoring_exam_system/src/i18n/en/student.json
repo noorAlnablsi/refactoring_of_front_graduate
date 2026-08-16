@@ -32,6 +32,13 @@
     "viewAll": "View all →",
     "empty": "No exams available right now."
   },
+  "availableSurveys": {
+    "title": "Surveys assigned to you",
+    "viewAll": "View all →",
+    "empty": "No surveys assigned right now.",
+    "untitled": "Survey",
+    "openCta": "Open survey"
+  },
   "upcomingExams": {
     "title": "Upcoming exams",
     "empty": "No upcoming exams right now."
@@ -62,11 +69,13 @@
     "title": "Exam Center",
     "greeting": {
       "withCount": "Hello {{name}}, you have {{count}} exams available today. Stay focused — good luck!",
+      "withSurveys": "Hello {{name}}, you have {{count}} surveys to complete. Open the Surveys tab to answer them.",
       "empty": "Hello {{name}}, there are no exams available right now. Check recent exams or come back later."
     },
     "tabs": {
       "available": "Available exams",
-      "recent": "Recent exams"
+      "recent": "Recent exams",
+      "surveys": "Surveys"
     },
     "badges": {
       "proctored": "Proctored",
@@ -103,7 +112,8 @@
     },
     "empty": {
       "available": "No exams available right now.",
-      "recent": "No recent exams to show yet."
+      "recent": "No recent exams to show yet.",
+      "surveys": "No surveys assigned to you right now."
     },
     "loadError": "Could not load the exam center",
     "partialError": "Some exam data could not be loaded. You can retry.",

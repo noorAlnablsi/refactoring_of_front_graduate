@@ -27,6 +27,7 @@
     "questions": "{{count}} questions",
     "closeSurvey": "Close survey",
     "copyLink": "Copy link",
+    "viewResponses": "View responses",
     "continueEditing": "Continue editing",
     "delete": "Delete",
     "archive": "Archive"
@@ -162,6 +163,37 @@
       "saved": "Answers saved",
       "nothingToSave": "Answer at least one question before saving",
       "submitted": "Survey submitted successfully"
+    }
+  },
+  "responses": {
+    "eyebrow": "Survey results",
+    "title": "View responses",
+    "subtitle": "Response summary for “{{name}}” — no academic scores.",
+    "back": "Back to surveys",
+    "loading": "Loading responses...",
+    "empty": "No responses yet.",
+    "unknownUser": "Respondent",
+    "summaryOnlyNote": "This page shows status and respondent summary only. Per-question answer details are not returned by the backend yet.",
+    "stats": {
+      "total": "Total responses",
+      "submitted": "Submitted",
+      "inProgress": "In progress"
+    },
+    "status": {
+      "submitted": "Submitted",
+      "inProgress": "In progress",
+      "unknown": "Unknown"
+    },
+    "table": {
+      "respondent": "Respondent",
+      "email": "Email",
+      "status": "Status",
+      "submittedAt": "Submitted at",
+      "updatedAt": "Last update"
+    },
+    "errors": {
+      "loadFailed": "Could not load survey responses",
+      "retry": "Retry"
     }
   }
 }

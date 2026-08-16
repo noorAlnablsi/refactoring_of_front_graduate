@@ -123,6 +123,12 @@ function ExamPickBankQuestionsPanel({
   const [submitting, setSubmitting] = useState(false)
 
   const choiceLetters = useMemo(() => t('choiceLetters', { returnObjects: true }), [t])
+  const [debouncedSearch, setDebouncedSearch] = useState('')
+
+  useEffect(() => {
+    const timer = window.setTimeout(() => setDebouncedSearch(search.trim()), 300)
+    return () => window.clearTimeout(timer)
+  }, [search])
 
   useEffect(() => {
     if (!bank?.id) return undefined
@@ -130,11 +136,10 @@ function ExamPickBankQuestionsPanel({
     let cancelled = false
     setLoading(true)
 
-    getQuestionBankQuestions(bank.id)
+    getQuestionBankQuestions(bank.id, { search: debouncedSearch || undefined })
       .then((data) => {
         if (!cancelled) {
           setQuestions(data.questions || [])
-          setSelectedIds(initialSelectedIds)
         }
       })
       .catch((err) => showToast(err.message, 'error'))
@@ -145,17 +150,13 @@ function ExamPickBankQuestionsPanel({
     return () => {
       cancelled = true
     }
-  }, [bank?.id, initialSelectedIds, showToast])
+  }, [bank?.id, debouncedSearch, showToast])
 
-  const filteredQuestions = useMemo(() => {
-    const query = search.trim().toLowerCase()
-    if (!query) return questions
+  useEffect(() => {
+    setSelectedIds(initialSelectedIds)
+  }, [bank?.id, initialSelectedIds])
 
-    return questions.filter((question) => {
-      const body = (question.body || '').replace(/<[^>]+>/g, ' ').toLowerCase()
-      return body.includes(query)
-    })
-  }, [questions, search])
+  const filteredQuestions = questions
 
   const selectedQuestions = useMemo(
     () => questions.filter((question) => selectedIds.includes(question.id)),

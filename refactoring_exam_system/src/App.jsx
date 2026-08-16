@@ -34,6 +34,7 @@ import ExamsPage from './pages/exams/ExamsPage'
 import ExamWizardPage, { ExamCreatePage, SurveyCreatePage, SurveyEditPage } from './pages/exams/ExamWizardPage'
 import SurveysPage from './pages/surveys/SurveysPage'
 import SurveyRespondPage from './pages/surveys/SurveyRespondPage'
+import SurveyResponsesPage from './pages/surveys/SurveyResponsesPage'
 import ExamAttemptsPage from './pages/exams/ExamAttemptsPage'
 import ExamAttemptGradingPage from './pages/exams/ExamAttemptGradingPage'
 import ExamMonitoringPage from './pages/exams/ExamMonitoringPage'
@@ -96,6 +97,7 @@ function App() {
           <Route path={ROUTES.SURVEYS} element={<SurveysPage />} />
           <Route path={ROUTES.SURVEY_CREATE} element={<SurveyCreatePage />} />
           <Route path={ROUTES.SURVEY_EDIT} element={<SurveyEditPage />} />
+          <Route path={ROUTES.SURVEY_RESPONSES} element={<SurveyResponsesPage />} />
           <Route path={ROUTES.EXAM_ATTEMPTS} element={<ExamAttemptsPage />} />
           <Route path={ROUTES.EXAM_ATTEMPT_GRADE} element={<ExamAttemptGradingPage />} />
           <Route path={ROUTES.EXAM_MONITORING} element={<ExamMonitoringPage />} />

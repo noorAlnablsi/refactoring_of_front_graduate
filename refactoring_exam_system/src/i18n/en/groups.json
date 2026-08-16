@@ -3,6 +3,7 @@
   "pageSubtitle": "Organize students into groups to simplify exam management and follow-up.",
   "createGroup": "Create new group",
   "activeListTitle": "Groups list",
+  "searchPlaceholder": "Search groups...",
   "tabs": {
     "all": "All"
   },
@@ -19,6 +20,7 @@
     "delete": "Delete",
     "empty": "No groups yet.",
     "emptySubject": "No groups for this subject.",
+    "emptySearch": "No groups match your search.",
     "pagination": "Showing {{from}}–{{to}} of {{total}} groups",
     "loading": "Loading groups..."
   },

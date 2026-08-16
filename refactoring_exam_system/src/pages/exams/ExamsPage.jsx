@@ -38,9 +38,10 @@ function ExamsPage() {
   const showToast = useToastStore((s) => s.showToast)
   const tabs = [
     { id: TEST_TABS.ALL, label: t('tabs.all', { ns: 'exams' }) },
+    { id: TEST_TABS.DRAFT, label: t('tabs.draft', { ns: 'exams' }) },
+    { id: TEST_TABS.SCHEDULED, label: t('tabs.scheduled', { ns: 'exams' }) },
     { id: TEST_TABS.PUBLISHED, label: t('tabs.published', { ns: 'exams' }) },
-    { id: TEST_TABS.CORRECTED, label: t('tabs.corrected', { ns: 'exams' }) },
-    { id: TEST_TABS.DRAFTS, label: t('tabs.drafts', { ns: 'exams' }) },
+    { id: TEST_TABS.CLOSED, label: t('tabs.closed', { ns: 'exams' }) },
   ]
   const [activeTab, setActiveTab] = useState(TEST_TABS.ALL)
   const { filteredTests, loading, error, search, setSearch, refetch } = useTests(activeTab)

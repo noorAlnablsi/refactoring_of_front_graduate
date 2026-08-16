@@ -13,15 +13,17 @@ import {
   getStudentTests,
   getUpcomingStudentTests,
 } from '../../services/studentDashboard.service'
+import { getAvailableSurveys } from '../../services/surveys.service'
 import { getAvailableTests } from '../../services/tests.service'
 
 async function loadStudentDashboardData() {
-  const [availableResult, upcomingResult, studentTestsResult, recentExamsResult] =
+  const [availableResult, upcomingResult, studentTestsResult, recentExamsResult, surveysResult] =
     await Promise.allSettled([
       getAvailableTests(),
       getUpcomingStudentTests(),
       getStudentTests({ page: 1, perPage: 20 }),
       getStudentRecentExams({ page: 1, perPage: 5 }),
+      getAvailableSurveys({ page: 1, per_page: 10 }),
     ])
 
   if (
@@ -54,6 +56,9 @@ async function loadStudentDashboardData() {
   const recentExamsPayload =
     recentExamsResult.status === 'fulfilled' ? recentExamsResult.value : { items: [] }
 
+  const availableSurveys =
+    surveysResult.status === 'fulfilled' ? surveysResult.value.surveys || [] : []
+
   return {
     stats: buildDashboardStatsFromStudentTests(
       studentTestsPayload,
@@ -61,6 +66,7 @@ async function loadStudentDashboardData() {
       upcomingExams.length,
     ),
     availableExams: available.exams,
+    availableSurveys,
     upcomingExams,
     latestResults: normalizeDashboardLatestResults(recentExamsPayload, 5),
     calendarEvents: buildCalendarEventsFromUpcoming(upcomingExams),
@@ -78,6 +84,7 @@ export function useStudentDashboard() {
     averageScore: 0,
   })
   const [availableExams, setAvailableExams] = useState([])
+  const [availableSurveys, setAvailableSurveys] = useState([])
   const [upcomingExams, setUpcomingExams] = useState([])
   const [latestResults, setLatestResults] = useState([])
   const [calendarEvents, setCalendarEvents] = useState([])
@@ -85,6 +92,7 @@ export function useStudentDashboard() {
   const applyDashboard = useCallback((dashboard) => {
     setStats(dashboard.stats)
     setAvailableExams(dashboard.availableExams)
+    setAvailableSurveys(dashboard.availableSurveys || [])
     setUpcomingExams(dashboard.upcomingExams)
     setLatestResults(dashboard.latestResults)
     setCalendarEvents(dashboard.calendarEvents)
@@ -136,6 +144,7 @@ export function useStudentDashboard() {
     error,
     stats,
     availableExams,
+    availableSurveys,
     upcomingExams,
     latestResults,
     calendarEvents,

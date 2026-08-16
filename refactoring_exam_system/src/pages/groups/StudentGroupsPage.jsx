@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { Navigate } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
-import { Plus } from 'lucide-react'
+import { Plus, Search } from 'lucide-react'
 import SoftDeleteConfirmDialog from '../../components/common/SoftDeleteConfirmDialog'
 import CreateGroupModal from '../../components/groups/CreateGroupModal'
 import EditGroupModal from '../../components/groups/EditGroupModal'
@@ -13,9 +13,11 @@ import { translateBackendMessage } from '../../i18n/translateBackendMessage'
 import { canAccessStudentGroups } from '../../lib/workspaceContext'
 import {
   shellAccentButtonClass,
+  shellCardClass,
   shellGhostButtonClass,
   shellPageSubtitleClass,
   shellPageTitleClass,
+  shellSearchInputClass,
 } from '../../lib/shellUi'
 import { deleteGroup } from '../../services/studentGroups.service'
 import { useToastStore } from '../../store/toastStore'
@@ -34,6 +36,9 @@ function StudentGroupsPage() {
     setSelectedSubjectId,
     sortKey,
     setSortKey,
+    searchInput,
+    setSearchInput,
+    search,
     page,
     setPage,
     totalPages,
@@ -94,6 +99,20 @@ function StudentGroupsPage() {
         onChange={setSelectedSubjectId}
       />
 
+      <div className={`p-4 ${shellCardClass}`}>
+        <div className="relative max-w-md">
+          <Search className="pointer-events-none absolute right-3 top-1/2 h-4 w-4 -translate-y-1/2 text-[var(--shell-text-subtle)]" />
+          <input
+            type="search"
+            value={searchInput}
+            onChange={(e) => setSearchInput(e.target.value)}
+            placeholder={t('searchPlaceholder')}
+            className={shellSearchInputClass}
+            aria-label={t('searchPlaceholder')}
+          />
+        </div>
+      </div>
+
       <div className="flex flex-wrap items-center justify-between gap-3">
         <h2 className={`min-w-0 text-base ${shellPageTitleClass}`}>{t('activeListTitle')}</h2>
         <select
@@ -119,6 +138,7 @@ function StudentGroupsPage() {
         rangeEnd={rangeEnd}
         onEdit={setEditGroup}
         onDelete={setDeleteGroupItem}
+        emptyMessage={search ? t('table.emptySearch') : undefined}
       />
 
       <CreateGroupModal

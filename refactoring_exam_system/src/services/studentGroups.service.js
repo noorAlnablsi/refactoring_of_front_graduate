@@ -5,13 +5,17 @@ export async function getWorkspaceGroups() {
   return data
 }
 
-export async function getSubjectGroups(subjectId) {
-  const { data } = await api.get(`/subjects/${subjectId}/groups`)
+export async function getSubjectGroups(subjectId, { search } = {}) {
+  const params = {}
+  if (search != null && String(search).trim()) params.search = String(search).trim()
+  const { data } = await api.get(`/subjects/${subjectId}/groups`, { params })
   return data
 }
 
-export async function getAvailableGroupStudents(subjectId) {
-  const { data } = await api.get(`/subjects/${subjectId}/groups/available-students`)
+export async function getAvailableGroupStudents(subjectId, { search } = {}) {
+  const params = {}
+  if (search != null && String(search).trim()) params.search = String(search).trim()
+  const { data } = await api.get(`/subjects/${subjectId}/groups/available-students`, { params })
   return data
 }
 

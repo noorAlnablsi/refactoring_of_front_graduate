@@ -23,35 +23,37 @@ async function fetchAllTestPages(fetchPage) {
   return tests
 }
 
-/** Paginate GET /workspaces/tests (institution owner list). */
-export async function fetchInstitutionWorkspaceTests({ search } = {}) {
+function buildListParams({ search, status, include_archived } = {}) {
   const trimmed = typeof search === 'string' ? search.trim() : ''
-  return fetchAllTestPages((pageParams) =>
-    getWorkspaceTests({
-      ...pageParams,
-      ...(trimmed ? { search: trimmed } : {}),
-    }),
-  )
+  const params = {
+    ...(trimmed ? { search: trimmed } : {}),
+  }
+  if (status) params.status = status
+  if (include_archived != null) params.include_archived = include_archived
+  return params
+}
+
+/** Paginate GET /workspaces/tests (institution owner list). */
+export async function fetchInstitutionWorkspaceTests({ search, status, include_archived } = {}) {
+  const listParams = buildListParams({ search, status, include_archived })
+  return fetchAllTestPages((pageParams) => getWorkspaceTests({ ...pageParams, ...listParams }))
 }
 
 /**
  * Same source as Exams list:
  * INSTITUTION → GET /workspaces/tests
  * SOLO → GET /tests/my
+ *
+ * Pass `status` for server-side Test.status filter (do not client-filter tabs).
  */
-export async function fetchTestsForActiveWorkspace({ search } = {}) {
-  const trimmed = typeof search === 'string' ? search.trim() : ''
+export async function fetchTestsForActiveWorkspace({ search, status, include_archived } = {}) {
+  const listParams = buildListParams({ search, status, include_archived })
 
   if (isInstitutionWorkspace()) {
-    return fetchInstitutionWorkspaceTests({ search: trimmed })
+    return fetchInstitutionWorkspaceTests(listParams)
   }
 
-  return fetchAllTestPages((pageParams) =>
-    getMyTests({
-      ...pageParams,
-      ...(trimmed ? { search: trimmed } : {}),
-    }),
-  )
+  return fetchAllTestPages((pageParams) => getMyTests({ ...pageParams, ...listParams }))
 }
 
 export function filterTestsBySubjectId(tests = [], subjectId) {

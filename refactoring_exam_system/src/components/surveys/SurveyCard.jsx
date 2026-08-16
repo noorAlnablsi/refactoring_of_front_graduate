@@ -1,5 +1,6 @@
 import {
   Archive,
+  BarChart3,
   Copy,
   Edit3,
   FileText,
@@ -9,6 +10,7 @@ import {
 } from 'lucide-react'
 import { useNavigate } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
+import { ROUTES } from '../../constants/routes'
 import { TEST_STATUS } from '../../constants/tests'
 import { canShowCloseExamButton, getTestQuestionsCount } from '../../lib/testDisplay'
 import { getTestId, getTestName } from '../../lib/testModel'
@@ -38,6 +40,7 @@ function SurveyCard({ survey, onArchive, onClose, onDelete }) {
   const showClose = canShowCloseExamButton(survey)
   const showDelete = isDraft || isClosed
   const showArchive = survey.status !== TEST_STATUS.ARCHIVED
+  const showResponses = isPublished || isClosed
 
   const handleCopyLink = async () => {
     try {
@@ -52,6 +55,10 @@ function SurveyCard({ survey, onArchive, onClose, onDelete }) {
     const progress = getExamWizardProgress(surveyId)
     const step = getResumeWizardStep(survey, progress)
     navigate(`${getSurveyWizardEditPath(surveyId)}?step=${step}`)
+  }
+
+  const handleViewResponses = () => {
+    navigate(ROUTES.SURVEY_RESPONSES.replace(':id', String(surveyId)))
   }
 
   const primaryButtonClass = `w-full justify-center whitespace-normal text-center leading-tight ${shellAccentButtonClass} h-auto min-h-11 px-3 py-2.5 text-sm`
@@ -96,6 +103,12 @@ function SurveyCard({ survey, onArchive, onClose, onDelete }) {
               <Copy className="h-4 w-4 shrink-0" />
               {t('card.copyLink')}
             </button>
+            {showResponses ? (
+              <button type="button" onClick={handleViewResponses} className={neutralOutlineClass}>
+                <BarChart3 className="h-4 w-4 shrink-0" />
+                {t('card.viewResponses')}
+              </button>
+            ) : null}
             <div className="grid grid-cols-1 gap-2.5 sm:grid-cols-2">
               {showClose ? (
                 <button type="button" onClick={() => onClose?.(survey)} className={neutralOutlineClass}>
@@ -121,6 +134,13 @@ function SurveyCard({ survey, onArchive, onClose, onDelete }) {
               <button type="button" onClick={handleContinue} className={primaryButtonClass}>
                 <Edit3 className="h-4 w-4 shrink-0" />
                 {t('card.continueEditing')}
+              </button>
+            ) : null}
+
+            {showResponses ? (
+              <button type="button" onClick={handleViewResponses} className={neutralOutlineClass}>
+                <BarChart3 className="h-4 w-4 shrink-0" />
+                {t('card.viewResponses')}
               </button>
             ) : null}
 

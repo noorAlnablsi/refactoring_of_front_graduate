@@ -14,9 +14,12 @@
   },
   "tabs": {
     "all": "All",
+    "draft": "Draft",
+    "scheduled": "Scheduled",
     "published": "Published",
-    "corrected": "Graded",
-    "drafts": "DRAFTs"
+    "closed": "Closed",
+    "drafts": "Drafts",
+    "corrected": "Graded"
   },
   "card": {
     "untitled": "Untitled",

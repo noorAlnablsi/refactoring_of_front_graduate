@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react'
+import { useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { ArrowLeft, Check, Info, Search, UserPlus, X } from 'lucide-react'
 import { formatLocaleNumber } from '../../lib/localeNumber'
@@ -49,22 +49,17 @@ function CreateGroupModal({ open, subjects, initialSubjectId, onClose, onSuccess
     setConflicts([])
   }, [open, initialSubjectId])
 
-  const filteredStudents = useMemo(() => {
-    const q = search.trim().toLowerCase()
-    if (!q) return students
-    return students.filter(
-      (student) =>
-        student.fullName.toLowerCase().includes(q) || student.email.toLowerCase().includes(q),
-    )
-  }, [students, search])
+  const filteredStudents = students
 
   const selectableStudents = students.filter((student) => student.isAvailable)
 
-  const loadStudents = async (sid) => {
+  const loadStudents = async (sid, searchTerm = '') => {
     setLoadingStudents(true)
     setConflicts([])
     try {
-      const data = await getAvailableGroupStudents(sid)
+      const data = await getAvailableGroupStudents(sid, {
+        search: searchTerm.trim() || undefined,
+      })
       setStudents((data.students || []).map(normalizeAvailableStudent))
     } catch (err) {
       showToast(translateBackendMessage(err.message) || t('errors.loadFailed'), 'error')
@@ -73,6 +68,16 @@ function CreateGroupModal({ open, subjects, initialSubjectId, onClose, onSuccess
       setLoadingStudents(false)
     }
   }
+
+  useEffect(() => {
+    if (!open || step !== 2 || !subjectId) return undefined
+    const delay = search.trim() ? 300 : 0
+    const timer = window.setTimeout(() => {
+      loadStudents(subjectId, search)
+    }, delay)
+    return () => window.clearTimeout(timer)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [open, step, subjectId, search])
 
   const validateStep1 = () => {
     const next = {}
@@ -84,8 +89,8 @@ function CreateGroupModal({ open, subjects, initialSubjectId, onClose, onSuccess
 
   const goNext = async () => {
     if (!validateStep1()) return
+    setSearch('')
     setStep(2)
-    await loadStudents(subjectId)
   }
 
   const toggleStudent = (membershipId, available) => {

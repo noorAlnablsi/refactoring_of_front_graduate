@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react'
+import { useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Search, X } from 'lucide-react'
 import { translateBackendMessage } from '../../i18n/translateBackendMessage'
@@ -28,28 +28,40 @@ function AddGroupMembersModal({ open, group, onClose, onSuccess }) {
   const [conflicts, setConflicts] = useState([])
 
   useEffect(() => {
-    if (!open || !group?.subjectId) return
+    if (!open || !group?.subjectId) return undefined
     setSelectedIds([])
     setSearch('')
     setConflicts([])
-    setLoading(true)
-    getAvailableGroupStudents(group.subjectId)
-      .then((data) => setStudents((data.students || []).map(normalizeAvailableStudent)))
-      .catch((err) => {
-        showToast(translateBackendMessage(err.message) || t('errors.loadFailed'), 'error')
-        setStudents([])
-      })
-      .finally(() => setLoading(false))
-  }, [open, group?.subjectId, showToast, t])
+  }, [open, group?.subjectId])
 
-  const filtered = useMemo(() => {
-    const q = search.trim().toLowerCase()
-    if (!q) return students
-    return students.filter(
-      (student) =>
-        student.fullName.toLowerCase().includes(q) || student.email.toLowerCase().includes(q),
-    )
-  }, [students, search])
+  useEffect(() => {
+    if (!open || !group?.subjectId) return undefined
+    const delay = search.trim() ? 300 : 0
+    let cancelled = false
+    const timer = window.setTimeout(() => {
+      setLoading(true)
+      getAvailableGroupStudents(group.subjectId, {
+        search: search.trim() || undefined,
+      })
+        .then((data) => {
+          if (!cancelled) setStudents((data.students || []).map(normalizeAvailableStudent))
+        })
+        .catch((err) => {
+          if (cancelled) return
+          showToast(translateBackendMessage(err.message) || t('errors.loadFailed'), 'error')
+          setStudents([])
+        })
+        .finally(() => {
+          if (!cancelled) setLoading(false)
+        })
+    }, delay)
+    return () => {
+      cancelled = true
+      window.clearTimeout(timer)
+    }
+  }, [open, group?.subjectId, search, showToast, t])
+
+  const filtered = students
 
   const selectable = students.filter((s) => s.isAvailable)
 

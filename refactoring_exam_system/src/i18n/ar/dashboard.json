@@ -69,6 +69,37 @@
     "title": "إرسال دعوة",
     "description": "دعوة طالب أو معلم أو مدير عبر البريد"
   },
+  "teacher": {
+    "subtitle": "نظرة على موادك وطلابك والاختبارات ضمن نطاق تدريسك.",
+    "subtitleWithWorkspace": "نظرة على موادك وطلابك داخل «{{workspace}}».",
+    "stats": {
+      "totalStudents": "طلاب موادك",
+      "averagePerformance": "متوسط الأداء",
+      "weakTopics": "مواضيع تحتاج تحسين",
+      "weakTopicsHint": "حسب محاولات مصحّحة ضمن موادك"
+    },
+    "subjects": {
+      "title": "موادك",
+      "empty": "لا توجد مواد مُسندة إليك بعد.",
+      "manageGroups": "المجموعات",
+      "students": "{{count}} طالب",
+      "gradedTests": "{{count}} اختبار مصحّح",
+      "avg": "المتوسط",
+      "success": "نسبة النجاح",
+      "weakPreview": "ضعف: {{names}}"
+    },
+    "weakTopics": {
+      "title": "مواضيع ضعيفة",
+      "empty": "لا توجد مواضيع ضعيفة بارزة حالياً.",
+      "mastery": "إتقان {{value}}",
+      "affected": "{{count}} طالب"
+    },
+    "recent": {
+      "title": "اختباراتك الأخيرة",
+      "empty": "لم تنشئ اختبارات بعد.",
+      "viewAll": "عرض كل الاختبارات"
+    }
+  },
   "otherModules": {
     "title": "وحدات أخرى",
     "comingSoon": "قريباً"
