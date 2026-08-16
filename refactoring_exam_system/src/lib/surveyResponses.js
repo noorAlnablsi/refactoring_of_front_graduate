@@ -9,16 +9,31 @@ export const SURVEY_RESPONSE_STATUS = {
   SUBMITTED: 'SUBMITTED',
 }
 
+/** Student/respondent APIs still return `status`. Manager list/detail omit it. */
 export function getSurveyResponseStatus(response) {
   return String(response?.status || '').toUpperCase()
 }
 
+/**
+ * Manager endpoints omit `status`. Prefer explicit status when present;
+ * otherwise derive from `submitted_at` (set only after submit).
+ */
+export function getManagerSurveyResponseCompletion(response) {
+  const status = getSurveyResponseStatus(response)
+  if (status === SURVEY_RESPONSE_STATUS.SUBMITTED || status === SURVEY_RESPONSE_STATUS.IN_PROGRESS) {
+    return status
+  }
+  return response?.submitted_at
+    ? SURVEY_RESPONSE_STATUS.SUBMITTED
+    : SURVEY_RESPONSE_STATUS.IN_PROGRESS
+}
+
 export function isSurveyResponseSubmitted(response) {
-  return getSurveyResponseStatus(response) === SURVEY_RESPONSE_STATUS.SUBMITTED
+  return getManagerSurveyResponseCompletion(response) === SURVEY_RESPONSE_STATUS.SUBMITTED
 }
 
 export function isSurveyResponseInProgress(response) {
-  return getSurveyResponseStatus(response) === SURVEY_RESPONSE_STATUS.IN_PROGRESS
+  return getManagerSurveyResponseCompletion(response) === SURVEY_RESPONSE_STATUS.IN_PROGRESS
 }
 
 export function buildSurveyAnswersMap(answers = []) {

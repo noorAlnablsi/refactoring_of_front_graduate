@@ -173,7 +173,6 @@
     "loading": "Loading responses...",
     "empty": "No responses yet.",
     "unknownUser": "Respondent",
-    "summaryOnlyNote": "This page shows status and respondent summary only. Per-question answer details are not returned by the backend yet.",
     "stats": {
       "total": "Total responses",
       "submitted": "Submitted",
@@ -189,7 +188,22 @@
       "email": "Email",
       "status": "Status",
       "submittedAt": "Submitted at",
-      "updatedAt": "Last update"
+      "updatedAt": "Last update",
+      "actions": "Actions",
+      "viewAnswers": "View answers"
+    },
+    "detail": {
+      "title": "Response details",
+      "loading": "Loading answers...",
+      "answersTitle": "Answers ({{count}})",
+      "answerLabel": "Respondent answer",
+      "emptyAnswers": "No answers saved for this response yet.",
+      "emptyAnswer": "No answer",
+      "noQuestionText": "Question text unavailable",
+      "choiceFallback": "Choice {{index}}",
+      "errors": {
+        "loadFailed": "Could not load response details"
+      }
     },
     "errors": {
       "loadFailed": "Could not load survey responses",

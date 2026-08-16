@@ -11,7 +11,7 @@ function BackToLoginLink({ onClick, className = '', keyboardPrimary = false }) {
 
   const content = (
     <>
-      <span>{t('backToLogin')}</span>
+      <span>{t('passwordReset.backToLogin')}</span>
       <ArrowLeft className="h-4 w-4" strokeWidth={2.5} />
     </>
   )

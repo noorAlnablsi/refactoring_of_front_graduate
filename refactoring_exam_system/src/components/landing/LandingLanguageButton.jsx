@@ -13,7 +13,7 @@ function LandingLanguageButton({ className = '' }) {
 
   const isArabic = language !== LANGUAGE.EN
   const nextLanguage = isArabic ? LANGUAGE.EN : LANGUAGE.AR
-  const nextLabel = isArabic ? 'EN' : 'ع'
+  const nextLabel = isArabic ? 'EN' : 'AR'
 
   return (
     <button

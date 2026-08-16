@@ -1,30 +1,22 @@
+import { useState } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { ArrowRight, ClipboardList } from 'lucide-react'
+import SurveyResponseDetailModal from '../../components/surveys/SurveyResponseDetailModal'
 import { ROUTES } from '../../constants/routes'
 import { useSurveyManagerResponses } from '../../hooks/surveys/useSurveyManagerResponses'
 import { formatLocaleNumber } from '../../lib/localeNumber'
-import {
-  getSurveyResponseStatus,
-  SURVEY_RESPONSE_STATUS,
-} from '../../lib/surveyResponses'
 import { getTestName } from '../../lib/testModel'
 import {
   shellAccentButtonClass,
+  shellAccentSoftButtonClass,
   shellBodyTextClass,
   shellCardClass,
   shellPageEyebrowClass,
   shellPageTitleClass,
-  shellSubtleTextClass,
   shellTableHostClass,
   shellTableScrollClass,
 } from '../../lib/shellUi'
-
-function statusBadgeClass(status) {
-  if (status === SURVEY_RESPONSE_STATUS.SUBMITTED) return 'bg-[#E8F7F6] text-[#2AA8A2]'
-  if (status === SURVEY_RESPONSE_STATUS.IN_PROGRESS) return 'bg-[#EEF2FF] text-[#4F46E5]'
-  return 'bg-[#F1F5F9] text-[#64748B]'
-}
 
 function formatDateTime(value) {
   if (!value) return '—'
@@ -38,6 +30,7 @@ function SurveyResponsesPage() {
   const navigate = useNavigate()
   const { t } = useTranslation('surveys')
   const { survey, totals, responses, loading, error, refetch } = useSurveyManagerResponses(surveyId)
+  const [selectedResponseId, setSelectedResponseId] = useState(null)
   const surveyName = getTestName(survey) || t('card.untitled')
 
   return (
@@ -73,24 +66,14 @@ function SurveyResponsesPage() {
         </div>
       ) : null}
 
-      <div className="grid gap-4 sm:grid-cols-3">
-        {[
-          { key: 'total', value: totals?.total },
-          { key: 'submitted', value: totals?.submitted },
-          { key: 'inProgress', value: totals?.in_progress },
-        ].map((item) => (
-          <article key={item.key} className={`p-5 ${shellCardClass}`}>
-            <p className={`text-sm font-semibold ${shellBodyTextClass}`}>
-              {t(`responses.stats.${item.key}`)}
-            </p>
-            <p className="mt-3 text-3xl font-extrabold text-[var(--shell-text)]">
-              {loading ? '—' : formatLocaleNumber(item.value ?? 0)}
-            </p>
-          </article>
-        ))}
-      </div>
-
-      <p className={`text-sm ${shellSubtleTextClass}`}>{t('responses.summaryOnlyNote')}</p>
+      <article className={`max-w-xs p-5 ${shellCardClass}`}>
+        <p className={`text-sm font-semibold ${shellBodyTextClass}`}>
+          {t('responses.stats.submitted')}
+        </p>
+        <p className="mt-3 text-3xl font-extrabold text-[var(--shell-text)]">
+          {loading ? '—' : formatLocaleNumber(totals?.submitted ?? 0)}
+        </p>
+      </article>
 
       <div className={shellTableHostClass}>
         <div className={shellTableScrollClass}>
@@ -99,9 +82,9 @@ function SurveyResponsesPage() {
               <tr>
                 <th className="px-4 py-3 font-bold">{t('responses.table.respondent')}</th>
                 <th className="px-4 py-3 font-bold">{t('responses.table.email')}</th>
-                <th className="px-4 py-3 font-bold">{t('responses.table.status')}</th>
                 <th className="px-4 py-3 font-bold">{t('responses.table.submittedAt')}</th>
                 <th className="px-4 py-3 font-bold">{t('responses.table.updatedAt')}</th>
+                <th className="px-4 py-3 font-bold">{t('responses.table.actions')}</th>
               </tr>
             </thead>
             <tbody>
@@ -121,37 +104,43 @@ function SurveyResponsesPage() {
                   </td>
                 </tr>
               ) : (
-                responses.map((row) => {
-                  const status = getSurveyResponseStatus(row)
-                  return (
-                    <tr key={row.response_id} className="border-t border-[var(--shell-border)]">
-                      <td className="px-4 py-3 font-semibold text-[var(--shell-text)]">
-                        {row.user_full_name || t('responses.unknownUser')}
-                      </td>
-                      <td className="px-4 py-3 text-[var(--shell-text-muted)]">
-                        {row.user_email || '—'}
-                      </td>
-                      <td className="px-4 py-3">
-                        <span
-                          className={`inline-flex rounded-full px-2.5 py-1 text-xs font-bold ${statusBadgeClass(status)}`}
-                        >
-                          {t(`responses.status.${status === SURVEY_RESPONSE_STATUS.SUBMITTED ? 'submitted' : status === SURVEY_RESPONSE_STATUS.IN_PROGRESS ? 'inProgress' : 'unknown'}`)}
-                        </span>
-                      </td>
-                      <td className="px-4 py-3 text-[var(--shell-text-muted)]">
-                        {formatDateTime(row.submitted_at)}
-                      </td>
-                      <td className="px-4 py-3 text-[var(--shell-text-muted)]">
-                        {formatDateTime(row.updated_at || row.created_at)}
-                      </td>
-                    </tr>
-                  )
-                })
+                responses.map((row) => (
+                  <tr key={row.response_id} className="border-t border-[var(--shell-border)]">
+                    <td className="px-4 py-3 font-semibold text-[var(--shell-text)]">
+                      {row.user_full_name || t('responses.unknownUser')}
+                    </td>
+                    <td className="px-4 py-3 text-[var(--shell-text-muted)]">
+                      {row.user_email || '—'}
+                    </td>
+                    <td className="px-4 py-3 text-[var(--shell-text-muted)]">
+                      {formatDateTime(row.submitted_at)}
+                    </td>
+                    <td className="px-4 py-3 text-[var(--shell-text-muted)]">
+                      {formatDateTime(row.updated_at || row.created_at)}
+                    </td>
+                    <td className="px-4 py-3">
+                      <button
+                        type="button"
+                        onClick={() => setSelectedResponseId(row.response_id)}
+                        className={shellAccentSoftButtonClass}
+                      >
+                        {t('responses.table.viewAnswers')}
+                      </button>
+                    </td>
+                  </tr>
+                ))
               )}
             </tbody>
           </table>
         </div>
       </div>
+
+      <SurveyResponseDetailModal
+        open={selectedResponseId != null}
+        surveyId={surveyId}
+        responseId={selectedResponseId}
+        onClose={() => setSelectedResponseId(null)}
+      />
     </div>
   )
 }

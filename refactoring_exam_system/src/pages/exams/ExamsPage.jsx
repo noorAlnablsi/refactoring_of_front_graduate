@@ -16,6 +16,7 @@ import {
   shellAccentButtonClass,
   shellCardClass,
   shellGhostButtonClass,
+  shellOutlineButtonClass,
   shellPageEyebrowClass,
   shellPageSubtitleClass,
   shellPageTitleClass,
@@ -129,7 +130,7 @@ function ExamsPage() {
             >
               {t('page.viewSurveys', { ns: 'exams' })}
             </button>
-            <button type="button" onClick={() => navigate(ROUTES.SURVEY_CREATE)} className={shellAccentButtonClass}>
+            <button type="button" onClick={() => navigate(ROUTES.SURVEY_CREATE)} className={shellOutlineButtonClass}>
               <Plus className="h-4 w-4" />
               {t('page.createSurvey', { ns: 'exams' })}
             </button>

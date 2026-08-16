@@ -60,10 +60,20 @@ export async function submitSurveyResponse(surveyId, responseId) {
 }
 
 /**
- * GET /tests/{surveyId}/survey-responses — manager summary (no answer payloads).
- * Auth: Bearer + X-Workspace-Id.
+ * GET /tests/{surveyId}/survey-responses — manager summary.
+ * No answer payloads; no per-response `status` (use submitted_at / totals).
+ * Auth: Bearer + X-Workspace-Id. Survey must be PUBLISHED or CLOSED.
  */
 export async function getSurveyResponsesForManager(surveyId) {
   const { data } = await api.get(`/tests/${surveyId}/survey-responses`)
+  return data
+}
+
+/**
+ * GET /tests/{surveyId}/survey-responses/{responseId} — one response + answers for manager.
+ * No per-response `status`. Auth: Bearer + X-Workspace-Id (same as list).
+ */
+export async function getSurveyResponseForManager(surveyId, responseId) {
+  const { data } = await api.get(`/tests/${surveyId}/survey-responses/${responseId}`)
   return data
 }

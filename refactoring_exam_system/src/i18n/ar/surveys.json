@@ -173,7 +173,6 @@
     "loading": "جاري تحميل الردود...",
     "empty": "لا توجد ردود بعد.",
     "unknownUser": "مستجيب",
-    "summaryOnlyNote": "هذه الصفحة تعرض ملخص الحالة والمستجيبين فقط. تفاصيل إجابات الأسئلة غير متوفرة من الباك حالياً.",
     "stats": {
       "total": "إجمالي الردود",
       "submitted": "مُسلَّمة",
@@ -189,7 +188,22 @@
       "email": "البريد",
       "status": "الحالة",
       "submittedAt": "وقت التسليم",
-      "updatedAt": "آخر تحديث"
+      "updatedAt": "آخر تحديث",
+      "actions": "إجراءات",
+      "viewAnswers": "عرض الإجابات"
+    },
+    "detail": {
+      "title": "تفاصيل الرد",
+      "loading": "جاري تحميل الإجابات...",
+      "answersTitle": "الإجابات ({{count}})",
+      "answerLabel": "إجابة المستجيب",
+      "emptyAnswers": "لا توجد إجابات محفوظة لهذا الرد بعد.",
+      "emptyAnswer": "لا إجابة",
+      "noQuestionText": "نص السؤال غير متوفر",
+      "choiceFallback": "خيار {{index}}",
+      "errors": {
+        "loadFailed": "تعذّر تحميل تفاصيل الرد"
+      }
     },
     "errors": {
       "loadFailed": "تعذّر تحميل ردود الاستبيان",

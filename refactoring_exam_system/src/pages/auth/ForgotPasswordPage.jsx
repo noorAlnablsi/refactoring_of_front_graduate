@@ -32,7 +32,7 @@ function ForgotPasswordPage() {
               dir="ltr"
               value={email}
               onChange={(event) => setEmail(event.target.value)}
-              placeholder="name@university.edu"
+              placeholder={t('passwordReset.emailPlaceholder')}
               autoComplete="off"
               className={inputClassName}
             />
@@ -43,7 +43,7 @@ function ForgotPasswordPage() {
         {error ? <p className="text-sm text-red-600">{error}</p> : null}
 
         <button type="submit" data-keyboard-primary="" disabled={loading} className={buttonClassName}>
-          {loading ? t('passwordReset.sending') : t('passwordReset.sendCode')}
+          {loading ? t('passwordReset.sending') : t('passwordReset.sendOtp')}
         </button>
       </form>
 

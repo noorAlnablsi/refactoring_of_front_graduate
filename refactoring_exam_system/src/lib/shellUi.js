@@ -24,6 +24,10 @@ export const shellSearchInputClass = `h-11 w-full ${shellInputClass} pr-10 pl-4 
 export const shellAccentButtonClass =
   'inline-flex items-center gap-2 rounded-xl bg-[var(--shell-accent)] px-5 py-3 text-sm font-bold text-[var(--shell-accent-contrast)] shadow-[var(--shell-shadow-accent)] transition hover:brightness-110'
 
+/** Same size as accent; border + accent text (secondary CTA). */
+export const shellOutlineButtonClass =
+  'inline-flex items-center gap-2 rounded-xl border border-[var(--shell-accent)] bg-transparent px-5 py-3 text-sm font-bold text-[var(--shell-accent)] transition hover:bg-[var(--shell-accent-bg)]'
+
 export const shellGhostButtonClass =
   'rounded-xl bg-[var(--shell-input-bg)] px-4 py-2 text-xs font-bold text-[var(--shell-text-muted)] transition hover:bg-[var(--shell-hover)]'
 

@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
+import { translateBackendMessage } from '../../i18n/translateBackendMessage'
 import { getSurveyResponsesForManager } from '../../services/surveys.service'
 import { getTestById } from '../../services/tests.service'
 
@@ -24,7 +25,9 @@ export function useSurveyManagerResponses(surveyId) {
       setTotals(responsesPayload?.totals || null)
       setResponses(Array.isArray(responsesPayload?.responses) ? responsesPayload.responses : [])
     } catch (err) {
-      setError(err.message || t('responses.errors.loadFailed'))
+      setError(
+        translateBackendMessage(err.message) || err.message || t('responses.errors.loadFailed'),
+      )
       setSurvey(null)
       setTotals(null)
       setResponses([])
