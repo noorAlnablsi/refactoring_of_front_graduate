@@ -157,7 +157,7 @@ function LoginPage() {
             <AuthHeroPanel
               image={loginHero}
               alt={t('login.heroAlt')}
-              headline={t('hero.headline')}
+              showHeadline={false}
             />
           </div>
         </div>

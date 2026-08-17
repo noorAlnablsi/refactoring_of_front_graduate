@@ -10,7 +10,7 @@ import {
   isInviteActionable,
 } from '../../lib/inviteDisplay'
 import { getInvitePreview, rejectInvite } from '../../services/invites.service'
-import loginHero from '../../assets/auth/login-hero.png'
+import loginHero from '../../assets/auth/value-prop-side.png'
 
 function InvitePreviewPage() {
   const { t } = useTranslation(['invites', 'auth'])

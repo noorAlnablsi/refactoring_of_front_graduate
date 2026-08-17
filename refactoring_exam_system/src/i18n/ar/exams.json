@@ -134,7 +134,7 @@
       },
       "review": {
         "back": "رجوع",
-        "noTopic": "بدون محور",
+        "noTopic": "بدون موضوع",
         "difficulty": "صعوبة:",
         "points": "نقطة",
         "pointsPlural": "نقاط",
@@ -182,16 +182,16 @@
       "countLabel": "عدد الأسئلة",
       "difficultyLabel": "الصعوبة",
       "typeLabel": "نوع السؤال",
-      "topicsLabel": "المحاور",
+      "topicsLabel": "المواضيع",
       "instructionsLabel": "تعليمات إضافية",
       "instructionsPlaceholder": "اختياري...",
       "generate": "توليد الأسئلة",
       "generating": "جاري التوليد...",
       "refreshReview": "تحديث المراجعة",
       "reviewTitle": "أسئلة للمراجعة",
-      "defaultTopic": "محور",
+      "defaultTopic": "موضوع",
       "deleteAria": "حذف",
-      "selectTopicsError": "اختر محوراً واحداً على الأقل",
+      "selectTopicsError": "اختر موضوعاً واحداً على الأقل",
       "generated": "تم توليد {{count}} سؤال للمراجعة",
       "deleted": "تم حذف السؤال المولّد",
       "selectToImportError": "اختر أسئلة لاستيرادها",
@@ -203,10 +203,10 @@
       "eyebrow": "استيراد CSV",
       "title": "رفع أسئلة من ملف",
       "subtitle": "حمّل القالب الرسمي، عبّئه في Excel أو Google Sheets، ثم ارفعه هنا. الأعمدة تشمل: Question والصورة الاختيارية image_url.",
-      "topicsHintTitle": "محاور مادة هذا الامتحان",
+      "topicsHintTitle": "مواضيع مادة هذا الامتحان",
       "topicsHintBody": "في عمود Topic ID بالملف ضع فقط أحد المعرّفات أدناه. أي رقم من مادة أخرى سيرفضه النظام.",
-      "topicsLoading": "جاري تحميل المحاور...",
-      "topicsEmpty": "لا توجد محاور لهذه المادة بعد. أضف محاوراً من تفاصيل المادة أولاً، ثم حدّث الصفحة.",
+      "topicsLoading": "جاري تحميل المواضيع...",
+      "topicsEmpty": "لا توجد مواضيع لهذه المادة بعد. أضف موضوعاً من تفاصيل المادة أولاً، ثم حدّث الصفحة.",
       "templateTitle": "القالب الرسمي لأسئلة الامتحان",
       "downloadTemplate": "تحميل قالب CSV",
       "downloading": "جاري التحميل...",
@@ -303,7 +303,7 @@
       "adding": "جاري الإضافة...",
       "addToExam": "الإضافة للاختبار",
       "difficulty": "صعوبة:",
-      "noTopic": "بدون محور",
+      "noTopic": "بدون موضوع",
       "defaultExamName": "الامتحان"
     },
     "review": {
@@ -438,7 +438,7 @@
     "questionTextRequired": "نص السؤال مطلوب",
     "pointsRequired": "العلامة يجب أن تكون أكبر من 0",
     "allChoicesRequired": "جميع الخيارات مطلوبة",
-    "topicRequired": "اختر المحور للسؤال",
+    "topicRequired": "اختر الموضوع للسؤال",
     "nameRequired": "اسم الاختبار مطلوب",
     "nameRequiredForDraft": "اسم الاختبار مطلوب لحفظ المسودة",
     "subjectRequired": "المادة مطلوبة",
@@ -459,7 +459,7 @@
     "availableQuestions": "إجمالي الأسئلة المتاحة: {{count}} سؤال",
     "availableQuestionsDash": "إجمالي الأسئلة المتاحة: —",
     "questionCountLabel": "عدد الأسئلة",
-    "noTopics": "لا توجد محاور في هذا البنك. أزل البنك أو اختر بنكاً يحتوي أسئلة بمحاور.",
+    "noTopics": "لا توجد مواضيع في هذا البنك. أزل البنك أو اختر بنكاً يحتوي أسئلة بمواضيع.",
     "topicLabel": "الموضوع {{ordinal}}:",
     "percentageLabel": "النسبة المئوية",
     "easyPercent": "سهل (%)",
@@ -469,13 +469,13 @@
     "healthTitle": "مؤشرات صحة المخطط",
     "weightsComplete": "توزيع الأوزان مكتمل (%100)",
     "difficultyBalanced": "توازن مستويات الصعوبة (%100)",
-    "defaultTopic": "محور {{id}}",
+    "defaultTopic": "موضوع {{id}}",
     "errors": {
-      "loadBankTopics": "تعذر تحميل محاور البنوك"
+      "loadBankTopics": "تعذر تحميل مواضيع البنوك"
     },
     "validation": {
-      "completeDistribution": "أكمل توزيع المحاور ومستويات الصعوبة قبل التوليد",
-      "selectTopicPerBank": "حدد محوراً واحداً على الأقل لكل بنك بنسبة أكبر من صفر"
+      "completeDistribution": "أكمل توزيع المواضيع ومستويات الصعوبة قبل التوليد",
+      "selectTopicPerBank": "حدد موضوعاً واحداً على الأقل لكل بنك بنسبة أكبر من صفر"
     },
     "toast": {
       "generated": "تم توليد {{count}} سؤال بنجاح"

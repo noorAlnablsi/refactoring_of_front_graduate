@@ -6,7 +6,7 @@ import { ROUTES } from '../../constants/routes'
 import { getInviteRole, getInviteWorkspaceName } from '../../lib/inviteDisplay'
 import { acceptInvite, getInvitePreview } from '../../services/invites.service'
 import { useAuthStore } from '../../store/authStore'
-import loginHero from '../../assets/auth/login-hero.png'
+import loginHero from '../../assets/auth/value-prop-side.png'
 
 function InviteAcceptPage() {
   const { t } = useTranslation(['invites', 'auth'])

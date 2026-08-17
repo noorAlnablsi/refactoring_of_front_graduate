@@ -9,6 +9,7 @@ function AuthHeroPanel({
   alt = '',
   imagePosition = 'center',
   showUsersBadge = true,
+  showHeadline = true,
   headline,
 }) {
   const { t } = useTranslation('auth')
@@ -33,18 +34,20 @@ function AuthHeroPanel({
         style={{ objectPosition: imagePosition }}
       />
 
-      <div
-        dir={dir}
-        className="pointer-events-none absolute top-7 z-10 ps-6 pe-7 sm:top-9 sm:pe-9 lg:top-12 lg:pe-11 start-0"
-      >
-        <h2 className="auth-hero-headline text-start text-white drop-shadow-[0_2px_12px_rgba(0,0,0,0.5)]">
-          {lines.map((line) => (
-            <span key={line} className="block whitespace-nowrap">
-              {line}
-            </span>
-          ))}
-        </h2>
-      </div>
+      {showHeadline ? (
+        <div
+          dir={dir}
+          className="pointer-events-none absolute top-7 z-10 ps-6 pe-7 sm:top-9 sm:pe-9 lg:top-12 lg:pe-11 start-0"
+        >
+          <h2 className="auth-hero-headline text-start text-white drop-shadow-[0_2px_12px_rgba(0,0,0,0.5)]">
+            {lines.map((line) => (
+              <span key={line} className="block whitespace-nowrap">
+                {line}
+              </span>
+            ))}
+          </h2>
+        </div>
+      ) : null}
 
       {showUsersBadge ? (
         <div

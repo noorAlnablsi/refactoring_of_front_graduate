@@ -5,7 +5,7 @@ import AuthShell from '../components/auth/AuthShell'
 import { ROUTES } from '../constants/routes'
 import { joinWorkspaceByCode } from '../services/join.service'
 import { useAuthStore } from '../store/authStore'
-import loginHero from '../assets/auth/login-hero.png'
+import loginHero from '../assets/auth/value-prop-side.png'
 
 const inputClassName =
   'h-12 w-full rounded-xl bg-[#EEF2F3] px-4 text-sm text-[#374151] outline-none placeholder:text-[#9CA3AF] focus:ring-2 focus:ring-[#2AA8A2]/40 max-w-[448px]'

@@ -5,7 +5,7 @@ import { ROUTES } from '../../constants/routes'
 import OtpInput from '../../components/auth/OtpInput'
 import RegisterProgress from '../../components/auth/RegisterProgress'
 import { useOtpVerification } from '../../hooks/useOtpVerification'
-import loginHero from '../../assets/auth/login-hero.png'
+import loginHero from '../../assets/auth/value-prop-side.png'
 
 function RegisterOtpPage() {
   const { t } = useTranslation('auth')

@@ -65,7 +65,7 @@
     "passingScoreRequired": "علامة النجاح مطلوبة",
     "passingScoreExceedsTotal": "علامة النجاح لا يمكن أن تتجاوز الدرجة الكلية",
     "subjectNameRequired": "اسم المادة مطلوب",
-    "topicNameRequired": "اسم المحور مطلوب"
+    "topicNameRequired": "اسم الموضوع مطلوب"
   },
   "passwordRules": {
     "minLength": "كلمة المرور يجب ألا تقل عن {{count}} أحرف",
@@ -77,8 +77,8 @@
     "showPassword": "إظهار كلمة المرور",
     "hidePassword": "إخفاء كلمة المرور",
     "removeLogo": "إزالة الشعار",
-    "editTopic": "تعديل المحور",
-    "deleteTopic": "حذف المحور",
+    "editTopic": "تعديل الموضوع",
+    "deleteTopic": "حذف الموضوع",
     "assignSubject": "إسناد مادة",
     "editTeacher": "تعديل معلومات المعلم",
     "removeFromWorkspace": "حذف من المؤسسة",
