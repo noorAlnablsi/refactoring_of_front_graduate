@@ -1,3 +1,5 @@
+import { API_BASE_URL } from '../config/env'
+
 export function getUserInitials(name = '') {
   const parts = name.trim().split(/\s+/).filter(Boolean)
 
@@ -18,10 +20,7 @@ export function resolveAvatarUrl(url) {
 
   // Relative upload paths must hit the API host, not the Vite origin.
   if (trimmed.startsWith('/')) {
-    const apiBase = (import.meta.env.VITE_API_BASE_URL || 'http://127.0.0.1:5000').replace(
-      /\/$/,
-      '',
-    )
+    const apiBase = API_BASE_URL.replace(/\/$/, '')
     return `${apiBase}${trimmed}`
   }
 

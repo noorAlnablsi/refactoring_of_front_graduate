@@ -11,7 +11,7 @@ import { TEST_TABS } from '../../constants/tests'
 import { useAvailableSurveys } from '../../hooks/surveys/useAvailableSurveys'
 import { useSurveys } from '../../hooks/surveys/useSurveys'
 import { showAppToast } from '../../lib/appToast'
-import { canAccessExams, canCreateExam } from '../../lib/workspaceContext'
+import { canCreateSurvey, canManageSurveys } from '../../lib/workspaceContext'
 import { getTestId, getTestName } from '../../lib/testModel'
 import { archiveTest, closeTest, deleteTest } from '../../services/tests.service'
 import { useToastStore } from '../../store/toastStore'
@@ -79,7 +79,7 @@ function SurveysPage() {
   const [pendingAction, setPendingAction] = useState(null)
   const [actionLoading, setActionLoading] = useState(false)
 
-  const allowed = canAccessExams()
+  const allowed = canManageSurveys()
 
   useEffect(() => {
     const timer = window.setTimeout(() => {
@@ -166,7 +166,7 @@ function SurveysPage() {
           <h1 className={`mt-1 text-3xl sm:text-4xl ${shellPageTitleClass}`}>{t('page.title')}</h1>
           <p className={`mt-2 ${shellPageSubtitleClass}`}>{t('page.subtitle')}</p>
         </div>
-        {canCreateExam() ? (
+        {canCreateSurvey() ? (
           <button type="button" onClick={() => navigate(ROUTES.SURVEY_CREATE)} className={shellAccentButtonClass}>
             <Plus className="h-4 w-4" />
             {t('page.createSurvey')}

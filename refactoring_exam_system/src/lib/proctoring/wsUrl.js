@@ -1,4 +1,5 @@
 import { PROCTORING_REST_EVENT, PROCTORING_WS_EVENT } from '../../constants/proctoring'
+import { API_BASE_URL } from '../../config/env'
 
 const WS_TO_REST = {
   [PROCTORING_WS_EVENT.STUDENT_JOINED]: PROCTORING_REST_EVENT.STUDENT_JOINED,
@@ -27,8 +28,7 @@ export function toRestEventType(wsType) {
  * /ws/proctoring/tests/{test_id}/attempts/{attempt_id}?token=&workspace_id=
  */
 export function buildProctoringWebSocketUrl({ testId, attemptId, token, workspaceId }) {
-  const apiBase = import.meta.env.VITE_API_BASE_URL || 'http://127.0.0.1:5000'
-  const httpUrl = new URL(apiBase)
+  const httpUrl = new URL(API_BASE_URL)
   const wsProtocol = httpUrl.protocol === 'https:' ? 'wss:' : 'ws:'
   const path = `/ws/proctoring/tests/${encodeURIComponent(testId)}/attempts/${encodeURIComponent(attemptId)}`
   const qs = new URLSearchParams({
@@ -44,8 +44,7 @@ export function buildProctoringWebSocketUrl({ testId, attemptId, token, workspac
  * Contract: /ws/proctoring/tests/{test_id}/monitor?token=&workspace_id=
  */
 export function buildTeacherMonitorWebSocketUrl({ testId, token, workspaceId }) {
-  const apiBase = import.meta.env.VITE_API_BASE_URL || 'http://127.0.0.1:5000'
-  const httpUrl = new URL(apiBase)
+  const httpUrl = new URL(API_BASE_URL)
   const wsProtocol = httpUrl.protocol === 'https:' ? 'wss:' : 'ws:'
   const path = `/ws/proctoring/tests/${encodeURIComponent(testId)}/monitor`
   const qs = new URLSearchParams({

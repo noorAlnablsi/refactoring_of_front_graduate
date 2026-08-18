@@ -129,6 +129,20 @@ export function canCreateExam() {
   return canAccessExams()
 }
 
+/** Any active workspace member can open the surveys module (answer or manage). */
+export function canAccessSurveys() {
+  return Boolean(getActiveMembership())
+}
+
+/** Create / manage surveys — same boundary as exams (non-student staff). */
+export function canManageSurveys() {
+  return canAccessExams()
+}
+
+export function canCreateSurvey() {
+  return canCreateExam()
+}
+
 export function isInstitutionOwner(membership = getActiveMembership()) {
   return membership?.workspace?.kind === 'INSTITUTION' && Boolean(membership?.is_owner)
 }

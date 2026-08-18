@@ -3,9 +3,10 @@ import { logApiError, parseApiError } from './apiError'
 import { ensureValidAccessToken, enqueueTokenRefresh } from './authSession'
 import { getWorkspaceId } from './workspaceContext'
 import { useAuthStore } from '../store/authStore'
+import { API_BASE_URL } from '../config/env'
 
 const api = axios.create({
-  baseURL: import.meta.env.VITE_API_BASE_URL || 'http://127.0.0.1:5000',
+  baseURL: API_BASE_URL,
   headers: {
     'Content-Type': 'application/json',
     Accept: 'application/json',

@@ -20,6 +20,7 @@ import StudentDashboardPage from './pages/student/StudentDashboardPage'
 import StudentSettingsPage from './pages/student/StudentSettingsPage'
 import StudentChangePasswordPage from './pages/student/StudentChangePasswordPage'
 import StudentExamsPage from './pages/student/StudentExamsPage'
+import StudentSurveysPage from './pages/student/StudentSurveysPage'
 import ExamAttemptPage from './pages/student/ExamAttemptPage'
 import ExamEntryPage from './pages/student/ExamEntryPage'
 import StudentPerformancePage from './pages/student/StudentPerformancePage'
@@ -125,6 +126,7 @@ function App() {
         <Route element={<StudentDashboardLayout />}>
           <Route path={ROUTES.STUDENT_DASHBOARD} element={<StudentDashboardPage />} />
           <Route path={ROUTES.STUDENT_EXAMS} element={<StudentExamsPage />} />
+          <Route path={ROUTES.STUDENT_SURVEYS} element={<StudentSurveysPage />} />
           <Route path={ROUTES.STUDENT_RESULTS} element={<StudentPerformancePage />} />
           <Route
             path={ROUTES.STUDENT_RESULTS_PENDING}

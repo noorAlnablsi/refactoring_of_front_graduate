@@ -6,6 +6,7 @@
     "groups": "مجموعات الطلاب",
     "questionBanks": "بنوك الأسئلة",
     "exams": "الامتحانات",
+    "surveys": "الاستبيانات",
     "statistics": "الإحصائيات",
     "integrityReports": "تقارير النزاهة",
     "settings": "الإعدادات",
@@ -16,6 +17,7 @@
   "studentSidebar": {
     "home": "الرئيسية",
     "exams": "الاختبارات",
+    "surveys": "الاستبيانات",
     "results": "النتائج",
     "settings": "الإعدادات",
     "portalTitle": "بوابة الطالب"

@@ -5,7 +5,6 @@ import {
   normalizeExamCenterRecentResponse,
 } from '../../lib/studentExamCenterModel'
 import { getStudentTests } from '../../services/studentDashboard.service'
-import { getAvailableSurveys } from '../../services/surveys.service'
 import { getAvailableTests } from '../../services/tests.service'
 
 export function useStudentExamCenter(initialTab = 'available') {
@@ -15,24 +14,18 @@ export function useStudentExamCenter(initialTab = 'available') {
   const [error, setError] = useState('')
   const [availableExams, setAvailableExams] = useState([])
   const [recentExams, setRecentExams] = useState([])
-  const [availableSurveys, setAvailableSurveys] = useState([])
 
   const fetchAll = useCallback(async () => {
     setLoading(true)
     setError('')
     try {
-      const [availableResult, recentResult, surveysResult] = await Promise.allSettled([
+      const [availableResult, recentResult] = await Promise.allSettled([
         getAvailableTests(),
         getStudentTests({ page: 1, perPage: 20 }),
-        getAvailableSurveys({ page: 1, per_page: 50 }),
       ])
 
-      if (
-        availableResult.status === 'rejected' &&
-        recentResult.status === 'rejected' &&
-        surveysResult.status === 'rejected'
-      ) {
-        throw availableResult.reason || recentResult.reason || surveysResult.reason
+      if (availableResult.status === 'rejected' && recentResult.status === 'rejected') {
+        throw availableResult.reason || recentResult.reason
       }
 
       setAvailableExams(
@@ -45,21 +38,13 @@ export function useStudentExamCenter(initialTab = 'available') {
           ? normalizeExamCenterRecentResponse(recentResult.value).items
           : [],
       )
-      setAvailableSurveys(
-        surveysResult.status === 'fulfilled' ? surveysResult.value.surveys || [] : [],
-      )
 
-      if (
-        availableResult.status === 'rejected' ||
-        recentResult.status === 'rejected' ||
-        surveysResult.status === 'rejected'
-      ) {
+      if (availableResult.status === 'rejected' || recentResult.status === 'rejected') {
         setError(t('examCenter.partialError'))
       }
     } catch (err) {
       setAvailableExams([])
       setRecentExams([])
-      setAvailableSurveys([])
       setError(err.message || t('examCenter.loadError'))
     } finally {
       setLoading(false)
@@ -81,7 +66,6 @@ export function useStudentExamCenter(initialTab = 'available') {
     error,
     availableExams,
     recentExams,
-    availableSurveys,
     refetch: fetchAll,
   }
 }

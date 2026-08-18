@@ -45,6 +45,7 @@ export const ROUTES = {
   STUDENT_JOIN_CODE: '/student/join-code',
   STUDENT_DASHBOARD: '/student/dashboard',
   STUDENT_EXAMS: '/student/exams',
+  STUDENT_SURVEYS: '/student/surveys',
   STUDENT_EXAM_ENTRY: '/student/exams/:testId/entry',
   STUDENT_EXAM_ATTEMPT: '/student/exams/:testId/attempt',
   STUDENT_RESULTS: '/student/results',

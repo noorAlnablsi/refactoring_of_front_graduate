@@ -1,6 +1,4 @@
-const FRONTEND_BASE_URL =
-  import.meta.env.VITE_FRONTEND_BASE_URL ||
-  (typeof window !== 'undefined' ? window.location.origin : 'http://localhost:5173')
+import { FRONTEND_BASE_URL } from '../config/env'
 
 export function buildInvitePreviewUrl(token) {
   return `${FRONTEND_BASE_URL}/invites/${token}`

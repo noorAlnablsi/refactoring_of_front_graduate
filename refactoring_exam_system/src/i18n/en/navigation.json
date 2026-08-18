@@ -6,6 +6,7 @@
     "groups": "Student groups",
     "questionBanks": "Question banks",
     "exams": "Exams",
+    "surveys": "Surveys",
     "statistics": "Statistics",
     "integrityReports": "Integrity reports",
     "settings": "Settings",
@@ -16,6 +17,7 @@
   "studentSidebar": {
     "home": "Home",
     "exams": "Exams",
+    "surveys": "Surveys",
     "results": "Results",
     "settings": "Settings",
     "portalTitle": "Student portal"

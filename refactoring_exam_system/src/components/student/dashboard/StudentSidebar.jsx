@@ -4,6 +4,7 @@ import {
   ClipboardList,
   GraduationCap,
   LayoutGrid,
+  ListChecks,
   Settings,
   Star,
 } from 'lucide-react'
@@ -15,6 +16,7 @@ import { getActiveMembership } from '../../../lib/workspaceContext'
 const studentNavItems = [
   { to: ROUTES.STUDENT_DASHBOARD, labelKey: 'sidebar.home', icon: LayoutGrid, end: true },
   { to: ROUTES.STUDENT_EXAMS, labelKey: 'sidebar.exams', icon: ClipboardList, end: false },
+  { to: ROUTES.STUDENT_SURVEYS, labelKey: 'sidebar.surveys', icon: ListChecks, end: false },
   { to: ROUTES.STUDENT_RESULTS, labelKey: 'sidebar.results', icon: Star, end: false },
   { to: ROUTES.STUDENT_SETTINGS, labelKey: 'sidebar.settings', icon: Settings, end: false },
 ]

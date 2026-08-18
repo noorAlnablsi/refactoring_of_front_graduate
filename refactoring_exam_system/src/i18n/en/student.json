@@ -6,6 +6,7 @@
   "sidebar": {
     "home": "Home",
     "exams": "Exams",
+    "surveys": "Surveys",
     "results": "Performance stats",
     "settings": "Account settings"
   },
@@ -69,7 +70,7 @@
     "title": "Exam Center",
     "greeting": {
       "withCount": "Hello {{name}}, you have {{count}} exams available today. Stay focused — good luck!",
-      "withSurveys": "Hello {{name}}, you have {{count}} surveys to complete. Open the Surveys tab to answer them.",
+      "withSurveys": "Hello {{name}}, you have {{count}} surveys to complete. You can answer them from Surveys in the sidebar.",
       "empty": "Hello {{name}}, there are no exams available right now. Check recent exams or come back later."
     },
     "tabs": {
@@ -117,6 +118,11 @@
     },
     "loadError": "Could not load the exam center",
     "partialError": "Some exam data could not be loaded. You can retry.",
+    "retry": "Retry"
+  },
+  "surveysCenter": {
+    "title": "Surveys",
+    "subtitle": "Surveys assigned to you for completion.",
     "retry": "Retry"
   },
   "entry": {

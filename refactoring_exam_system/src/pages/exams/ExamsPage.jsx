@@ -15,8 +15,6 @@ import { useToastStore } from '../../store/toastStore'
 import {
   shellAccentButtonClass,
   shellCardClass,
-  shellGhostButtonClass,
-  shellOutlineButtonClass,
   shellPageEyebrowClass,
   shellPageSubtitleClass,
   shellPageTitleClass,
@@ -122,23 +120,10 @@ function ExamsPage() {
           <p className={`mt-2 ${shellPageSubtitleClass}`}>{t('page.subtitle', { ns: 'exams' })}</p>
         </div>
         {canCreateExam() ? (
-          <div className="flex flex-wrap items-center justify-end gap-2">
-            <button
-              type="button"
-              onClick={() => navigate(ROUTES.SURVEYS)}
-              className={shellGhostButtonClass}
-            >
-              {t('page.viewSurveys', { ns: 'exams' })}
-            </button>
-            <button type="button" onClick={() => navigate(ROUTES.SURVEY_CREATE)} className={shellOutlineButtonClass}>
-              <Plus className="h-4 w-4" />
-              {t('page.createSurvey', { ns: 'exams' })}
-            </button>
-            <button type="button" onClick={() => navigate(ROUTES.EXAM_CREATE)} className={shellAccentButtonClass}>
-              <Plus className="h-4 w-4" />
-              {t('page.createExam', { ns: 'exams' })}
-            </button>
-          </div>
+          <button type="button" onClick={() => navigate(ROUTES.EXAM_CREATE)} className={shellAccentButtonClass}>
+            <Plus className="h-4 w-4" />
+            {t('page.createExam', { ns: 'exams' })}
+          </button>
         ) : null}
       </div>
 

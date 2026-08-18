@@ -1,11 +1,10 @@
 import axios from 'axios'
 import api from '../lib/axios'
-
-const baseURL = import.meta.env.VITE_API_BASE_URL || 'http://127.0.0.1:5000'
+import { API_BASE_URL } from '../config/env'
 
 export async function refreshAccessToken(refreshToken) {
   const { data } = await axios.post(
-    `${baseURL}/auth/refresh`,
+    `${API_BASE_URL}/auth/refresh`,
     { refresh_token: refreshToken },
     {
       headers: {

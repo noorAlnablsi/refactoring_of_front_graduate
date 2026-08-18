@@ -6,6 +6,7 @@ import {
   FileQuestion,
   GraduationCap,
   LayoutGrid,
+  ListChecks,
   Settings,
   ShieldAlert,
   Users,
@@ -21,6 +22,7 @@ import {
   canAccessSubjectsModule,
   canAccessExams,
   canAccessIntegrityReports,
+  canAccessSurveys,
   canShowStudentGroupsInSidebar,
   isInstitutionOwner,
 } from '../../lib/workspaceContext'
@@ -50,6 +52,7 @@ const baseNavItems = [
     requiresQuestionBanks: true,
   },
   { to: ROUTES.EXAMS, labelKey: 'sidebar.exams', icon: ClipboardList, end: false, requiresExams: true },
+  { to: ROUTES.SURVEYS, labelKey: 'sidebar.surveys', icon: ListChecks, end: false, requiresSurveys: true },
   {
     to: ROUTES.ANALYTICS,
     labelKey: 'sidebar.statistics',
@@ -95,6 +98,7 @@ function useStaffNavItems() {
     if (item.requiresMembersModule && !canAccessMembersModule()) return false
     if (item.requiresStudentGroups && !canShowStudentGroupsInSidebar()) return false
     if (item.requiresExams && !canAccessExams()) return false
+    if (item.requiresSurveys && !canAccessSurveys()) return false
     if (item.requiresInstitutionOwner && !isInstitutionOwner()) return false
     if (item.requiresIntegrityInbox) {
       return canAccessIntegrityReports() && !isInstitutionOwner()

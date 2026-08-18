@@ -15,7 +15,7 @@ function AvailableSurveysSection({ surveys }) {
       <div className="mb-5 flex items-center justify-between gap-3">
         <h2 className="text-base font-extrabold text-[#2A3433]">{t('availableSurveys.title')}</h2>
         <Link
-          to={`${ROUTES.STUDENT_EXAMS}?tab=surveys`}
+          to={ROUTES.STUDENT_SURVEYS}
           className="text-sm font-bold text-[#2AA8A2] transition hover:opacity-80"
         >
           {t('availableSurveys.viewAll')}
