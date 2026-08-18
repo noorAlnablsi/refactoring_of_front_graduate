@@ -1,4 +1,5 @@
 import { isRichTextEmpty } from './richText'
+import { hasQuestionStem, toQuestionImagePath } from './questionImage'
 import { validateQuestionChoiceRules } from './questionBanks'
 import { tUI } from './appToast'
 
@@ -10,6 +11,8 @@ export const DEFAULT_EXAM_QUESTION_CHOICES = [
 export function createDefaultExamQuestion() {
   return {
     body: '',
+    image_path: '',
+    image_url: '',
     type_code: 'MCQ',
     difficulty: 'EASY',
     points: 1,
@@ -29,12 +32,16 @@ export function ensureSurveyChoicesForApi(choices = []) {
 
 export function normalizeManualQuestionForApi(question, { surveyMode = false } = {}) {
   const payload = {
-    body: question.body.trim(),
+    body: isRichTextEmpty(question.body) ? '' : question.body.trim(),
     type_code: question.type_code,
     difficulty: question.difficulty,
     points: surveyMode ? 1 : Number(question.points) || 1,
     explanation: question.explanation?.trim() || '',
-    image_path: question.image_path || question.image_url || '',
+  }
+
+  const imagePath = toQuestionImagePath(question.image_path)
+  if (imagePath) {
+    payload.image_path = imagePath
   }
 
   if (question.type_code !== 'ESSAY') {
@@ -56,8 +63,8 @@ export function normalizeManualQuestionForApi(question, { surveyMode = false } =
 }
 
 export function validateManualQuestionForExam(question, { requireTopic = false, surveyMode = false } = {}) {
-  if (isRichTextEmpty(question.body)) {
-    return tUI('validation.questionTextRequired', { ns: 'exams' })
+  if (!hasQuestionStem(question)) {
+    return tUI('validation.questionContentRequired', { ns: 'exams' })
   }
 
   if (!surveyMode && (!question.points || Number(question.points) < 1)) {

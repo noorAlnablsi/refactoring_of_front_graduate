@@ -71,6 +71,7 @@
     "titleRequired": "Question bank name is required",
     "subjectRequired": "Please select a subject",
     "questionTextRequired": "Question text is required",
+    "questionContentRequired": "Add question text, an image, or both",
     "pointsRequired": "Points must be greater than 0",
     "addChoices": "Add answer choices",
     "allChoicesRequired": "All choices must be filled in",
@@ -166,10 +167,15 @@
       "italic": "Italic",
       "bulletList": "Bullet list",
       "insertMath": "Insert math symbol",
+      "insertImage": "Attach a question image",
+      "imageTypeError": "Only JPG, PNG, or WEBP images are allowed",
+      "imageUploadFailed": "Could not upload the image. Try again",
+      "removeImage": "Remove image",
+      "imagePreviewAlt": "Question image",
       "paragraphRtl": "Paragraph direction: right to left (Arabic)",
       "paragraphLtr": "Paragraph direction: left to right (English)",
       "questionBodyAria": "Question text",
-      "questionBodyPlaceholder": "Write your question here..."
+      "questionBodyPlaceholder": "Write your question here or attach an image..."
     }
   },
   "copy": {

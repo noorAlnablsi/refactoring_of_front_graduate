@@ -386,6 +386,8 @@
     "proctoring": {
       "title": "AI-powered smart proctoring",
       "subtitle": "Secure the exam environment and prevent cheating using advanced tracking.",
+      "enabled": "Enable AI Proctoring System",
+      "enabledDesc": "When OFF, all proctoring features will be disabled during the exam.",
       "faceTracking": "Face tracking",
       "faceTrackingDesc": "Verify student identity throughout the exam",
       "ambientSound": "Ambient sound monitoring",
@@ -436,6 +438,7 @@
   },
   "validation": {
     "questionTextRequired": "Question text is required",
+    "questionContentRequired": "Add question text, an image, or both",
     "pointsRequired": "Points must be greater than 0",
     "allChoicesRequired": "All choices are required",
     "topicRequired": "Select a topic for the question",

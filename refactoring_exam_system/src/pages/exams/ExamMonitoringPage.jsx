@@ -1,5 +1,5 @@
-import { useMemo } from 'react'
-import { useNavigate, useParams } from 'react-router-dom'
+import { useEffect, useMemo, useState } from 'react'
+import { Navigate, useNavigate, useParams } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { Activity, ArrowRight, Radio, RefreshCw, ShieldAlert, X } from 'lucide-react'
 import { ROUTES } from '../../constants/routes'
@@ -7,6 +7,8 @@ import { PROCTORING_CONNECTION_STATE } from '../../constants/proctoring'
 import { MONITORING_STATE, formatMonitoringTimestamp, normalizeMonitoringEventKey, resolveMonitoringLogMessage } from '../../lib/proctoring/monitoringModel'
 import { useExamLiveMonitoring } from '../../hooks/exams/useExamLiveMonitoring'
 import { formatLocaleNumber } from '../../lib/localeNumber'
+import { isProctoringEnabled } from '../../lib/proctoring/isProctoringEnabled'
+import { getTestById } from '../../services/tests.service'
 import {
   shellAccentButtonClass,
   shellBodyTextClass,
@@ -59,6 +61,7 @@ function ExamMonitoringPage() {
   const { id: testId } = useParams()
   const navigate = useNavigate()
   const { t, i18n } = useTranslation('exams')
+  const [monitoringAllowed, setMonitoringAllowed] = useState(null)
   const {
     loading,
     error,
@@ -74,6 +77,30 @@ function ExamMonitoringPage() {
     closeStudent,
     handleForceSubmit,
   } = useExamLiveMonitoring(testId)
+
+  useEffect(() => {
+    let cancelled = false
+    ;(async () => {
+      if (!testId) {
+        if (!cancelled) setMonitoringAllowed(false)
+        return
+      }
+      try {
+        const data = await getTestById(testId)
+        const test = data?.test || data
+        if (!cancelled) setMonitoringAllowed(isProctoringEnabled(test))
+      } catch {
+        if (!cancelled) setMonitoringAllowed(true)
+      }
+    })()
+    return () => {
+      cancelled = true
+    }
+  }, [testId])
+
+  if (monitoringAllowed === false) {
+    return <Navigate to={ROUTES.EXAMS} replace />
+  }
 
   const studentNameById = useMemo(() => {
     const map = new Map()

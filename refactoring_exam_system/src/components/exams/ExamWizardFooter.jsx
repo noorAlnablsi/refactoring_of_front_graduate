@@ -1,7 +1,6 @@
 import { shellCardClass } from '../../lib/shellUi'
 
-/** Sticky within the dashboard main scrollport — keep as last child (no trailing pb-* on parent). */
-const FOOTER_CLASS = `sticky bottom-0 z-10 mt-2 px-4 py-4 backdrop-blur ${shellCardClass}`
+const FOOTER_CLASS = `mt-2 px-4 py-4 ${shellCardClass}`
 
 function ExamWizardFooter({ children, className = '' }) {
   return (

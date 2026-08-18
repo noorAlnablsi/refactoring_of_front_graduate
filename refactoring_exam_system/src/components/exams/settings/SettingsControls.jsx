@@ -1,8 +1,12 @@
 import { AlertTriangle, Bell } from 'lucide-react'
 
-export function SettingsSwitch({ label, description, checked, onChange }) {
+export function SettingsSwitch({ label, description, checked, onChange, disabled = false, emphasized = false }) {
   return (
-    <label className="flex cursor-pointer items-start justify-between gap-4 rounded-xl px-1 py-3">
+    <label
+      className={`flex items-start justify-between gap-4 rounded-xl px-1 py-3 transition ${
+        emphasized ? 'bg-white/70 px-4 ring-1 ring-[#CFECE9]' : ''
+      } ${disabled ? 'cursor-not-allowed opacity-60' : 'cursor-pointer'}`}
+    >
       <div className="min-w-0 flex-1">
         <p className="text-sm font-bold text-[#2A3433]">{label}</p>
         {description ? <p className="mt-1 text-xs leading-6 text-[#94A3B8]">{description}</p> : null}
@@ -11,6 +15,7 @@ export function SettingsSwitch({ label, description, checked, onChange }) {
         type="button"
         role="switch"
         aria-checked={checked}
+        disabled={disabled}
         onClick={() => onChange(!checked)}
         className={`relative mt-0.5 h-7 w-12 shrink-0 rounded-full transition ${
           checked ? 'bg-[#2AA8A2]' : 'bg-[#CBD5E1]'

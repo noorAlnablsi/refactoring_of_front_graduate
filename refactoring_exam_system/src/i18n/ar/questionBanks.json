@@ -71,6 +71,7 @@
     "titleRequired": "اسم بنك الأسئلة مطلوب",
     "subjectRequired": "يرجى اختيار المادة",
     "questionTextRequired": "نص السؤال مطلوب",
+    "questionContentRequired": "أضف نص السؤال أو صورة أو كليهما",
     "pointsRequired": "العلامة يجب أن تكون أكبر من 0",
     "addChoices": "أضف خيارات للإجابة",
     "allChoicesRequired": "جميع الخيارات يجب أن تكون مكتملة",
@@ -166,10 +167,15 @@
       "italic": "مائل",
       "bulletList": "قائمة نقطية",
       "insertMath": "إدراج رمز رياضي",
+      "insertImage": "إرفاق صورة للسؤال",
+      "imageTypeError": "يُسمح فقط بصور JPG أو PNG أو WEBP",
+      "imageUploadFailed": "تعذّر رفع الصورة. حاول مرة أخرى",
+      "removeImage": "إزالة الصورة",
+      "imagePreviewAlt": "صورة السؤال",
       "paragraphRtl": "اتجاه الفقرة: من اليمين لليسار (عربي)",
       "paragraphLtr": "اتجاه الفقرة: من اليسار لليمين (إنجليزي)",
       "questionBodyAria": "نص السؤال",
-      "questionBodyPlaceholder": "اكتب سؤالك هنا..."
+      "questionBodyPlaceholder": "اكتب سؤالك هنا أو أرفق صورة..."
     }
   },
   "copy": {

@@ -62,13 +62,17 @@ function SurveyCard({ survey, onArchive, onClose, onDelete }) {
   }
 
   const primaryButtonClass = `w-full justify-center whitespace-normal text-center leading-tight ${shellAccentButtonClass} h-auto min-h-11 px-3 py-2.5 text-sm`
+  const softAccentClass =
+    'inline-flex h-auto min-h-11 w-full items-center justify-center gap-1.5 whitespace-normal rounded-xl border border-[var(--shell-accent)]/25 bg-[var(--shell-accent-bg)] px-3 py-2.5 text-center text-sm font-bold leading-tight text-[var(--shell-accent)] transition hover:bg-[var(--shell-accent-bg-strong)]'
   const neutralOutlineClass =
     'inline-flex h-auto min-h-11 w-full items-center justify-center gap-1.5 whitespace-normal rounded-xl border border-[var(--shell-border)] bg-[var(--shell-surface)] px-3 py-2.5 text-center text-sm font-bold leading-tight text-[var(--shell-text-muted)] transition hover:bg-[var(--shell-hover)]'
   const dangerOutlineClass =
     'inline-flex h-auto min-h-11 w-full items-center justify-center gap-1.5 whitespace-normal rounded-xl border border-[var(--shell-border)] bg-[var(--shell-surface)] px-3 py-2.5 text-center text-sm font-bold leading-tight text-[var(--shell-danger-text)] transition hover:bg-[var(--shell-danger-bg)]'
 
+  const publishedGrid = isPublished && showResponses
+
   return (
-    <article className={`flex h-full flex-col p-5 ${shellCardInteractiveClass}`}>
+    <article className={`flex h-full flex-col p-6 ${shellCardInteractiveClass}`}>
       <div className="flex items-start justify-between gap-3">
         <div className="min-w-0 flex-1">
           <h3 className={`truncate text-lg ${shellPageTitleClass}`}>
@@ -96,38 +100,34 @@ function SurveyCard({ survey, onArchive, onClose, onDelete }) {
         </span>
       </div>
 
-      <div className={`mt-auto flex flex-col gap-2.5 border-t pt-4 ${shellDividerClass}`}>
-        {isPublished ? (
-          <>
+      <div className={`mt-6 flex flex-col gap-2.5 border-t pt-4 ${shellDividerClass}`}>
+        {publishedGrid ? (
+          <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
             <button type="button" onClick={handleCopyLink} className={primaryButtonClass}>
               <Copy className="h-4 w-4 shrink-0" />
               {t('card.copyLink')}
             </button>
-            {showResponses ? (
-              <button type="button" onClick={handleViewResponses} className={neutralOutlineClass}>
-                <BarChart3 className="h-4 w-4 shrink-0" />
-                {t('card.viewResponses')}
+            <button type="button" onClick={handleViewResponses} className={softAccentClass}>
+              <BarChart3 className="h-4 w-4 shrink-0" />
+              {t('card.viewResponses')}
+            </button>
+            {showClose ? (
+              <button type="button" onClick={() => onClose?.(survey)} className={neutralOutlineClass}>
+                <Lock className="h-4 w-4 shrink-0" />
+                {t('card.closeSurvey')}
               </button>
             ) : null}
-            <div className="grid grid-cols-1 gap-2.5 sm:grid-cols-2">
-              {showClose ? (
-                <button type="button" onClick={() => onClose?.(survey)} className={neutralOutlineClass}>
-                  <Lock className="h-4 w-4 shrink-0" />
-                  {t('card.closeSurvey')}
-                </button>
-              ) : null}
-              {showArchive ? (
-                <button
-                  type="button"
-                  onClick={() => onArchive?.(survey)}
-                  className={`${dangerOutlineClass}${!showClose ? ' sm:col-span-2' : ''}`}
-                >
-                  <Archive className="h-4 w-4 shrink-0" />
-                  {t('card.archive')}
-                </button>
-              ) : null}
-            </div>
-          </>
+            {showArchive ? (
+              <button
+                type="button"
+                onClick={() => onArchive?.(survey)}
+                className={`${dangerOutlineClass}${!showClose ? ' sm:col-span-2' : ''}`}
+              >
+                <Archive className="h-4 w-4 shrink-0" />
+                {t('card.archive')}
+              </button>
+            ) : null}
+          </div>
         ) : (
           <>
             {showContinue ? (
@@ -145,7 +145,7 @@ function SurveyCard({ survey, onArchive, onClose, onDelete }) {
             ) : null}
 
             {showDelete && showArchive ? (
-              <div className="grid grid-cols-1 gap-2.5 sm:grid-cols-2">
+              <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
                 <button type="button" onClick={() => onArchive?.(survey)} className={dangerOutlineClass}>
                   <Archive className="h-4 w-4 shrink-0" />
                   {t('card.archive')}

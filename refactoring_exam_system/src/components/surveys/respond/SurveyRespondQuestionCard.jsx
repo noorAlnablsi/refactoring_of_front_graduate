@@ -3,6 +3,7 @@ import {
   isEssayQuestion,
   isMultiSelectQuestion,
 } from '../../../lib/attemptAnswers'
+import { resolveQuestionImageSrc } from '../../../lib/questionImage'
 import { getChoiceIndex } from '../../../lib/surveyResponses'
 import { formatLocaleNumber } from '../../../lib/localeNumber'
 import {
@@ -27,6 +28,7 @@ function SurveyRespondQuestionCard({
   const selected = Array.isArray(answer?.selected_choice_indices)
     ? answer.selected_choice_indices
     : []
+  const imageSrc = resolveQuestionImageSrc(question)
   const choices = Array.isArray(question.choices) ? question.choices : []
 
   return (
@@ -47,9 +49,9 @@ function SurveyRespondQuestionCard({
         dangerouslySetInnerHTML={{ __html: question.body || '' }}
       />
 
-      {question.image_path ? (
+      {imageSrc ? (
         <img
-          src={question.image_path}
+          src={imageSrc}
           alt=""
           className="mt-4 max-h-64 w-full rounded-xl object-contain"
         />

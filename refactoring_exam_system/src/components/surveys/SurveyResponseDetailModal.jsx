@@ -1,6 +1,7 @@
 import { useTranslation } from 'react-i18next'
 import { useSurveyManagerResponseDetail } from '../../hooks/surveys/useSurveyManagerResponseDetail'
 import { formatLocaleNumber } from '../../lib/localeNumber'
+import { resolveQuestionImageSrc } from '../../lib/questionImage'
 import {
   shellAccentButtonClass,
   shellBodyTextClass,
@@ -24,6 +25,9 @@ function AnswerBlock({ answer, index }) {
   const selectedChoices = Array.isArray(answer?.selected_choices) ? answer.selected_choices : []
   const essayText = String(answer?.answer_text || '').trim()
 
+  const imageSrc = resolveQuestionImageSrc(answer)
+  const questionText = String(answer?.question_text || '').trim()
+
   return (
     <article className={`p-4 ${shellCardClass}`}>
       <div className="flex flex-wrap items-start justify-between gap-2">
@@ -37,18 +41,18 @@ function AnswerBlock({ answer, index }) {
         ) : null}
       </div>
 
-      {answer?.question_text ? (
+      {questionText ? (
         <div
           className={`mt-3 text-sm leading-7 text-[var(--shell-text)]`}
           dangerouslySetInnerHTML={{ __html: answer.question_text }}
         />
-      ) : (
+      ) : imageSrc ? null : (
         <p className={`mt-3 ${shellSubtleTextClass}`}>{t('responses.detail.noQuestionText')}</p>
       )}
 
-      {answer?.image_path ? (
+      {imageSrc ? (
         <img
-          src={answer.image_path}
+          src={imageSrc}
           alt=""
           className="mt-4 max-h-56 w-full rounded-xl object-contain"
         />

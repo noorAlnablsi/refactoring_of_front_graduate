@@ -25,6 +25,7 @@ import {
 } from '../../lib/testDisplay'
 import { getTestId, getTestName } from '../../lib/testModel'
 import { getResumeWizardStep, getExamWizardProgress } from '../../lib/examWizardProgress'
+import { isProctoringEnabled } from '../../lib/proctoring/isProctoringEnabled'
 import {
   shellAccentButtonClass,
   shellBodyTextClass,
@@ -46,10 +47,11 @@ function ExamCard({ test, onArchive, onClose, onDelete }) {
   const isPublished = test.status === TEST_STATUS.PUBLISHED
   const isClosed = test.status === TEST_STATUS.CLOSED
   const testId = getTestId(test)
+  const monitoringEnabled = isProctoringEnabled(test)
 
   const showContinue = isDraft
   const showGrade = isPublished || isClosed
-  const showMonitor = isPublished
+  const showMonitor = isPublished && monitoringEnabled
   const showClose = canShowCloseExamButton(test)
   /** Draft + closed: archive | delete row (per design). Published: archive in 2×2 only. */
   const showDelete = isDraft || isClosed

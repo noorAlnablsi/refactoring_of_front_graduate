@@ -243,6 +243,7 @@
   "Question bank selection added": "Question bank selection added",
   "Question bank updated": "Question bank updated",
   "Question body is required": "Question body is required",
+  "Question text or image is required": "Question text or image is required",
   "Question deleted": "Question deleted",
   "question_ids must contain at least one id": "At least one question must be selected",
   "question_ids must contain at least one item": "At least one question must be selected",

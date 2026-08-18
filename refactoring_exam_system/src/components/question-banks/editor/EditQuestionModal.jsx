@@ -7,6 +7,7 @@ import {
   getTrueFalseChoices,
   validateQuestionChoiceRules,
 } from '../../../lib/questionBanks'
+import { hasQuestionStem, toQuestionImagePath } from '../../../lib/questionImage'
 import { isRichTextEmpty } from '../../../lib/richText'
 import { customModalOverlayClass, customModalPanelSafeClass } from '../../../lib/shellUi'
 import QuestionBodyEditor from './QuestionBodyEditor'
@@ -17,6 +18,8 @@ const inputClassName =
 function normalizeForForm(question) {
   return {
     body: question?.body || '',
+    image_path: toQuestionImagePath(question?.image_path),
+    image_url: question?.image_url || '',
     type_code: question?.type_code || 'MCQ',
     difficulty: question?.difficulty || 'EASY',
     points: Number(question?.points) || 1,
@@ -35,12 +38,20 @@ function normalizeForForm(question) {
   }
 }
 
-function toApiPayload(form) {
+function toApiPayload(form, originalQuestion) {
   const payload = {
-    body: form.body.trim(),
+    body: isRichTextEmpty(form.body) ? '' : form.body.trim(),
     type_code: form.type_code,
     difficulty: form.difficulty,
     points: Number(form.points) || 1,
+  }
+
+  const nextPath = toQuestionImagePath(form.image_path)
+  const prevPath = toQuestionImagePath(originalQuestion?.image_path)
+  if (nextPath) {
+    payload.image_path = nextPath
+  } else if (prevPath) {
+    payload.remove_image = true
   }
 
   if (form.type_code !== 'ESSAY') {
@@ -132,7 +143,7 @@ function EditQuestionModal({ open, question, topics = [], submitting = false, on
   }
 
   const validate = () => {
-    if (isRichTextEmpty(form.body)) return t('validation.questionTextRequired')
+    if (!hasQuestionStem(form)) return t('validation.questionContentRequired')
     if (!form.points || Number(form.points) < 1) return t('validation.pointsRequired')
 
     if (form.type_code !== 'ESSAY') {
@@ -153,7 +164,7 @@ function EditQuestionModal({ open, question, topics = [], submitting = false, on
       return
     }
     setError('')
-    await onSubmit?.(toApiPayload(form))
+    await onSubmit?.(toApiPayload(form, question))
   }
 
   return (
@@ -194,6 +205,11 @@ function EditQuestionModal({ open, question, topics = [], submitting = false, on
               topics={topics}
               topicId={form.topic_id}
               onTopicChange={(topicId) => setField('topic_id', topicId)}
+              imagePath={form.image_path}
+              imageUrl={form.image_url}
+              onImageChange={({ image_path, image_url }) =>
+                setForm((prev) => ({ ...prev, image_path, image_url }))
+              }
             />
           </div>
 

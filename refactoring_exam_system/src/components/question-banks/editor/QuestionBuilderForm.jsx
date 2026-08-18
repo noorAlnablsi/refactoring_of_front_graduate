@@ -133,6 +133,11 @@ function QuestionBuilderForm({ value, onChange, onSave, onAddAnother, topics = [
           topics={topics}
           topicId={value.topic_id}
           onTopicChange={(topicId) => setField('topic_id', topicId)}
+          imagePath={value.image_path}
+          imageUrl={value.image_url}
+          onImageChange={({ image_path, image_url }) =>
+            onChange({ ...value, image_path, image_url })
+          }
         />
         {topics.length === 0 && !hideGrading ? (
           <p className="text-xs text-[#C2410C]">{t('editor.noTopicsWarning')}</p>

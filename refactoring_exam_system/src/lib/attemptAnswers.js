@@ -1,5 +1,6 @@
 /** Question type codes from attempt.questions[].snapshot_type_code */
 import { localizeDigits } from './localeNumber'
+import { resolveQuestionImageSrc } from './questionImage'
 import { normalizeSettingsConfig } from './testSettings'
 
 export const ATTEMPT_QUESTION_TYPE = {
@@ -200,12 +201,5 @@ export function formatCountdownSpaced(totalSeconds) {
 }
 
 export function getQuestionImageUrl(question) {
-  if (!question) return null
-  return (
-    question.snapshot_image_url ||
-    question.snapshot_image_path ||
-    question.image_url ||
-    question.image_path ||
-    null
-  )
+  return resolveQuestionImageSrc(question)
 }

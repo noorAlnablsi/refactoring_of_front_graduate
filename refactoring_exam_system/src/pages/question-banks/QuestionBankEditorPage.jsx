@@ -15,6 +15,7 @@ import { ROUTES } from '../../constants/routes'
 import { extractTopicsList } from '../../lib/subjectTopics'
 import { canAccessQuestionBanks, canEditQuestionBank, isQuestionBankOwner } from '../../lib/workspaceContext'
 import { isRichTextEmpty } from '../../lib/richText'
+import { hasQuestionStem, toQuestionImagePath } from '../../lib/questionImage'
 import {
   getQuestionBanksListPath,
   QUESTION_BANK_TABS,
@@ -35,6 +36,8 @@ import { useToastStore } from '../../store/toastStore'
 function createDefaultQuestion() {
   return {
     body: '',
+    image_path: '',
+    image_url: '',
     type_code: 'MCQ',
     difficulty: 'EASY',
     points: 1,
@@ -48,10 +51,15 @@ function createDefaultQuestion() {
 
 function normalizeQuestionForApi(question) {
   const payload = {
-    body: question.body.trim(),
+    body: isRichTextEmpty(question.body) ? '' : question.body.trim(),
     type_code: question.type_code,
     difficulty: question.difficulty,
     points: Number(question.points) || 1,
+  }
+
+  const imagePath = toQuestionImagePath(question.image_path)
+  if (imagePath) {
+    payload.image_path = imagePath
   }
 
   if (question.type_code !== 'ESSAY') {
@@ -183,8 +191,8 @@ function QuestionBankEditorPage() {
   }
 
   const validateDraftQuestion = () => {
-    if (isRichTextEmpty(draftQuestion.body)) {
-      showAppToast('validation.questionTextRequired', 'error', { ns: 'questionBanks' })
+    if (!hasQuestionStem(draftQuestion)) {
+      showAppToast('validation.questionContentRequired', 'error', { ns: 'questionBanks' })
       return false
     }
     if (!draftQuestion.points || Number(draftQuestion.points) < 1) {

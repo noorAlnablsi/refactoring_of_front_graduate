@@ -243,6 +243,7 @@
   "Question bank selection added": "تمت إضافة اختيار بنك الأسئلة",
   "Question bank updated": "تم تحديث بنك الأسئلة",
   "Question body is required": "نص السؤال مطلوب",
+  "Question text or image is required": "يلزم نص السؤال أو صورة",
   "Question deleted": "تم حذف السؤال",
   "question_ids must contain at least one id": "يجب اختيار سؤال واحد على الأقل",
   "question_ids must contain at least one item": "يجب اختيار سؤال واحد على الأقل",

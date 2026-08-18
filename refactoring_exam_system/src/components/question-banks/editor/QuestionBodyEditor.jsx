@@ -1,8 +1,15 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import { Bold, ChevronDown, Italic, List, Pilcrow, Sigma, Underline } from 'lucide-react'
+import { Bold, ChevronDown, ImagePlus, Italic, List, Loader2, Pilcrow, Sigma, Underline, X } from 'lucide-react'
 import { applyParagraphDirection, applyRichTextCommand, getRichTextActiveFormats } from '../../../lib/richText'
 import { QUESTION_TYPE_OPTIONS } from '../../../lib/questionBanks'
+import {
+  isAllowedQuestionImageFile,
+  resolveQuestionImageSrc,
+  toQuestionImagePath,
+} from '../../../lib/questionImage'
+import { translateBackendMessage } from '../../../i18n/translateBackendMessage'
+import { uploadImage } from '../../../services/uploads.service'
 
 const toolbarSelectClassName =
   'appearance-none rounded-lg border border-[#2AA8A2]/35 bg-white py-2 pl-3 pr-8 text-sm font-semibold text-[#2AA8A2] outline-none focus:ring-2 focus:ring-[#2AA8A2]/25'
@@ -14,16 +21,17 @@ function ToolbarDivider() {
   return <span className="mx-1 h-5 w-px shrink-0 bg-[#E5E9EB]" aria-hidden="true" />
 }
 
-function FormatButton({ label, onAction, active = false, children }) {
+function FormatButton({ label, onAction, active = false, disabled = false, children }) {
   return (
     <button
       type="button"
       aria-label={label}
       title={label}
       aria-pressed={active}
+      disabled={disabled}
       className={`${toolbarButtonClassName} ${
         active ? 'bg-[#EEF2F3] text-[#2AA8A2] ring-1 ring-[#2AA8A2]/25' : ''
-      }`}
+      } disabled:cursor-not-allowed disabled:opacity-50`}
       onMouseDown={(event) => event.preventDefault()}
       onClick={onAction}
     >
@@ -49,11 +57,20 @@ function QuestionBodyEditor({
   topics = [],
   topicId = '',
   onTopicChange,
+  imagePath = '',
+  imageUrl = '',
+  onImageChange,
 }) {
   const { t } = useTranslation('questionBanks')
   const editorRef = useRef(null)
+  const fileInputRef = useRef(null)
   const lastSyncedHtml = useRef(value)
   const [activeFormats, setActiveFormats] = useState(defaultActiveFormats)
+  const [uploading, setUploading] = useState(false)
+  const [imageError, setImageError] = useState('')
+
+  const previewSrc = resolveQuestionImageSrc(imageUrl || imagePath)
+  const hasImage = Boolean(previewSrc)
 
   const refreshActiveFormats = useCallback(() => {
     const editor = editorRef.current
@@ -100,6 +117,47 @@ function QuestionBodyEditor({
   const applyDirection = (direction) => {
     applyParagraphDirection(editorRef.current, direction)
     syncHtml()
+  }
+
+  const handlePickImage = () => {
+    if (uploading) return
+    setImageError('')
+    fileInputRef.current?.click()
+  }
+
+  const handleImageFile = async (event) => {
+    const file = event.target.files?.[0]
+    event.target.value = ''
+    if (!file) return
+
+    if (!isAllowedQuestionImageFile(file)) {
+      setImageError(t('editor.toolbar.imageTypeError'))
+      return
+    }
+
+    setUploading(true)
+    setImageError('')
+    try {
+      const uploaded = await uploadImage(file)
+      const nextPath = toQuestionImagePath(uploaded?.image_path)
+      if (!nextPath) {
+        setImageError(t('editor.toolbar.imageUploadFailed'))
+        return
+      }
+      onImageChange?.({
+        image_path: nextPath,
+        image_url: uploaded.image_url || resolveQuestionImageSrc(nextPath) || '',
+      })
+    } catch (err) {
+      setImageError(translateBackendMessage(err?.message) || t('editor.toolbar.imageUploadFailed'))
+    } finally {
+      setUploading(false)
+    }
+  }
+
+  const handleRemoveImage = () => {
+    setImageError('')
+    onImageChange?.({ image_path: '', image_url: '' })
   }
 
   return (
@@ -183,6 +241,18 @@ function QuestionBodyEditor({
           <FormatButton label={t('editor.toolbar.insertMath')} onAction={() => insertSymbol('Σ')}>
             <Sigma className="h-4 w-4" strokeWidth={2.2} />
           </FormatButton>
+          <FormatButton
+            label={t('editor.toolbar.insertImage')}
+            active={hasImage}
+            disabled={uploading}
+            onAction={handlePickImage}
+          >
+            {uploading ? (
+              <Loader2 className="h-4 w-4 animate-spin" strokeWidth={2.2} />
+            ) : (
+              <ImagePlus className="h-4 w-4" strokeWidth={2.2} />
+            )}
+          </FormatButton>
 
           <ToolbarDivider />
 
@@ -209,6 +279,14 @@ function QuestionBodyEditor({
         </div>
       </div>
 
+      <input
+        ref={fileInputRef}
+        type="file"
+        accept="image/jpeg,image/png,image/webp,.jpg,.jpeg,.png,.webp"
+        className="hidden"
+        onChange={handleImageFile}
+      />
+
       <div
         ref={editorRef}
         dir="rtl"
@@ -217,7 +295,7 @@ function QuestionBodyEditor({
         role="textbox"
         aria-multiline="true"
         aria-label={t('editor.toolbar.questionBodyAria')}
-        data-placeholder={t('editor.toolbar.questionBodyPlaceholder')}
+        data-placeholder={hasImage ? undefined : t('editor.toolbar.questionBodyPlaceholder')}
         onInput={syncHtml}
         onBlur={syncHtml}
         onKeyUp={refreshActiveFormats}
@@ -225,6 +303,30 @@ function QuestionBodyEditor({
         onFocus={refreshActiveFormats}
         className="min-h-[140px] px-4 py-4 text-sm leading-7 text-[#374151] outline-none empty:before:text-[#94A3B8] empty:before:content-[attr(data-placeholder)] focus:ring-2 focus:ring-inset focus:ring-[#2AA8A2]/20 [&_ol]:list-decimal [&_ol]:pr-5 [&_ul]:list-disc [&_ul]:pr-5"
       />
+
+      {hasImage || imageError ? (
+        <div className="space-y-2 border-t border-[#EEF2F3] px-4 py-3">
+          {hasImage ? (
+            <div className="relative overflow-hidden rounded-xl bg-white ring-1 ring-[#E5E9EB]">
+              <img
+                src={previewSrc}
+                alt={t('editor.toolbar.imagePreviewAlt')}
+                className="max-h-64 w-full object-contain"
+              />
+              <button
+                type="button"
+                onClick={handleRemoveImage}
+                className="absolute start-3 top-3 inline-flex h-8 w-8 items-center justify-center rounded-lg bg-white/90 text-[#64748B] shadow-sm ring-1 ring-[#E5E9EB] hover:text-red-600"
+                aria-label={t('editor.toolbar.removeImage')}
+                title={t('editor.toolbar.removeImage')}
+              >
+                <X className="h-4 w-4" />
+              </button>
+            </div>
+          ) : null}
+          {imageError ? <p className="text-xs font-semibold text-red-600">{imageError}</p> : null}
+        </div>
+      ) : null}
     </div>
   )
 }

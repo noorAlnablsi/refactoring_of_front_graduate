@@ -30,14 +30,16 @@ function ForgotPasswordOtpPage() {
       <PasswordResetIcon />
       <PasswordResetTitle>{t('passwordReset.title')}</PasswordResetTitle>
       <PasswordResetDescription>
-        {t('otp.sentTo')}
+        {t('passwordReset.otp.sentTo')}
         <span dir="ltr" className="mt-2 block text-base font-semibold text-[#2AA8A2]">
           {email}
         </span>
       </PasswordResetDescription>
 
       <div className="mt-10 space-y-4">
-        <label className="block text-center text-sm font-semibold text-[#374151]">{t('otp.label')}</label>
+        <label className="block text-center text-sm font-semibold text-[#374151]">
+          {t('passwordReset.otp.label')}
+        </label>
         <OtpInput digits={digits} onChange={updateDigit} disabled={loading} variant="password-reset" />
       </div>
 
@@ -50,7 +52,7 @@ function ForgotPasswordOtpPage() {
         disabled={loading || otpValue.length !== 6}
         className={`mt-10 ${buttonClassName}`}
       >
-        {loading ? t('otp.verifying') : t('otp.verify')}
+        {loading ? t('passwordReset.otp.verifying') : t('passwordReset.otp.verify')}
       </button>
 
       <div className="mt-6 text-center">
@@ -63,8 +65,8 @@ function ForgotPasswordOtpPage() {
           {resendLoading
             ? t('passwordReset.sending')
             : cooldown > 0
-              ? t('otp.resendIn', { cooldown })
-              : t('otp.resend')}
+              ? t('passwordReset.otp.resendIn', { cooldown })
+              : t('passwordReset.otp.resend')}
         </button>
       </div>
 

@@ -140,9 +140,15 @@ function AttemptQuestionRenderer({
             </span>
           ) : null}
 
-          <h2 className="mt-3 min-w-0 break-words text-start text-lg font-extrabold leading-8 text-[#2A3433] md:text-xl">
-            {question.snapshot_question_text || t('attempt.questionFallback')}
-          </h2>
+          {question.snapshot_question_text ? (
+            <h2 className="mt-3 min-w-0 break-words text-start text-lg font-extrabold leading-8 text-[#2A3433] md:text-xl">
+              {question.snapshot_question_text}
+            </h2>
+          ) : imageUrl ? null : (
+            <h2 className="mt-3 min-w-0 break-words text-start text-lg font-extrabold leading-8 text-[#2A3433] md:text-xl">
+              {t('attempt.questionFallback')}
+            </h2>
+          )}
 
           {question.snapshot_difficulty ? (
             <p className="mt-2 text-xs font-bold text-[#94A3B8]">{question.snapshot_difficulty}</p>
@@ -193,9 +199,17 @@ function AttemptQuestionRenderer({
       </div>
 
       <div className="flex flex-col items-stretch gap-3 sm:flex-row sm:items-start sm:justify-between">
-        <h2 className="min-w-0 flex-1 break-words text-start text-lg font-extrabold leading-8 text-[#2A3433] md:text-xl">
-          {question.snapshot_question_text || t('attempt.questionFallback')}
-        </h2>
+        {question.snapshot_question_text ? (
+          <h2 className="min-w-0 flex-1 break-words text-start text-lg font-extrabold leading-8 text-[#2A3433] md:text-xl">
+            {question.snapshot_question_text}
+          </h2>
+        ) : imageUrl ? (
+          <div className="min-w-0 flex-1" />
+        ) : (
+          <h2 className="min-w-0 flex-1 break-words text-start text-lg font-extrabold leading-8 text-[#2A3433] md:text-xl">
+            {t('attempt.questionFallback')}
+          </h2>
+        )}
         <button
           type="button"
           disabled={disabled}

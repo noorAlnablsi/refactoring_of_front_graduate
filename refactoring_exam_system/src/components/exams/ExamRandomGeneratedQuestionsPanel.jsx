@@ -4,6 +4,7 @@ import { ArrowLeft, ArrowRight, Check, ClipboardList, Trash2 } from 'lucide-reac
 import ExamWizardFooter from './ExamWizardFooter'
 import { showAppToast } from '../../lib/appToast'
 import { formatLocaleNumber } from '../../lib/localeNumber'
+import { resolveQuestionImageSrc } from '../../lib/questionImage'
 import { removeTestQuestion, updateTestQuestion } from '../../services/tests.service'
 import { useToastStore } from '../../store/toastStore'
 
@@ -40,6 +41,7 @@ function GeneratedQuestionCard({
   const isTrueFalse = (question.snapshot_type_code || question.type_code) === 'TRUE_FALSE'
   const questionText = question.snapshot_question_text || question.body || ''
   const questionId = question.id
+  const imageSrc = resolveQuestionImageSrc(question)
 
   const handleRemove = async () => {
     if (!testId || !questionId) return
@@ -112,6 +114,11 @@ function GeneratedQuestionCard({
         className="mt-5 text-base font-extrabold leading-8 text-[#2A3433]"
         dangerouslySetInnerHTML={{ __html: questionText }}
       />
+      {imageSrc ? (
+        <div className="mt-4 overflow-hidden rounded-xl bg-[#F8FAFB] ring-1 ring-[#E5E9EB]">
+          <img src={imageSrc} alt="" className="max-h-64 w-full object-contain" />
+        </div>
+      ) : null}
 
       {choices.length > 0 ? (
         <ul className="mt-5 space-y-3">

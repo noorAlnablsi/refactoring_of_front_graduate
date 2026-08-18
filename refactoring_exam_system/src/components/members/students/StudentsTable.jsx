@@ -124,9 +124,6 @@ function StudentsTable({
                             <p className={`truncate font-bold ${shellPageTitleClass}`}>
                               {student.full_name}
                             </p>
-                            <p className={`mt-0.5 text-xs ${shellSubtleTextClass}`}>
-                              #{student.membership_id ?? student.user_id}
-                            </p>
                           </div>
                         </div>
                       </td>

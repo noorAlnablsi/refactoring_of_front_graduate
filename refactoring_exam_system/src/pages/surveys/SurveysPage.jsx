@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 import { Navigate, useNavigate } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
-import { Plus, Search } from 'lucide-react'
+import { ChevronDown, Plus, Search } from 'lucide-react'
 import ConfirmActionDialog from '../../components/common/ConfirmActionDialog'
 import SubjectsPagination from '../../components/subjects/SubjectsPagination'
 import AssignedSurveyCard from '../../components/surveys/AssignedSurveyCard'
@@ -18,6 +18,7 @@ import { useToastStore } from '../../store/toastStore'
 import {
   shellAccentButtonClass,
   shellCardClass,
+  shellInputClass,
   shellPageEyebrowClass,
   shellPageSubtitleClass,
   shellPageTitleClass,
@@ -45,10 +46,6 @@ function SurveysPage() {
   const { t } = useTranslation(['surveys', 'common'])
   const navigate = useNavigate()
   const showToast = useToastStore((s) => s.showToast)
-  const scopeTabs = [
-    { id: SURVEY_SCOPE.MANAGED, label: t('tabs.managed') },
-    { id: SURVEY_SCOPE.ASSIGNED, label: t('tabs.assigned') },
-  ]
   const tabs = [
     { id: TEST_TABS.ALL, label: t('tabs.all') },
     { id: TEST_TABS.PUBLISHED, label: t('tabs.published') },
@@ -174,18 +171,45 @@ function SurveysPage() {
         ) : null}
       </div>
 
-      <div className={`${shellTabsBarClass} gap-4 overflow-x-auto`}>
-        {scopeTabs.map((tab) => (
-          <button
-            key={tab.id}
-            type="button"
-            onClick={() => setScope(tab.id)}
-            className={`shrink-0 ${shellTabButtonClass(scope === tab.id)}`}
+      {scope === SURVEY_SCOPE.MANAGED ? (
+        <div className={`${shellTabsBarClass} gap-4 overflow-x-auto`}>
+          {tabs.map((tab) => (
+            <button
+              key={tab.id}
+              type="button"
+              onClick={() => setActiveTab(tab.id)}
+              className={`shrink-0 ${shellTabButtonClass(activeTab === tab.id)}`}
+            >
+              {tab.label}
+              {activeTab === tab.id ? <span className={shellTabIndicatorClass} /> : null}
+            </button>
+          ))}
+        </div>
+      ) : null}
+
+      <div className={`flex flex-wrap items-center gap-3 p-4 ${shellCardClass}`}>
+        <div className="relative min-w-0 flex-1">
+          <Search className="pointer-events-none absolute right-3 top-1/2 h-4 w-4 -translate-y-1/2 text-[var(--shell-text-subtle)]" />
+          <input
+            type="search"
+            value={scope === SURVEY_SCOPE.MANAGED ? searchInput : ''}
+            onChange={(e) => setSearchInput(e.target.value)}
+            disabled={scope === SURVEY_SCOPE.ASSIGNED}
+            placeholder={t('page.searchPlaceholder')}
+            className={`${shellSearchInputClass} ${scope === SURVEY_SCOPE.ASSIGNED ? 'opacity-50' : ''}`}
+          />
+        </div>
+        <div className="relative shrink-0">
+          <select
+            value={scope}
+            onChange={(e) => setScope(e.target.value)}
+            className={`${shellInputClass} h-11 appearance-none pe-9 ps-4 text-sm font-bold`}
           >
-            {tab.label}
-            {scope === tab.id ? <span className={shellTabIndicatorClass} /> : null}
-          </button>
-        ))}
+            <option value={SURVEY_SCOPE.MANAGED}>{t('filter.managed')}</option>
+            <option value={SURVEY_SCOPE.ASSIGNED}>{t('filter.assigned')}</option>
+          </select>
+          <ChevronDown className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-[var(--shell-text-subtle)]" />
+        </div>
       </div>
 
       {scope === SURVEY_SCOPE.ASSIGNED ? (
@@ -221,40 +245,13 @@ function SurveysPage() {
         </>
       ) : (
         <>
-          <div className={`${shellTabsBarClass} gap-4 overflow-x-auto`}>
-            {tabs.map((tab) => (
-              <button
-                key={tab.id}
-                type="button"
-                onClick={() => setActiveTab(tab.id)}
-                className={`shrink-0 ${shellTabButtonClass(activeTab === tab.id)}`}
-              >
-                {tab.label}
-                {activeTab === tab.id ? <span className={shellTabIndicatorClass} /> : null}
-              </button>
-            ))}
-          </div>
-
-          <div className={`p-4 ${shellCardClass}`}>
-            <div className="relative max-w-md">
-              <Search className="pointer-events-none absolute right-3 top-1/2 h-4 w-4 -translate-y-1/2 text-[var(--shell-text-subtle)]" />
-              <input
-                type="search"
-                value={searchInput}
-                onChange={(e) => setSearchInput(e.target.value)}
-                placeholder={t('page.searchPlaceholder')}
-                className={shellSearchInputClass}
-              />
-            </div>
-          </div>
-
           {error ? <p className="text-sm text-red-500">{error}</p> : null}
           {actionLoading ? <p className={shellSubtleTextClass}>{t('page.processing')}</p> : null}
 
           {loading ? (
             <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
               {[1, 2, 3].map((i) => (
-                <div key={i} className={`shell-skeleton h-48 animate-pulse ${shellCardClass}`} />
+                <div key={i} className={`shell-skeleton h-56 animate-pulse ${shellCardClass}`} />
               ))}
             </div>
           ) : filteredSurveys.length === 0 ? (
