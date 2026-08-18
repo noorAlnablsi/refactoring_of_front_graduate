@@ -225,6 +225,7 @@ function QuestionBankEditorPage() {
   const handleSaveQuestion = () => {
     if (!validateDraftQuestion()) return
     setLocalQuestions((prev) => [...prev, normalizeQuestionForApi(draftQuestion)])
+    setDraftQuestion(createDefaultQuestion())
     showAppToast('toast.questionSavedLocally', 'success', { ns: 'questionBanks' })
   }
 

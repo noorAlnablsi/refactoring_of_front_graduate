@@ -96,7 +96,7 @@ function ExamManualQuestionsPanel({
       <QuestionBuilderForm
         value={draft}
         onChange={setDraft}
-        onSave={() => saveQuestion(false)}
+        onSave={() => saveQuestion(true)}
         onAddAnother={() => saveQuestion(true)}
         topics={topics}
         hideGrading={surveyMode}
