@@ -7,6 +7,7 @@ export const REGISTRATION_FLOW = {
   INSTITUTION: 'institution',
   STUDENT: 'student',
   INVITE: 'invite',
+  EMAIL_VERIFICATION: 'email_verification',
 }
 
 export const WELCOME_SELECTION = {

@@ -1,5 +1,5 @@
 {
-  "Account already exists. Please login first.": "الحساب موجود بالفعل. يرجى تسجيل الدخول أولاً.",
+  "Account already exists. Please login first.": "الحساب موجود بالفعل. إذا لم تُحقّق بريدك بعد، سجّل الدخول وسنوجّهك لإدخال رمز التحقق.",
   "Account deleted successfully": "تم حذف الحساب بنجاح",
   "Account is already deleted": "الحساب محذوف بالفعل",
   "Account already deleted": "الحساب محذوف بالفعل",
@@ -67,7 +67,7 @@
   "Email is already registered": "البريد الإلكتروني مسجّل بالفعل",
   "Email is already verified": "تم التحقق من البريد الإلكتروني بالفعل",
   "Email not verified": "لم يتم التحقق من البريد الإلكتروني",
-  "Email not verified. Enter the OTP sent to your email via POST /auth/verify-otp": "لم يتم التحقق من البريد الإلكتروني. أدخل رمز OTP المُرسل إلى بريدك عبر POST /auth/verify-otp",
+  "Email not verified. Enter the OTP sent to your email via POST /auth/verify-otp": "لم يتم التحقق من بريدك الإلكتروني. أدخل رمز التحقق المرسل إلى بريدك أو اطلب إعادة الإرسال.",
   "Entry window has closed.": "انتهت فترة الدخول.",
   "ESSAY questions cannot include selected_choice_indices": "أسئلة المقال لا يمكن أن تتضمّن اختيارات محددة",
   "ESSAY questions must not include choices": "أسئلة المقال لا يجب أن تحتوي خيارات",

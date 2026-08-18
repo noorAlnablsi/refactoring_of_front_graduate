@@ -22,15 +22,16 @@ function RegisterOtpPage() {
     verify,
     handleResend,
     isStudentFlow,
+    isEmailVerificationFlow,
   } = useOtpVerification()
 
   return (
     <AuthShell heroImage={loginHero} heroAlt={t('register.otp.heroAlt')}>
-      {!isStudentFlow ? <RegisterProgress activeStep={3} /> : null}
+      {!isStudentFlow && !isEmailVerificationFlow ? <RegisterProgress activeStep={3} /> : null}
 
       <h1 className="text-right text-3xl font-extrabold text-[#2A3433]">{t('register.otp.title')}</h1>
       <p className="mt-3 text-right text-sm leading-7 text-[#6B7280] md:text-base">
-        {t('register.otp.subtitle')}
+        {isEmailVerificationFlow ? t('register.otp.pendingVerificationSubtitle') : t('register.otp.subtitle')}
         <span className="mx-1 font-semibold text-[#2AA8A2]">{email}</span>
       </p>
 

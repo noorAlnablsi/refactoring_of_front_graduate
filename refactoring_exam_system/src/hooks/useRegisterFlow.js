@@ -3,6 +3,10 @@ import { useNavigate } from 'react-router-dom'
 import { ROUTES } from '../constants/routes'
 import { WORKSPACE_KIND } from '../constants/auth'
 import { generateSlug } from '../lib/slug'
+import {
+  beginEmailVerificationFlow,
+  isAccountAlreadyExistsError,
+} from '../lib/authVerification'
 import { register } from '../services/auth.service'
 import {
   getWorkspaceNameForRegister,
@@ -42,6 +46,14 @@ export function useRegisterFlow() {
       navigate(ROUTES.REGISTER_OTP)
       return response
     } catch (err) {
+      if (isAccountAlreadyExistsError(err.message)) {
+        await beginEmailVerificationFlow({
+          email: store.email.trim(),
+          navigate,
+          resend: false,
+        })
+        return null
+      }
       setError(err.message)
       throw err
     } finally {

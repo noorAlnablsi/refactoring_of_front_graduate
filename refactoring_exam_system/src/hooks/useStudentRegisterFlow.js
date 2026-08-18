@@ -17,15 +17,26 @@ export function useStudentRegisterGuard() {
 
 export function useStudentJoinCodeGuard() {
   const navigate = useNavigate()
-  const store = useRegistrationStore()
+  const registration_flow = useRegistrationStore((s) => s.registration_flow)
+  const full_name = useRegistrationStore((s) => s.full_name)
+  const email = useRegistrationStore((s) => s.email)
+  const password = useRegistrationStore((s) => s.password)
 
   useEffect(() => {
-    if (store.registration_flow !== REGISTRATION_FLOW.STUDENT) {
+    const flow = useRegistrationStore.getState().registration_flow
+    if (flow !== REGISTRATION_FLOW.STUDENT) {
       navigate(ROUTES.WELCOME, { replace: true })
+    }
+    // Only validate initial entry — do not redirect when flow changes during submit.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
+
+  useEffect(() => {
+    if (registration_flow !== REGISTRATION_FLOW.STUDENT) {
       return
     }
-    if (!store.full_name.trim() || !store.email.trim() || !store.password) {
+    if (!full_name.trim() || !email.trim() || !password) {
       navigate(ROUTES.STUDENT_REGISTER, { replace: true })
     }
-  }, [store.registration_flow, store.full_name, store.email, store.password, navigate])
+  }, [registration_flow, full_name, email, password, navigate])
 }

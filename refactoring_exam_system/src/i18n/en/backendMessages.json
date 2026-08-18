@@ -1,5 +1,5 @@
 {
-  "Account already exists. Please login first.": "Account already exists. Please login first.",
+  "Account already exists. Please login first.": "This account already exists. If your email is not verified yet, sign in and we will take you to enter the verification code.",
   "Account deleted successfully": "Account deleted successfully",
   "Account is already deleted": "Account is already deleted",
   "Account already deleted": "Account already deleted",
@@ -67,7 +67,7 @@
   "Email is already registered": "Email is already registered",
   "Email is already verified": "Email is already verified",
   "Email not verified": "Email not verified",
-  "Email not verified. Enter the OTP sent to your email via POST /auth/verify-otp": "Email not verified. Enter the OTP sent to your email via POST /auth/verify-otp",
+  "Email not verified. Enter the OTP sent to your email via POST /auth/verify-otp": "Your email is not verified. Enter the verification code sent to your email or request a new one.",
   "Entry window has closed.": "Entry window has closed.",
   "ESSAY questions cannot include selected_choice_indices": "Essay questions cannot include selected choices",
   "ESSAY questions must not include choices": "Essay questions must not include choices",

@@ -4,6 +4,11 @@ import { useTranslation } from 'react-i18next'
 import AuthShell from '../../components/auth/AuthShell'
 import { ROUTES } from '../../constants/routes'
 import { useStudentJoinCodeGuard } from '../../hooks/useStudentRegisterFlow'
+import {
+  beginEmailVerificationFlow,
+  isAccountAlreadyExistsError,
+  isAlreadyWorkspaceMemberError,
+} from '../../lib/authVerification'
 import { registerStudent } from '../../services/join.service'
 import { useRegistrationStore } from '../../store/registrationStore'
 import loginHero from '../../assets/auth/value-prop-side.png'
@@ -20,7 +25,8 @@ function StudentJoinCodePage() {
   const [error, setError] = useState('')
   const [loading, setLoading] = useState(false)
 
-  const handleSubmit = async () => {
+  const handleSubmit = async (event) => {
+    event.preventDefault()
     if (!store.join_code.trim()) {
       setError(t('validation.joinCodeRequired', { ns: 'forms' }))
       return
@@ -40,10 +46,34 @@ function StudentJoinCodePage() {
       updateFields({
         student_api_completed: true,
         dev_otp: response.dev_otp || '',
+        email: store.email.trim(),
       })
 
-      navigate(ROUTES.REGISTER_OTP)
+      navigate(ROUTES.REGISTER_OTP, {
+        state: {
+          email: store.email.trim(),
+          studentRegistration: true,
+        },
+      })
     } catch (err) {
+      if (isAccountAlreadyExistsError(err.message)) {
+        const started = await beginEmailVerificationFlow({
+          email: store.email.trim(),
+          navigate,
+          resend: false,
+        })
+        if (!started) {
+          setError(t('validation.emailRequired', { ns: 'forms' }))
+        }
+        return
+      }
+      if (isAlreadyWorkspaceMemberError(err.message)) {
+        navigate(ROUTES.LOGIN, {
+          replace: true,
+          state: { email: store.email.trim() },
+        })
+        return
+      }
       setError(err.message)
     } finally {
       setLoading(false)
@@ -59,28 +89,29 @@ function StudentJoinCodePage() {
         {t('studentRegister.joinCodeSubtitle')}
       </p>
 
-      <div className="mt-8 space-y-2">
-        <label className="block text-right text-sm font-semibold text-[#374151]">
-          {t('studentRegister.joinCodeLabel')}
-        </label>
-        <input
-          value={store.join_code}
-          onChange={(e) => updateFields({ join_code: e.target.value.toUpperCase() })}
-          placeholder={t('studentRegister.joinCodePlaceholder')}
-          className={inputClassName}
-        />
-        {error ? <p className="text-sm text-red-600">{error}</p> : null}
-      </div>
+      <form className="mt-8" autoComplete="off" onSubmit={handleSubmit}>
+        <div className="space-y-2">
+          <label className="block text-right text-sm font-semibold text-[#374151]">
+            {t('studentRegister.joinCodeLabel')}
+          </label>
+          <input
+            value={store.join_code}
+            onChange={(e) => updateFields({ join_code: e.target.value.toUpperCase() })}
+            placeholder={t('studentRegister.joinCodePlaceholder')}
+            className={inputClassName}
+          />
+          {error ? <p className="text-sm text-red-600">{error}</p> : null}
+        </div>
 
-      <button
-        type="button"
-        data-keyboard-primary=""
-        onClick={handleSubmit}
-        disabled={loading}
-        className="mt-8 h-12 w-full rounded-xl bg-[#2AA8A2] text-base font-bold text-white shadow-[0_12px_20px_rgba(42,168,162,0.22)] transition hover:opacity-95 disabled:opacity-70 max-w-[448px]"
-      >
-        {loading ? t('studentRegister.submitting') : t('studentRegister.submit')}
-      </button>
+        <button
+          type="submit"
+          data-keyboard-primary=""
+          disabled={loading}
+          className="mt-8 h-12 w-full rounded-xl bg-[#2AA8A2] text-base font-bold text-white shadow-[0_12px_20px_rgba(42,168,162,0.22)] transition hover:opacity-95 disabled:opacity-70 max-w-[448px]"
+        >
+          {loading ? t('studentRegister.submitting') : t('studentRegister.submit')}
+        </button>
+      </form>
 
       <p className="mt-5 text-center text-sm text-[#6B7280]">
         {t('welcome.hasAccount')}{' '}

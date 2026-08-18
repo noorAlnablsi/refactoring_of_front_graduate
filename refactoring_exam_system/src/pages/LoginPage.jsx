@@ -5,6 +5,7 @@ import { ROUTES } from '../constants/routes'
 import { useAppTranslation } from '../hooks/useAppTranslation'
 import { waitForAuthHydration } from '../lib/authSession'
 import { resolvePostLoginRoute } from '../lib/postLoginNavigation'
+import { beginEmailVerificationFlow, isEmailNotVerifiedError } from '../lib/authVerification'
 import { login } from '../services/auth.service'
 import { useAuthStore } from '../store/authStore'
 import { useRegistrationStore } from '../store/registrationStore'
@@ -52,6 +53,16 @@ function LoginPage() {
 
       navigate(resolvePostLoginRoute(data), { replace: true })
     } catch (err) {
+      if (isEmailNotVerifiedError(err.message)) {
+        await beginEmailVerificationFlow({
+          email: email.trim(),
+          password,
+          navigate,
+          resend: false,
+          replace: true,
+        })
+        return
+      }
       setError(err.message)
     } finally {
       setLoading(false)

@@ -25,7 +25,8 @@ function JoinPage() {
     }
   }, [access_token, navigate])
 
-  const handleSubmit = async () => {
+  const handleSubmit = async (event) => {
+    event.preventDefault()
     if (!joinCode.trim()) {
       setError(t('validation.joinCodeRequired', { ns: 'forms' }))
       return
@@ -52,33 +53,34 @@ function JoinPage() {
       <h1 className="text-right text-3xl font-extrabold text-[#2A3433] md:text-4xl">{t('join.title')}</h1>
       <p className="mt-3 text-right text-sm leading-7 text-[#6B7280] md:text-base">{t('join.subtitle')}</p>
 
-      <div className="mt-8 space-y-2">
-        <label className="block text-right text-sm font-semibold text-[#374151]">
-          {t('studentRegister.joinCodeLabel')}
-        </label>
-        <input
-          value={joinCode}
-          onChange={(e) => setJoinCode(e.target.value.toUpperCase())}
-          placeholder={t('studentRegister.joinCodePlaceholder')}
-          className={inputClassName}
-        />
-        {error ? <p className="text-sm text-red-600">{error}</p> : null}
-        {successMessage ? (
-          <p className="rounded-xl bg-[#E8F7F6] px-4 py-3 text-sm font-semibold text-[#2AA8A2]">
-            {successMessage}
-          </p>
-        ) : null}
-      </div>
+      <form className="mt-8" autoComplete="off" onSubmit={handleSubmit}>
+        <div className="space-y-2">
+          <label className="block text-right text-sm font-semibold text-[#374151]">
+            {t('studentRegister.joinCodeLabel')}
+          </label>
+          <input
+            value={joinCode}
+            onChange={(e) => setJoinCode(e.target.value.toUpperCase())}
+            placeholder={t('studentRegister.joinCodePlaceholder')}
+            className={inputClassName}
+          />
+          {error ? <p className="text-sm text-red-600">{error}</p> : null}
+          {successMessage ? (
+            <p className="rounded-xl bg-[#E8F7F6] px-4 py-3 text-sm font-semibold text-[#2AA8A2]">
+              {successMessage}
+            </p>
+          ) : null}
+        </div>
 
-      <button
-        type="button"
-        data-keyboard-primary=""
-        onClick={handleSubmit}
-        disabled={loading}
-        className="mt-8 h-12 w-full rounded-xl bg-[#2AA8A2] text-base font-bold text-white shadow-[0_12px_20px_rgba(42,168,162,0.22)] transition hover:opacity-95 disabled:opacity-70 max-w-[448px]"
-      >
-        {loading ? t('join.submitting') : t('join.submit')}
-      </button>
+        <button
+          type="submit"
+          data-keyboard-primary=""
+          disabled={loading}
+          className="mt-8 h-12 w-full rounded-xl bg-[#2AA8A2] text-base font-bold text-white shadow-[0_12px_20px_rgba(42,168,162,0.22)] transition hover:opacity-95 disabled:opacity-70 max-w-[448px]"
+        >
+          {loading ? t('join.submitting') : t('join.submit')}
+        </button>
+      </form>
 
       <p className="mt-5 text-center text-sm text-[#6B7280]">
         <Link to={ROUTES.HOME} className="font-bold text-[#2AA8A2]">
