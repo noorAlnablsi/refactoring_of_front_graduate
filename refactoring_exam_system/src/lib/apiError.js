@@ -26,11 +26,11 @@ export function getFieldLabel(field) {
   const i18nKey = FIELD_I18N_KEYS[field]
   if (!i18nKey) return field
 
-  if (i18n.isInitialized) {
+  try {
     return i18n.t(`fields.${i18nKey}`, { ns: 'forms', defaultValue: field })
+  } catch {
+    return field
   }
-
-  return field
 }
 
 function translateFrontendMessage(key, fallback, options = {}) {
@@ -42,8 +42,9 @@ function translateFrontendMessage(key, fallback, options = {}) {
 }
 
 function translateMessagePart(message) {
-  if (!message) return message
-  return translateBackendMessage(String(message))
+  if (message == null || message === '') return message
+  const text = typeof message === 'string' ? message : JSON.stringify(message)
+  return translateBackendMessage(text)
 }
 
 function formatValidationErrors(errors) {
@@ -59,7 +60,8 @@ function formatValidationErrors(errors) {
       if (!message) continue
       let text
       if (typeof message === 'object') {
-        text = message.msg || message.message || message.detail || JSON.stringify(message)
+        const candidate = message.msg ?? message.message ?? message.detail
+        text = typeof candidate === 'string' ? candidate : JSON.stringify(message)
       } else {
         text = String(message)
       }

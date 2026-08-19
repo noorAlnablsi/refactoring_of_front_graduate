@@ -54,6 +54,10 @@ function toApiPayload(form, originalQuestion) {
     payload.remove_image = true
   }
 
+  if (form.image_url) {
+    payload.image_url = String(form.image_url).trim()
+  }
+
   if (form.type_code !== 'ESSAY') {
     payload.choices = form.choices.map((choice) => ({
       body: choice.body.trim(),

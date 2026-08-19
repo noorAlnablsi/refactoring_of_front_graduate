@@ -8,8 +8,17 @@ export const useToastStore = create((set) => ({
   visible: false,
 
   showToast: (message, type = 'success') => {
+    const normalizedMessage =
+      message instanceof Error
+        ? message.message
+        : typeof message === 'string'
+          ? message
+          : message == null
+            ? ''
+            : JSON.stringify(message)
+
     if (toastTimer) clearTimeout(toastTimer)
-    set({ message, type, visible: true })
+    set({ message: normalizedMessage, type, visible: true })
     toastTimer = setTimeout(() => {
       set({ visible: false, message: '' })
     }, 3500)

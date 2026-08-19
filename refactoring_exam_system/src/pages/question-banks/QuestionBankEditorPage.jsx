@@ -62,6 +62,10 @@ function normalizeQuestionForApi(question) {
     payload.image_path = imagePath
   }
 
+  if (question.image_url) {
+    payload.image_url = String(question.image_url).trim()
+  }
+
   if (question.type_code !== 'ESSAY') {
     payload.choices = question.choices.map((choice) => ({
       body: choice.body.trim(),

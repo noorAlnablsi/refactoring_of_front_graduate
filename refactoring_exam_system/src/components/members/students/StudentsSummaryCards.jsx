@@ -37,8 +37,9 @@ function SummaryCard({ label, value, description, icon: Icon, accentClassName, i
 
 function StudentsSummaryCards({ total, activeTotal, loading }) {
   const { t } = useTranslation('members')
-  const totalValue = loading ? '…' : formatStatValue(total)
-  const activeValue = loading ? '…' : formatStatValue(activeTotal)
+  const loadingDots = <span className="text-[26px] text-[var(--shell-accent)]/70">…</span>
+  const totalValue = loading ? loadingDots : formatStatValue(total)
+  const activeValue = loading ? loadingDots : formatStatValue(activeTotal)
 
   return (
     <div className="grid gap-4 md:grid-cols-2">

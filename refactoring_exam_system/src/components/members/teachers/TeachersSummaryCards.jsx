@@ -38,8 +38,11 @@ function SummaryCard({ label, value, description, icon: Icon, accentClassName, i
 
 function TeachersSummaryCards({ total, activeRate, loading }) {
   const { t } = useTranslation('members')
-  const totalValue = loading ? '…' : formatStatValue(total)
-  const rateValue = loading ? '…' : `${formatLocaleNumber(activeRate)}%`
+  const loadingDots = (
+    <span className="text-[26px] text-[var(--shell-accent)]/70">…</span>
+  )
+  const totalValue = loading ? loadingDots : formatStatValue(total)
+  const rateValue = loading ? loadingDots : `${formatLocaleNumber(activeRate)}%`
 
   return (
     <div className="grid gap-4 md:grid-cols-2">

@@ -21,7 +21,8 @@ function MembersStatCard({
   actionTo,
   comingSoonLabel,
 }) {
-  const displayValue = loading ? '…' : formatStatValue(value ?? 0)
+  const loadingDots = <span className="text-[28px] text-[var(--shell-accent)]/70">…</span>
+  const displayValue = loading ? loadingDots : formatStatValue(value ?? 0)
 
   const actionClassName = `mt-auto w-full justify-center ${shellAccentButtonClass}`
 
