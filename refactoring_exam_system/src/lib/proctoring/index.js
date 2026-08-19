@@ -1,4 +1,4 @@
-export { isProctoringEnabled, getProctoringSettings } from './isProctoringEnabled'
+export { isProctoringEnabled, readProctoringEnabledFlag, getProctoringSettings } from './isProctoringEnabled'
 export { debounce, throttle, createStateChangeGate } from './eventThrottle'
 export {
   buildProctoringWebSocketUrl,

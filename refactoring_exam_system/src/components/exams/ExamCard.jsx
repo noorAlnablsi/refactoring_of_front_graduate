@@ -11,6 +11,7 @@ import {
   UserRound,
   Users,
 } from 'lucide-react'
+import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { ROUTES } from '../../constants/routes'
@@ -25,7 +26,8 @@ import {
 } from '../../lib/testDisplay'
 import { getTestId, getTestName } from '../../lib/testModel'
 import { getResumeWizardStep, getExamWizardProgress } from '../../lib/examWizardProgress'
-import { isProctoringEnabled } from '../../lib/proctoring/isProctoringEnabled'
+import { readProctoringEnabledFlag } from '../../lib/proctoring/isProctoringEnabled'
+import { getTestById } from '../../services/tests.service'
 import {
   shellAccentButtonClass,
   shellBodyTextClass,
@@ -47,13 +49,40 @@ function ExamCard({ test, onArchive, onClose, onDelete }) {
   const isPublished = test.status === TEST_STATUS.PUBLISHED
   const isClosed = test.status === TEST_STATUS.CLOSED
   const testId = getTestId(test)
-  const monitoringEnabled = isProctoringEnabled(test)
+  const listedProctoringFlag = readProctoringEnabledFlag(test)
+  const [resolvedProctoringFlag, setResolvedProctoringFlag] = useState(null)
+
+  useEffect(() => {
+    if (!isPublished || listedProctoringFlag != null || !testId) {
+      setResolvedProctoringFlag(null)
+      return undefined
+    }
+
+    let cancelled = false
+    getTestById(testId)
+      .then((data) => {
+        if (cancelled) return
+        const details = data?.test || data
+        setResolvedProctoringFlag(readProctoringEnabledFlag(details))
+      })
+      .catch(() => {
+        if (!cancelled) setResolvedProctoringFlag(false)
+      })
+
+    return () => {
+      cancelled = true
+    }
+  }, [isPublished, listedProctoringFlag, testId])
+
+  const monitoringEnabled =
+    listedProctoringFlag === true ||
+    (listedProctoringFlag == null && resolvedProctoringFlag === true)
 
   const showContinue = isDraft
   const showGrade = isPublished || isClosed
   const showMonitor = isPublished && monitoringEnabled
   const showClose = canShowCloseExamButton(test)
-  /** Draft + closed: archive | delete row (per design). Published: archive in 2×2 only. */
+  /** Draft + closed: archive | delete row (per design). Published: 2×2 grid. */
   const showDelete = isDraft || isClosed
   const showArchive = test.status !== TEST_STATUS.ARCHIVED
 
@@ -79,7 +108,7 @@ function ExamCard({ test, onArchive, onClose, onDelete }) {
   const dangerOutlineClass =
     'inline-flex h-auto min-h-11 w-full items-center justify-center gap-1.5 whitespace-normal rounded-xl border border-[var(--shell-border)] bg-[var(--shell-surface)] px-3 py-2.5 text-center text-sm font-bold leading-tight text-[var(--shell-danger-text)] transition hover:bg-[var(--shell-danger-bg)]'
 
-  const publishedGrid = isPublished && showGrade && showMonitor
+  const publishedGrid = isPublished && showGrade
 
   return (
     <article className={`flex h-full flex-col p-5 ${shellCardInteractiveClass}`}>
@@ -135,14 +164,20 @@ function ExamCard({ test, onArchive, onClose, onDelete }) {
       <div className={`mt-auto flex flex-col gap-2.5 border-t pt-4 ${shellDividerClass}`}>
         {publishedGrid ? (
           <div className="grid grid-cols-1 gap-2.5 sm:grid-cols-2">
-            <button type="button" onClick={openAttempts} className={primaryButtonClass}>
+            <button
+              type="button"
+              onClick={openAttempts}
+              className={`${primaryButtonClass}${showMonitor ? '' : ' sm:col-span-2'}`}
+            >
               <ClipboardCheck className="h-4 w-4 shrink-0" />
               {t('card.gradeAttempts')}
             </button>
-            <button type="button" onClick={openMonitoring} className={softMonitorClass}>
-              <Activity className="h-4 w-4 shrink-0" />
-              {t('card.liveMonitoring')}
-            </button>
+            {showMonitor ? (
+              <button type="button" onClick={openMonitoring} className={softMonitorClass}>
+                <Activity className="h-4 w-4 shrink-0" />
+                {t('card.liveMonitoring')}
+              </button>
+            ) : null}
             {showClose ? (
               <button type="button" onClick={() => onClose?.(test)} className={neutralOutlineClass}>
                 <Lock className="h-4 w-4 shrink-0" />

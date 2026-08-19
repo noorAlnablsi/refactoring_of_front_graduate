@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { EXAM_QUESTIONS_VIEWS } from '../../../lib/examWizardProgress'
+import { showAppToast } from '../../../lib/appToast'
 import { getTestId } from '../../../lib/testModel'
 import AddRandomBanksModal from '../AddRandomBanksModal'
 import ExamAiGeneratePanel from '../ExamAiGeneratePanel'
@@ -40,6 +41,10 @@ function ExamAddQuestionsStep({
   const [restoring, setRestoring] = useState(true)
   const testId = getTestId(test)
   const questions = test?.questions || []
+  const effectiveQuestions = useMemo(() => {
+    if (generatedQuestions?.length) return generatedQuestions
+    return questions
+  }, [generatedQuestions, questions])
   const blueprintBankIds = useMemo(
     () => (blueprintBanks ? blueprintBanks.map((bank) => bank.id) : []),
     [blueprintBanks],
@@ -152,7 +157,10 @@ function ExamAddQuestionsStep({
   }
 
   const handleNext = () => {
-    if (questions.length < 1) return
+    if (effectiveQuestions.length < 1) {
+      showAppToast('wizard.questions.minOneError', 'error', { ns: 'exams' })
+      return
+    }
     onNext?.()
   }
 
@@ -404,7 +412,7 @@ function ExamAddQuestionsStep({
       surveyMode={surveyMode}
       activeMethod={activeMethod}
       onSelectMethod={setActiveMethod}
-      questionsCount={questions.length}
+      questionsCount={effectiveQuestions.length}
       onBack={onBack}
       onNext={handleNext}
       fromBankOpen={fromBankOpen}
