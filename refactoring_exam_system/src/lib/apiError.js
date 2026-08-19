@@ -19,6 +19,7 @@ const FIELD_I18N_KEYS = {
   passing_score: 'passingScore',
   membership_id: 'membershipId',
   membership_ids: 'membershipIds',
+  questions: 'questions',
 }
 
 export function getFieldLabel(field) {
@@ -56,7 +57,13 @@ function formatValidationErrors(errors) {
 
     for (const message of values) {
       if (!message) continue
-      parts.push(`${label}: ${translateMessagePart(message)}`)
+      let text
+      if (typeof message === 'object') {
+        text = message.msg || message.message || message.detail || JSON.stringify(message)
+      } else {
+        text = String(message)
+      }
+      parts.push(`${label}: ${translateMessagePart(text)}`)
     }
   }
 

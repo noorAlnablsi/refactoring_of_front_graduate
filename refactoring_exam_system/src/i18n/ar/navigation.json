@@ -12,7 +12,16 @@
     "settings": "الإعدادات",
     "logoutCurrentPath": "خروج من المسار الحالي",
     "brandSubtitle": "لوحة الإدارة",
-    "brandTitle": "QuizHub"
+    "brandTitle": "QuizHub",
+    "joinCode": "كود الانضمام",
+    "joinCodeLabel": "كود المساحة التعليمية",
+    "joinCodeCopied": "تم نسخ كود الانضمام",
+    "joinCodeTitle": "كود الانضمام لـ «{{workspace}}»",
+    "joinCodeHint": "شارك هذا الكود مع الطلاب للانضمام إلى مساحتك التعليمية.",
+    "joinCodeLoading": "جاري تحميل الكود...",
+    "joinCodeError": "تعذّر تحميل كود الانضمام",
+    "joinCodeCopy": "نسخ الكود",
+    "joinCodeClose": "إغلاق"
   },
   "studentSidebar": {
     "home": "الرئيسية",

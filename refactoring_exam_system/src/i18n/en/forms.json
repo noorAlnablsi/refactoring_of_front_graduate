@@ -22,7 +22,8 @@
     "passingScore": "Passing score",
     "theme": "Theme",
     "membershipId": "Membership ID",
-    "membershipIds": "Membership IDs"
+    "membershipIds": "Membership IDs",
+    "questions": "Questions"
   },
   "placeholders": {
     "fullName": "Enter your full name",

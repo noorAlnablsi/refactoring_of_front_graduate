@@ -13,6 +13,11 @@ export async function getWorkspace(workspaceId) {
   return normalizeWorkspace(data)
 }
 
+export async function getWorkspaceJoinCode(workspaceId) {
+  const workspace = await getWorkspace(workspaceId)
+  return workspace.join_code || ''
+}
+
 /** PATCH /workspaces/{id} — owner/admin (SOLO admin included). */
 export async function updateWorkspace(workspaceId, payload) {
   const { data } = await api.patch(`/workspaces/${workspaceId}`, payload)

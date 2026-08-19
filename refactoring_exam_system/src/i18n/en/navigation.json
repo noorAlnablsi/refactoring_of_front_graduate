@@ -12,7 +12,16 @@
     "settings": "Settings",
     "logoutCurrentPath": "Sign out of current path",
     "brandSubtitle": "Admin Dashboard",
-    "brandTitle": "QuizHub"
+    "brandTitle": "QuizHub",
+    "joinCode": "Join Code",
+    "joinCodeLabel": "Workspace join code",
+    "joinCodeCopied": "Join code copied",
+    "joinCodeTitle": "Join code for «{{workspace}}»",
+    "joinCodeHint": "Share this code with students to join your workspace.",
+    "joinCodeLoading": "Loading code...",
+    "joinCodeError": "Failed to load join code",
+    "joinCodeCopy": "Copy code",
+    "joinCodeClose": "Close"
   },
   "studentSidebar": {
     "home": "Home",

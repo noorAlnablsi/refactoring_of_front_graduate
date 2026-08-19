@@ -8,6 +8,7 @@ const initialState = {
   memberships: [],
   selected_membership_id: null,
   requires_workspace_selection: false,
+  must_reset_password: false,
 }
 
 export const useAuthStore = create(
@@ -24,7 +25,10 @@ export const useAuthStore = create(
           requires_workspace_selection: Boolean(payload.requires_workspace_selection),
           selected_membership_id:
             payload.memberships?.length === 1 ? payload.memberships[0].membership_id : null,
+          must_reset_password: Boolean(payload.must_reset_password),
         }),
+
+      clearMustResetPassword: () => set({ must_reset_password: false }),
 
       setTokens: ({ access_token, refresh_token, user }) =>
         set((state) => ({
@@ -123,6 +127,7 @@ export const useAuthStore = create(
         memberships: state.memberships,
         selected_membership_id: state.selected_membership_id,
         requires_workspace_selection: state.requires_workspace_selection,
+        must_reset_password: state.must_reset_password,
       }),
     },
   ),

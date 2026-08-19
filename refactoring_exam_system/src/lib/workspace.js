@@ -11,6 +11,7 @@ export function normalizeWorkspace(payload) {
     description: workspace.description?.trim() || '',
     logo_url: workspace.logo_url || null,
     institution_type: workspace.institution_type?.trim() || workspace.type?.trim() || '',
+    join_code: workspace.join_code?.trim() || '',
   }
 }
 

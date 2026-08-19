@@ -46,6 +46,7 @@ import ForgotPasswordPage from './pages/auth/ForgotPasswordPage'
 import ForgotPasswordOtpPage from './pages/auth/ForgotPasswordOtpPage'
 import ResetPasswordPage from './pages/auth/ResetPasswordPage'
 import ResetPasswordSuccessPage from './pages/auth/ResetPasswordSuccessPage'
+import ForceResetPasswordPage from './pages/auth/ForceResetPasswordPage'
 import SettingsPage from './pages/settings/SettingsPage'
 import ChangePasswordPage from './pages/settings/ChangePasswordPage'
 import CreateWorkspacePage from './pages/settings/CreateWorkspacePage'
@@ -66,6 +67,7 @@ function App() {
     <Routes>
       <Route path={ROUTES.HOME} element={<LandingPage />} />
       <Route path={ROUTES.LOGIN} element={<LoginPage />} />
+      <Route path={ROUTES.FORCE_RESET_PASSWORD} element={<ForceResetPasswordPage />} />
       <Route path={ROUTES.FORGOT_PASSWORD} element={<ForgotPasswordPage />} />
       <Route path={ROUTES.FORGOT_PASSWORD_OTP} element={<ForgotPasswordOtpPage />} />
       <Route path={ROUTES.RESET_PASSWORD} element={<ResetPasswordPage />} />

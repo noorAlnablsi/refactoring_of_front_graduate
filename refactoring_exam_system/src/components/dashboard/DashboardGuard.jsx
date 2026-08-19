@@ -8,6 +8,7 @@ function DashboardGuard() {
   const location = useLocation()
   const access_token = useAuthStore((s) => s.access_token)
   const memberships = useAuthStore((s) => s.memberships)
+  const must_reset_password = useAuthStore((s) => s.must_reset_password)
 
   useEffect(() => {
     if (!access_token) return
@@ -18,6 +19,10 @@ function DashboardGuard() {
 
   if (!access_token) {
     return <Navigate to={ROUTES.LOGIN} replace state={{ redirectTo: location.pathname }} />
+  }
+
+  if (must_reset_password) {
+    return <Navigate to={ROUTES.FORCE_RESET_PASSWORD} replace />
   }
 
   if (memberships.length > 0 && !useAuthStore.getState().selected_membership_id) {

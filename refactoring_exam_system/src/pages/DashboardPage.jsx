@@ -1,9 +1,11 @@
 import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
+import { KeyRound } from 'lucide-react'
 import TeacherDashboardRecentTests from '../components/dashboard/TeacherDashboardRecentTests'
 import TeacherDashboardStats from '../components/dashboard/TeacherDashboardStats'
 import TeacherDashboardSubjects from '../components/dashboard/TeacherDashboardSubjects'
 import TeacherDashboardWeakTopics from '../components/dashboard/TeacherDashboardWeakTopics'
+import JoinCodeModal from '../components/dashboard/JoinCodeModal'
 import WorkspaceDashboardQuestionBanks from '../components/dashboard/WorkspaceDashboardQuestionBanks'
 import WorkspaceDashboardRecentMembers from '../components/dashboard/WorkspaceDashboardRecentMembers'
 import WorkspaceDashboardStats from '../components/dashboard/WorkspaceDashboardStats'
@@ -19,14 +21,27 @@ import { useAuthStore } from '../store/authStore'
 
 function TeacherScopedDashboard({ greeting, subtitle }) {
   const { t } = useTranslation('dashboard')
+  const { t: tNav } = useTranslation('navigation')
+  const [joinCodeOpen, setJoinCodeOpen] = useState(false)
   const { summary, subjects, upcomingTests, recentTests, loading, error, refetch } =
     useTeacherDashboard({ recent_limit: 5, upcoming_limit: 10 })
 
   return (
     <div className="min-w-0 space-y-6">
-      <div className="min-w-0">
-        <h1 className={`text-2xl md:text-[28px] ${shellPageTitleClass}`}>{greeting}</h1>
-        <p className={`mt-2 max-w-3xl ${shellPageSubtitleClass}`}>{subtitle}</p>
+      <div className="flex flex-wrap items-start justify-between gap-4">
+        <div className="min-w-0">
+          <h1 className={`text-2xl md:text-[28px] ${shellPageTitleClass}`}>{greeting}</h1>
+          <p className={`mt-2 max-w-3xl ${shellPageSubtitleClass}`}>{subtitle}</p>
+        </div>
+        <button
+          type="button"
+          onClick={() => setJoinCodeOpen(true)}
+          className="flex shrink-0 items-center gap-2 rounded-xl border border-[#D4F0EE] bg-[#E8F7F6] px-4 py-2.5 text-sm font-semibold text-[#2AA8A2] transition hover:bg-[#D4F0EE]"
+        >
+          <KeyRound className="h-4 w-4" />
+          {tNav('sidebar.joinCode')}
+        </button>
+        <JoinCodeModal open={joinCodeOpen} onClose={() => setJoinCodeOpen(false)} />
       </div>
 
       {error ? (
@@ -59,9 +74,11 @@ function TeacherScopedDashboard({ greeting, subtitle }) {
 
 function DashboardPage() {
   const { t } = useTranslation('dashboard')
+  const { t: tNav } = useTranslation('navigation')
   const user = useAuthStore((s) => s.user)
   const membership = getActiveMembership()
   const [createSubjectOpen, setCreateSubjectOpen] = useState(false)
+  const [joinCodeOpen, setJoinCodeOpen] = useState(false)
   const {
     canAccess,
     overview,
@@ -99,9 +116,20 @@ function DashboardPage() {
 
   return (
     <div className="min-w-0 space-y-6">
-      <div className="min-w-0">
-        <h1 className={`text-2xl md:text-[28px] ${shellPageTitleClass}`}>{greeting}</h1>
-        <p className={`mt-2 max-w-3xl ${shellPageSubtitleClass}`}>{subtitle}</p>
+      <div className="flex flex-wrap items-start justify-between gap-4">
+        <div className="min-w-0">
+          <h1 className={`text-2xl md:text-[28px] ${shellPageTitleClass}`}>{greeting}</h1>
+          <p className={`mt-2 max-w-3xl ${shellPageSubtitleClass}`}>{subtitle}</p>
+        </div>
+        <button
+          type="button"
+          onClick={() => setJoinCodeOpen(true)}
+          className="flex shrink-0 items-center gap-2 rounded-xl border border-[#D4F0EE] bg-[#E8F7F6] px-4 py-2.5 text-sm font-semibold text-[#2AA8A2] transition hover:bg-[#D4F0EE]"
+        >
+          <KeyRound className="h-4 w-4" />
+          {tNav('sidebar.joinCode')}
+        </button>
+        <JoinCodeModal open={joinCodeOpen} onClose={() => setJoinCodeOpen(false)} />
       </div>
 
       {error ? (

@@ -22,7 +22,8 @@
     "passingScore": "علامة النجاح",
     "theme": "النمط",
     "membershipId": "معرّف العضوية",
-    "membershipIds": "معرّفات العضوية"
+    "membershipIds": "معرّفات العضوية",
+    "questions": "الأسئلة"
   },
   "placeholders": {
     "fullName": "أدخل اسمك الكامل",

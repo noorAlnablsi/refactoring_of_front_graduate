@@ -36,6 +36,8 @@ export const ROUTES = {
   REGISTER_OTP: '/register/otp',
   REGISTER_SUCCESS: '/register/success',
 
+  FORCE_RESET_PASSWORD: '/force-reset-password',
+
   FORGOT_PASSWORD: '/forgot-password',
   FORGOT_PASSWORD_OTP: '/forgot-password/otp',
   RESET_PASSWORD: '/reset-password',

@@ -1,6 +1,10 @@
 import { ROUTES } from '../constants/routes'
 import { useAuthStore } from '../store/authStore'
 
+export function mustForceResetPassword() {
+  return Boolean(useAuthStore.getState().must_reset_password)
+}
+
 function normalizeRole(role) {
   return String(role || '').trim().toUpperCase()
 }
@@ -17,6 +21,11 @@ export function resolveMembershipHomeRoute(membership) {
  * Never dump an authenticated user onto the marketing landing page.
  */
 export function resolvePostLoginRoute(data) {
+  // Must reset password takes priority — redirect before any workspace logic
+  if (data.must_reset_password) {
+    return ROUTES.FORCE_RESET_PASSWORD
+  }
+
   const memberships = data.memberships || []
 
   if (memberships.length === 0) {
