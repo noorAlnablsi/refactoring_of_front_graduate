@@ -28,7 +28,7 @@ import {
   getAssignedStudents,
 } from '../../../services/tests.service'
 import { getSubjectStudents } from '../../../services/subjects.service'
-import { getSubjectGroups } from '../../../services/studentGroups.service'
+import { getSubjectGroups, getWorkspaceGroups } from '../../../services/studentGroups.service'
 import { getWorkspaceStudents, getWorkspaceTeachers } from '../../../services/workspaces.service'
 import { showAppToast } from '../../../lib/appToast'
 import { useToastStore } from '../../../store/toastStore'
@@ -192,7 +192,7 @@ function ExamPublishStep({
         }
 
         const searchParam = debouncedSearch || undefined
-        const [subjectStudentsRes, assignedRes, groupsRes] = await Promise.all([
+        const [subjectStudentsRes, assignedRes, groupsRes, workspaceGroupsRes] = await Promise.all([
           subjectId
             ? getSubjectStudents(subjectId, { search: searchParam })
             : Promise.resolve({ students: [] }),
@@ -201,6 +201,9 @@ function ExamPublishStep({
             : Promise.resolve({ students: [] }),
           subjectId
             ? getSubjectGroups(subjectId, { search: searchParam }).catch(() => ({ groups: [] }))
+            : Promise.resolve({ groups: [] }),
+          subjectId
+            ? getWorkspaceGroups().catch(() => ({ groups: [] }))
             : Promise.resolve({ groups: [] }),
         ])
 
@@ -211,9 +214,22 @@ function ExamPublishStep({
           membership_id: getStudentMembershipId(student) ?? student.membership_id,
         }))
 
-        const normalizedGroups = (groupsRes.groups || groupsRes || [])
+        const subjectGroups = groupsRes.groups || groupsRes || []
+        const workspaceGroups = workspaceGroupsRes.groups || workspaceGroupsRes || []
+        const mergedGroups = subjectGroups.length
+          ? subjectGroups
+          : workspaceGroups.filter((group) => Number(group.subject_id) === Number(subjectId))
+
+        const normalizedGroups = mergedGroups
           .map(normalizeStudentGroup)
-          .filter(Boolean)
+          .filter((group) => group && Number(group.subjectId) === Number(subjectId))
+          .filter((group) => {
+            if (!searchParam) return true
+            const q = String(searchParam).toLowerCase()
+            const name = String(group.name || '').toLowerCase()
+            const description = String(group.description || '').toLowerCase()
+            return name.includes(q) || description.includes(q)
+          })
 
         setStudents(list)
         setGroups(normalizedGroups)
