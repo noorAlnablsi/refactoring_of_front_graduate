@@ -1,5 +1,5 @@
 import { PROCTORING_REST_EVENT, PROCTORING_WS_EVENT } from '../../constants/proctoring'
-import { API_BASE_URL } from '../../config/env'
+import { WS_BASE_URL } from '../../config/env'
 
 const WS_TO_REST = {
   [PROCTORING_WS_EVENT.STUDENT_JOINED]: PROCTORING_REST_EVENT.STUDENT_JOINED,
@@ -22,21 +22,23 @@ export function toRestEventType(wsType) {
   return WS_TO_REST[wsType] || String(wsType || '').toUpperCase()
 }
 
-/**
- * Build ws/wss URL from VITE_API_BASE_URL.
- * Contract:
- * /ws/proctoring/tests/{test_id}/attempts/{attempt_id}?token=&workspace_id=
- */
-export function buildProctoringWebSocketUrl({ testId, attemptId, token, workspaceId }) {
-  const httpUrl = new URL(API_BASE_URL)
-  const wsProtocol = httpUrl.protocol === 'https:' ? 'wss:' : 'ws:'
-  const path = `/ws/proctoring/tests/${encodeURIComponent(testId)}/attempts/${encodeURIComponent(attemptId)}`
+function buildWsUrl(path, { token, workspaceId }) {
+  const wsUrl = new URL(WS_BASE_URL)
   const qs = new URLSearchParams({
     token: String(token || ''),
     workspace_id: String(workspaceId ?? ''),
   })
+  return `${wsUrl.protocol}//${wsUrl.host}${path}?${qs.toString()}`
+}
 
-  return `${wsProtocol}//${httpUrl.host}${path}?${qs.toString()}`
+/**
+ * Build ws/wss URL from VITE_WS_BASE_URL (fallback: VITE_API_BASE_URL host).
+ * Contract:
+ * /ws/proctoring/tests/{test_id}/attempts/{attempt_id}?token=&workspace_id=
+ */
+export function buildProctoringWebSocketUrl({ testId, attemptId, token, workspaceId }) {
+  const path = `/ws/proctoring/tests/${encodeURIComponent(testId)}/attempts/${encodeURIComponent(attemptId)}`
+  return buildWsUrl(path, { token, workspaceId })
 }
 
 /**
@@ -44,15 +46,8 @@ export function buildProctoringWebSocketUrl({ testId, attemptId, token, workspac
  * Contract: /ws/proctoring/tests/{test_id}/monitor?token=&workspace_id=
  */
 export function buildTeacherMonitorWebSocketUrl({ testId, token, workspaceId }) {
-  const httpUrl = new URL(API_BASE_URL)
-  const wsProtocol = httpUrl.protocol === 'https:' ? 'wss:' : 'ws:'
   const path = `/ws/proctoring/tests/${encodeURIComponent(testId)}/monitor`
-  const qs = new URLSearchParams({
-    token: String(token || ''),
-    workspace_id: String(workspaceId ?? ''),
-  })
-
-  return `${wsProtocol}//${httpUrl.host}${path}?${qs.toString()}`
+  return buildWsUrl(path, { token, workspaceId })
 }
 
 export function collectBrowserMetadata() {

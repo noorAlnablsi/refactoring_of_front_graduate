@@ -29,9 +29,8 @@ function formatAvailabilityLabel(test) {
   return '—'
 }
 
-function formatSubjectFallback(subjectId) {
-  if (!subjectId) return '—'
-  return tStudent('subjectFallback', { id: subjectId })
+function formatSubjectFallback() {
+  return '—'
 }
 
 function pickStartDate(test) {

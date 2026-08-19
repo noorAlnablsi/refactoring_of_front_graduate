@@ -134,7 +134,6 @@ function ExamBasicInfoStep({
               : t('wizard.basicInfo.nameLabel', { ns: 'exams' })}
           </label>
           <input
-            required
             value={form.name}
             onChange={(e) => setField('name', e.target.value)}
             placeholder={
@@ -174,7 +173,6 @@ function ExamBasicInfoStep({
               : t('wizard.basicInfo.subjectLabel', { ns: 'exams' })}
           </label>
           <select
-            required={!isSurvey}
             value={form.subject_id}
             onChange={(e) => setField('subject_id', e.target.value)}
             className={inputClassName}
@@ -209,7 +207,6 @@ function ExamBasicInfoStep({
               <input
                 type="number"
                 min={1}
-                required
                 value={form.duration_minutes}
                 onChange={(e) => setField('duration_minutes', e.target.value)}
                 className={`${inputClassName} pl-16`}
@@ -265,7 +262,6 @@ function ExamBasicInfoStep({
                 <input
                   type="number"
                   min={1}
-                  required
                   value={form.total_score}
                   onChange={(e) => setField('total_score', e.target.value)}
                   className={inputClassName}
@@ -281,7 +277,6 @@ function ExamBasicInfoStep({
               <input
                 type="number"
                 min={0}
-                required
                 value={form.passing_score}
                 onChange={(e) => setField('passing_score', e.target.value)}
                 className={inputClassName}
