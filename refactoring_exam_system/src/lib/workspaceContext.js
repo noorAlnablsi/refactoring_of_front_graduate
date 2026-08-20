@@ -212,10 +212,14 @@ export function isQuestionBankOwner(bank) {
   return Number(creatorId) === Number(membership.membership_id)
 }
 
-function isInstitutionManager() {
-  const membership = getActiveMembership()
+export function isInstitutionManager(membership = getActiveMembership()) {
   if (!membership) return false
   return membership.is_owner || membership.role === 'ADMIN'
+}
+
+/** GET /workspaces/tests — all institution exams (owner/admin only). Teachers use GET /tests/my. */
+export function canListInstitutionWorkspaceTests(membership = getActiveMembership()) {
+  return isInstitutionWorkspace() && isInstitutionManager(membership)
 }
 
 /**

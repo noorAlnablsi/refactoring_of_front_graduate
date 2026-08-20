@@ -41,7 +41,7 @@ export async function getWorkspaceTeachers(params = {}) {
   return { ...data, teachers }
 }
 
-/** Institution workspace exams list (owner/admin/teacher with access). */
+/** Institution workspace exams list (owner/admin only — teachers use GET /tests/my). */
 export async function getWorkspaceTests(params = {}) {
   const query = {}
   if (params.page != null) query.page = params.page

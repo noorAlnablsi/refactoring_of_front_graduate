@@ -189,6 +189,7 @@
   "Only the institution owner or workspace admin can list workspace members": "Only the institution owner or workspace admin can list workspace members",
   "Only the test creator can delete this test": "Only the test creator can delete this test",
   "Only the workspace owner can delete this workspace": "Only the workspace owner can delete this workspace",
+  "Only the workspace owner can list institution tests": "Only the workspace owner can list institution tests",
   "Only the workspace owner or admin can list students": "Only the workspace owner or admin can list students",
   "Only the workspace owner or admin can manage workspace members": "Only the workspace owner or admin can manage workspace members",
   "Only workspace owner or admin can archive subjects": "Only workspace owner or admin can archive subjects",

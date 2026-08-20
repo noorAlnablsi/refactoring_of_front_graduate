@@ -1,6 +1,6 @@
 import { getMyTests } from '../services/tests.service'
 import { getWorkspaceTests } from '../services/workspaces.service'
-import { isInstitutionWorkspace } from './workspaceContext'
+import { canListInstitutionWorkspaceTests } from './workspaceContext'
 
 function normalizeTestsResponse(data) {
   return data?.tests || data?.items || []
@@ -41,15 +41,15 @@ export async function fetchInstitutionWorkspaceTests({ search, status, include_a
 
 /**
  * Same source as Exams list:
- * INSTITUTION → GET /workspaces/tests
- * SOLO → GET /tests/my
+ * INSTITUTION owner/admin → GET /workspaces/tests (all workspace exams)
+ * INSTITUTION teacher / SOLO → GET /tests/my (creator's exams)
  *
  * Pass `status` for server-side Test.status filter (do not client-filter tabs).
  */
 export async function fetchTestsForActiveWorkspace({ search, status, include_archived } = {}) {
   const listParams = buildListParams({ search, status, include_archived })
 
-  if (isInstitutionWorkspace()) {
+  if (canListInstitutionWorkspaceTests()) {
     return fetchInstitutionWorkspaceTests(listParams)
   }
 

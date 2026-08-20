@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useState } from 'react'
+import { parseApiError } from '../../lib/apiError'
 import { fetchTestsForActiveWorkspace } from '../../lib/fetchWorkspaceTests'
 import { getExamListStatusQuery } from '../../lib/testDisplay'
 import { isSurveyTest } from '../../lib/surveys'
@@ -33,7 +34,7 @@ export function useTests(activeTab) {
       setTests(nextTests)
     } catch (err) {
       setTests([])
-      setError(err.message)
+      setError(parseApiError(err))
     } finally {
       setLoading(false)
     }
