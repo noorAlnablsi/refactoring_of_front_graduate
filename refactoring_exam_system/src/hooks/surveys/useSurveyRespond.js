@@ -23,7 +23,7 @@ export function useSurveyRespond(surveyId) {
   const [questions, setQuestions] = useState([])
   const [response, setResponse] = useState(null)
   const [answersMap, setAnswersMap] = useState({})
-  const [phase, setPhase] = useState('loading') // loading | intro | answering | completed
+  const [phase, setPhase] = useState('loading')
   const [starting, setStarting] = useState(false)
   const [saving, setSaving] = useState(false)
   const [submitting, setSubmitting] = useState(false)

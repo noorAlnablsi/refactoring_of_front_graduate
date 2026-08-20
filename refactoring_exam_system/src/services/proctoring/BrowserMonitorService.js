@@ -4,10 +4,7 @@ import {
 } from '../../constants/proctoring'
 import { createStateChangeGate, debounce } from '../../lib/proctoring/eventThrottle'
 
-/**
- * Browser activity monitors for proctoring.
- * Respects settings flags where provided.
- */
+
 export class BrowserMonitorService {
   constructor({
     onTabSwitch,
@@ -106,13 +103,12 @@ export class BrowserMonitorService {
   }
 
   #handleClipboard(event, action) {
-    // Observe and report only — do not decide cheating / do not invent severity.
-    // If prevent_copy_paste is enabled we still only report (policy optional block).
+
     if (this.settings.prevent_copy_paste) {
       try {
         event.preventDefault()
       } catch {
-        // ignore
+
       }
     }
     this.onCopyPaste?.({ action })

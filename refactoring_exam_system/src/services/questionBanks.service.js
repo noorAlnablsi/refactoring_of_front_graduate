@@ -78,7 +78,7 @@ export async function findQuestionBankById(bankId, sourceTab) {
         return data.question_bank
       }
     } catch {
-      // Fall back to community list lookup.
+
     }
   }
 
@@ -92,7 +92,7 @@ export async function findQuestionBankById(bankId, sourceTab) {
       const found = banks.find(matchId)
       if (found) return found
     } catch {
-      // Try the next source before giving up.
+
     }
   }
 
@@ -171,7 +171,6 @@ function filenameFromDisposition(disposition, fallback) {
   return matched[1].replace(/['"]/g, '')
 }
 
-/** GET /question-banks/{bank_id}/questions/import-template */
 export async function downloadQuestionBankCsvTemplate(bankId) {
   const response = await api.get(`/question-banks/${bankId}/questions/import-template`, {
     responseType: 'blob',
@@ -194,7 +193,6 @@ export async function downloadQuestionBankCsvTemplate(bankId) {
   window.URL.revokeObjectURL(url)
 }
 
-/** POST /question-banks/{bank_id}/questions/import-csv — atomic import. */
 export async function importQuestionBankQuestionsFromCsv(bankId, csvFile) {
   const formData = new FormData()
   formData.append('csv_file', csvFile)

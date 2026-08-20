@@ -92,7 +92,7 @@ function SettingsPrivacyCard() {
       await deleteAccount()
       setDeleteConfirmOpen(false)
     } catch {
-      // Toast already shown by hook.
+
     }
   }
 

@@ -6,9 +6,6 @@ function toNumber(value) {
   return Number.isFinite(n) ? n : null
 }
 
-/**
- * Prefer explicit percentage; if missing/zero while earned score exists, derive from score/max.
- */
 export function resolveResultPercentage({ percentage, score, maxScore } = {}) {
   const pct = toNumber(percentage)
   const earned = toNumber(score)
@@ -28,9 +25,6 @@ export function resolveResultPercentage({ percentage, score, maxScore } = {}) {
   return null
 }
 
-/**
- * Normalize GET /student/tests/results item (summary source).
- */
 export function normalizeStudentResultItem(raw) {
   if (!raw || typeof raw !== 'object') return null
 
@@ -69,9 +63,6 @@ export function normalizeStudentResultsResponse(data) {
   return list.map(normalizeStudentResultItem).filter(Boolean)
 }
 
-/**
- * Normalize GET /student/recent-exams item (paginated table source).
- */
 export function normalizeRecentExamItem(raw) {
   if (!raw || typeof raw !== 'object') return null
 
@@ -124,9 +115,6 @@ export function normalizeRecentExamsResponse(data) {
   }
 }
 
-/**
- * Presentation-only summary from graded results list.
- */
 export function buildPerformanceSummary(results) {
   const withPercentage = (results || [])
     .map((row) => ({
@@ -175,10 +163,6 @@ export function buildPerformanceSummary(results) {
   }
 }
 
-/**
- * Prefer /tests/results when it has real graded percentages; otherwise use recent-exams
- * rows (includes CLOSED tests that results often omits).
- */
 export function pickPerformanceSummary(resultsList, recentRows) {
   const fromResults = buildPerformanceSummary(resultsList)
   const fromRecent = buildPerformanceSummary(recentRows)
@@ -202,7 +186,6 @@ export function pickPerformanceSummary(resultsList, recentRows) {
   return fromResults
 }
 
-/** Sort within the current loaded page only (no server sort contract yet). */
 export function sortStudentResults(results, sortBy = 'date') {
   const copy = [...results]
   if (sortBy === 'percentage') {

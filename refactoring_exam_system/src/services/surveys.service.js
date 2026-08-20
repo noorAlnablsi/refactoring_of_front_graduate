@@ -1,6 +1,6 @@
 import api from '../lib/axios'
 
-/** GET /surveys/managed — surveys the actor can manage in the active workspace. */
+
 export async function getManagedSurveys(params = {}) {
   const query = {}
   if (params.page != null) query.page = params.page
@@ -16,10 +16,7 @@ export async function getManagedSurveys(params = {}) {
   return data
 }
 
-/**
- * GET /surveys/available — surveys the user can answer (respondent list).
- * Auth: Bearer only. Do not send `search` (HTTP route does not accept it yet).
- */
+
 export async function getAvailableSurveys(params = {}) {
   const query = {}
   if (params.page != null) query.page = params.page
@@ -29,50 +26,43 @@ export async function getAvailableSurveys(params = {}) {
   return data
 }
 
-/** GET /surveys/{surveyId} — survey + questions + my_response for respondent. */
+
 export async function getSurveyForRespondent(surveyId) {
   const { data } = await api.get(`/surveys/${surveyId}`)
   return data
 }
 
-/** GET /surveys/{surveyId}/my-response — response status only. */
+
 export async function getMySurveyResponse(surveyId) {
   const { data } = await api.get(`/surveys/${surveyId}/my-response`)
   return data
 }
 
-/** POST /surveys/{surveyId}/responses — start or resume (no body). */
+
 export async function startOrResumeSurveyResponse(surveyId) {
   const { data } = await api.post(`/surveys/${surveyId}/responses`)
   return data
 }
 
-/** PATCH /surveys/{surveyId}/responses/{responseId} — save answers. */
+
 export async function saveSurveyResponseAnswers(surveyId, responseId, answers) {
   const { data } = await api.patch(`/surveys/${surveyId}/responses/${responseId}`, { answers })
   return data
 }
 
-/** POST /surveys/{surveyId}/responses/{responseId}/submit — submit (no body). */
+
 export async function submitSurveyResponse(surveyId, responseId) {
   const { data } = await api.post(`/surveys/${surveyId}/responses/${responseId}/submit`)
   return data
 }
 
-/**
- * GET /tests/{surveyId}/survey-responses — manager summary.
- * No answer payloads; no per-response `status` (use submitted_at / totals).
- * Auth: Bearer + X-Workspace-Id. Survey must be PUBLISHED or CLOSED.
- */
+
 export async function getSurveyResponsesForManager(surveyId) {
   const { data } = await api.get(`/tests/${surveyId}/survey-responses`)
   return data
 }
 
-/**
- * GET /tests/{surveyId}/survey-responses/{responseId} — one response + answers for manager.
- * No per-response `status`. Auth: Bearer + X-Workspace-Id (same as list).
- */
+
 export async function getSurveyResponseForManager(surveyId, responseId) {
   const { data } = await api.get(`/tests/${surveyId}/survey-responses/${responseId}`)
   return data

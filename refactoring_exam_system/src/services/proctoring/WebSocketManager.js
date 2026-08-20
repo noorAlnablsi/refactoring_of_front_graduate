@@ -3,10 +3,7 @@ import {
   WS_RECONNECT_DELAY_MS,
 } from '../../constants/proctoring'
 
-/**
- * Native WebSocket wrapper for proctoring.
- * Does not invent protocols — sends { type, payload } only.
- */
+
 export class WebSocketManager {
   constructor({ url, onMessage, onStateChange, onOpen, onClose, onError } = {}) {
     this.url = url
@@ -61,7 +58,7 @@ export class WebSocketManager {
       try {
         data = typeof event.data === 'string' ? JSON.parse(event.data) : event.data
       } catch {
-        // keep raw
+
       }
       this.onMessage?.(data)
     }
@@ -106,7 +103,7 @@ export class WebSocketManager {
       try {
         this.socket.close()
       } catch {
-        // ignore
+
       }
       this.socket = null
     }

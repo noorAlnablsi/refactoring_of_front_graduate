@@ -3,9 +3,7 @@ import { translateBackendMessage } from '../i18n/translateBackendMessage'
 
 const KNOWN_CODES = ['PROCTORING_THRESHOLD_EXCEEDED']
 
-/**
- * Localize integrity/proctoring reason text from the backend (codes or English sentences).
- */
+
 export function formatIntegrityMessage(raw) {
   if (raw == null || raw === '') return ''
 

@@ -26,10 +26,6 @@ import { useToastStore } from '../../store/toastStore'
 const PING_INTERVAL_MS = 25_000
 const MAX_FEED_EVENTS = 80
 
-/**
- * Teacher live monitoring: REST snapshot is source of truth; WS applies deltas.
- * On reconnect → re-fetch GET /monitoring (backend contract).
- */
 export function useExamLiveMonitoring(testId) {
   const showToast = useToastStore((s) => s.showToast)
   const [loading, setLoading] = useState(true)
@@ -196,11 +192,11 @@ export function useExamLiveMonitoring(testId) {
         onStateChange: setConnectionState,
         onMessage: handleMonitorMessage,
         onOpen: () => {
-          // Backend: after reconnect, re-fetch REST snapshot.
+
           loadSnapshot().catch(() => {})
         },
         onError: () => {
-          // surfaced via connection state
+
         },
       })
 
@@ -227,7 +223,7 @@ export function useExamLiveMonitoring(testId) {
       cancelled = true
       disconnectWs()
     }
-  }, [testId]) // eslint-disable-line react-hooks/exhaustive-deps -- mount per testId only
+  }, [testId])
 
   const selectedStudent =
     snapshot?.students?.find((s) => s.studentMembershipId === selectedMembershipId) || null

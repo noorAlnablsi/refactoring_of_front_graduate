@@ -42,11 +42,11 @@ function ForceResetPasswordPage() {
     try {
       await changePassword({ new_password: password, confirm_password: confirmPassword })
 
-      // Mark must_reset_password as cleared
+
       useAuthStore.getState().clearMustResetPassword()
       showAppToast('forceReset.successToast', 'success', { ns: 'auth' })
 
-      // Navigate to the correct home based on current memberships
+
       const { memberships, selected_membership_id } = useAuthStore.getState()
       const membership =
         memberships.find((m) => m.membership_id === selected_membership_id) || memberships[0]
@@ -61,14 +61,14 @@ function ForceResetPasswordPage() {
 
   return (
     <PasswordResetShell>
-      {/* Icon */}
+      
       <div className="flex justify-center">
         <span className="flex h-16 w-16 items-center justify-center rounded-2xl bg-[#E8F7F6]">
           <ShieldCheck className="h-8 w-8 text-[#2AA8A2]" strokeWidth={1.8} />
         </span>
       </div>
 
-      {/* Title */}
+      
       <h1 className="mt-6 text-center text-2xl font-extrabold text-[#2A3433]">
         {t('forceReset.title')}
       </h1>
@@ -77,7 +77,7 @@ function ForceResetPasswordPage() {
       </p>
 
       <form className="mt-10 space-y-6" onSubmit={handleSubmit} autoComplete="off">
-        {/* New password */}
+        
         <div className="space-y-2.5">
           <label className="block text-sm font-semibold text-[#374151]">
             {t('forceReset.newPasswordLabel')}
@@ -102,7 +102,7 @@ function ForceResetPasswordPage() {
           </div>
         </div>
 
-        {/* Confirm password */}
+        
         <div className="space-y-2.5">
           <label className="block text-sm font-semibold text-[#374151]">
             {t('forceReset.confirmPasswordLabel')}

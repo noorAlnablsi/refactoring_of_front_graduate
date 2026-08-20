@@ -11,10 +11,7 @@ import {
   shellSubtleTextClass,
 } from '../../../lib/shellUi'
 
-/**
- * Shown when backend auto-ended the attempt for proctoring threshold.
- * Not the timeout / student-submit / teacher-force screens.
- */
+
 function AttemptProctoringTerminatedScreen({ attempt, testName }) {
   const { t } = useTranslation('student')
   const navigate = useNavigate()

@@ -92,7 +92,6 @@ export function formatTrendWeekdayLabel(dateString) {
   return date.toLocaleDateString(locale, { weekday: 'short' })
 }
 
-/** Percent change from first → last chart point (UI only; not a backend field). */
 export function computeTrendChangePercent(points = []) {
   if (!points || points.length < 2) return null
   const first = Number(points[0].value)

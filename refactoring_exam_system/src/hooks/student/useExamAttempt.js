@@ -63,7 +63,7 @@ function hydrateAttemptState(testId, attempt, serverAnswersMap) {
 }
 
 async function resolveTestSettings(testId) {
-  // Prefer student-accessible sources. GET /tests/{id} may 403 for students.
+
   try {
     const available = await getAvailableTests()
     const list = available?.tests || available?.items || available?.data || []
@@ -78,7 +78,7 @@ async function resolveTestSettings(testId) {
       }
     }
   } catch {
-    // continue
+
   }
 
   try {
@@ -92,10 +92,6 @@ async function resolveTestSettings(testId) {
   }
 }
 
-/**
- * Student exam attempt lifecycle.
- * Bootstrap runs once per testId/retry — never loops on hook identity changes.
- */
 export function useExamAttempt(testId) {
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState(null)
@@ -210,7 +206,7 @@ export function useExamAttempt(testId) {
       try {
         await stopProctoringRef.current?.()
       } catch {
-        // ignore
+
       }
 
       return true
@@ -313,7 +309,7 @@ export function useExamAttempt(testId) {
     } catch (err) {
       const status = err?.response?.status ?? err?.status ?? err?.statusCode
       const msg = String(err?.message || '')
-      // Attempt already closed (submit / proctoring auto-terminate) — ignore quietly.
+
       if (status === 409 || /not in progress/i.test(msg)) return null
       throw err
     } finally {
@@ -357,8 +353,6 @@ export function useExamAttempt(testId) {
           const bridgedRules = entryBridge.entryRules || loadAttemptEntryRules(testId)
           if (bridgedRules && !cancelled) setEntryRules(bridgedRules)
 
-          // Claim the live Entry service immediately (before any await) so ownership
-          // moves to Attempt while monitors/WS keep running uninterrupted.
           const bridgedService = entryBridge.service
           let adopted = false
           if (bridgedService && !bridgedService.stopped) {
@@ -375,10 +369,9 @@ export function useExamAttempt(testId) {
               resolvedAttempt = normalizeAttemptPayload(details) || resolvedAttempt
             }
           } catch {
-            // keep bridged attempt
+
           }
 
-          // Enrich settings from student-accessible sources (entry payload may omit answer_rules).
           try {
             const fromList = await resolveTestSettings(testId)
             if (fromList?.settings_config) {
@@ -401,7 +394,7 @@ export function useExamAttempt(testId) {
               }
             }
           } catch {
-            // keep bridged test
+
           }
 
           if (cancelled) return
@@ -426,11 +419,10 @@ export function useExamAttempt(testId) {
             try {
               await document.documentElement.requestFullscreen?.()
             } catch {
-              // ignore
+
             }
           }
 
-          // If handoff failed (dead service / missing adopt), recreate once — resume safety.
           if (
             isProctoringEnabled(resolvedTest) &&
             !adopted &&
@@ -458,7 +450,6 @@ export function useExamAttempt(testId) {
           return
         }
 
-        // Fallback: direct navigation to attempt (resume / legacy).
         const startData = await startTestAttempt(testId)
         if (cancelled) return
 
@@ -468,19 +459,17 @@ export function useExamAttempt(testId) {
           throw new Error('Attempt id missing from start response')
         }
 
-        // 2) Load full attempt details when possible.
         try {
           const details = await getTestAttempt(testId, resolvedAttempt.id)
           if (!cancelled) {
             resolvedAttempt = normalizeAttemptPayload(details) || resolvedAttempt
           }
         } catch {
-          // Keep start payload.
+
         }
 
         if (cancelled) return
 
-        // 3) Resolve settings without hard-failing on teacher-only GET /tests/{id}.
         const settingsFromAttempt =
           startData?.test || startData?.attempt?.test || resolvedAttempt?.test || null
 
@@ -520,11 +509,10 @@ export function useExamAttempt(testId) {
           try {
             await document.documentElement.requestFullscreen?.()
           } catch {
-            // ignore
+
           }
         }
 
-        // 4) Proctoring: ensure session (critical on resume) then start monitors.
         if (isProctoringEnabled(resolvedTest)) {
           try {
             await startProctoringSession(testId, resolvedAttempt.id, {
@@ -540,7 +528,7 @@ export function useExamAttempt(testId) {
               })
             }
           } catch (proctoringError) {
-            // Keep exam usable; surface proctoring issue without crashing attempt.
+
             if (!cancelled) {
               console.warn('[proctoring] failed to start', proctoringError)
             }
@@ -766,7 +754,7 @@ export function useExamAttempt(testId) {
     persistLocalDraft()
 
     if (!enforceGraceRef.current) {
-      // Flexible + no proctoring: keep answering; only freeze when exam time ends.
+
       setOfflinePhase(OFFLINE_PHASE.ONLINE)
       offlineDisconnectedAtRef.current = Date.now()
       persistOfflineSnapshot({
@@ -793,7 +781,7 @@ export function useExamAttempt(testId) {
     try {
       await persistAnswers()
     } catch {
-      // keep local draft; force-submit path may retry
+
     }
 
     if (mustForceSubmit) {
@@ -806,11 +794,9 @@ export function useExamAttempt(testId) {
       return
     }
 
-    // Reconnected within grace (or flexible offline answering): resume.
     clearOfflineRuntime()
   }, [clearOfflineRuntime, persistAnswers, persistLocalDraft, submit])
 
-  // Restore persisted offline state after attempt is ready (once per attempt).
   useEffect(() => {
     if (loading || !attemptId || !testId) return
     if (offlineBootstrappedForAttemptRef.current === attemptId) return
@@ -876,7 +862,6 @@ export function useExamAttempt(testId) {
     }
   }, [handleWentOffline, handleCameOnline])
 
-  // Tick offline grace countdown.
   useEffect(() => {
     if (loading || !attemptId) return undefined
     if (offlinePhase !== OFFLINE_PHASE.GRACE) return undefined
@@ -895,7 +880,6 @@ export function useExamAttempt(testId) {
     return () => clearInterval(timer)
   }, [loading, attemptId, offlinePhase, freezeAnswers])
 
-  // Exam time ended.
   useEffect(() => {
     if (loading || submitting || remainingSeconds > 0) return
     if (!attemptId || autoSubmitTriggeredRef.current) return
@@ -918,7 +902,7 @@ export function useExamAttempt(testId) {
   useEffect(() => {
     const generation = beginAttemptProctoringOwnership()
     return () => {
-      // Defer stop so React Strict Mode remount can re-adopt the same live service.
+
       scheduleReleaseAttemptProctoring(generation, {
         stop: () => stopProctoringRef.current?.(),
       })

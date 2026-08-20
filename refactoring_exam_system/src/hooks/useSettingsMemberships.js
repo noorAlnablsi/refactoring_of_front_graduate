@@ -47,8 +47,7 @@ export function useSettingsMemberships() {
   useEffect(() => {
     if (!user?.id) return undefined
     refreshMemberships()
-    // Intentionally refresh when the authenticated user changes.
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+
   }, [user?.id])
 
   const deleteOwnedWorkspace = async (membership) => {

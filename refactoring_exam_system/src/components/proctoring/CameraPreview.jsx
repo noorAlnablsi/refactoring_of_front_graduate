@@ -1,8 +1,5 @@
 import { useEffect, useRef } from 'react'
 
-/**
- * Minimal camera preview. Parent owns the MediaStream via CameraService / ProctoringService.
- */
 function CameraPreview({ stream, className = '', mirrored = true, onVideoRef }) {
   const videoRef = useRef(null)
 

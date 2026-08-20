@@ -20,10 +20,6 @@ function parseLocalDateTimeMs(value) {
   return Number.isNaN(ms) ? null : ms
 }
 
-/**
- * Teacher "Close exam" button: only while PUBLISHED and availability window still open.
- * Hides for CLOSED, or when planned closed_at / scheduled global end has passed.
- */
 export function canShowCloseExamButton(test, nowMs = Date.now()) {
   if (!test || test.status !== TEST_STATUS.PUBLISHED) return false
 
@@ -85,7 +81,6 @@ export function filterTestsByTab(tests = [], tab) {
   return tests
 }
 
-/** Map exams UI tab → GET /tests/my|/workspaces/tests query (server-side). */
 export function getExamListStatusQuery(tab) {
   if (tab === TEST_TABS.DRAFT) return { status: TEST_STATUS.DRAFT }
   if (tab === TEST_TABS.SCHEDULED) return { status: TEST_STATUS.SCHEDULED }
@@ -97,7 +92,6 @@ export function getExamListStatusQuery(tab) {
 export function getTestQuestionsCount(test) {
   if (!test) return 0
 
-  // Prefer explicit count fields from list endpoints (list often omits `questions[]`).
   const countCandidates = [
     test.questions_count,
     test.question_count,
@@ -143,31 +137,42 @@ export function getTestAverageScore(test) {
   return Number.isFinite(n) ? n : null
 }
 
+const THIRTY_MINUTES_MS = 30 * 60 * 1000
+
 export function canEditTest(test) {
   if (!test) return false
-  if (test.status !== TEST_STATUS.DRAFT) return false
-  if (!test.starts_at) return true
+  const status = String(test.status || '').toUpperCase()
 
-  const startsAt = new Date(test.starts_at).getTime()
-  if (Number.isNaN(startsAt)) return true
+  if (status === TEST_STATUS.DRAFT) return true
 
-  const thirtyMinutesMs = 30 * 60 * 1000
-  return startsAt - Date.now() >= thirtyMinutesMs
+  if (status === TEST_STATUS.SCHEDULED) {
+    const publishAtMs = parseLocalDateTimeMs(test.scheduled_publish_at)
+    if (publishAtMs == null) return false
+    return publishAtMs - Date.now() >= THIRTY_MINUTES_MS
+  }
+
+  return false
 }
 
 export function getEditBlockedMessage(test) {
   if (!test) return tUI('errors.testNotFound', { ns: 'exams' })
-  if (test.status !== TEST_STATUS.DRAFT) {
-    return tUI('errors.editDraftOnly', { ns: 'exams' })
-  }
-  if (test.starts_at) {
-    const startsAt = new Date(test.starts_at).getTime()
-    const thirtyMinutesMs = 30 * 60 * 1000
-    if (!Number.isNaN(startsAt) && startsAt - Date.now() < thirtyMinutesMs) {
-      return tUI('errors.editTooCloseToStart', { ns: 'exams' })
+
+  const status = String(test.status || '').toUpperCase()
+
+  if (status === TEST_STATUS.DRAFT) return ''
+
+  if (status === TEST_STATUS.SCHEDULED) {
+    const publishAtMs = parseLocalDateTimeMs(test.scheduled_publish_at)
+    if (publishAtMs == null) {
+      return tUI('errors.editMissingPublishAt', { ns: 'exams' })
     }
+    if (publishAtMs - Date.now() < THIRTY_MINUTES_MS) {
+      return tUI('errors.editTooCloseToPublish', { ns: 'exams' })
+    }
+    return ''
   }
-  return ''
+
+  return tUI('errors.editDraftOrScheduledOnly', { ns: 'exams' })
 }
 
 export function getSourceTypeLabel(sourceType) {

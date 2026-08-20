@@ -77,7 +77,6 @@ function App() {
       <Route path={ROUTES.PATH_SELECTION} element={<PathSelectionPage />} />
       <Route path={ROUTES.SETTINGS_CREATE_WORKSPACE} element={<CreateWorkspacePage />} />
 
-      {/* Survey respondent — auth only so share links work for any signed-in user */}
       <Route element={<RequireAuth />}>
         <Route path={ROUTES.SURVEY_RESPOND} element={<SurveyRespondPage />} />
       </Route>

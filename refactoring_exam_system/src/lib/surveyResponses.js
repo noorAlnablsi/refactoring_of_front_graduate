@@ -9,15 +9,12 @@ export const SURVEY_RESPONSE_STATUS = {
   SUBMITTED: 'SUBMITTED',
 }
 
-/** Student/respondent APIs still return `status`. Manager list/detail omit it. */
+
 export function getSurveyResponseStatus(response) {
   return String(response?.status || '').toUpperCase()
 }
 
-/**
- * Manager endpoints omit `status`. Prefer explicit status when present;
- * otherwise derive from `submitted_at` (set only after submit).
- */
+
 export function getManagerSurveyResponseCompletion(response) {
   const status = getSurveyResponseStatus(response)
   if (status === SURVEY_RESPONSE_STATUS.SUBMITTED || status === SURVEY_RESPONSE_STATUS.IN_PROGRESS) {
@@ -45,7 +42,7 @@ export function getChoiceIndex(choice, fallbackIndex = 0) {
   return fallbackIndex
 }
 
-/** Build PATCH body answers — only include answered questions (API requires min 1). */
+
 export function buildSurveyAnswersPayload(answersMap, questions = []) {
   const answers = []
 

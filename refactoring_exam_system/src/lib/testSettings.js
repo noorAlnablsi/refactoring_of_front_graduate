@@ -159,7 +159,6 @@ export function syncAiProctoringFlag(settings) {
   return { ...settings, ai_proctoring_enabled: active }
 }
 
-/** Serialize UI flat settings into nested backend settings_config. */
 export function serializeSettingsConfig(flatSettings = {}) {
   const settings = syncAiProctoringFlag(flatSettings)
   const allowSkip = Boolean(settings.allow_skip_questions)
@@ -198,7 +197,6 @@ export function serializeSettingsConfig(flatSettings = {}) {
   }
 }
 
-/** Max / default entry window = floor(duration / 4), at least 1 minute. */
 export function getMaxEntryWindowMinutes(durationMinutes) {
   const duration = Math.max(1, Number(durationMinutes) || 1)
   return Math.max(1, Math.floor(duration / 4))
@@ -211,13 +209,9 @@ export function clampEntryWindowMinutes(value, durationMinutes) {
   return Math.min(Math.floor(n), max)
 }
 
-/**
- * Backend APP_TIMEZONE (Asia/Damascus): dates are naive local wall-clock, no Z/offset.
- * datetime-local already produces that wall-clock — never convert via toISOString().
- */
 export function toDatetimeLocalValue(iso) {
   if (!iso) return ''
-  // Prefer slicing naive API strings so we never shift by UTC.
+
   const match = String(iso).match(/^(\d{4}-\d{2}-\d{2})[T ](\d{2}):(\d{2})/)
   if (match) {
     return `${match[1]}T${match[2]}:${match[3]}`
@@ -231,7 +225,7 @@ export function toDatetimeLocalValue(iso) {
 export function fromDatetimeLocalValue(localValue) {
   if (!localValue) return null
   const raw = String(localValue).trim()
-  // datetime-local: "YYYY-MM-DDTHH:mm" → send seconds, no timezone suffix
+
   if (/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}$/.test(raw)) {
     return `${raw}:00`
   }
@@ -310,7 +304,6 @@ export function buildTestSettingsPayload(form) {
   return payload
 }
 
-/** PATCH survey settings. Never send duration, scores, or enabled proctoring. */
 export function buildSurveySettingsPayload(form) {
   const flat = syncAiProctoringFlag({
     ...form.settings_config,

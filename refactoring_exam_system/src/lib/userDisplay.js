@@ -10,7 +10,6 @@ export function getUserInitials(name = '') {
   return name.slice(0, 2).toUpperCase() || 'م'
 }
 
-/** Skip placeholder / broken CDN URLs so UI falls back to initials. */
 export function resolveAvatarUrl(url) {
   if (!url || typeof url !== 'string') return null
   const trimmed = url.trim()
@@ -18,7 +17,6 @@ export function resolveAvatarUrl(url) {
   if (/cdn\.example\.com/i.test(trimmed)) return null
   if (/^https?:\/\/(www\.)?example\.(com|org|net)\b/i.test(trimmed)) return null
 
-  // Relative upload paths must hit the API host, not the Vite origin.
   if (trimmed.startsWith('/')) {
     const apiBase = API_BASE_URL.replace(/\/$/, '')
     return `${apiBase}${trimmed}`

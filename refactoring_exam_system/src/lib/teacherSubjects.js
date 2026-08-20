@@ -2,7 +2,7 @@ import { getSubjectTeachers, getSubjects } from '../services/subjects.service'
 import { getTeacherMembershipSubjects } from '../services/memberships.service'
 import { getActiveMembership } from './workspaceContext'
 
-/** Normalize one assigned-subject row from various API shapes. */
+
 export function normalizeAssignedSubject(raw) {
   if (!raw || typeof raw !== 'object') return null
   const nested = raw.subject && typeof raw.subject === 'object' ? raw.subject : null
@@ -26,11 +26,7 @@ export function pickAssignedSubjectsFromPayload(payload) {
   return list.map(normalizeAssignedSubject).filter(Boolean)
 }
 
-/**
- * Resolve subjects the teacher is assigned to (with id + name).
- * 1) GET /teacher-memberships/{id}/subjects
- * 2) GET /subjects + filter (or trust scoped list for self-teacher)
- */
+
 export async function resolveTeacherAssignedSubjects(membershipId) {
   if (!membershipId) return []
 
@@ -39,7 +35,7 @@ export async function resolveTeacherAssignedSubjects(membershipId) {
     const fromMembership = pickAssignedSubjectsFromPayload(data)
     if (fromMembership.length) return fromMembership
   } catch {
-    // continue to fallbacks
+
   }
 
   try {
@@ -52,7 +48,7 @@ export async function resolveTeacherAssignedSubjects(membershipId) {
       String(membership?.role || '').toUpperCase() === 'TEACHER' &&
       Number(membership?.membership_id) === Number(membershipId)
 
-    // Institution teachers only see assigned subjects on GET /subjects.
+
     if (isSelfTeacher) return subjects
 
     const results = await Promise.all(

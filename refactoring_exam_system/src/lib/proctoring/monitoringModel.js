@@ -27,7 +27,6 @@ export function normalizeMonitoringSnapshot(data) {
     completed: Number(monitoring.completed) || 0,
   }
 
-  // Prefer live row-derived counts when students are present so WS deltas stay in sync.
   const fromRows = students.length ? computeMonitoringStatsFromStudents(students) : null
 
   return {
@@ -45,7 +44,6 @@ export function normalizeMonitoringSnapshot(data) {
   }
 }
 
-/** Recompute summary cards from current student rows (used after WS deltas). */
 export function computeMonitoringStatsFromStudents(students = []) {
   const stats = {
     notStarted: 0,
@@ -94,7 +92,6 @@ export function normalizeMonitoringStudent(raw) {
   }
 }
 
-/** Apply WS `student_row_updated.changes` onto a normalized student row. */
 export function applyStudentRowChanges(student, changes = {}) {
   if (!student || !changes || typeof changes !== 'object') return student
   return {
@@ -125,7 +122,6 @@ export function normalizeMonitoringEventKey(value) {
     .replace(/[\s-]+/g, '_')
 }
 
-/** True when a log message is raw JSON dumped for debugging — hide from teacher UI. */
 export function isRawJsonMessage(message) {
   if (!message || typeof message !== 'string') return false
   const trimmed = message.trim()
@@ -143,7 +139,6 @@ export function formatMonitoringTimestamp(iso, language = 'ar') {
   return parsed.toLocaleString(locale, { dateStyle: 'medium', timeStyle: 'short' })
 }
 
-/** True when text is Latin-script only (typical backend English descriptions). */
 export function isLatinOnlyMessage(message) {
   if (!message || typeof message !== 'string') return false
   const trimmed = message.trim()
@@ -152,9 +147,6 @@ export function isLatinOnlyMessage(message) {
   return /[A-Za-z]/.test(trimmed)
 }
 
-/**
- * Prefer i18n description for the event type; hide raw English backend copy in Arabic UI.
- */
 export function resolveMonitoringLogMessage(t, log, language = 'ar') {
   if (!log) return null
   const key = normalizeMonitoringEventKey(log.eventType)
@@ -232,7 +224,6 @@ export function normalizeProctoringViolation(raw) {
   }
 }
 
-/** Merge events + violations + audit rows into one newest-first timeline for the detail drawer. */
 export function buildMonitoringTimeline({ events = [], violations = [], auditLogs = [] } = {}) {
   const rows = [
     ...events.map(normalizeProctoringEvent),

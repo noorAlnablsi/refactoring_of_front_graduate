@@ -33,19 +33,11 @@ function buildListParams({ search, status, include_archived } = {}) {
   return params
 }
 
-/** Paginate GET /workspaces/tests (institution owner list). */
 export async function fetchInstitutionWorkspaceTests({ search, status, include_archived } = {}) {
   const listParams = buildListParams({ search, status, include_archived })
   return fetchAllTestPages((pageParams) => getWorkspaceTests({ ...pageParams, ...listParams }))
 }
 
-/**
- * Same source as Exams list:
- * INSTITUTION owner/admin → GET /workspaces/tests (all workspace exams)
- * INSTITUTION teacher / SOLO → GET /tests/my (creator's exams)
- *
- * Pass `status` for server-side Test.status filter (do not client-filter tabs).
- */
 export async function fetchTestsForActiveWorkspace({ search, status, include_archived } = {}) {
   const listParams = buildListParams({ search, status, include_archived })
 

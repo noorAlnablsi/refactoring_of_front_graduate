@@ -8,18 +8,7 @@ import { startProctoringSession } from '../../services/proctoring'
 import { getTestById, startTestAttempt, submitTestAttempt } from '../../services/tests.service'
 import { useProctoring } from './useProctoring'
 
-/**
- * Minimal exam-attempt integration layer (UI-agnostic).
- *
- * Encapsulates backend startup order:
- * 1) GET /tests/{id}
- * 2) if proctoring.enabled
- * 3) POST /tests/{id}/attempts
- * 4) POST .../proctoring/session
- * 5) start monitoring (WS + sensors)
- *
- * Future Exam Attempt page only needs to call bootstrap() / finishAndSubmit().
- */
+
 export function useExamProctoringBootstrap({ testId } = {}) {
   const [test, setTest] = useState(null)
   const [attempt, setAttempt] = useState(null)
@@ -77,8 +66,7 @@ export function useExamProctoringBootstrap({ testId } = {}) {
       const resolvedSession = sessionData?.session || sessionData?.data?.session || sessionData
       setSession(resolvedSession)
 
-      // Start monitors after REST session exists (WS still sends student_joined).
-      // useProctoring needs attemptId in closure — call after state update via returned handle.
+
       return {
         test: resolvedTest,
         attempt: resolvedAttempt,

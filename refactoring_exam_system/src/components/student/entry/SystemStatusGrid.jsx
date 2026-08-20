@@ -2,8 +2,6 @@ import { Mic, Signal, UserRound } from 'lucide-react'
 
 import { useTranslation } from 'react-i18next'
 
-
-
 function SystemStatusCard({ icon: Icon, title, value, ok }) {
 
   return (
@@ -42,8 +40,6 @@ function SystemStatusCard({ icon: Icon, title, value, ok }) {
 
 }
 
-
-
 const DEFAULT_CHECKS = {
 
   micOk: false,
@@ -60,17 +56,11 @@ const DEFAULT_CHECKS = {
 
 }
 
-
-
 function SystemStatusGrid({ checks = DEFAULT_CHECKS, proctoringEnabled }) {
 
   const { t } = useTranslation('student')
 
-
-
   if (!proctoringEnabled) return null
-
-
 
   return (
 
@@ -118,8 +108,5 @@ function SystemStatusGrid({ checks = DEFAULT_CHECKS, proctoringEnabled }) {
 
 }
 
-
-
 export default SystemStatusGrid
-
 

@@ -1,4 +1,4 @@
-/** Shared keyboard helpers. Tab/Shift+Tab stay native to the browser. */
+
 
 export function isEditableTarget(el) {
   if (!el || !(el instanceof Element)) return false
@@ -74,10 +74,6 @@ function listKeyboardOptions(groupRoot) {
   return Array.from(groupRoot.querySelectorAll('[data-keyboard-option]')).filter(isOptionEnabled)
 }
 
-/**
- * Move focus (+ select via click) between [data-keyboard-option] siblings.
- * delta: +1 next, -1 previous (DOM order).
- */
 export function moveKeyboardOption(delta) {
   const scope = getKeyboardScope()
   const active = document.activeElement
@@ -104,7 +100,6 @@ export function moveKeyboardOption(delta) {
   return true
 }
 
-/** Enter activates marked primary control or submits the relevant form. */
 export function activatePrimaryAction() {
   const scope = getKeyboardScope()
 

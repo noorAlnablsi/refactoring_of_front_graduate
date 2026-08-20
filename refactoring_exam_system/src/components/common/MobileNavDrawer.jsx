@@ -1,10 +1,7 @@
 import { useEffect, useId, useRef } from 'react'
 import { X } from 'lucide-react'
 
-/**
- * Mobile-only navigation drawer. Slides in from logical `start` (RTL-aware).
- * Desktop shell stays unchanged — default visibility is below `lg`.
- */
+
 function MobileNavDrawer({
   open,
   onClose,

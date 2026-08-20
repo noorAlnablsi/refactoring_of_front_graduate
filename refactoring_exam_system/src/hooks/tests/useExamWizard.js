@@ -4,6 +4,7 @@ import { ROUTES } from '../../constants/routes'
 import { TEST_KIND, TEST_STATUS, TEST_WIZARD_STEPS } from '../../constants/tests'
 import { parseApiError } from '../../lib/apiError'
 import { saveExamWizardProgress } from '../../lib/examWizardProgress'
+import { scrollDashboardMainToTop } from '../../lib/shellUi'
 import { canEditTest, getEditBlockedMessage } from '../../lib/testDisplay'
 import { getTestId, getTestName, mergeTestPreservingQuestions } from '../../lib/testModel'
 import {
@@ -69,6 +70,10 @@ export function useExamWizard({ isNew = false, kind = TEST_KIND.EXAM } = {}) {
       if (testId && step !== TEST_WIZARD_STEPS.QUESTIONS) {
         saveExamWizardProgress(testId, { step, questions: null })
       }
+      requestAnimationFrame(() => {
+        scrollDashboardMainToTop()
+        requestAnimationFrame(scrollDashboardMainToTop)
+      })
     },
     [setSearchParams, test, currentStep],
   )
@@ -144,7 +149,7 @@ export function useExamWizard({ isNew = false, kind = TEST_KIND.EXAM } = {}) {
         const fetched = data.test || data
         setTest((prev) => mergeTestPreservingQuestions(prev, fetched))
 
-        if (!canEditTest(fetched) && fetched.status === TEST_STATUS.DRAFT) {
+        if (!canEditTest(fetched)) {
           const msg = getEditBlockedMessage(fetched)
           if (msg) showToast(msg, 'error')
         }

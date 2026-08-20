@@ -4,7 +4,6 @@ function storageKey(testId) {
   return `${STORAGE_PREFIX}${testId}`
 }
 
-/** Persist entry rules for Attempt page (require_answer_all, navigation, …). */
 export function saveAttemptEntryRules(testId, rules, extras = {}) {
   if (!testId || !rules) return
   try {
@@ -20,7 +19,7 @@ export function saveAttemptEntryRules(testId, rules, extras = {}) {
       }),
     )
   } catch {
-    // ignore
+
   }
 }
 
@@ -41,11 +40,10 @@ export function clearAttemptEntryRules(testId) {
   try {
     sessionStorage.removeItem(storageKey(testId))
   } catch {
-    // ignore
+
   }
 }
 
-/** Overlay entry/session rules onto nav settings from test.settings_config. */
 export function applyEntryRulesToNavSettings(baseNav, entryRules) {
   if (!entryRules) return baseNav
 

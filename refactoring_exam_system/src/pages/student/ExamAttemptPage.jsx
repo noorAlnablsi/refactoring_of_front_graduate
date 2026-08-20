@@ -73,7 +73,6 @@ function ExamAttemptPage() {
 
   const proctoringActive = proctoringRequired && proctoring.running
 
-  /** Free navigation UI (sidebar + marks). Sequential locked UI when back nav is off. */
   const isFreeNavigation = navSettings.allowBackNavigation
   const answersLocked = submitting || answersFrozen
 

@@ -25,7 +25,7 @@ export function useProfileAvatar() {
           updateUser(profile)
         }
       } catch {
-        // نُبقي بيانات الجلسة الحالية
+
       } finally {
         if (!cancelled) {
           setLoading(false)

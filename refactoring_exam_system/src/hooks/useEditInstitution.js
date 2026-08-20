@@ -7,10 +7,7 @@ import { getWorkspaceId, isInstitutionOwner } from '../lib/workspaceContext'
 import { useAuthStore } from '../store/authStore'
 import { useToastStore } from '../store/toastStore'
 
-/**
- * Edit institution workspace fields (name / description / logo_url).
- * Owner/ADMIN settings only — does not touch User profile.
- */
+
 export function useEditInstitution({ open, workspace, mode = 'full', onSuccess } = {}) {
   const { t } = useTranslation('settings')
   const updateMembershipWorkspace = useAuthStore((state) => state.updateMembershipWorkspace)

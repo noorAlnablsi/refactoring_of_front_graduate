@@ -1,9 +1,7 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
 import { CameraService } from '../../services/proctoring'
 
-/**
- * Standalone camera helpers for preflight UI (optional).
- */
+
 export function useCamera() {
   const serviceRef = useRef(null)
   const [stream, setStream] = useState(null)

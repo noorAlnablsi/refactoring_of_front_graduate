@@ -3,9 +3,7 @@ import { useTranslation } from 'react-i18next'
 import { LANGUAGE } from '../../constants/language'
 import { useLanguageStore } from '../../store/languageStore'
 
-/**
- * Compact landing language control — toggles AR ↔ EN via the shared language store.
- */
+
 function LandingLanguageButton({ className = '' }) {
   const { t } = useTranslation(['common', 'landing'])
   const language = useLanguageStore((s) => s.language)

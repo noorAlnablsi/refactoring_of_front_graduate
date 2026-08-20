@@ -18,10 +18,7 @@ import { CameraService } from './CameraService'
 import { FaceDetectionService } from './FaceDetectionService'
 import { WebSocketManager } from './WebSocketManager'
 
-/**
- * Orchestrates client-side monitoring.
- * Frontend only observes and reports — never decides cheating / severity / score.
- */
+
 export class ProctoringService {
   constructor({
     testId,
@@ -98,7 +95,7 @@ export class ProctoringService {
         status: CAMERA_STATUS.DENIED,
         microphone: 'DENIED',
       })
-      // Spec: do not crash the exam page when permission denied.
+
     }
 
     if (wantFace && this.camera.hasLiveVideo()) {
@@ -109,7 +106,7 @@ export class ProctoringService {
         onMultipleFaces: (payload) => this.emitEvent(PROCTORING_WS_EVENT.MULTIPLE_FACES, payload),
       })
 
-      // Ensure hidden video exists for MediaPipe if UI did not provide one.
+
       if (!this.videoElement) {
         this.videoElement = document.createElement('video')
         this.videoElement.setAttribute('playsinline', 'true')
@@ -148,7 +145,7 @@ export class ProctoringService {
           this.emitEvent(PROCTORING_WS_EVENT.SUSPICIOUS_NAVIGATION, payload),
         onScreenInactivity: (payload) => this.emitEvent(PROCTORING_WS_EVENT.SCREEN_INACTIVITY, payload),
       })
-      // Browser listeners start AFTER session_started (see #beginMonitoring)
+
     }
   }
 
@@ -169,7 +166,7 @@ export class ProctoringService {
         this.onConnectionStateChange?.(state)
       },
       onOpen: () => {
-        // Do NOT resend historical events after reconnect — send student_joined only.
+
         this.#sendStudentJoined()
       },
       onMessage: (message) => this.#handleIncoming(message),
@@ -247,7 +244,7 @@ export class ProctoringService {
 
   emitEvent(type, payload = {}) {
     if (this.stopped) return
-    // Do not flood before session activation except camera denied / student_joined path.
+
     const allowedBeforeSession =
       type === PROCTORING_WS_EVENT.STUDENT_JOINED || type === PROCTORING_WS_EVENT.CAMERA_STATUS
 

@@ -56,9 +56,7 @@ export function throttle(fn, waitMs) {
   return throttled
 }
 
-/**
- * Emit only when value changes (optional equality).
- */
+
 export function createStateChangeGate(initialValue = undefined) {
   let current = initialValue
 

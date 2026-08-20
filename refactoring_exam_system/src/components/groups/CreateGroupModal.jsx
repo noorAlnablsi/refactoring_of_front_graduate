@@ -76,7 +76,7 @@ function CreateGroupModal({ open, subjects, initialSubjectId, onClose, onSuccess
       loadStudents(subjectId, search)
     }, delay)
     return () => window.clearTimeout(timer)
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+
   }, [open, step, subjectId, search])
 
   const validateStep1 = () => {

@@ -27,8 +27,7 @@ export function useStudentJoinCodeGuard() {
     if (flow !== REGISTRATION_FLOW.STUDENT) {
       navigate(ROUTES.WELCOME, { replace: true })
     }
-    // Only validate initial entry — do not redirect when flow changes during submit.
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+
   }, [])
 
   useEffect(() => {

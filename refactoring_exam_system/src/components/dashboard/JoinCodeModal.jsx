@@ -34,7 +34,7 @@ function JoinCodeModal({ open, onClose }) {
     if (open && !code && !loading && !error) {
       fetchCode()
     }
-  }, [open]) // eslint-disable-line react-hooks/exhaustive-deps
+  }, [open])
 
   const handleCopy = async () => {
     if (!code) return
@@ -43,7 +43,6 @@ function JoinCodeModal({ open, onClose }) {
       setCopied(true)
       setTimeout(() => setCopied(false), 2500)
     } catch {
-      /* clipboard API unavailable */
     }
   }
 
@@ -63,7 +62,7 @@ function JoinCodeModal({ open, onClose }) {
         className={`w-full max-w-lg rounded-2xl bg-white shadow-2xl ${customModalPanelSafeClass}`}
         onClick={(e) => e.stopPropagation()}
       >
-        {/* Header */}
+        
         <div className="flex items-start justify-between gap-4 border-b border-[#E5E9EB] px-8 py-6">
           <div className="flex items-center gap-4">
             <span className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-[#E8F7F6] text-[#2AA8A2]">
@@ -87,7 +86,7 @@ function JoinCodeModal({ open, onClose }) {
           </button>
         </div>
 
-        {/* Body */}
+        
         <div className="px-8 py-7">
           <p className="mb-6 text-sm leading-6 text-[#64748B]">
             {t('sidebar.joinCodeHint')}
@@ -137,7 +136,7 @@ function JoinCodeModal({ open, onClose }) {
           )}
         </div>
 
-        {/* Footer */}
+        
         <div className="flex justify-start border-t border-[#E5E9EB] px-8 py-5">
           <button
             type="button"

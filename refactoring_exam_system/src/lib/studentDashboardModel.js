@@ -75,9 +75,6 @@ export function normalizeAvailableTestsResponse(data) {
 
 const UPCOMING_TONES = ['teal', 'blue', 'purple']
 
-/**
- * Normalizes GET /student/tests/upcoming (array or wrapped payload).
- */
 export function normalizeUpcomingTestsResponse(data) {
   const tests = Array.isArray(data) ? data : data?.tests || data?.items || []
   return tests.map((exam, index) => normalizeUpcomingExam(exam, index))
@@ -129,10 +126,6 @@ export function getCalendarEventDays(events = [], year, month) {
     .map((event) => new Date(event.date).getDate())
 }
 
-/**
- * Map GET /student/recent-exams → dashboard "آخر الاختبارات" table.
- * Ordered by submission date (newest first), any status (pending or graded).
- */
 export function normalizeDashboardLatestResults(data, limit = 5) {
   const items = Array.isArray(data?.items) ? data.items : Array.isArray(data) ? data : []
 

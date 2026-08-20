@@ -37,7 +37,7 @@ function StudentSettingsPage() {
       await deleteAccount()
       setDeleteConfirmOpen(false)
     } catch {
-      // Toast already shown by hook; keep dialog open so user can retry or cancel.
+
     }
   }
 

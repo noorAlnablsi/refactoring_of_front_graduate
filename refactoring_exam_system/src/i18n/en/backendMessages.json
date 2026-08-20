@@ -94,6 +94,7 @@
   "Group created successfully": "Group created successfully",
   "Group deleted successfully": "Group deleted successfully",
   "Group members updated": "Group members updated",
+  "Group {group_id} is not owned by you or not in this test subject": "Group {group_id} is not owned by you or not in this test subject",
   "Some students are already assigned to another group in this subject": "Some students are already assigned to another group in this subject",
   "Group name is required": "Group name is required",
   "Group not found": "Group not found",

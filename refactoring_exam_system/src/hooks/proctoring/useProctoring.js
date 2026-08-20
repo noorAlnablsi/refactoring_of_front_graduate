@@ -7,10 +7,6 @@ import {
 } from '../../lib/proctoring/entrySessionBridge'
 import { ProctoringService } from '../../services/proctoring'
 
-/**
- * Core proctoring hook — UI-agnostic.
- * Call start() only when attempt exists AND proctoring is enabled.
- */
 export function useProctoring({
   testId,
   attemptId,
@@ -101,7 +97,7 @@ export function useProctoring({
       try {
         if (!cancelled) await start()
       } catch {
-        // surfaced via error state
+
       }
     })()
 
@@ -114,7 +110,7 @@ export function useProctoring({
     return () => {
       const service = serviceRef.current
       serviceRef.current = null
-      // Entry→Attempt handoff / adopted bridge: same instance must survive remounts.
+
       if (service && shouldStopProctoringServiceOnRelease(service)) {
         console.info('[PROCTORING STOP]', { reason: 'hook-unmount' })
         void service.stop?.()

@@ -9,9 +9,7 @@ import { FaceDetectionService } from '../../services/proctoring/FaceDetectionSer
 
 const LIGHTING_SAMPLE_MS = 800
 
-/**
- * Real preflight checks for Exam Entry (camera/mic/connection/face/lighting/position).
- */
+
 export function useEntryEnvironmentCheck({ stream, videoElement, enabled }) {
   const faceServiceRef = useRef(null)
   const [online, setOnline] = useState(
@@ -86,7 +84,7 @@ export function useEntryEnvironmentCheck({ stream, videoElement, enabled }) {
         await faceService.init()
         if (!cancelled) await faceService.start(video)
       } catch {
-        // Face model optional for entry — camera/mic still gate start.
+
       }
     })()
 

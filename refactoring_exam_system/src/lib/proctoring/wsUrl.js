@@ -31,20 +31,13 @@ function buildWsUrl(path, { token, workspaceId }) {
   return `${wsUrl.protocol}//${wsUrl.host}${path}?${qs.toString()}`
 }
 
-/**
- * Build ws/wss URL from VITE_WS_BASE_URL (fallback: VITE_API_BASE_URL host).
- * Contract:
- * /ws/proctoring/tests/{test_id}/attempts/{attempt_id}?token=&workspace_id=
- */
+
 export function buildProctoringWebSocketUrl({ testId, attemptId, token, workspaceId }) {
   const path = `/ws/proctoring/tests/${encodeURIComponent(testId)}/attempts/${encodeURIComponent(attemptId)}`
   return buildWsUrl(path, { token, workspaceId })
 }
 
-/**
- * Teacher live monitoring channel.
- * Contract: /ws/proctoring/tests/{test_id}/monitor?token=&workspace_id=
- */
+
 export function buildTeacherMonitorWebSocketUrl({ testId, token, workspaceId }) {
   const path = `/ws/proctoring/tests/${encodeURIComponent(testId)}/monitor`
   return buildWsUrl(path, { token, workspaceId })

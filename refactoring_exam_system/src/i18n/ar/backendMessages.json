@@ -94,6 +94,7 @@
   "Group created successfully": "تم إنشاء المجموعة بنجاح",
   "Group deleted successfully": "تم حذف المجموعة بنجاح",
   "Group members updated": "تم تحديث أعضاء المجموعة",
+  "Group {group_id} is not owned by you or not in this test subject": "المجموعة رقم {group_id} ليست ملكك أو لا تنتمي لمادة هذا الاختبار",
   "Some students are already assigned to another group in this subject": "بعض الطلاب موجودون بالفعل في مجموعة أخرى ضمن هذه المادة",
   "Group name is required": "اسم المجموعة مطلوب",
   "Group not found": "لم يتم العثور على المجموعة",

@@ -27,7 +27,7 @@ export function saveAttemptOfflineState(testId, attemptId, state) {
       }),
     )
   } catch {
-    // ignore quota / private mode
+
   }
 }
 
@@ -36,6 +36,6 @@ export function clearAttemptOfflineState(testId, attemptId) {
   try {
     localStorage.removeItem(storageKey(testId, attemptId))
   } catch {
-    // ignore
+
   }
 }

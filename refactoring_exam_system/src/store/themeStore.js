@@ -14,7 +14,7 @@ export const useThemeStore = create((set, get) => ({
   mode: THEME_MODE.LIGHT,
   userId: null,
 
-  /** Load theme for this account (all paths share one theme). Guest → light. */
+   
   syncForUser: (user) => {
     const userId = resolveAuthUserId(user)
     const mode = userId ? readUserThemeMode(userId) : THEME_MODE.LIGHT
@@ -37,7 +37,7 @@ export const useThemeStore = create((set, get) => ({
   },
 }))
 
-/** Keep theme in sync when auth user changes (login / logout / switch account). */
+
 export function bindThemeToAuth() {
   const sync = (user) => {
     useThemeStore.getState().syncForUser(user)

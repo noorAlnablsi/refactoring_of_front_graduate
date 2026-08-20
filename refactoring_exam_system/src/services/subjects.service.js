@@ -16,7 +16,6 @@ export async function getSubjects(params = {}) {
   return data
 }
 
-/** Fetch every page of GET /subjects (optional server search). */
 export async function listAllSubjects({ search } = {}) {
   const perPage = 100
   let page = 1
@@ -172,12 +171,10 @@ function resolveMembershipIds(studentOrMembershipIds) {
   return membershipIds
 }
 
-/** Enroll one student — always sends membership_ids (backend contract). */
 export async function assignStudentToSubject(subjectId, studentOrMembershipId) {
   return assignStudentsToSubject(subjectId, studentOrMembershipId)
 }
 
-/** Enroll students in bulk (body: membership_ids). Single id still uses membership_ids array. */
 export async function assignStudentsToSubject(subjectId, studentOrMembershipIds) {
   const membershipIds = resolveMembershipIds(studentOrMembershipIds)
   const { data } = await api.post(`/subjects/${normalizeSubjectId(subjectId)}/students`, {

@@ -1,4 +1,4 @@
-/** Question type codes from attempt.questions[].snapshot_type_code */
+
 import { localizeDigits } from './localeNumber'
 import { resolveQuestionImageSrc } from './questionImage'
 import { normalizeSettingsConfig } from './testSettings'
@@ -44,9 +44,6 @@ export function isEssayQuestion(typeCode) {
   return String(typeCode || '').toUpperCase() === ATTEMPT_QUESTION_TYPE.ESSAY
 }
 
-/**
- * Build local answer map keyed by test_question_id from attempt.answers[].
- */
 export function buildAnswersMapFromAttempt(answers = []) {
   const map = {}
 
@@ -92,10 +89,6 @@ export function isAnswerProvided(answer, typeCode) {
   return Array.isArray(answer.selected_choice_indices) && answer.selected_choice_indices.length > 0
 }
 
-/**
- * Serialize answers map to API payload shape.
- * Only include answered questions (or all if includeEmpty).
- */
 export function serializeAnswersPayload(answersMap, questions = [], { includeEmpty = false } = {}) {
   const payload = []
 
@@ -134,7 +127,7 @@ export function getUnansweredQuestionIds(answersMap, questions = []) {
 
 export function readAttemptNavigationSettings(testOrSettings) {
   const config = testOrSettings?.settings_config || testOrSettings || {}
-  // Flat or nested settings_config — same source of truth as teacher wizard.
+
   const flat = normalizeSettingsConfig(config)
 
   return {
@@ -145,9 +138,6 @@ export function readAttemptNavigationSettings(testOrSettings) {
   }
 }
 
-/**
- * Detect submit grading outcome for redirect.
- */
 export function resolveSubmitRedirect(submitResponse) {
   const data = submitResponse || {}
   const gradingCompleted =
@@ -184,7 +174,6 @@ export function formatCountdown(totalSeconds) {
   return localizeDigits(`${String(minutes).padStart(2, '0')}:${String(secs).padStart(2, '0')}`)
 }
 
-/** Design timer segments: `01 : 45 : 21` */
 export function formatCountdownSpaced(totalSeconds) {
   const seconds = Math.max(0, Math.floor(Number(totalSeconds) || 0))
   const hours = Math.floor(seconds / 3600)

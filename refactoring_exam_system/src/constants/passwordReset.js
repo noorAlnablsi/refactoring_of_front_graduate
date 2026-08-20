@@ -6,5 +6,5 @@ export function getForgotPasswordSuccessMessage() {
   return i18n.t('passwordReset.forgotSuccessMessage', { ns: 'auth' })
 }
 
-/** @deprecated Use getForgotPasswordSuccessMessage() */
+
 export const FORGOT_PASSWORD_SUCCESS_MESSAGE = getForgotPasswordSuccessMessage()

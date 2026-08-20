@@ -1,6 +1,6 @@
 import { WORKSPACE_KIND } from '../constants/auth'
 
-/** SOLO / INSTITUTION → الاسم المُدخل من المستخدم */
+
 export function resolveWorkspaceName({ kind, fullName, workspaceName }) {
   const trimmed = workspaceName?.trim() || ''
 

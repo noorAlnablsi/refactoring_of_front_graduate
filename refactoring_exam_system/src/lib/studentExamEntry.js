@@ -1,6 +1,4 @@
-/**
- * Normalize GET /student/tests/{id}/entry for ExamEntryPage.
- */
+
 export function normalizeStudentTestEntry(data = {}) {
   const exam = data.exam || {}
   const subject = exam.subject || {}
@@ -65,7 +63,7 @@ export function normalizeStudentTestEntry(data = {}) {
     null
 
   const canResume = Boolean(resumeAttemptId)
-  /** Fresh start OR resume in-progress — never "alreadyStarted" alone (blocks false re-entry). */
+
   const mayProceed = canResume || canStart
 
   let blockReason = null

@@ -1,13 +1,8 @@
-/* Unlayered rules — must win over Tailwind utilities for legacy hex classes. */
+
 .dark [data-app-shell] {
   color-scheme: dark;
 }
 
-/*
- * Marketing landing must stay light-branded even when the signed-in user
- * prefers dark for dashboards. Without this, header (bg-white) remaps to
- * dark surface while hero hex backgrounds stay light → mixed look.
- */
 .dark [data-app-shell='public'] {
   color-scheme: light;
   --shell-bg: #f6f8f9;

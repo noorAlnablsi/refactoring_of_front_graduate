@@ -1,4 +1,4 @@
-/** Support report categories for POST /reports (backend enum). */
+
 export const REPORT_CATEGORY = {
   TECHNICAL: 'TECHNICAL',
   ACCOUNT: 'ACCOUNT',

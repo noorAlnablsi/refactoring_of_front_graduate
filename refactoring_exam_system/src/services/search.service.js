@@ -1,6 +1,6 @@
 import api from '../lib/axios'
 
-/** GET /search — TopBar global quick search (workspace-scoped RBAC). */
+
 export async function globalSearch({ q, perTypeLimit = 5 } = {}) {
   const trimmed = String(q || '').trim()
   if (!trimmed) {

@@ -167,19 +167,16 @@ export async function importAiQuestions(testId, payload) {
   return data
 }
 
-/** POST /tests/{test_id}/attempts — start or resume attempt (no body) */
 export async function startTestAttempt(testId) {
   const { data } = await api.post(`/tests/${testId}/attempts`)
   return data
 }
 
-/** GET /tests/{test_id}/attempts/{attempt_id} */
 export async function getTestAttempt(testId, attemptId) {
   const { data } = await api.get(`/tests/${testId}/attempts/${attemptId}`)
   return data
 }
 
-/** PUT /tests/{test_id}/attempts/{attempt_id}/answers */
 export async function saveAttemptAnswers(testId, attemptId, answers) {
   const { data } = await api.put(`/tests/${testId}/attempts/${attemptId}/answers`, {
     answers,
@@ -187,19 +184,16 @@ export async function saveAttemptAnswers(testId, attemptId, answers) {
   return data
 }
 
-/** POST /tests/{test_id}/attempts/{attempt_id}/submit */
 export async function submitTestAttempt(testId, attemptId, payload = {}) {
   const { data } = await api.post(`/tests/${testId}/attempts/${attemptId}/submit`, payload)
   return data
 }
 
-/** GET /tests/{test_id}/attempts — teacher attempts list (no answers) */
 export async function listTestAttempts(testId) {
   const { data } = await api.get(`/tests/${testId}/attempts`)
   return data
 }
 
-/** POST /tests/{test_id}/attempts/{attempt_id}/grading/manual */
 export async function submitManualGrading(testId, attemptId, answers) {
   const { data } = await api.post(`/tests/${testId}/attempts/${attemptId}/grading/manual`, {
     answers,
@@ -207,13 +201,11 @@ export async function submitManualGrading(testId, attemptId, answers) {
   return data
 }
 
-/** GET /tests/{test_id}/attempts/{attempt_id}/grading/result */
 export async function getAttemptGradingResult(testId, attemptId) {
   const { data } = await api.get(`/tests/${testId}/attempts/${attemptId}/grading/result`)
   return data
 }
 
-/** GET /tests/{test_id}/attempts/{attempt_id}/proctoring/grading-review */
 export async function getProctoringGradingReview(testId, attemptId) {
   const { data } = await api.get(
     `/tests/${testId}/attempts/${attemptId}/proctoring/grading-review`,
@@ -221,7 +213,6 @@ export async function getProctoringGradingReview(testId, attemptId) {
   return data
 }
 
-/** PATCH /tests/{test_id}/attempts/{attempt_id}/grading/final-score */
 export async function patchAttemptFinalScore(testId, attemptId, payload) {
   const { data } = await api.patch(
     `/tests/${testId}/attempts/${attemptId}/grading/final-score`,
@@ -230,7 +221,6 @@ export async function patchAttemptFinalScore(testId, attemptId, payload) {
   return data
 }
 
-/** GET /tests/{test_id}/attempts/{attempt_id}/proctoring/audit-logs */
 export async function getAttemptAuditLogs(testId, attemptId) {
   const { data } = await api.get(
     `/tests/${testId}/attempts/${attemptId}/proctoring/audit-logs`,
@@ -238,7 +228,6 @@ export async function getAttemptAuditLogs(testId, attemptId) {
   return data
 }
 
-/** GET /tests/{test_id}/attempts/{attempt_id}/proctoring/events */
 export async function getAttemptProctoringEvents(testId, attemptId) {
   const { data } = await api.get(
     `/tests/${testId}/attempts/${attemptId}/proctoring/events`,
@@ -246,7 +235,6 @@ export async function getAttemptProctoringEvents(testId, attemptId) {
   return data
 }
 
-/** GET /tests/{test_id}/attempts/{attempt_id}/proctoring/violations */
 export async function getAttemptProctoringViolations(testId, attemptId) {
   const { data } = await api.get(
     `/tests/${testId}/attempts/${attemptId}/proctoring/violations`,
@@ -254,13 +242,11 @@ export async function getAttemptProctoringViolations(testId, attemptId) {
   return data
 }
 
-/** GET /tests/{test_id}/monitoring — live monitoring snapshot */
 export async function getTestMonitoring(testId) {
   const { data } = await api.get(`/tests/${testId}/monitoring`)
   return data
 }
 
-/** POST /tests/{test_id}/attempts/{attempt_id}/force-submit — teacher-initiated */
 export async function forceSubmitAttempt(testId, attemptId) {
   const { data } = await api.post(`/tests/${testId}/attempts/${attemptId}/force-submit`)
   return data

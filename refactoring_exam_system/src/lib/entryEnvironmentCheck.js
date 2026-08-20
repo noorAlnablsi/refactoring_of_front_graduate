@@ -1,4 +1,4 @@
-/** Sample average luminance from a video frame (0–255). */
+
 export function measureVideoLighting(videoEl) {
   if (!videoEl || videoEl.readyState < 2) return null
 
@@ -32,10 +32,7 @@ export function isMediaTrackLive(track) {
   return Boolean(track && track.readyState === 'live' && track.enabled)
 }
 
-/**
- * MediaPipe FaceDetector boundingBox is in pixels.
- * Some pipelines use normalized 0–1 — detect and handle both.
- */
+
 function resolveFaceBoxPixels(box, videoWidth, videoHeight) {
   const looksNormalized =
     box.width <= 1 &&
@@ -66,7 +63,7 @@ export function isFacePositionAcceptable(detection, videoWidth, videoHeight) {
   const box = resolveFaceBoxPixels(detection.boundingBox, videoWidth, videoHeight)
   const minSide = Math.min(videoWidth, videoHeight)
 
-  // Typical laptop webcam: face ~12–55% of the shorter side is fine.
+
   const faceLargeEnough = box.width >= minSide * 0.1 && box.height >= minSide * 0.1
   const faceNotTooLarge = box.width <= minSide * 0.85 && box.height <= minSide * 0.9
 

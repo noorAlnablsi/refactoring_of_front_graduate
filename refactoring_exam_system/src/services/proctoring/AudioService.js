@@ -1,10 +1,7 @@
 import { AUDIO_EVENT_THROTTLE_MS } from '../../constants/proctoring'
 import { throttle } from '../../lib/proctoring/eventThrottle'
 
-/**
- * Microphone level monitoring via Web Audio API.
- * No speech recognition. Reports via callbacks only.
- */
+
 export class AudioService {
   constructor({ onActivity, onAnomaly } = {}) {
     this.onActivity = onActivity
@@ -100,7 +97,7 @@ export class AudioService {
     try {
       this.source?.disconnect()
     } catch {
-      // ignore
+
     }
     this.source = null
     this.analyser = null

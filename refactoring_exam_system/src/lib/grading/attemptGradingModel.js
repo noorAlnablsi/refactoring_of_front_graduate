@@ -10,7 +10,6 @@ export const ANSWER_GRADING_STATUS = {
   MANUALLY_GRADED: 'MANUALLY_GRADED',
 }
 
-/** Teacher grading wizard steps (per-attempt). */
 export const GRADING_WIZARD_STEPS = {
   AUTO: 1,
   MANUAL: 2,
@@ -18,7 +17,6 @@ export const GRADING_WIZARD_STEPS = {
   FINAL: 4,
 }
 
-/** Resolve display name from flat or nested attempt-list payloads. */
 function pickAttemptStudentName(raw) {
   const student = raw?.student && typeof raw.student === 'object' ? raw.student : null
   const user = raw?.user && typeof raw.user === 'object' ? raw.user : null

@@ -29,6 +29,7 @@
     "participants": "{{count}} participants",
     "averageScore": "Avg {{score}}%",
     "startsAt": "Starts: {{date}}",
+    "publishesAt": "Publishes: {{date}}",
     "continueEditing": "Continue editing",
     "edit": "Edit",
     "closeExam": "Close exam",
@@ -245,6 +246,8 @@
       "noStudents": "No students enrolled in this exam's subject yet.",
       "groupStudentsCount": "{{count}} students",
       "totalRecipients": "Total students who will receive this exam: {{count}}",
+      "totalIndividualRecipients": "Selected students: {{count}}",
+      "totalGroupRecipients": "Selected group students: {{count}}",
       "recipientsHint": "Assignment only expands the allow-list. Email with the link is sent automatically on publish or schedule (server may dedupe).",
       "selectedCount": "{{count}} students selected — each must be enrolled in the exam subject.",
       "scheduleBothRequired": "Enter both publish date and time, or leave fields empty for immediate publish",
@@ -329,7 +332,7 @@
   },
   "status": {
     "DRAFT": "DRAFT",
-    "SCHEDULED": "Scheduled",
+    "SCHEDULED": "Scheduled to publish",
     "PUBLISHED": "Published",
     "CLOSED": "Closed (ended)",
     "ARCHIVED": "Archived"
@@ -342,7 +345,10 @@
   "errors": {
     "testNotFound": "Exam not found",
     "editDraftOnly": "Exam can only be edited while in DRAFT status",
-    "editTooCloseToStart": "Exam cannot be edited less than 30 minutes before start time"
+    "editTooCloseToStart": "Exam cannot be edited less than 30 minutes before start time",
+    "editDraftOrScheduledOnly": "Exam can only be edited in DRAFT or SCHEDULED status (at least 30 minutes before scheduled publish)",
+    "editTooCloseToPublish": "Scheduled exam cannot be edited less than 30 minutes before publish time",
+    "editMissingPublishAt": "Scheduled exam is missing a scheduled publish date"
   },
   "sidebar": {
     "examSummary": "Exam summary",

@@ -19,10 +19,6 @@ async function getVisionFileset() {
   return sharedFilesetPromise
 }
 
-/**
- * MediaPipe face observations only — no cheating decisions.
- * Emits state-change events via callbacks.
- */
 export class FaceDetectionService {
   constructor({
     onFaceDetected,
@@ -120,7 +116,6 @@ export class FaceDetectionService {
       return
     }
 
-    // facesCount === 0
     if (!this.sawFaceOnce) {
       if (this.stateGate.shouldEmit('none')) {
         this.onNoFace?.({ detector: MEDIAPIPE_DETECTOR })
@@ -170,7 +165,7 @@ export class FaceDetectionService {
       try {
         this.detector.close()
       } catch {
-        // ignore
+
       }
       this.detector = null
     }

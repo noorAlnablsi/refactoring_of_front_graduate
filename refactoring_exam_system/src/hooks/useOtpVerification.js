@@ -145,7 +145,7 @@ export function useOtpVerification() {
               navigate(resolvePostLoginRoute(data), { replace: true })
               return
             } catch {
-              // Verified — fall back to login page with email prefilled.
+
             }
           }
 

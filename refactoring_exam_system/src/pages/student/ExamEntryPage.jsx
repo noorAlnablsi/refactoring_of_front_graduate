@@ -75,7 +75,7 @@ function ExamEntryPage() {
         try {
           await start({ video: true, audio: true })
         } catch {
-          // user can retry camera manually
+
         }
       }
     }

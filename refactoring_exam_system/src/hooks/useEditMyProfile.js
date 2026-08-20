@@ -30,7 +30,7 @@ export function useEditMyProfile({ open, onSuccess } = {}) {
     if (!user) return
     const membership = getActiveMembership()
     const solo = isSoloTeacher(membership)
-    // SOLO card shows workspace.name — keep the edit field aligned with what the user sees.
+
     const displayName = solo
       ? membership?.workspace?.name?.trim() || user.full_name?.trim() || ''
       : user.full_name?.trim() || ''
@@ -115,7 +115,6 @@ export function useEditMyProfile({ open, onSuccess } = {}) {
         updateUser(payload)
       }
 
-      // SOLO identity on settings card is workspace.name — keep it in sync with the edited display name.
       const membership = getActiveMembership()
       const workspaceId = getWorkspaceId()
       if (isSoloTeacher(membership) && workspaceId) {
@@ -123,7 +122,7 @@ export function useEditMyProfile({ open, onSuccess } = {}) {
           await updateWorkspace(workspaceId, { name: trimmedName })
           updateMembershipWorkspace(workspaceId, { name: trimmedName })
         } catch {
-          // Profile user fields already saved; workspace rename is best-effort for display sync.
+
         }
       }
 

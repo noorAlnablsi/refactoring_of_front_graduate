@@ -6,7 +6,7 @@ export const PROCTORING_CONNECTION_STATE = {
   CLOSED: 'CLOSED',
 }
 
-/** WebSocket outgoing `type` values (backend contract). */
+
 export const PROCTORING_WS_EVENT = {
   STUDENT_JOINED: 'student_joined',
   CAMERA_STATUS: 'camera_status',
@@ -24,7 +24,7 @@ export const PROCTORING_WS_EVENT = {
   AUDIO_ANOMALY: 'audio_anomaly',
 }
 
-/** REST fallback uses UPPER_SNAKE `event_type`. */
+
 export const PROCTORING_REST_EVENT = {
   STUDENT_JOINED: 'STUDENT_JOINED',
   CAMERA_STATUS: 'CAMERA_STATUS',
@@ -50,7 +50,7 @@ export const PROCTORING_INCOMING = {
   ERROR: 'error',
 }
 
-/** Teacher live-monitor channel incoming `type` values (backend contract). */
+
 export const PROCTORING_MONITOR_INCOMING = {
   SUBSCRIBED: 'subscribed',
   STUDENT_ROW_UPDATED: 'student_row_updated',

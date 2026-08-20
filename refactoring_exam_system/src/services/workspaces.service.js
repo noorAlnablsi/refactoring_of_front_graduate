@@ -18,7 +18,6 @@ export async function getWorkspaceJoinCode(workspaceId) {
   return workspace.join_code || ''
 }
 
-/** PATCH /workspaces/{id} — owner/admin (SOLO admin included). */
 export async function updateWorkspace(workspaceId, payload) {
   const { data } = await api.patch(`/workspaces/${workspaceId}`, payload)
   return data
@@ -41,7 +40,6 @@ export async function getWorkspaceTeachers(params = {}) {
   return { ...data, teachers }
 }
 
-/** Institution workspace exams list (owner/admin only — teachers use GET /tests/my). */
 export async function getWorkspaceTests(params = {}) {
   const query = {}
   if (params.page != null) query.page = params.page
@@ -57,13 +55,11 @@ export async function getWorkspaceTests(params = {}) {
   return data
 }
 
-/** Workspace admin dashboard (INSTITUTION + SOLO owner/admin). */
 export async function getWorkspaceDashboard(params = {}) {
   const { data } = await api.get('/workspaces/dashboard', { params })
   return data
 }
 
-/** Teacher-scoped dashboard — GET /workspaces/teacher-dashboard. */
 export async function getTeacherDashboard(params = {}) {
   const query = {}
   if (params.recent_limit != null) query.recent_limit = params.recent_limit
@@ -72,7 +68,6 @@ export async function getTeacherDashboard(params = {}) {
   return data
 }
 
-/** Institution analytics (INSTITUTION owner only). */
 export async function getWorkspaceAnalytics(params = {}) {
   const { data } = await api.get('/workspaces/analytics', { params })
   return data
@@ -125,7 +120,6 @@ async function downloadWorkspaceCsv(path, { search, fallbackFilename }) {
   return { filename }
 }
 
-/** GET /workspaces/students/export — workspace owner only. */
 export async function exportWorkspaceStudentsCsv({ search } = {}) {
   const today = new Date().toISOString().slice(0, 10)
   return downloadWorkspaceCsv('/workspaces/students/export', {
@@ -134,7 +128,6 @@ export async function exportWorkspaceStudentsCsv({ search } = {}) {
   })
 }
 
-/** GET /workspaces/teachers/export — institution owner only. */
 export async function exportWorkspaceTeachersCsv({ search } = {}) {
   const today = new Date().toISOString().slice(0, 10)
   return downloadWorkspaceCsv('/workspaces/teachers/export', {
@@ -143,7 +136,6 @@ export async function exportWorkspaceTeachersCsv({ search } = {}) {
   })
 }
 
-/** POST /workspaces/members/import-csv — multipart field `csv_file`. */
 export async function importWorkspaceMembersCsv(csvFile) {
   const formData = new FormData()
   formData.append('csv_file', csvFile)
@@ -154,7 +146,6 @@ export async function importWorkspaceMembersCsv(csvFile) {
   return data
 }
 
-/** GET /templates/workspace-members-csv */
 export async function downloadWorkspaceMembersCsvTemplate() {
   const response = await api.get('/templates/workspace-members-csv', {
     responseType: 'blob',

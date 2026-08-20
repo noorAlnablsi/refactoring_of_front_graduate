@@ -102,7 +102,7 @@ function EditInstitutionModalContent({ mode, workspace, onClose, onSuccess }) {
                     try {
                       await uploadLogo(file)
                     } catch {
-                      // error already set in hook
+
                     }
                   }
                   event.target.value = ''

@@ -49,22 +49,15 @@ export function parseQuestionBanksTab(value, allowedTabs = Object.values(QUESTIO
   return QUESTION_BANK_TABS.MY
 }
 
-/** Figma dimensions for بنوكي + ضمن المؤسسة cards (desktop reference) */
 export const OWNED_QUESTION_BANK_CARD_SIZE = {
   width: 293.33,
   height: 321,
 }
 
-/**
- * Responsive card shell: full width inside grid cell, Figma height preserved.
- * Avoids fixed 293px width which overflowed ~360px viewports.
- */
 export const ownedQuestionBankCardClassName = 'h-[321px] w-full min-w-0'
 
-/** Same size for community cards */
 export const communityQuestionBankCardClassName = ownedQuestionBankCardClassName
 
-/** Shared responsive grid for bank cards (1 → 2 → 3 → 4 cols) */
 export const questionBanksGridClassName =
   'grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4'
 const COMMUNITY_BANK_THEMES = [
@@ -114,12 +107,10 @@ export function getBankAuthorAvatar(bank) {
   )
 }
 
-/** Alias kept for older community imports. */
 export function getCommunityBankAuthorName(bank) {
   return getBankAuthorName(bank)
 }
 
-/** Alias kept for older community imports. */
 export function getCommunityBankAuthorAvatar(bank) {
   return getBankAuthorAvatar(bank)
 }
@@ -132,7 +123,6 @@ export function getCommunityBankRating(bank) {
   return Math.min(5, Math.max(0, numeric))
 }
 
-/** Historical bank usage from BE `usage_count` (operation-based counter). */
 export function getBankUsageCount(bank) {
   const value =
     bank?.usage_count ?? bank?.uses_count ?? bank?.imports_count ?? bank?.download_count
@@ -243,7 +233,6 @@ export function getQuestionTopicLabel(question, topics = []) {
     : tQB('editor.noTopic')
 }
 
-/** Returns a localized error message, or empty string when choice rules are satisfied. */
 export function validateQuestionChoiceRules(typeCode, choices = []) {
   if (typeCode === 'ESSAY') return ''
 
@@ -325,7 +314,7 @@ export function getBankQuestionsCount(bank) {
     bank?.questions?.length
 
   if (value == null || value === '') {
-    // BE always sends questions_count now; treat explicit absence of the key as unknown.
+
     if (bank && Object.prototype.hasOwnProperty.call(bank, 'questions_count')) return 0
     return null
   }

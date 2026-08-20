@@ -26,10 +26,7 @@ export function countGlobalSearchHits(payload) {
   return flattenGlobalSearchResults(payload).reduce((sum, section) => sum + section.items.length, 0)
 }
 
-/**
- * Map backend route descriptors to frontend paths.
- * Unknown routes return null (hit shown but not navigable).
- */
+
 export function resolveGlobalSearchPath(hit) {
   const name = hit?.route?.name
   const params = hit?.route?.params || {}

@@ -29,11 +29,7 @@ function parseDate(rawDate) {
   return Number.isNaN(parsed.getTime()) ? null : parsed
 }
 
-/**
- * Closing display rules (product):
- * - FLEXIBLE: backend sends closed_at (availability window end).
- * - SCHEDULED: closing = starts_at + duration_minutes (local wall clock).
- */
+
 function resolveClosingDate(raw) {
   const mode = String(
     raw?.availability_time_mode || raw?.availability_mode || '',
@@ -91,9 +87,7 @@ export function formatExamCenterTimeRemaining({ seconds, endDate }) {
   }
 }
 
-/**
- * Enrich available-test model for Exam Center cards (keeps dashboard fields).
- */
+
 export function enrichAvailableExamForCenter(exam, raw = null) {
   const source = raw || {}
   const endDate = resolveClosingDate(source)
@@ -132,9 +126,7 @@ export function normalizeExamCenterAvailableList(data) {
   })
 }
 
-/**
- * Recent / history items from GET /student/tests (attempt rows only).
- */
+
 export function normalizeExamCenterRecentItem(raw) {
   if (!raw || typeof raw !== 'object') return null
   if (raw.attempt_id == null && !raw.attempt_status && !raw.lifecycle_status) return null

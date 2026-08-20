@@ -5,10 +5,6 @@ import {
   formatCommunityQuestionsCount,
 } from '../../lib/questionBanks'
 
-/**
- * Equal-weight stats strip for question-bank cards.
- * Keeps questions + usage aligned and scannable without corner stretch.
- */
 function BankCardStatsBar({ bank, accentColor = '#0EA896', questionsVariant = 'owned' }) {
   const questionsLabel =
     questionsVariant === 'community'

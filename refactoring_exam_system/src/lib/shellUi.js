@@ -24,7 +24,7 @@ export const shellSearchInputClass = `h-11 w-full ${shellInputClass} pr-10 pl-4 
 export const shellAccentButtonClass =
   'inline-flex items-center gap-2 rounded-xl bg-[var(--shell-accent)] px-5 py-3 text-sm font-bold text-[var(--shell-accent-contrast)] shadow-[var(--shell-shadow-accent)] transition hover:brightness-110'
 
-/** Same size as accent; border + accent text (secondary CTA). */
+
 export const shellOutlineButtonClass =
   'inline-flex items-center gap-2 rounded-xl border border-[var(--shell-accent)] bg-transparent px-5 py-3 text-sm font-bold text-[var(--shell-accent)] transition hover:bg-[var(--shell-accent-bg)]'
 
@@ -50,25 +50,33 @@ export const shellModalPanelClass =
 export const shellModalOverlayClass =
   'fixed inset-0 z-50 flex items-center justify-center overflow-y-auto overscroll-contain bg-black/60 p-4 backdrop-blur-[2px]'
 
-/** Legacy/custom modal overlays (non-shell token panels). */
+
 export const customModalOverlayClass =
   'fixed inset-0 z-50 flex items-center justify-center overflow-y-auto overscroll-contain bg-black/45 p-4'
 
 export const customModalOverlayMutedClass =
   'fixed inset-0 z-50 flex items-center justify-center overflow-y-auto overscroll-contain bg-black/40 p-4'
 
-/** Keep custom white panels inside the viewport; scroll inside the panel. */
+
 export const customModalPanelSafeClass = 'my-auto max-h-[min(90dvh,920px)] overflow-y-auto'
 
-/**
- * Horizontal scroll for wide tables only.
- * Requires a width-bounded ancestor (min-w-0 / overflow-hidden host).
- */
+
 export const shellTableScrollClass =
   'min-w-0 w-full max-w-full overflow-x-auto overscroll-x-contain'
 
-/** Outer host for a scrollable table (card/section). */
+
 export const shellTableHostClass = 'min-w-0 max-w-full overflow-hidden'
+
+
+export function scrollDashboardMainToTop() {
+  const main = document.querySelector('[data-app-shell="dashboard"] main')
+  if (main) {
+    main.scrollTo({ top: 0, left: 0, behavior: 'auto' })
+    main.scrollTop = 0
+    return
+  }
+  window.scrollTo({ top: 0, left: 0, behavior: 'auto' })
+}
 
 export const shellIconWrapClass =
   'flex items-center justify-center rounded-xl bg-[var(--shell-accent-bg)] text-[var(--shell-accent)]'

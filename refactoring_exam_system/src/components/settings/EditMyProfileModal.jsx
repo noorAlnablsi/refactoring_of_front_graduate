@@ -96,7 +96,7 @@ function EditMyProfileModalContent({ onClose, onSuccess }) {
                     try {
                       await uploadAvatar(file)
                     } catch {
-                      // error already set in hook
+
                     }
                   }
                   event.target.value = ''

@@ -85,7 +85,6 @@ export function toIsoDateInput(date) {
   return `${y}-${m}-${d}`
 }
 
-/** BE LocalDateTime accepts ISO; date-only becomes midnight — use full day bounds. */
 export function toAnalyticsDateFrom(dateStr) {
   if (!dateStr) return undefined
   if (String(dateStr).includes('T')) return dateStr
@@ -151,7 +150,7 @@ export function normalizeEngagedSubject(row = {}) {
     students_count: asNumber(row.students_count, 0) ?? 0,
     teachers_count: asNumber(row.teachers_count, 0) ?? 0,
     tests_count: asNumber(row.tests_count, 0) ?? 0,
-    // BE has no attempts_count; keep optional fallback only if present later.
+
     attempts_count: asNumber(row.attempts_count, null),
     average_score: asNumber(row.average_score, null),
     activity_score: asNumber(row.activity_score, null),
@@ -177,7 +176,7 @@ export function normalizeTeacherActivity(row = {}) {
     tests_created: asNumber(row.tests_created ?? row.tests_count ?? row.created_tests_count, 0) ?? 0,
     targeted_students:
       asNumber(row.targeted_students ?? row.students_count ?? row.students_targeted, 0) ?? 0,
-    // BE field: average_student_score
+
     average_score: asNumber(row.average_student_score ?? row.average_score, null),
     completion_rate: asNumber(row.completion_rate, null),
   }
@@ -189,7 +188,7 @@ export function normalizeTopStudent(row = {}) {
   return {
     student_membership_id: row.student_membership_id ?? row.membership_id ?? null,
     student_name: name,
-    // BE field: profile_image (= User.profile_image_url)
+
     avatar_url: row.profile_image || pickAvatar(row) || pickAvatar(row.user),
     initials: initialsFromName(name),
     completed_tests:
@@ -218,7 +217,7 @@ export function normalizeProblematicExam(row = {}) {
   return {
     test_id: row.test_id ?? null,
     test_name: row.test_name || row.name || '—',
-    // BE returns subject_name (not teacher_name) on problematic_exams
+
     subject_name: row.subject_name || null,
     teacher_name: row.teacher_name || row.created_by_name || null,
     reports_count:

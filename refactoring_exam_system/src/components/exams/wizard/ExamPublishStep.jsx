@@ -32,6 +32,7 @@ import { getSubjectGroups, getWorkspaceGroups } from '../../../services/studentG
 import { getWorkspaceStudents, getWorkspaceTeachers } from '../../../services/workspaces.service'
 import { showAppToast } from '../../../lib/appToast'
 import { parseApiError } from '../../../lib/apiError'
+import { isInstitutionManager, isStudentGroupOwner } from '../../../lib/workspaceContext'
 import { useToastStore } from '../../../store/toastStore'
 
 const inputClassName =
@@ -40,6 +41,33 @@ const inputClassName =
 const RECIPIENT_TABS = {
   GROUPS: 'groups',
   INDIVIDUALS: 'individuals',
+}
+
+function extractAssignedGroupIds(assignedRes) {
+  if (!assignedRes || typeof assignedRes !== 'object') return []
+
+  if (Array.isArray(assignedRes.groups)) {
+    return assignedRes.groups
+      .map((item) => Number(item?.id ?? item?.group_id))
+      .filter(Boolean)
+  }
+
+  if (Array.isArray(assignedRes.group_ids)) {
+    return assignedRes.group_ids.map((id) => Number(id)).filter(Boolean)
+  }
+
+  return []
+}
+
+function filterAssignableGroupIds(groupList, selectedIds) {
+  return selectedIds
+    .map(Number)
+    .filter((id, index, arr) => arr.indexOf(id) === index)
+    .filter((id) => {
+      const group = groupList.find((item) => Number(item.id) === id)
+      if (!group) return false
+      return isInstitutionManager() || isStudentGroupOwner(group)
+    })
 }
 
 function StudentCard({ student, checked, onToggle }) {
@@ -224,6 +252,7 @@ function ExamPublishStep({
         const normalizedGroups = mergedGroups
           .map(normalizeStudentGroup)
           .filter((group) => group && Number(group.subjectId) === Number(subjectId))
+          .filter((group) => isInstitutionManager() || isStudentGroupOwner(group))
           .filter((group) => {
             if (!searchParam) return true
             const q = String(searchParam).toLowerCase()
@@ -234,6 +263,12 @@ function ExamPublishStep({
 
         setStudents(list)
         setGroups(normalizedGroups)
+
+        const assignedGroupIds = extractAssignedGroupIds(assignedRes)
+        setSelectedGroupIds((prev) => {
+          const seed = prev.length ? prev : assignedGroupIds
+          return filterAssignableGroupIds(normalizedGroups, seed)
+        })
 
         const assignedIds = (assignedRes.students || [])
           .map((student) => Number(student.membership_id))
@@ -257,11 +292,13 @@ function ExamPublishStep({
   const filteredGroups = groups
 
   const estimatedRecipients = useMemo(() => {
-    const fromGroups = groups
-      .filter((group) => selectedGroupIds.includes(Number(group.id)))
-      .reduce((sum, group) => sum + (Number(group.studentCount) || 0), 0)
-    return fromGroups + selectedStudentIds.length
-  }, [groups, selectedGroupIds, selectedStudentIds])
+    if (activeRecipientTab === RECIPIENT_TABS.GROUPS) {
+      return groups
+        .filter((group) => selectedGroupIds.includes(Number(group.id)))
+        .reduce((sum, group) => sum + (Number(group.studentCount) || 0), 0)
+    }
+    return selectedStudentIds.length
+  }, [activeRecipientTab, groups, selectedGroupIds, selectedStudentIds])
 
   const handleCopyLink = async () => {
     try {
@@ -292,10 +329,14 @@ function ExamPublishStep({
 
   const syncAssignments = async () => {
     if (!testId) return
-    if (selectedStudentIds.length === 0 && selectedGroupIds.length === 0) return
+
+    const validGroupIds = filterAssignableGroupIds(groups, selectedGroupIds)
+
+    if (selectedStudentIds.length === 0 && validGroupIds.length === 0) return
+
     await assignStudentsToTest(testId, {
       studentMembershipIds: selectedStudentIds,
-      groupIds: selectedGroupIds,
+      groupIds: validGroupIds,
     })
   }
 
@@ -305,7 +346,8 @@ function ExamPublishStep({
     try {
       if (isSurvey) {
         if (audience === SURVEY_AUDIENCE_SCOPE.TARGETED) {
-          if (selectedStudentIds.length === 0 && selectedGroupIds.length === 0) {
+          const validGroupIds = filterAssignableGroupIds(groups, selectedGroupIds)
+          if (selectedStudentIds.length === 0 && validGroupIds.length === 0) {
             showAppToast('toast.targetedRequired', 'error', { ns: 'surveys' })
             return
           }
@@ -528,7 +570,9 @@ function ExamPublishStep({
         )}
 
         <p className="mt-4 text-sm font-bold text-[#2A3433]">
-          {t('wizard.publish.totalRecipients', { ns: 'exams', count: estimatedRecipients })}
+          {activeRecipientTab === RECIPIENT_TABS.GROUPS
+            ? t('wizard.publish.totalGroupRecipients', { ns: 'exams', count: estimatedRecipients })
+            : t('wizard.publish.totalIndividualRecipients', { ns: 'exams', count: estimatedRecipients })}
         </p>
         <p className="mt-1 text-xs text-[#94A3B8]">
           {isSurvey

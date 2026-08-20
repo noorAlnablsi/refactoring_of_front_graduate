@@ -26,7 +26,7 @@ function sortGroups(list, sortKey) {
 }
 
 async function loadSubjectsForMembership(membership, canMutate) {
-  // Teachers (and mutating SOLO): prefer assigned-subjects resolution with fallbacks.
+
   if (canMutate && membership?.membership_id) {
     const assigned = await resolveTeacherAssignedSubjects(membership.membership_id)
     if (assigned.length) return assigned

@@ -4,8 +4,6 @@ import { useTranslation } from 'react-i18next'
 
 import CameraPreview from '../../proctoring/CameraPreview'
 
-
-
 function StatusRow({ ok, okLabel, pendingLabel, icon: Icon }) {
 
   return (
@@ -36,13 +34,9 @@ function StatusRow({ ok, okLabel, pendingLabel, icon: Icon }) {
 
 }
 
-
-
 function VerificationStatusPanel({ checks }) {
 
   const { t } = useTranslation('student')
-
-
 
   return (
 
@@ -94,8 +88,6 @@ function VerificationStatusPanel({ checks }) {
 
 }
 
-
-
 function ExamEntryCameraCard({
 
   stream,
@@ -115,8 +107,6 @@ function ExamEntryCameraCard({
 }) {
 
   const { t } = useTranslation('student')
-
-
 
   return (
 
@@ -155,8 +145,6 @@ function ExamEntryCameraCard({
         )}
 
       </div>
-
-
 
       {proctoringEnabled ? (
 
@@ -238,8 +226,5 @@ function ExamEntryCameraCard({
 
 }
 
-
-
 export default ExamEntryCameraCard
-
 

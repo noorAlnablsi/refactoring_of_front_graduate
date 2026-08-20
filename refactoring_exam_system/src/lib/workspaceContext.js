@@ -81,18 +81,12 @@ export function canAccessExams() {
   return membership.role !== 'STUDENT'
 }
 
-/** Teacher / owner / admin (non-student) can open student groups module. */
-/** Route access: teachers, SOLO, and institution owner/admin (monitor via Members). */
 export function canAccessStudentGroups() {
   const membership = getActiveMembership()
   if (!membership) return false
   return membership.role !== 'STUDENT'
 }
 
-/**
- * Sidebar item only for teachers / SOLO.
- * Institution owner/ADMIN open groups from Members management, not the sidebar.
- */
 export function canShowStudentGroupsInSidebar() {
   const membership = getActiveMembership()
   if (!membership || membership.role === 'STUDENT') return false
@@ -101,10 +95,6 @@ export function canShowStudentGroupsInSidebar() {
   return false
 }
 
-/**
- * Create / edit / members: subject teachers (and SOLO owner acting as teacher).
- * Institution owner/ADMIN without TEACHER role = monitor only.
- */
 export function canMutateStudentGroups() {
   const membership = getActiveMembership()
   if (!membership || membership.role === 'STUDENT') return false
@@ -116,7 +106,8 @@ export function canMutateStudentGroups() {
 export function isStudentGroupOwner(group) {
   const membership = getActiveMembership()
   if (!membership || !group) return false
-  const ownerId = group.createdByMembershipId ?? group.created_by_membership_id
+  const ownerId =
+    group.createdByMembershipId ?? group.created_by_membership_id ?? group.owner_membership_id
   if (ownerId == null) return false
   return Number(ownerId) === Number(membership.membership_id)
 }
@@ -129,12 +120,10 @@ export function canCreateExam() {
   return canAccessExams()
 }
 
-/** Any active workspace member can open the surveys module (answer or manage). */
 export function canAccessSurveys() {
   return Boolean(getActiveMembership())
 }
 
-/** Create / manage surveys — same boundary as exams (non-student staff). */
 export function canManageSurveys() {
   return canAccessExams()
 }
@@ -151,25 +140,18 @@ export function isSoloTeacher(membership = getActiveMembership()) {
   return membership?.workspace?.kind === 'SOLO'
 }
 
-/** Workspace owner (INSTITUTION or SOLO) — matches students CSV export. */
 export function isWorkspaceOwner(membership = getActiveMembership()) {
   return Boolean(membership?.is_owner)
 }
 
-/** GET /workspaces/students/export — owner only. */
 export function canExportWorkspaceStudents(membership = getActiveMembership()) {
   return isWorkspaceOwner(membership)
 }
 
-/** GET /workspaces/teachers/export — institution owner only. */
 export function canExportWorkspaceTeachers(membership = getActiveMembership()) {
   return isInstitutionOwner(membership)
 }
 
-/**
- * POST /workspaces/members/import-csv — owner or ADMIN (INSTITUTION or SOLO).
- * Role limits: SOLO → STUDENT only; INSTITUTION → STUDENT|TEACHER|ADMIN.
- */
 export function canBulkImportWorkspaceMembers(membership = getActiveMembership()) {
   if (!membership) return false
   const kind = membership.workspace?.kind
@@ -183,10 +165,6 @@ export function getBulkImportAllowedRoles(membership = getActiveMembership()) {
   return ['STUDENT', 'TEACHER', 'ADMIN']
 }
 
-/**
- * Integrity reports inbox (GET /proctoring/integrity-reports).
- * Owner sees all; test creators see their tests (BE filters). Students blocked.
- */
 export function canAccessIntegrityReports() {
   return canAccessExams()
 }
@@ -217,17 +195,10 @@ export function isInstitutionManager(membership = getActiveMembership()) {
   return membership.is_owner || membership.role === 'ADMIN'
 }
 
-/** GET /workspaces/tests — all institution exams (owner/admin only). Teachers use GET /tests/my. */
 export function canListInstitutionWorkspaceTests(membership = getActiveMembership()) {
-  return isInstitutionWorkspace() && isInstitutionManager(membership)
+  return isInstitutionOwner(membership)
 }
 
-/**
- * Edit questions / bank metadata:
- * - بنوكي (MY): creator only
- * - ضمن المؤسسة (WORKSPACE): creator, or institution owner/admin
- * - مجتمع (COMMUNITY): creator only (view-only for everyone else)
- */
 export function canEditQuestionBank(bank, sourceTab) {
   const membership = getActiveMembership()
   if (!membership || !bank) return false
@@ -245,7 +216,6 @@ export function canEditQuestionBank(bank, sourceTab) {
   return false
 }
 
-/** @deprecated Use canEditQuestionBank(bank, sourceTab) */
 export function canManageQuestionBank(bank, sourceTab) {
   if (sourceTab) return canEditQuestionBank(bank, sourceTab)
   if (!bank) return false

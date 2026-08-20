@@ -9,7 +9,7 @@ export function ExamProctoringSettingsSection({ cfg, severity, onSetSetting }) {
   const setMasterEnabled = (value) => {
     onSetSetting('ai_proctoring_enabled', value)
     if (!value) {
-      // When the master system is OFF: force-disable all proctoring features.
+
       onSetSetting('face_tracking_enabled', false)
       onSetSetting('ambient_sound_monitoring', false)
       onSetSetting('browser_window_tracking', false)

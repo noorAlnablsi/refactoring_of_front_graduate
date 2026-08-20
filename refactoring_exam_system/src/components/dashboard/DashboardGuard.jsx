@@ -13,7 +13,7 @@ function DashboardGuard() {
   useEffect(() => {
     if (!access_token) return
     if (memberships.length > 1 && !useAuthStore.getState().selected_membership_id) {
-      // handled by redirect below
+
     }
   }, [access_token, memberships.length])
 

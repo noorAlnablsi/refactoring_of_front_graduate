@@ -18,7 +18,7 @@ export function applyTheme(mode) {
   try {
     localStorage.setItem(THEME_ACTIVE_STORAGE_KEY, nextMode)
   } catch {
-    // ignore
+
   }
 }
 
@@ -58,15 +58,12 @@ export function writeUserThemeMode(userId, mode) {
   localStorage.setItem(THEME_BY_USER_STORAGE_KEY, JSON.stringify(next))
 }
 
-/**
- * Apply last known theme immediately (avoids light flash), then auth sync refines per user.
- * Guests / logout still end on light via syncForUser(null).
- */
+
 export function initTheme() {
   try {
     localStorage.removeItem(THEME_STORAGE_KEY)
   } catch {
-    // ignore
+
   }
   applyTheme(readActiveThemeMode())
 }

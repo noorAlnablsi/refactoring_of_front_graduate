@@ -71,7 +71,7 @@
     box-sizing: border-box;
   }
 
-  /* Hide Edge/Chrome native password reveal — we already have one toggle. */
+  
   input[type='password']::-ms-reveal,
   input[type='password']::-ms-clear {
     display: none;
@@ -83,7 +83,7 @@
     background-color: var(--shell-hover);
   }
 
-  /* Auth hero title — Inter Extra Bold */
+  
   .auth-hero-headline {
     font-family: 'Inter', sans-serif;
     font-weight: 800;

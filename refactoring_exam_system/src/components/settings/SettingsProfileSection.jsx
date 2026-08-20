@@ -51,7 +51,6 @@ function SettingsProfileCard() {
   const workspaceName = membership?.workspace?.name?.trim()
   const roleLabel = getMembershipRoleLabel(membership)
 
-  // SOLO path identity lives on the workspace; User.full_name is account-wide across paths.
   const displayName = isSolo
     ? workspaceName || activeUser?.full_name?.trim() || t('profile.defaultUser')
     : activeUser?.full_name?.trim() || t('profile.defaultUser')
@@ -59,7 +58,7 @@ function SettingsProfileCard() {
   const displayUser = {
     ...activeUser,
     full_name: displayName,
-    // Personal card shows the user's own photo — not the institution logo.
+
     avatar_url: activeUser?.avatar_url || activeUser?.profile_image_url || null,
   }
 
@@ -71,7 +70,6 @@ function SettingsProfileCard() {
       ? t('profile.soloTeacher')
       : [roleLabel, workspaceName ? workspaceName : null].filter(Boolean).join(' | ')
 
-  // Owner/manager personal photo must show when set; initials only as fallback.
   const avatarMode = isSolo ? 'solo' : 'default'
   const hasAvatar = Boolean(
     resolveAvatarUrl(displayUser.avatar_url || displayUser.profile_image_url),

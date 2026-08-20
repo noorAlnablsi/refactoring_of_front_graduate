@@ -17,14 +17,6 @@ function getArrowStep(key) {
   return 0
 }
 
-/**
- * Platform keyboard behavior:
- * - Tab / Shift+Tab → left to the browser (no custom handler)
- * - Arrow keys → move between [data-keyboard-option] (focus + select)
- * - Enter on option → activate [data-keyboard-primary] (e.g. التالي)
- * - Enter elsewhere → primary / form submit when not already on a normal control
- * - Space → native browser activation on focused buttons/checkboxes
- */
 export function usePlatformKeyboardNav() {
   useEffect(() => {
     const onKeyDown = (event) => {
@@ -49,7 +41,6 @@ export function usePlatformKeyboardNav() {
 
       if (event.key !== 'Enter' || event.shiftKey) return
 
-      // Option cards: Enter runs primary CTA (التالي), not only toggles selection.
       if (isKeyboardOptionTarget(target)) {
         if (activatePrimaryAction()) {
           event.preventDefault()

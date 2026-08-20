@@ -82,7 +82,7 @@ function ExamCard({ test, onArchive, onClose, onDelete }) {
   const showGrade = isPublished || isClosed
   const showMonitor = isPublished && monitoringEnabled
   const showClose = canShowCloseExamButton(test)
-  /** Draft + closed: archive | delete row (per design). Published: 2×2 grid. */
+
   const showDelete = isDraft || isClosed
   const showArchive = test.status !== TEST_STATUS.ARCHIVED
 
@@ -155,7 +155,11 @@ function ExamCard({ test, onArchive, onClose, onDelete }) {
         ) : null}
       </div>
 
-      {test.starts_at ? (
+      {test.status === TEST_STATUS.SCHEDULED && test.scheduled_publish_at ? (
+        <p className={`mt-2 ${shellSubtleTextClass}`}>
+          {t('card.publishesAt', { date: formatDate(test.scheduled_publish_at) })}
+        </p>
+      ) : test.starts_at ? (
         <p className={`mt-2 ${shellSubtleTextClass}`}>
           {t('card.startsAt', { date: formatDate(test.starts_at) })}
         </p>

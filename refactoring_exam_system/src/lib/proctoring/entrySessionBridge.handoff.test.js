@@ -1,7 +1,4 @@
-/**
- * Regression: Entry → Attempt proctoring ownership handoff.
- * Run: node --test src/lib/proctoring/entrySessionBridge.handoff.test.js
- */
+
 import { describe, it, beforeEach } from 'node:test'
 import assert from 'node:assert/strict'
 import {
@@ -98,7 +95,7 @@ describe('entrySessionBridge handoff', () => {
       },
     })
 
-    // Remount claims a new generation before the microtask runs.
+
     const gen2 = beginAttemptProctoringOwnership()
     assert.notEqual(gen1, gen2)
 

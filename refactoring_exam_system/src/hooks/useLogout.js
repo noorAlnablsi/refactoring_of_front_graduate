@@ -46,7 +46,7 @@ export function useLogout() {
     try {
       await logoutAll()
     } catch {
-      // نُنهي الجلسة محلياً حتى لو فشل الطلب
+
     } finally {
       clearScheduledRefresh()
       clearAuth()

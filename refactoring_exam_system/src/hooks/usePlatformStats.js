@@ -19,7 +19,7 @@ async function loadPlatformStats() {
   return inflight
 }
 
-/** Shared public counters for landing + auth heroes. */
+
 export function usePlatformStats() {
   const [stats, setStats] = useState(cachedStats)
   const [loading, setLoading] = useState(!cachedStats)

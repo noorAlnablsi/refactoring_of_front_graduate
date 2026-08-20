@@ -51,15 +51,26 @@ export function clearExamWizardProgress(testId) {
   localStorage.removeItem(getStorageKey(testId))
 }
 
-/**
- * Resume where the teacher left off.
- * Prefer explicitly saved wizard progress; otherwise infer from test completeness.
- * (Backend does not store wizard step numbers.)
- */
+export function getMaxReachableWizardStep(test) {
+  if (!test) return TEST_WIZARD_STEPS.INFO
+
+  const name = String(getTestName(test) || '').trim()
+  if (!name) return TEST_WIZARD_STEPS.INFO
+
+  const questionsCount = getTestQuestionsCount(test)
+  if (questionsCount < 1) return TEST_WIZARD_STEPS.QUESTIONS
+
+  if (!hasSavedSettings(test)) return TEST_WIZARD_STEPS.SETTINGS
+
+  return TEST_WIZARD_STEPS.PUBLISH
+}
+
 export function getResumeWizardStep(test, progress) {
+  const maxReachable = getMaxReachableWizardStep(test)
   const saved = Number(progress?.step)
+
   if (saved >= TEST_WIZARD_STEPS.INFO && saved <= TEST_WIZARD_STEPS.PUBLISH) {
-    return saved
+    return Math.min(saved, maxReachable)
   }
 
   return inferWizardStepFromTest(test)
@@ -82,6 +93,5 @@ export function inferWizardStepFromTest(test) {
 
   if (!hasSavedSettings(test)) return TEST_WIZARD_STEPS.SETTINGS
 
-  // Questions + settings exist: land on review (safer than jumping to publish).
   return TEST_WIZARD_STEPS.REVIEW
 }

@@ -11,5 +11,4 @@ export function getSubjectSortOptions() {
   }))
 }
 
-/** @deprecated Use getSubjectSortOptions() for translated labels */
 export const SUBJECT_SORT_OPTIONS = getSubjectSortOptions()

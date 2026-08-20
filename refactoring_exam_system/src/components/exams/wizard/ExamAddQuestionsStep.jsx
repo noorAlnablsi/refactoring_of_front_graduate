@@ -135,8 +135,7 @@ function ExamAddQuestionsStep({
     return () => {
       cancelled = true
     }
-    // Only re-run when the exam identity changes — not on every questions length flicker.
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+
   }, [testId, surveyMode])
 
   useEffect(() => {

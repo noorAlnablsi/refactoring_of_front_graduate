@@ -30,7 +30,7 @@ export function saveAttemptLocalDraft(testId, attemptId, draft) {
       }),
     )
   } catch {
-    // quota / private mode — exam continues in memory
+
   }
 }
 
@@ -40,11 +40,11 @@ export function clearAttemptLocalDraft(testId, attemptId) {
   try {
     localStorage.removeItem(getStorageKey(testId, attemptId))
   } catch {
-    // ignore
+
   }
 }
 
-/** Local draft overlays server answers for the same attempt. */
+
 export function mergeAnswersWithLocalDraft(serverMap = {}, localMap = {}) {
   if (!localMap || typeof localMap !== 'object') return { ...serverMap }
   return { ...serverMap, ...localMap }

@@ -49,7 +49,7 @@ api.interceptors.request.use(async (config) => {
         config.headers.Authorization = `Bearer ${token}`
       }
     } catch {
-      // Refresh failed; request proceeds and the 401 handler redirects to login.
+
     }
   }
 

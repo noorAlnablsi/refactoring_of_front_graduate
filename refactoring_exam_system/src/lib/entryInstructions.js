@@ -1,7 +1,4 @@
-/**
- * Entry-screen instructions: prefer localized UI copy when UI language is Arabic
- * and backend returns generic English defaults.
- */
+
 const ENGLISH_DEFAULT_MARKERS = [
   'ensure that your internet',
   'allow camera and microphone',

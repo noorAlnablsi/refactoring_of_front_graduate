@@ -107,7 +107,6 @@ export function useCreateWorkspace() {
         }
       }
 
-      // slug is optional on BE — omit it so create is never blocked by slug collisions.
       const payload = {
         kind,
         name: trimmedName,

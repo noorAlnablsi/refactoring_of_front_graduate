@@ -25,7 +25,6 @@ export function getInviteStatusMessage(status) {
   return i18n.t(`status.${key}`, { ns: 'invites' })
 }
 
-/** @deprecated Use getInviteStatusMessage(status) */
 export const INVITE_STATUS_MESSAGES = {
   [INVITE_STATUS.PENDING]: null,
   get [INVITE_STATUS.ACCEPTED]() {

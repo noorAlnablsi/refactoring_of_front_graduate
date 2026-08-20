@@ -31,7 +31,7 @@ export function normalizeStudentGroup(raw) {
     subjectId: raw.subject_id ?? subject.id,
     subject,
     workspaceId: raw.workspace_id,
-    createdByMembershipId: raw.created_by_membership_id ?? null,
+    createdByMembershipId: raw.created_by_membership_id ?? raw.owner_membership_id ?? null,
     ownerName: String(raw.owner_name || '').trim() || '—',
     createdAt: raw.created_at || null,
     updatedAt: raw.updated_at || null,

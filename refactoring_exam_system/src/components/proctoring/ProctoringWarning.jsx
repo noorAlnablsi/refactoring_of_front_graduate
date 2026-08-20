@@ -1,10 +1,7 @@
 import { AlertTriangle, ShieldAlert, Info } from 'lucide-react'
 import { VIOLATION_SEVERITY } from '../../constants/proctoring'
 
-/**
- * Minimal UI-agnostic warning surface.
- * Final Figma can restyle; severity comes from backend only.
- */
+
 function ProctoringWarning({ warning, onDismiss }) {
   if (!warning) return null
 

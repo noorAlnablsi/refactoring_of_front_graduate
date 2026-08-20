@@ -1,4 +1,5 @@
 import { ArrowRight } from 'lucide-react'
+import { useLayoutEffect } from 'react'
 import { Navigate } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import ExamSummarySidebar from '../../components/exams/ExamSummarySidebar'
@@ -20,12 +21,22 @@ import {
   shellCardClass,
   shellPageEyebrowClass,
   shellPageTitleClass,
+  scrollDashboardMainToTop,
 } from '../../lib/shellUi'
 
 function ExamWizardPage({ isNew = false, kind = TEST_KIND.EXAM }) {
   const { t } = useTranslation(['exams', 'surveys'])
   const wizard = useExamWizard({ isNew, kind })
   const isSurvey = wizard.isSurvey || kind === TEST_KIND.SURVEY
+
+  useLayoutEffect(() => {
+    scrollDashboardMainToTop()
+    const frame = requestAnimationFrame(() => {
+      scrollDashboardMainToTop()
+      requestAnimationFrame(scrollDashboardMainToTop)
+    })
+    return () => cancelAnimationFrame(frame)
+  }, [wizard.currentStep, wizard.loading])
 
   if (!canAccessExams() || !canCreateExam()) {
     return <Navigate to={ROUTES.DASHBOARD} replace />

@@ -51,7 +51,6 @@ function buildTestFromEntry(entry) {
   }
 }
 
-/** Prefer entry/exam rules for navigation + answer_rules when start payload omits them. */
 function mergeAttemptTest(baseTest, entry) {
   const fromEntry = buildTestFromEntry(entry)
   if (!baseTest) return fromEntry
@@ -71,7 +70,7 @@ function mergeAttemptTest(baseTest, entry) {
     settings_config: {
       ...entryCfg,
       ...baseCfg,
-      // Entry GET /student/tests/{id}/entry is source of truth for student rules
+
       answer_rules: {
         ...(baseCfg.answer_rules || {}),
         ...(entryCfg.answer_rules || {}),
@@ -88,10 +87,6 @@ function mergeAttemptTest(baseTest, entry) {
   }
 }
 
-/**
- * Entry → Attempt handoff:
- * POST attempt + proctoring session + WS monitoring BEFORE navigating to Attempt page.
- */
 export function useExamEntryStart({ testId, entry, proctoring, videoElement }) {
   const navigate = useNavigate()
   const [starting, setStarting] = useState(false)
@@ -115,7 +110,7 @@ export function useExamEntryStart({ testId, entry, proctoring, videoElement }) {
         const details = await getTestAttempt(testId, attempt.id)
         attempt = normalizeAttemptPayload(details) || attempt
       } catch {
-        // keep start payload
+
       }
 
       const test = mergeAttemptTest(
@@ -161,7 +156,7 @@ export function useExamEntryStart({ testId, entry, proctoring, videoElement }) {
           entryRules: entry.rules,
           service,
         })
-        // Synchronously before navigate so Entry unmount cleanup will not stop().
+
         markEntryProctoringHandoffPending()
         console.info('[PROCTORING HANDOFF PENDING]')
       }

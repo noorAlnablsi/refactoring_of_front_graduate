@@ -1,8 +1,4 @@
-/**
- * Source of truth: the creator's master toggle.
- * Contract: settings_config.proctoring.enabled
- * Returns true | false | null (null = flag not present on this payload).
- */
+
 function parseObject(value) {
   if (!value) return null
   if (typeof value === 'string') {

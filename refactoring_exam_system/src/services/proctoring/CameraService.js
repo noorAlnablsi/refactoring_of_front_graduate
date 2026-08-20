@@ -1,7 +1,4 @@
-/**
- * Camera MediaStream lifecycle for proctoring.
- * Does not send events — ProctoringService owns reporting.
- */
+
 export class CameraService {
   constructor() {
     this.stream = null
@@ -57,7 +54,7 @@ export class CameraService {
         try {
           track.stop()
         } catch {
-          // ignore
+
         }
       })
       this.stream = null

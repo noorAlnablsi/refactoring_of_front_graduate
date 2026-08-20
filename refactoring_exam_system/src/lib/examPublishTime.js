@@ -1,4 +1,4 @@
-/** Format as naive local datetime without Z suffix (backend APP_TIMEZONE). */
+
 export function toNaiveLocalDateTime(date) {
   const value = date instanceof Date ? date : new Date(date)
   if (Number.isNaN(value.getTime())) return null

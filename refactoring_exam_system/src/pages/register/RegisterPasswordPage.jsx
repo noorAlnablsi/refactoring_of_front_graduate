@@ -57,7 +57,7 @@ function RegisterPasswordPage() {
     try {
       await submitRegistration()
     } catch {
-      // error handled in hook
+
     }
   }
 

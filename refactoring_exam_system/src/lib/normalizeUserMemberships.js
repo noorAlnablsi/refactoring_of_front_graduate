@@ -1,7 +1,4 @@
-/**
- * Normalize memberships from GET /users/{id}/memberships
- * and preserve local extras (e.g. logo_url) when the list payload is slim.
- */
+
 export function normalizeUserMemberships(rawMemberships = [], previousMemberships = []) {
   const previousById = new Map(
     previousMemberships.map((item) => [Number(item.membership_id), item]),

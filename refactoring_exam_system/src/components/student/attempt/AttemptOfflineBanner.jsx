@@ -7,10 +7,6 @@ function formatGraceClock(totalSeconds) {
   return localizeDigits(`${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`)
 }
 
-/**
- * Connection / offline-grace banner for the attempt screen.
- * Matches existing attempt alert styling (no new design system).
- */
 function AttemptOfflineBanner({ phase, graceRemainingSeconds, softOffline = false, t }) {
   if (phase === 'grace') {
     return (

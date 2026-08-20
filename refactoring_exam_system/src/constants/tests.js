@@ -6,7 +6,6 @@ export const TEST_STATUS = {
   ARCHIVED: 'ARCHIVED',
 }
 
-/** Top-level test.availability_time_mode (not TEST_STATUS.SCHEDULED). */
 export const TEST_AVAILABILITY_TIME_MODE = {
   FLEXIBLE: 'FLEXIBLE',
   SCHEDULED: 'SCHEDULED',
@@ -26,12 +25,12 @@ export const TEST_KIND = {
 
 export const TEST_TABS = {
   ALL: 'all',
-  /** Maps 1:1 to Test.status for exams list server filter */
+
   DRAFT: 'draft',
   SCHEDULED: 'scheduled',
   PUBLISHED: 'published',
   CLOSED: 'closed',
-  /** Surveys managed list (client tab; may include DRAFT+SCHEDULED) */
+
   DRAFTS: 'drafts',
 }
 

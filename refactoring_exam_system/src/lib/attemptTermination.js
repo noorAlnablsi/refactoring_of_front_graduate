@@ -1,4 +1,4 @@
-/** Attempt submission sources (backend contract — do not invent values). */
+
 export const ATTEMPT_SUBMISSION_SOURCE = {
   STUDENT: 'STUDENT',
   TIMEOUT: 'TIMEOUT',
@@ -10,9 +10,7 @@ export const ATTEMPT_TERMINATION_REASON = {
   PROCTORING_THRESHOLD_EXCEEDED: 'PROCTORING_THRESHOLD_EXCEEDED',
 }
 
-/**
- * Extract attempt object from GET/submit/WS payload shapes.
- */
+
 export function extractAttemptFromPayload(payload) {
   if (!payload || typeof payload !== 'object') return null
   if (payload.attempt && typeof payload.attempt === 'object') return payload.attempt
@@ -23,10 +21,7 @@ export function extractAttemptFromPayload(payload) {
   return null
 }
 
-/**
- * Dedicated student screen when backend auto-ended for proctoring threshold.
- * FE must NOT invent this outcome — only display when backend says so.
- */
+
 export function isProctoringAutoTermination(attemptLike) {
   const attempt = extractAttemptFromPayload(attemptLike) || attemptLike
   if (!attempt) return false

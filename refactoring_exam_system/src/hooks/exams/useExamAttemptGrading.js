@@ -87,7 +87,7 @@ export function useExamAttemptGrading(testId, attemptId) {
     } catch (err) {
       setReview(null)
       setReviewError(err?.message || String(err))
-      // No proctoring session / not ready — teacher can still finalize without review UI.
+
       return null
     }
   }, [testId, attemptId])

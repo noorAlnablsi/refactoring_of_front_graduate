@@ -8,10 +8,6 @@ import {
   shellPageTitleClass,
 } from '../../lib/shellUi'
 
-/**
- * Platform confirm dialog (same shell language as SoftDeleteConfirmDialog).
- * Use for archive / close / delete and other yes-no actions — never window.confirm.
- */
 function ConfirmActionDialog({
   open,
   title,

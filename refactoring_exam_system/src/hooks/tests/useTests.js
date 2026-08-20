@@ -1,8 +1,9 @@
 import { useCallback, useEffect, useState } from 'react'
 import { parseApiError } from '../../lib/apiError'
 import { fetchTestsForActiveWorkspace } from '../../lib/fetchWorkspaceTests'
-import { getExamListStatusQuery } from '../../lib/testDisplay'
+import { filterTestsByTab, getExamListStatusQuery } from '../../lib/testDisplay'
 import { isSurveyTest } from '../../lib/surveys'
+import { TEST_TABS } from '../../constants/tests'
 
 const SEARCH_DEBOUNCE_MS = 300
 
@@ -25,12 +26,17 @@ export function useTests(activeTab) {
     setError('')
     try {
       const statusQuery = getExamListStatusQuery(activeTab)
-      const nextTests = (
+      let nextTests = (
         await fetchTestsForActiveWorkspace({
           search,
           ...statusQuery,
         })
       ).filter((test) => !isSurveyTest(test))
+
+      if (activeTab === TEST_TABS.ALL) {
+        nextTests = filterTestsByTab(nextTests, TEST_TABS.ALL)
+      }
+
       setTests(nextTests)
     } catch (err) {
       setTests([])

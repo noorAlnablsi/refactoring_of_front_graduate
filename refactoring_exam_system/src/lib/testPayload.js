@@ -25,7 +25,6 @@ function buildTestCoreFields(form, { includeTotalScore = true } = {}) {
   return payload
 }
 
-/** POST /tests — backend accepts top-level auto_distribute_scores only at create. */
 export function buildCreateTestPayload(form) {
   const autoDistribute = Boolean(form.auto_distribute_scores)
   const payload = {
@@ -33,7 +32,6 @@ export function buildCreateTestPayload(form) {
     auto_distribute_scores: autoDistribute,
   }
 
-  // Backend requires subject_id for create (institution and SOLO).
   const subjectId = Number(form.subject_id)
   if (Number.isFinite(subjectId) && subjectId > 0) {
     payload.subject_id = subjectId
@@ -48,11 +46,6 @@ export function buildTestStep1Payload(form) {
   }
 }
 
-/**
- * PATCH /tests/{id}
- * Backend rejects: auto_distribute_scores, scoring_config, subject_id (create-only / unknown).
- * When auto_distribute is disabled, total_score must not be sent (derived from question points).
- */
 export function buildUpdateTestInfoPayload(form) {
   return buildTestCoreFields(form, {
     includeTotalScore: Boolean(form.auto_distribute_scores),
@@ -83,7 +76,6 @@ export function buildUpdateTestInfoPayloadFromStep1({ create }, options = {}) {
   return payload
 }
 
-/** POST /tests — Survey create. Do not send duration or scoring fields. */
 export function buildCreateSurveyPayload(form) {
   const payload = {
     name: String(form.name || '').trim(),
