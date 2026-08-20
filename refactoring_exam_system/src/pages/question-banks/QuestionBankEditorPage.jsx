@@ -334,7 +334,21 @@ function QuestionBankEditorPage() {
 
   return (
     <div className="min-w-0 space-y-6">
-      <BankInfoSummary bank={bank} />
+      <BankInfoSummary
+        bank={bank}
+        action={
+          !readOnly ? (
+            <button
+              type="button"
+              onClick={() => setCsvImportOpen(true)}
+              className="inline-flex items-center gap-2 rounded-xl border border-[#D4F0EE] bg-[#E8F7F6] px-4 py-2.5 text-sm font-semibold text-[#2AA8A2] transition hover:bg-[#D4F0EE]"
+            >
+              <FileSpreadsheet className="h-4 w-4" />
+              {t('editor.importCsv', { ns: 'questionBanks' })}
+            </button>
+          ) : null
+        }
+      />
 
       {!readOnly ? (
         <QuestionBuilderForm
@@ -373,16 +387,6 @@ function QuestionBankEditorPage() {
           <Eye className="h-4 w-4" />
           {t('editor.previewQuestions', { ns: 'questionBanks' })}
         </button>
-        {!readOnly ? (
-          <button
-            type="button"
-            onClick={() => setCsvImportOpen(true)}
-            className="inline-flex items-center gap-2 rounded-xl bg-[#E8F7F6] px-6 py-3 text-sm font-bold text-[#2AA8A2] ring-1 ring-[#CFECE9]"
-          >
-            <FileSpreadsheet className="h-4 w-4" />
-            {t('editor.importCsv', { ns: 'questionBanks' })}
-          </button>
-        ) : null}
         {!readOnly ? (
           <button
             type="button"

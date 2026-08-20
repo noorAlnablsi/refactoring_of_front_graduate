@@ -16,7 +16,6 @@ function QuestionBankCreateCard({ onClick }) {
         <Plus className="h-7 w-7" strokeWidth={2} />
       </span>
       <p className="mt-4 text-base font-bold text-[#111827]">{t('createCard.title')}</p>
-      <p className="mt-2 max-w-[220px] text-[13px] leading-6 text-[#6B7280]">{t('createCard.subtitle')}</p>
     </button>
   )
 }

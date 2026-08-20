@@ -1,7 +1,7 @@
 import { useTranslation } from 'react-i18next'
 import VisibilityBadge from '../VisibilityBadge'
 
-function BankInfoSummary({ bank }) {
+function BankInfoSummary({ bank, action }) {
   const { t } = useTranslation('questionBanks')
 
   return (
@@ -12,6 +12,7 @@ function BankInfoSummary({ bank }) {
           <h1 className="mt-1 text-2xl font-extrabold text-[#2A3433] sm:text-4xl">{t('editor.bankInfoTitle')}</h1>
           <p className="mt-2 text-sm text-[#64748B]">{t('page.subtitle')}</p>
         </div>
+        {action ? <div className="shrink-0">{action}</div> : null}
       </div>
 
       <div className="mt-5 grid gap-3 md:grid-cols-3">
