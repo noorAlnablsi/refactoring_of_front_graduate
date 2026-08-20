@@ -47,6 +47,7 @@
   "Blueprint generated successfully": "تم توليد المخطّط بنجاح",
   "Cannot delete topic: {question_count} question(s) still reference it": "لا يمكن حذف الموضوع؛ ما زال مرتبطًا بـ {question_count} سؤال",
   "Cannot modify exam questions after student attempts have been recorded": "لا يمكن تعديل أسئلة الاختبار بعد تسجيل محاولات الطلاب",
+  "Cannot change test scoring after student attempts have been recorded": "لا يمكن تغيير درجات الاختبار بعد تسجيل محاولات الطلاب",
   "Cannot remove the workspace owner": "لا يمكن إزالة مالك مساحة العمل",
   "Cannot view another student's attempt in student mode": "لا يمكن عرض محاولة طالب آخر في وضع الطالب",
   "Choice at index {idx} must have a non-empty body": "يجب أن يحتوي الخيار عند الفهرس {idx} على نص غير فارغ",

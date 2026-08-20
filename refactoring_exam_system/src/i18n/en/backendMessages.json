@@ -47,6 +47,7 @@
   "Blueprint generated successfully": "Blueprint generated successfully",
   "Cannot delete topic: {question_count} question(s) still reference it": "Cannot delete topic; {question_count} question(s) still use it",
   "Cannot modify exam questions after student attempts have been recorded": "Cannot modify exam questions after student attempts have been recorded",
+  "Cannot change test scoring after student attempts have been recorded": "Cannot change test scoring after student attempts have been recorded",
   "Cannot remove the workspace owner": "Cannot remove the workspace owner",
   "Cannot view another student's attempt in student mode": "Cannot view another student's attempt in student mode",
   "Choice at index {idx} must have a non-empty body": "Choice at index {idx} must have a non-empty body",

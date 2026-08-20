@@ -31,6 +31,7 @@ import { getSubjectStudents } from '../../../services/subjects.service'
 import { getSubjectGroups, getWorkspaceGroups } from '../../../services/studentGroups.service'
 import { getWorkspaceStudents, getWorkspaceTeachers } from '../../../services/workspaces.service'
 import { showAppToast } from '../../../lib/appToast'
+import { parseApiError } from '../../../lib/apiError'
 import { useToastStore } from '../../../store/toastStore'
 
 const inputClassName =
@@ -240,7 +241,7 @@ function ExamPublishStep({
 
         setSelectedStudentIds((prev) => (prev.length ? prev : assignedIds))
       } catch (err) {
-        if (!cancelled) showToast(err.message, 'error')
+        if (!cancelled) showToast(parseApiError(err), 'error')
       } finally {
         if (!cancelled) setLoadingRecipients(false)
       }
@@ -340,7 +341,7 @@ function ExamPublishStep({
 
       onSchedule?.({ publish_at })
     } catch (err) {
-      showToast(err.message, 'error')
+      showToast(parseApiError(err), 'error')
     }
   }
 

@@ -2,6 +2,7 @@ import { useCallback, useEffect, useMemo, useState } from 'react'
 import { useNavigate, useParams, useSearchParams } from 'react-router-dom'
 import { ROUTES } from '../../constants/routes'
 import { TEST_KIND, TEST_STATUS, TEST_WIZARD_STEPS } from '../../constants/tests'
+import { parseApiError } from '../../lib/apiError'
 import { saveExamWizardProgress } from '../../lib/examWizardProgress'
 import { canEditTest, getEditBlockedMessage } from '../../lib/testDisplay'
 import { getTestId, getTestName, mergeTestPreservingQuestions } from '../../lib/testModel'
@@ -106,7 +107,7 @@ export function useExamWizard({ isNew = false, kind = TEST_KIND.EXAM } = {}) {
         showAppToast('toast.draftSaved', 'success', { ns: toastNs })
         navigate(listRoute)
       } catch (err) {
-        showToast(err.message, 'error')
+        showToast(parseApiError(err), 'error')
       } finally {
         setSavingDraft(false)
       }
@@ -149,7 +150,7 @@ export function useExamWizard({ isNew = false, kind = TEST_KIND.EXAM } = {}) {
         }
         return fetched
       } catch (err) {
-        showToast(err.message, 'error')
+        showToast(parseApiError(err), 'error')
         navigate(listRoute, { replace: true })
         return null
       } finally {
@@ -173,7 +174,7 @@ export function useExamWizard({ isNew = false, kind = TEST_KIND.EXAM } = {}) {
         showAppToast('toast.created', 'success', { ns: toastNs })
         navigate(editPathFor(getTestId(created)) + '?step=2', { replace: true })
       } catch (err) {
-        showToast(err.message, 'error')
+        showToast(parseApiError(err), 'error')
       } finally {
         setSubmitting(false)
       }
@@ -206,7 +207,7 @@ export function useExamWizard({ isNew = false, kind = TEST_KIND.EXAM } = {}) {
         saveExamWizardProgress(testId, { step: currentStep })
         showAppToast('toast.draftSaved', 'success', { ns: toastNs })
       } catch (err) {
-        showToast(err.message, 'error')
+        showToast(parseApiError(err), 'error')
       } finally {
         setSavingDraft(false)
       }
@@ -232,7 +233,7 @@ export function useExamWizard({ isNew = false, kind = TEST_KIND.EXAM } = {}) {
         showAppToast('toast.infoSaved', 'success', { ns: toastNs })
         goToStep(TEST_WIZARD_STEPS.QUESTIONS)
       } catch (err) {
-        showToast(err.message, 'error')
+        showToast(parseApiError(err), 'error')
       } finally {
         setSubmitting(false)
       }
@@ -252,7 +253,7 @@ export function useExamWizard({ isNew = false, kind = TEST_KIND.EXAM } = {}) {
         showAppToast('toast.settingsSaved', 'success', { ns: toastNs })
         goToStep(TEST_WIZARD_STEPS.REVIEW)
       } catch (err) {
-        showToast(err.message, 'error')
+        showToast(parseApiError(err), 'error')
       } finally {
         setSubmitting(false)
       }
@@ -269,7 +270,7 @@ export function useExamWizard({ isNew = false, kind = TEST_KIND.EXAM } = {}) {
       showAppToast('toast.published', 'success', { ns: toastNs })
       navigate(listRoute)
     } catch (err) {
-      showToast(err.message, 'error')
+      showToast(parseApiError(err), 'error')
     } finally {
       setPublishing(false)
     }
@@ -285,7 +286,7 @@ export function useExamWizard({ isNew = false, kind = TEST_KIND.EXAM } = {}) {
         showAppToast('toast.scheduled', 'success', { ns: toastNs })
         navigate(listRoute)
       } catch (err) {
-        showToast(err.message, 'error')
+        showToast(parseApiError(err), 'error')
       } finally {
         setPublishing(false)
       }

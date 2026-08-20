@@ -7,6 +7,7 @@ import BankInfoSummary from '../../components/question-banks/editor/BankInfoSumm
 import EditQuestionModal from '../../components/question-banks/editor/EditQuestionModal'
 import QuestionsLoadErrorBanner from '../../components/question-banks/editor/QuestionsLoadErrorBanner'
 import PreviewQuestionsModal from '../../components/question-banks/editor/PreviewQuestionsModal'
+import PublishQuestionBankModal from '../../components/question-banks/editor/PublishQuestionBankModal'
 import ImportQuestionBankCsvModal from '../../components/question-banks/editor/ImportQuestionBankCsvModal'
 import QuestionBuilderForm from '../../components/question-banks/editor/QuestionBuilderForm'
 import QuestionsList from '../../components/question-banks/editor/QuestionsList'
