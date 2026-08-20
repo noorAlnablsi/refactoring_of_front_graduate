@@ -164,3 +164,43 @@ export async function deleteQuestionInBank(bankId, questionId) {
   const { data } = await api.delete(`/question-banks/${bankId}/questions/${questionId}`)
   return data
 }
+
+function filenameFromDisposition(disposition, fallback) {
+  const matched = /filename[^;=\n]*=((['"]).*?\2|[^;\n]*)/.exec(disposition || '')
+  if (!matched?.[1]) return fallback
+  return matched[1].replace(/['"]/g, '')
+}
+
+/** GET /question-banks/{bank_id}/questions/import-template */
+export async function downloadQuestionBankCsvTemplate(bankId) {
+  const response = await api.get(`/question-banks/${bankId}/questions/import-template`, {
+    responseType: 'blob',
+    headers: { Accept: 'text/csv' },
+  })
+
+  const filename = filenameFromDisposition(
+    response.headers?.['content-disposition'],
+    'question_bank_questions_import_template.csv',
+  )
+
+  const blob = new Blob([response.data], { type: 'text/csv;charset=utf-8' })
+  const url = window.URL.createObjectURL(blob)
+  const link = document.createElement('a')
+  link.href = url
+  link.download = filename
+  document.body.appendChild(link)
+  link.click()
+  link.remove()
+  window.URL.revokeObjectURL(url)
+}
+
+/** POST /question-banks/{bank_id}/questions/import-csv — atomic import. */
+export async function importQuestionBankQuestionsFromCsv(bankId, csvFile) {
+  const formData = new FormData()
+  formData.append('csv_file', csvFile)
+
+  const { data } = await api.post(`/question-banks/${bankId}/questions/import-csv`, formData, {
+    headers: { 'Content-Type': 'multipart/form-data' },
+  })
+  return data
+}

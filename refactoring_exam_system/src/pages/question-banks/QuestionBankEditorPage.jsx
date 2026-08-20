@@ -1,13 +1,13 @@
 import { useEffect, useMemo, useState } from 'react'
 import { Navigate, useLocation, useNavigate, useParams } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
-import { Eye } from 'lucide-react'
+import { Eye, FileSpreadsheet } from 'lucide-react'
 import ConfirmActionDialog from '../../components/common/ConfirmActionDialog'
 import BankInfoSummary from '../../components/question-banks/editor/BankInfoSummary'
 import EditQuestionModal from '../../components/question-banks/editor/EditQuestionModal'
 import QuestionsLoadErrorBanner from '../../components/question-banks/editor/QuestionsLoadErrorBanner'
 import PreviewQuestionsModal from '../../components/question-banks/editor/PreviewQuestionsModal'
-import PublishQuestionBankModal from '../../components/question-banks/editor/PublishQuestionBankModal'
+import ImportQuestionBankCsvModal from '../../components/question-banks/editor/ImportQuestionBankCsvModal'
 import QuestionBuilderForm from '../../components/question-banks/editor/QuestionBuilderForm'
 import QuestionsList from '../../components/question-banks/editor/QuestionsList'
 import { parseApiError } from '../../lib/apiError'
@@ -25,6 +25,7 @@ import {
   createQuestionBankQuestions,
   deleteQuestionInBank,
   findQuestionBankById,
+  getQuestionBankQuestions,
   loadQuestionBankQuestionsForView,
   updateQuestionInBank,
   updateQuestionBank,
@@ -106,6 +107,7 @@ function QuestionBankEditorPage() {
   const [deletingQuestion, setDeletingQuestion] = useState(false)
   const [topics, setTopics] = useState([])
   const [questionsLoadError, setQuestionsLoadError] = useState(null)
+  const [csvImportOpen, setCsvImportOpen] = useState(false)
 
   const canEditBank = bank ? canEditQuestionBank(bank, sourceTab) : false
   const readOnly = bank ? !canEditBank : sourceTab === QUESTION_BANK_TABS.COMMUNITY
@@ -304,6 +306,27 @@ function QuestionBankEditorPage() {
     }
   }
 
+  const handleCsvImportSuccess = async (data) => {
+    if (!bank) return
+
+    const imported = data?.questions
+    if (Array.isArray(imported) && imported.length > 0) {
+      setServerQuestions((prev) => {
+        const existingIds = new Set(prev.map((question) => String(question.id)))
+        const next = imported.filter((question) => !existingIds.has(String(question.id)))
+        return [...prev, ...next]
+      })
+      return
+    }
+
+    try {
+      const questionsData = await getQuestionBankQuestions(bank.id)
+      setServerQuestions(questionsData.questions || [])
+    } catch (err) {
+      showToast(parseApiError(err), 'error')
+    }
+  }
+
   if (loading || !bank) {
     return <div className="h-64 animate-pulse rounded-2xl bg-white" />
   }
@@ -349,6 +372,16 @@ function QuestionBankEditorPage() {
           <Eye className="h-4 w-4" />
           {t('editor.previewQuestions', { ns: 'questionBanks' })}
         </button>
+        {!readOnly ? (
+          <button
+            type="button"
+            onClick={() => setCsvImportOpen(true)}
+            className="inline-flex items-center gap-2 rounded-xl bg-[#E8F7F6] px-6 py-3 text-sm font-bold text-[#2AA8A2] ring-1 ring-[#CFECE9]"
+          >
+            <FileSpreadsheet className="h-4 w-4" />
+            {t('editor.importCsv', { ns: 'questionBanks' })}
+          </button>
+        ) : null}
         {!readOnly ? (
           <button
             type="button"
@@ -401,6 +434,13 @@ function QuestionBankEditorPage() {
         onChangeVisibility={setPublishVisibility}
         onClose={() => setPublishOpen(false)}
         onPublish={handlePublish}
+      />
+      <ImportQuestionBankCsvModal
+        open={csvImportOpen}
+        bankId={bank.id}
+        topics={topics}
+        onClose={() => setCsvImportOpen(false)}
+        onSuccess={handleCsvImportSuccess}
       />
     </div>
   )
