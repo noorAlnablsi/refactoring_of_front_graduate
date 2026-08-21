@@ -101,7 +101,12 @@ export function applyStudentRowChanges(student, changes = {}) {
   if (!student || !changes || typeof changes !== 'object') return student
   return {
     ...student,
-    attemptId: changes.attempt_id ?? student.attemptId,
+    attemptId:
+      changes.attempt_id ??
+      changes.attemptId ??
+      changes.current_attempt_id ??
+      changes.latest_attempt_id ??
+      student.attemptId,
     attemptStatus: changes.attempt_status ?? student.attemptStatus,
     submissionSource: changes.submission_source ?? student.submissionSource,
     terminationReason: changes.termination_reason ?? student.terminationReason,

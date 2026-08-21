@@ -83,6 +83,14 @@ function mergeAttemptTest(baseTest, entry) {
         ...(baseCfg.display_settings || {}),
         ...(entryCfg.display_settings || {}),
       },
+      attempt_settings: {
+        ...(baseCfg.attempt_settings || {}),
+        ...(entryCfg.attempt_settings || {}),
+        max_attempts:
+          entryCfg.attempt_settings?.max_attempts ??
+          baseCfg.attempt_settings?.max_attempts ??
+          1,
+      },
     },
   }
 }

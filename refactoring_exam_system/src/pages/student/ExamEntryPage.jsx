@@ -168,7 +168,7 @@ function ExamEntryPage() {
           <div className="rounded-xl bg-amber-50 px-4 py-3 text-sm font-semibold text-amber-800 ring-1 ring-amber-100">
             {entry.blockReason === 'max_attempts'
               ? t('entry.blockedMaxAttempts', {
-                  count: entry.rules.maxAttempts ?? 1,
+                  count: entry.rules.maxAttempts ?? '—',
                 })
               : entry.blockReason === 'already_completed'
                 ? t('entry.blockedAlreadyCompleted')

@@ -1,4 +1,3 @@
-
 export function normalizeStudentTestEntry(data = {}) {
   const exam = data.exam || {}
   const subject = exam.subject || {}
@@ -23,7 +22,9 @@ export function normalizeStudentTestEntry(data = {}) {
   const alreadyStarted = Boolean(student.already_started ?? student.alreadyStarted)
   const canStart = Boolean(student.can_start ?? student.canStart)
   const resumeAttemptId = student.resume_attempt_id ?? student.resumeAttemptId ?? null
-  const remainingAttempts = student.remaining_attempts ?? student.remainingAttempts ?? null
+  const remainingRaw = student.remaining_attempts ?? student.remainingAttempts
+  const remainingAttempts =
+    remainingRaw == null || remainingRaw === '' ? null : Number(remainingRaw)
 
   const requireAnswerAll = Boolean(
     rules.require_answer_all ??
@@ -55,23 +56,23 @@ export function normalizeStudentTestEntry(data = {}) {
         : true),
   )
 
-  const maxAttempts =
+  const maxAttemptsRaw =
     rules.max_attempts ??
     rules.maxAttempts ??
     attemptSettings.max_attempts ??
     settingsConfig.max_attempts ??
     null
+  const maxAttemptsParsed =
+    maxAttemptsRaw == null || maxAttemptsRaw === '' ? null : Number(maxAttemptsRaw)
+  const maxAttempts =
+    Number.isFinite(maxAttemptsParsed) && maxAttemptsParsed >= 1 ? maxAttemptsParsed : null
 
   const canResume = Boolean(resumeAttemptId)
-
   const mayProceed = canResume || canStart
 
   let blockReason = null
   if (!mayProceed) {
-    if (
-      remainingAttempts === 0 ||
-      (Number(maxAttempts) === 1 && alreadyStarted && !canResume)
-    ) {
+    if (remainingAttempts === 0) {
       blockReason = 'max_attempts'
     } else if (alreadyStarted && !canResume) {
       blockReason = 'already_completed'
@@ -129,7 +130,7 @@ export function normalizeStudentTestEntry(data = {}) {
     student: {
       alreadyStarted,
       canStart,
-      remainingAttempts,
+      remainingAttempts: Number.isFinite(remainingAttempts) ? remainingAttempts : null,
       resumeAttemptId,
     },
     mayProceed,

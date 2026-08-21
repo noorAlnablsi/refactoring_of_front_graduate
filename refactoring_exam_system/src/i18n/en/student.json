@@ -179,7 +179,7 @@
     "startHint": "The button enables after you agree to the rules and pass the camera check (if required).",
     "cannotStart": "You cannot start this exam right now according to backend rules (start not allowed).",
     "blockedMaxAttempts": "Not allowed — you have used all permitted attempts ({{count}}). You cannot enter this exam again.",
-    "blockedAlreadyCompleted": "Not allowed — you already used your attempt for this exam and cannot re-enter."
+    "blockedAlreadyCompleted": "Not allowed — your previous attempt has ended and cannot be resumed. If you still have remaining attempts per exam settings, refresh the page or contact your teacher."
   },
   "calendar": {
     "prevMonthAria": "Previous month",

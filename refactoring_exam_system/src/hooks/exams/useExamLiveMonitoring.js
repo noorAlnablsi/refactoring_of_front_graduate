@@ -21,6 +21,7 @@ import {
   getAttemptProctoringEvents,
   getAttemptProctoringViolations,
   getTestMonitoring,
+  listTestAttempts,
 } from '../../services/tests.service'
 import { showAppToast } from '../../lib/appToast'
 import { useToastStore } from '../../store/toastStore'
@@ -252,9 +253,31 @@ export function useExamLiveMonitoring(testId) {
         (event) =>
           Number(event.studentMembershipId) === Number(membershipId) && event.attemptId,
       )?.attemptId
-      const attemptId = student?.attemptId ?? attemptIdFromFeed ?? null
 
-      if (attemptId && student && !student.attemptId) {
+      let attemptId = student?.attemptId ?? attemptIdFromFeed ?? null
+
+      if (!attemptId && testId) {
+        try {
+          const attemptsData = await listTestAttempts(testId)
+          const attempts = attemptsData?.attempts || attemptsData?.items || []
+          const matched = attempts
+            .filter(
+              (row) =>
+                Number(row.student_membership_id ?? row.studentMembershipId) ===
+                Number(membershipId),
+            )
+            .sort((a, b) => {
+              const ta = Date.parse(a.submitted_at || a.started_at || a.created_at || 0) || 0
+              const tb = Date.parse(b.submitted_at || b.started_at || b.created_at || 0) || 0
+              return tb - ta
+            })
+          attemptId = matched[0]?.id ?? null
+        } catch {
+          attemptId = null
+        }
+      }
+
+      if (attemptId && student && Number(student.attemptId) !== Number(attemptId)) {
         patchStudents((rows) =>
           rows.map((row) =>
             row.studentMembershipId === membershipId ? { ...row, attemptId } : row,
