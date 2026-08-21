@@ -1,6 +1,7 @@
 {
   "pageTitle": "Member management",
   "pageSubtitle": "Manage all students and teachers within the institution.",
+  "pageSubtitleSolo": "Manage the students in your teaching workspace.",
   "exportData": "Export data",
   "exporting": "Exporting...",
   "csv": {

@@ -12,6 +12,7 @@ function AuthShell({
   heroHeadline,
   heroImagePosition = 'center',
   contentAlign = 'center',
+  showHeroHeadline = true,
 }) {
   const { t } = useTranslation(['auth', 'common'])
   const language = useLanguageStore((s) => s.language)
@@ -55,6 +56,7 @@ function AuthShell({
               alt={heroAlt}
               headline={heroHeadline || heroAlt || undefined}
               imagePosition={heroImagePosition}
+              showHeadline={showHeroHeadline}
             />
           </div>
         </div>

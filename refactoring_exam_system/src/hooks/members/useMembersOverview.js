@@ -2,7 +2,10 @@ import { useCallback, useEffect, useState } from 'react'
 import { tUI } from '../../lib/appToast'
 import { buildLatestMembers } from '../../lib/workspaceMembers'
 import { isInstitutionWorkspace } from '../../lib/workspaceContext'
-import { getWorkspaceStudents, getWorkspaceTeachers } from '../../services/workspaces.service'
+import {
+  getWorkspaceStudentsWithSoloFallback,
+  getWorkspaceTeachers,
+} from '../../services/workspaces.service'
 
 export function useMembersOverview() {
   const isInstitution = isInstitutionWorkspace()
@@ -17,7 +20,7 @@ export function useMembersOverview() {
     setError('')
 
     try {
-      const studentsRes = await getWorkspaceStudents({ page: 1, per_page: 5 })
+      const studentsRes = await getWorkspaceStudentsWithSoloFallback({ page: 1, per_page: 5 })
       let teachersRes = null
 
       if (isInstitution) {

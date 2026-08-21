@@ -6,7 +6,7 @@ import WelcomeOptionSelector from '../components/auth/WelcomeOptionSelector'
 import { REGISTRATION_FLOW, WELCOME_SELECTION } from '../constants/auth'
 import { ROUTES } from '../constants/routes'
 import { useRegistrationStore } from '../store/registrationStore'
-import valuePropSide from '../assets/auth/value-prop-side.png'
+import welcomeHero from '../assets/auth/welcome-hero.png'
 
 function WelcomePage() {
   const { t } = useTranslation('auth')
@@ -39,10 +39,11 @@ function WelcomePage() {
 
   return (
     <AuthShell
-      heroImage={valuePropSide}
+      heroImage={welcomeHero}
       heroAlt={t('welcome.heroAlt')}
       heroImagePosition="center"
       contentAlign="top"
+      showHeroHeadline={false}
     >
       <div className="flex flex-1 flex-col lg:min-h-full">
         <div>

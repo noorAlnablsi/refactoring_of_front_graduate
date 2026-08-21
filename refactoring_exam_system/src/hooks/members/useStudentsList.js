@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useState } from 'react'
 import { tUI } from '../../lib/appToast'
 import { isStudentCurrentlyActive } from '../../lib/workspaceStudents'
-import { getWorkspaceStudents } from '../../services/workspaces.service'
+import { getWorkspaceStudentsWithSoloFallback } from '../../services/workspaces.service'
 
 function pickActiveTotal(data, students, activeData) {
   if (data.active_count != null) return data.active_count
@@ -19,10 +19,10 @@ async function fetchActiveStudentsTotal(search) {
   const baseParams = { search: trimmedSearch, page: 1, per_page: 1 }
 
   try {
-    return await getWorkspaceStudents({ ...baseParams, is_online: true })
+    return await getWorkspaceStudentsWithSoloFallback({ ...baseParams, is_online: true })
   } catch {
     try {
-      return await getWorkspaceStudents({ ...baseParams, user_status: 'ACTIVE' })
+      return await getWorkspaceStudentsWithSoloFallback({ ...baseParams, user_status: 'ACTIVE' })
     } catch {
       return null
     }
@@ -44,7 +44,7 @@ export function useStudentsList({ search = '', page = 1, perPage = 10 } = {}) {
     try {
       const trimmedSearch = search.trim() || undefined
       const [data, activeData] = await Promise.all([
-        getWorkspaceStudents({
+        getWorkspaceStudentsWithSoloFallback({
           search: trimmedSearch,
           page,
           per_page: perPage,

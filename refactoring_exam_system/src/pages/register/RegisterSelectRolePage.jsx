@@ -59,7 +59,11 @@ function RegisterSelectRolePage() {
   }
 
   return (
-    <AuthShell heroImage={registerHero} heroAlt={t('register.selectRole.heroAlt')}>
+    <AuthShell
+      heroImage={registerHero}
+      heroAlt={t('register.selectRole.heroAlt')}
+      showHeroHeadline={false}
+    >
       <RegisterProgress activeStep={1} />
 
       <RoleSelector selected={store.workspace_kind} onSelect={setWorkspaceKind} />
