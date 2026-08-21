@@ -3,7 +3,16 @@ import { QUESTION_BANK_TABS } from './questionBanks'
 
 export function getActiveMembership() {
   const { memberships, selected_membership_id } = useAuthStore.getState()
-  return memberships.find((m) => m.membership_id === selected_membership_id) || memberships[0] || null
+  if (!Array.isArray(memberships) || memberships.length === 0) return null
+
+  if (selected_membership_id == null || selected_membership_id === '') {
+    return memberships[0] || null
+  }
+
+  const selectedId = Number(selected_membership_id)
+  return (
+    memberships.find((m) => Number(m.membership_id) === selectedId) || memberships[0] || null
+  )
 }
 
 export function getWorkspaceId() {

@@ -1,10 +1,6 @@
 import api from '../lib/axios'
 import { normalizeWorkspace } from '../lib/workspace'
-import {
-  mapDashboardMemberToWorkspaceStudent,
-  normalizeWorkspaceStudentsResponse,
-} from '../lib/workspaceStudents'
-import { isSoloTeacher } from '../lib/workspaceContext'
+import { normalizeWorkspaceStudentsResponse } from '../lib/workspaceStudents'
 import { normalizeWorkspaceTeacher } from '../lib/workspaceTeachers'
 
 export async function createWorkspace(payload) {
@@ -32,89 +28,27 @@ export async function deleteWorkspace(workspaceId) {
   return data
 }
 
-export async function getWorkspaceStudents(params = {}) {
-  const { data } = await api.get('/workspaces/students', { params })
-  return normalizeWorkspaceStudentsResponse(data)
+function buildStudentsQuery(params = {}) {
+  const query = {}
+  if (params.page != null && params.page !== '') query.page = Number(params.page) || 1
+  if (params.per_page != null && params.per_page !== '') {
+    query.per_page = Number(params.per_page) || 10
+  }
+  if (params.search != null && String(params.search).trim()) {
+    query.search = String(params.search).trim()
+  }
+  if (params.is_online != null) query.is_online = Boolean(params.is_online)
+  if (params.user_status != null && String(params.user_status).trim()) {
+    query.user_status = String(params.user_status).trim()
+  }
+  return query
 }
 
-export async function getWorkspaceStudentsWithSoloFallback(params = {}) {
-  let primary
-  try {
-    primary = await getWorkspaceStudents(params)
-  } catch (err) {
-    if (!isSoloTeacher()) throw err
-    primary = { students: [], total: 0, count: 0, pages: 1 }
-  }
-
-  if ((primary.total ?? 0) > 0 || (primary.students || []).length > 0) {
-    return primary
-  }
-
-  if (!isSoloTeacher()) {
-    return primary
-  }
-
-  try {
-    const search = typeof params.search === 'string' ? params.search.trim().toLowerCase() : ''
-    const page = Math.max(Number(params.page) || 1, 1)
-    const perPage = Math.max(Number(params.per_page) || 10, 1)
-
-    const dashboard = await getWorkspaceDashboard({
-      recent_limit: 200,
-      upcoming_limit: 1,
-    })
-
-    let students = (dashboard.recent_members || [])
-      .map(mapDashboardMemberToWorkspaceStudent)
-      .filter(Boolean)
-
-    const overviewTotalRaw =
-      dashboard.overview?.total_students ?? dashboard.overview?.students_count
-    const overviewTotal = Number(overviewTotalRaw)
-    const hasOverviewTotal = Number.isFinite(overviewTotal) && overviewTotal >= 0
-
-    const membersTotal = Number(dashboard.overview?.total_members)
-    const inferredFromMembers =
-      Number.isFinite(membersTotal) && membersTotal > 0 ? Math.max(0, membersTotal - 1) : null
-
-    if (students.length === 0 && !hasOverviewTotal && inferredFromMembers == null) {
-      return primary
-    }
-
-    if (search) {
-      students = students.filter((student) => {
-        const name = String(student.full_name || '').toLowerCase()
-        const email = String(student.email || '').toLowerCase()
-        return name.includes(search) || email.includes(search)
-      })
-    }
-
-    const total = search
-      ? students.length
-      : hasOverviewTotal
-        ? overviewTotal
-        : students.length > 0
-          ? students.length
-          : inferredFromMembers ?? 0
-
-    if (total <= 0 && students.length === 0) {
-      return primary
-    }
-
-    const start = (page - 1) * perPage
-    const pageRows = students.slice(start, start + perPage)
-
-    return {
-      ...primary,
-      students: pageRows,
-      total,
-      count: total,
-      pages: Math.max(1, Math.ceil(Math.max(total, 1) / perPage)),
-      _fromDashboardFallback: true,
-    }
-  } catch {
-    return primary
-  }
+export async function getWorkspaceStudents(params = {}) {
+  const { data } = await api.get('/workspaces/students', {
+    params: buildStudentsQuery(params),
+  })
+  return normalizeWorkspaceStudentsResponse(data)
 }
 
 export async function getWorkspaceTeachers(params = {}) {

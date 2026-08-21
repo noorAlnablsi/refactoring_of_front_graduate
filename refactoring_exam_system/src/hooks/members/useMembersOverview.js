@@ -2,10 +2,7 @@ import { useCallback, useEffect, useState } from 'react'
 import { tUI } from '../../lib/appToast'
 import { buildLatestMembers } from '../../lib/workspaceMembers'
 import { isInstitutionWorkspace } from '../../lib/workspaceContext'
-import {
-  getWorkspaceStudentsWithSoloFallback,
-  getWorkspaceTeachers,
-} from '../../services/workspaces.service'
+import { getWorkspaceStudents, getWorkspaceTeachers } from '../../services/workspaces.service'
 
 export function useMembersOverview() {
   const isInstitution = isInstitutionWorkspace()
@@ -20,7 +17,7 @@ export function useMembersOverview() {
     setError('')
 
     try {
-      const studentsRes = await getWorkspaceStudentsWithSoloFallback({ page: 1, per_page: 5 })
+      const studentsRes = await getWorkspaceStudents({ page: 1, per_page: 5 })
       let teachersRes = null
 
       if (isInstitution) {
@@ -31,12 +28,15 @@ export function useMembersOverview() {
         }
       }
 
-      setStudentsTotal(studentsRes.total ?? studentsRes.count ?? 0)
+      const list = studentsRes.students || []
+      const total = Number(studentsRes.total ?? studentsRes.count)
+      setStudentsTotal(Number.isFinite(total) ? total : list.length)
       setTeachersTotal(isInstitution ? (teachersRes?.total ?? teachersRes?.count ?? 0) : null)
-      setLatestMembers(
-        buildLatestMembers(studentsRes.students || [], teachersRes?.teachers || []),
-      )
+      setLatestMembers(buildLatestMembers(list, teachersRes?.teachers || []))
     } catch (err) {
+      setStudentsTotal(0)
+      setTeachersTotal(isInstitution ? 0 : null)
+      setLatestMembers([])
       setError(err.message || tUI('errors.loadOverview', { ns: 'members' }))
     } finally {
       setLoading(false)

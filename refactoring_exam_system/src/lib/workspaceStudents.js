@@ -49,6 +49,8 @@ export function normalizeWorkspaceStudentsResponse(data = {}) {
 
   const listCandidate =
     root.students ??
+    root.student_list ??
+    root.workspace_students ??
     root.items ??
     root.results ??
     root.members ??
