@@ -9,6 +9,7 @@ import {
   buildTestSettingsPayload,
   fromDatetimeLocalValue,
   getDefaultSeverityPolicy,
+  isValidMaxAttempts,
   toDatetimeLocalValue,
 } from '../../../lib/testSettings'
 import SurveyAudienceSection from '../../surveys/SurveyAudienceSection'
@@ -77,6 +78,12 @@ function ExamSettingsStep({
     }))
   }
 
+  const validateMaxAttempts = () => {
+    if (isValidMaxAttempts(form.max_attempts)) return true
+    showAppToast('validation.maxAttemptsMin', 'error', { ns: 'exams' })
+    return false
+  }
+
   const validateAvailability = () => {
     if (form.availability_time_mode !== TEST_AVAILABILITY_TIME_MODE.SCHEDULED) return true
     if (form.starts_at) return true
@@ -89,11 +96,13 @@ function ExamSettingsStep({
 
   const handleSubmit = (event) => {
     event.preventDefault()
+    if (!validateMaxAttempts()) return
     if (!isSurvey && !validateAvailability()) return
     onSubmit(buildPayload())
   }
 
   const handleSaveDraftClick = () => {
+    if (!validateMaxAttempts()) return
     if (!isSurvey && !validateAvailability()) return
     onSaveDraft?.(buildPayload())
   }

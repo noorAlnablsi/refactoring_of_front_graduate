@@ -5,6 +5,7 @@ import {
   clampEntryWindowMinutes,
   fromDatetimeLocalValue,
   getMaxEntryWindowMinutes,
+  normalizeMaxAttempts,
   toDatetimeLocalValue,
 } from '../../../lib/testSettings'
 import WizardSection from '../WizardSection'
@@ -203,12 +204,22 @@ export function ExamAttemptSettingsSection({ form, onFormChange }) {
           <input
             type="number"
             min={1}
+            step={1}
             value={form.max_attempts}
             onChange={(event) =>
               onFormChange((prev) => ({ ...prev, max_attempts: event.target.value }))
             }
+            onBlur={() => {
+              onFormChange((prev) => ({
+                ...prev,
+                max_attempts: normalizeMaxAttempts(prev.max_attempts),
+              }))
+            }}
             className={inputClassName}
           />
+          <p className="mt-2 text-xs leading-5 text-[#94A3B8]">
+            {t('settings.sections.maxAttemptsHint')}
+          </p>
         </div>
       </div>
     </WizardSection>

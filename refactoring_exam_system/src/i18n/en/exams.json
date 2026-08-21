@@ -420,6 +420,7 @@
       "attempt": "Attempt settings",
       "durationMinutes": "Time limit (minutes)",
       "maxAttempts": "Allowed attempts",
+      "maxAttemptsHint": "Minimum is 1 attempt (backend rule). 0 is not allowed.",
       "navigation": "Navigation settings",
       "forceSequential": "Force sequential navigation",
       "allowBack": "Allow returning to previous questions",
@@ -455,7 +456,8 @@
     "totalScoreRequired": "Total score is required",
     "passingScoreRequired": "Passing score is required",
     "passingScoreExceedsTotal": "Passing score cannot exceed total score",
-    "startsAtRequired": "Set an exam start time for scheduled mode"
+    "startsAtRequired": "Set an exam start time for scheduled mode",
+    "maxAttemptsMin": "Allowed attempts must be at least 1"
   },
   "blueprint": {
     "eyebrow": "Academic blueprint",

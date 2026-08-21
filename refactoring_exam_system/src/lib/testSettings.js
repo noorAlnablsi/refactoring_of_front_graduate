@@ -29,6 +29,19 @@ export const DEFAULT_TEST_SETTINGS = {
   fullscreen_required: false,
 }
 
+export function normalizeMaxAttempts(value, fallback = 1) {
+  const parsed = Number(value)
+  if (Number.isFinite(parsed) && parsed >= 1) return Math.floor(parsed)
+  const fallbackParsed = Number(fallback)
+  if (Number.isFinite(fallbackParsed) && fallbackParsed >= 1) return Math.floor(fallbackParsed)
+  return 1
+}
+
+export function isValidMaxAttempts(value) {
+  const parsed = Number(value)
+  return Number.isFinite(parsed) && parsed >= 1 && Number.isInteger(parsed)
+}
+
 function isNestedSettingsConfig(config = {}) {
   return Boolean(
     config.answer_rules ||
@@ -76,7 +89,9 @@ function flattenNestedSettings(config = {}) {
     shuffle_questions:
       display.shuffle_questions ?? DEFAULT_TEST_SETTINGS.shuffle_questions,
     shuffle_choices: display.shuffle_choices ?? DEFAULT_TEST_SETTINGS.shuffle_choices,
-    max_attempts: attempt.max_attempts ?? DEFAULT_TEST_SETTINGS.max_attempts,
+    max_attempts: normalizeMaxAttempts(
+      attempt.max_attempts ?? DEFAULT_TEST_SETTINGS.max_attempts,
+    ),
     allow_review:
       review.allow_review_after_grading ??
       review.allow_review ??
@@ -171,7 +186,7 @@ export function serializeSettingsConfig(flatSettings = {}) {
       require_answer_all: !allowSkip,
     },
     attempt_settings: {
-      max_attempts: Number(settings.max_attempts) || 1,
+      max_attempts: normalizeMaxAttempts(settings.max_attempts),
     },
     display_settings: {
       shuffle_choices: Boolean(settings.shuffle_choices),
@@ -255,7 +270,7 @@ export function buildTestSettingsFormState(test) {
 
   return {
     duration_minutes: durationMinutes,
-    max_attempts: cfg.max_attempts ?? 1,
+    max_attempts: normalizeMaxAttempts(cfg.max_attempts),
     availability_time_mode: mode,
     audience_scope: getSurveyAudienceScope(test),
     starts_at: mode === TEST_AVAILABILITY_TIME_MODE.SCHEDULED ? test?.starts_at || null : null,
@@ -274,7 +289,7 @@ export function buildTestSettingsFormState(test) {
 export function buildTestSettingsPayload(form) {
   const flat = syncAiProctoringFlag({
     ...form.settings_config,
-    max_attempts: Number(form.max_attempts) || 1,
+    max_attempts: normalizeMaxAttempts(form.max_attempts),
   })
   const durationMinutes = Number(form.duration_minutes) || 60
   const mode =
@@ -307,7 +322,7 @@ export function buildTestSettingsPayload(form) {
 export function buildSurveySettingsPayload(form) {
   const flat = syncAiProctoringFlag({
     ...form.settings_config,
-    max_attempts: Number(form.max_attempts) || 1,
+    max_attempts: normalizeMaxAttempts(form.max_attempts),
     ai_proctoring_enabled: false,
     face_tracking_enabled: false,
     ambient_sound_monitoring: false,
