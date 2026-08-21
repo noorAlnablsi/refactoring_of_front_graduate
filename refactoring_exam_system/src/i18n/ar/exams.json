@@ -689,7 +689,7 @@
       "openGrading": "فتح التصحيح",
       "auditTitle": "سجل المراقبة",
       "auditLoading": "جاري تحميل السجل...",
-      "auditEmpty": "لا توجد سجلات بعد، أو لا توجد محاولة.",
+      "auditEmpty": "لا توجد سجلات بعد، أو تعذّر تحميلها لهذه المحاولة.",
       "eventBadge": "حدث",
       "violationBadge": "مخالفة",
       "auditBadge": "سجل"

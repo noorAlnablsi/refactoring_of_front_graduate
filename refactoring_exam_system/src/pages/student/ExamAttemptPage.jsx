@@ -90,10 +90,6 @@ function ExamAttemptPage() {
   )
 
   useEffect(() => {
-    if (!proctoring.warning) return
-  }, [proctoring.warning])
-
-  useEffect(() => {
     if (proctoringTermination) return
     if (!submitResult?.redirect) return
 
@@ -280,7 +276,7 @@ function ExamAttemptPage() {
   if (!isFreeNavigation) {
     return (
       <main className="min-h-screen bg-[var(--shell-bg)]" data-a11y-scale-root data-app-shell="exam">
-        <ProctoringWarning warning={proctoring.warning} onDismiss={proctoring.clearWarning} />
+        <ProctoringWarning warning={proctoring.warning} />
 
         <AttemptSequentialHeader
           examTitle={test?.name || test?.title}
@@ -344,7 +340,7 @@ function ExamAttemptPage() {
 
   return (
     <main className="min-h-screen bg-[var(--shell-bg)]" data-a11y-scale-root data-app-shell="exam">
-      <ProctoringWarning warning={proctoring.warning} onDismiss={proctoring.clearWarning} />
+      <ProctoringWarning warning={proctoring.warning} />
 
       <AttemptExamHeader
         examTitle={test?.name || test?.title}

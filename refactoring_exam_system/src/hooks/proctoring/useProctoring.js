@@ -7,6 +7,8 @@ import {
 } from '../../lib/proctoring/entrySessionBridge'
 import { ProctoringService } from '../../services/proctoring'
 
+const WARNING_AUTO_DISMISS_MS = 5000
+
 export function useProctoring({
   testId,
   attemptId,
@@ -24,6 +26,25 @@ export function useProctoring({
   const [error, setError] = useState(null)
   const [running, setRunning] = useState(false)
   const [cameraStream, setCameraStream] = useState(null)
+
+  const showWarning = useCallback((payload) => {
+    if (!payload) {
+      setWarning(null)
+      return
+    }
+    setWarning({
+      ...payload,
+      _id: `${Date.now()}-${payload.severity || 'low'}-${payload.message || ''}`,
+    })
+  }, [])
+
+  useEffect(() => {
+    if (!warning) return undefined
+    const timer = window.setTimeout(() => {
+      setWarning(null)
+    }, WARNING_AUTO_DISMISS_MS)
+    return () => window.clearTimeout(timer)
+  }, [warning])
 
   const stop = useCallback(async () => {
     const service = serviceRef.current
@@ -60,7 +81,7 @@ export function useProctoring({
       settings,
       videoElement: videoRef.current,
       onConnectionStateChange: setStatus,
-      onWarning: (payload) => setWarning(payload),
+      onWarning: showWarning,
       onError: (err) => setError(err?.message || String(err)),
       onSessionStarted: () => {
         setCameraStream(service.camera?.getStream?.() || null)
@@ -86,7 +107,7 @@ export function useProctoring({
       setRunning(false)
       throw err
     }
-  }, [testId, attemptId, testOrSettings, stop])
+  }, [testId, attemptId, testOrSettings, stop, showWarning])
 
   useEffect(() => {
     if (!autoStart) return undefined
@@ -139,7 +160,7 @@ export function useProctoring({
       serviceRef.current = service
       service.setVideoElement?.(videoRef.current)
       service.onConnectionStateChange = setStatus
-      service.onWarning = (payload) => setWarning(payload)
+      service.onWarning = showWarning
       service.onError = (err) => setError(err?.message || String(err))
       service.onAttemptTerminated = (payload) => {
         onAttemptTerminatedRef.current?.(payload)
@@ -164,7 +185,7 @@ export function useProctoring({
       setError(null)
       return true
     },
-    [],
+    [showWarning],
   )
 
   return {

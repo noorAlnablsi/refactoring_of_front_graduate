@@ -75,9 +75,14 @@ export function computeMonitoringStatsFromStudents(students = []) {
 export function normalizeMonitoringStudent(raw) {
   if (!raw) return null
   return {
-    studentMembershipId: raw.student_membership_id,
+    studentMembershipId: raw.student_membership_id ?? raw.studentMembershipId ?? null,
     fullName: raw.full_name || raw.student_name || `Student #${raw.student_membership_id}`,
-    attemptId: raw.attempt_id ?? null,
+    attemptId:
+      raw.attempt_id ??
+      raw.attemptId ??
+      raw.current_attempt_id ??
+      raw.latest_attempt_id ??
+      null,
     attemptStatus: raw.attempt_status || null,
     submissionSource: raw.submission_source || null,
     terminationReason: raw.termination_reason || null,
@@ -222,6 +227,63 @@ export function normalizeProctoringViolation(raw) {
     createdAt: raw.created_at || raw.timestamp || null,
     payload: raw.payload || null,
   }
+}
+
+export function extractMonitoringList(data, keys = []) {
+  if (Array.isArray(data)) return data
+  if (!data || typeof data !== 'object') return []
+
+  for (const key of keys) {
+    if (Array.isArray(data[key])) return data[key]
+  }
+
+  if (data.data && typeof data.data === 'object') {
+    for (const key of keys) {
+      if (Array.isArray(data.data[key])) return data.data[key]
+    }
+    if (Array.isArray(data.data)) return data.data
+  }
+
+  if (data.results && typeof data.results === 'object') {
+    for (const key of keys) {
+      if (Array.isArray(data.results[key])) return data.results[key]
+    }
+    if (Array.isArray(data.results)) return data.results
+  }
+
+  return []
+}
+
+export function liveFeedToTimelineRows(events = [], membershipId) {
+  const targetId = Number(membershipId)
+  return (events || [])
+    .filter((event) => Number(event?.studentMembershipId) === targetId)
+    .map((event) => {
+      if (event.kind === 'violation') {
+        return {
+          id: event.id,
+          kind: 'violation',
+          eventType: event.violationType || 'VIOLATION',
+          severity: event.severity || null,
+          message: null,
+          createdAt: event.createdAt || null,
+          payload: null,
+        }
+      }
+      if (event.kind === 'row_update') {
+        return {
+          id: event.id,
+          kind: 'event',
+          eventType: event.monitoringState || 'STATUS_UPDATE',
+          severity: null,
+          message: null,
+          createdAt: event.createdAt || null,
+          payload: null,
+        }
+      }
+      return null
+    })
+    .filter(Boolean)
 }
 
 export function buildMonitoringTimeline({ events = [], violations = [], auditLogs = [] } = {}) {

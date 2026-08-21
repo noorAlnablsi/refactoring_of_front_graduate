@@ -10,6 +10,8 @@ import {
   applyStudentRowChanges,
   buildMonitoringTimeline,
   computeMonitoringStatsFromStudents,
+  extractMonitoringList,
+  liveFeedToTimelineRows,
   normalizeMonitoringSnapshot,
 } from '../../lib/proctoring/monitoringModel'
 import { WebSocketManager } from '../../services/proctoring/WebSocketManager'
@@ -41,9 +43,11 @@ export function useExamLiveMonitoring(testId) {
   const wsRef = useRef(null)
   const pingRef = useRef(null)
   const studentsRef = useRef([])
+  const liveEventsRef = useRef([])
 
   const pushLiveEvent = useCallback((event) => {
     setLiveEvents((prev) => {
+      let next = prev
       if (event.kind === 'row_update' && event.monitoringState) {
         const already = prev.some(
           (item) =>
@@ -52,14 +56,22 @@ export function useExamLiveMonitoring(testId) {
             String(item.monitoringState || '').toUpperCase() ===
               String(event.monitoringState || '').toUpperCase(),
         )
-        if (already) return prev
+        if (already) {
+          liveEventsRef.current = prev
+          return prev
+        }
       }
 
       if (event.kind === 'violation' && event.id) {
-        if (prev.some((item) => item.id === event.id)) return prev
+        if (prev.some((item) => item.id === event.id)) {
+          liveEventsRef.current = prev
+          return prev
+        }
       }
 
-      return [event, ...prev].slice(0, MAX_FEED_EVENTS)
+      next = [event, ...prev].slice(0, MAX_FEED_EVENTS)
+      liveEventsRef.current = next
+      return next
     })
   }, [])
 
@@ -142,11 +154,13 @@ export function useExamLiveMonitoring(testId) {
       if (type === PROCTORING_MONITOR_INCOMING.VIOLATION_CREATED) {
         const violation = message.violation || {}
         const membershipId = message.student_membership_id
+        const attemptId = message.attempt_id ?? violation.attempt_id ?? null
         patchStudents((rows) =>
           rows.map((row) => {
             if (row.studentMembershipId !== membershipId) return row
             return {
               ...row,
+              attemptId: attemptId ?? row.attemptId,
               violationCount: (Number(row.violationCount) || 0) + 1,
               eventCount: (Number(row.eventCount) || 0) + 1,
               lastActivityAt: new Date().toISOString(),
@@ -157,7 +171,7 @@ export function useExamLiveMonitoring(testId) {
           id: `viol-${violation.id || `${membershipId}-${violation.violation_type}-${Date.now()}`}`,
           kind: 'violation',
           studentMembershipId: membershipId,
-          attemptId: message.attempt_id ?? null,
+          attemptId,
           violationType: violation.violation_type || violation.type || 'VIOLATION',
           severity: violation.severity || null,
           createdAt: new Date().toISOString(),
@@ -233,35 +247,66 @@ export function useExamLiveMonitoring(testId) {
       setSelectedMembershipId(membershipId)
       const student =
         studentsRef.current.find((s) => s.studentMembershipId === membershipId) || null
-      if (!student?.attemptId) {
-        setAuditLogs([])
+
+      const attemptIdFromFeed = liveEventsRef.current.find(
+        (event) =>
+          Number(event.studentMembershipId) === Number(membershipId) && event.attemptId,
+      )?.attemptId
+      const attemptId = student?.attemptId ?? attemptIdFromFeed ?? null
+
+      if (attemptId && student && !student.attemptId) {
+        patchStudents((rows) =>
+          rows.map((row) =>
+            row.studentMembershipId === membershipId ? { ...row, attemptId } : row,
+          ),
+        )
+      }
+
+      const feedFallback = () => liveFeedToTimelineRows(liveEventsRef.current, membershipId)
+
+      if (!attemptId) {
+        setAuditLogs(feedFallback())
         return
       }
 
       setAuditLoading(true)
       try {
         const [auditData, eventsData, violationsData] = await Promise.all([
-          getAttemptAuditLogs(testId, student.attemptId).catch(() => ({ audit_logs: [] })),
-          getAttemptProctoringEvents(testId, student.attemptId).catch(() => ({ events: [] })),
-          getAttemptProctoringViolations(testId, student.attemptId).catch(() => ({
-            violations: [],
-          })),
+          getAttemptAuditLogs(testId, attemptId).catch(() => null),
+          getAttemptProctoringEvents(testId, attemptId).catch(() => null),
+          getAttemptProctoringViolations(testId, attemptId).catch(() => null),
         ])
 
         const logs = buildMonitoringTimeline({
-          events: eventsData?.events || eventsData?.items || [],
-          violations: violationsData?.violations || violationsData?.items || [],
-          auditLogs: auditData?.audit_logs || auditData?.items || [],
+          events: extractMonitoringList(eventsData, [
+            'events',
+            'items',
+            'proctoring_events',
+            'data',
+          ]),
+          violations: extractMonitoringList(violationsData, [
+            'violations',
+            'items',
+            'proctoring_violations',
+            'data',
+          ]),
+          auditLogs: extractMonitoringList(auditData, [
+            'audit_logs',
+            'items',
+            'logs',
+            'data',
+          ]),
         })
-        setAuditLogs(logs)
+
+        setAuditLogs(logs.length ? logs : feedFallback())
       } catch (err) {
-        setAuditLogs([])
+        setAuditLogs(feedFallback())
         showToast(err?.message || String(err), 'error')
       } finally {
         setAuditLoading(false)
       }
     },
-    [testId, showToast],
+    [testId, showToast, patchStudents],
   )
 
   const closeStudent = useCallback(() => {

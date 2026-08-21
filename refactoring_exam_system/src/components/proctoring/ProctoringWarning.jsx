@@ -1,8 +1,7 @@
 import { AlertTriangle, ShieldAlert, Info } from 'lucide-react'
 import { VIOLATION_SEVERITY } from '../../constants/proctoring'
 
-
-function ProctoringWarning({ warning, onDismiss }) {
+function ProctoringWarning({ warning }) {
   if (!warning) return null
 
   const severity = String(warning.severity || VIOLATION_SEVERITY.LOW).toUpperCase()
@@ -31,7 +30,8 @@ function ProctoringWarning({ warning, onDismiss }) {
   return (
     <div
       role="alert"
-      className={`fixed left-1/2 top-4 z-[80] w-[min(92vw,420px)] -translate-x-1/2 rounded-2xl border px-4 py-3 shadow-lg ${ui.wrap}`}
+      aria-live="polite"
+      className={`pointer-events-none fixed left-1/2 top-4 z-[80] w-[min(92vw,420px)] -translate-x-1/2 rounded-2xl border px-4 py-3 shadow-lg ${ui.wrap}`}
     >
       <div className="flex items-start gap-3">
         <Icon className="mt-0.5 h-5 w-5 shrink-0" />
@@ -41,11 +41,6 @@ function ProctoringWarning({ warning, onDismiss }) {
             {warning.message || `Severity: ${severity}`}
           </p>
         </div>
-        {onDismiss ? (
-          <button type="button" onClick={onDismiss} className="text-xs font-bold underline">
-            إغلاق
-          </button>
-        ) : null}
       </div>
     </div>
   )

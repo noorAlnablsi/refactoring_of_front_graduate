@@ -689,7 +689,7 @@
       "openGrading": "Open grading",
       "auditTitle": "Proctoring audit log",
       "auditLoading": "Loading audit log...",
-      "auditEmpty": "No audit logs yet, or no attempt.",
+      "auditEmpty": "No records yet, or they could not be loaded for this attempt.",
       "eventBadge": "Event",
       "violationBadge": "Violation",
       "auditBadge": "Audit"
