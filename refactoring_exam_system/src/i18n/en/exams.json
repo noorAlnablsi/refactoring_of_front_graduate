@@ -148,7 +148,10 @@
         "pointsLabel": "Points",
         "difficultyLabel": "Difficulty",
         "saveEdit": "Save changes",
-        "savingEdit": "Saving..."
+        "savingEdit": "Saving...",
+        "editQuestion": "Edit",
+        "editQuestionTitle": "Edit question",
+        "imageOnlyHint": "A question can be image-only without text."
       },
       "reviewSources": {
         "random": {
@@ -219,7 +222,14 @@
       "imported": "Imported {{count}} questions from CSV",
       "importedWithFailures": "Imported {{count}} questions with {{failed}} failed rows",
       "importing": "Importing...",
-      "importQuestions": "Import questions"
+      "importQuestions": "Import questions",
+      "imageHelperTitle": "Upload an image for CSV",
+      "imageHelperBody": "Upload the image here, then paste the copied URL into the image_url column in your CSV file.",
+      "uploadImageForCsv": "Upload image & copy URL",
+      "uploadingImage": "Uploading...",
+      "imageUrlCopied": "Image uploaded and URL copied",
+      "imageUploaded": "Image uploaded",
+      "imageTypeError": "Unsupported image type. Use JPG, PNG, or WebP."
     },
     "publish": {
       "eyebrow": "Final step",
@@ -550,7 +560,9 @@
       "hint": "Non-essay questions are auto-graded. Review then continue.",
       "empty": "No auto-graded questions in this attempt.",
       "earned": "Earned score",
-      "next": "Next"
+      "next": "Next",
+      "choicesTitle": "Choices & student answer",
+      "studentChoice": "Student answer"
     },
     "manual": {
       "hint": "Grade essay questions only (PENDING_REVIEW).",

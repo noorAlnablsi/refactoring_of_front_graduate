@@ -1,10 +1,13 @@
 import { useEffect, useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import { ArrowLeft, ArrowRight, Check, ClipboardList, Trash2 } from 'lucide-react'
+import { ArrowLeft, ArrowRight, Check, ClipboardList, Pencil, Trash2 } from 'lucide-react'
 import ExamWizardFooter from './ExamWizardFooter'
+import EditTestQuestionModal from './EditTestQuestionModal'
+import QuestionStemBlock from '../shared/QuestionStemBlock'
+import ChoiceBodyHtml from '../shared/ChoiceBodyHtml'
 import { showAppToast } from '../../lib/appToast'
 import { formatLocaleNumber } from '../../lib/localeNumber'
-import { resolveQuestionImageSrc } from '../../lib/questionImage'
+import { getTestQuestionChoices } from '../../lib/testQuestionEdit'
 import { removeTestQuestion, updateTestQuestion } from '../../services/tests.service'
 import { useToastStore } from '../../store/toastStore'
 
@@ -20,6 +23,7 @@ function GeneratedQuestionCard({
   testId,
   allowPointsEdit = false,
   hideGrading = false,
+  onEdit,
   onRemoved,
   onUpdated,
   t,
@@ -33,15 +37,9 @@ function GeneratedQuestionCard({
 
   const topicName =
     question.snapshot_topic_name || question.topic_name || t('wizard.questions.review.noTopic')
-  const choices = Array.isArray(question.snapshot_choices)
-    ? question.snapshot_choices
-    : Array.isArray(question.choices)
-      ? question.choices
-      : []
+  const choices = getTestQuestionChoices(question)
   const isTrueFalse = (question.snapshot_type_code || question.type_code) === 'TRUE_FALSE'
-  const questionText = question.snapshot_question_text || question.body || ''
   const questionId = question.id
-  const imageSrc = resolveQuestionImageSrc(question)
 
   const handleRemove = async () => {
     if (!testId || !questionId) return
@@ -98,27 +96,34 @@ function GeneratedQuestionCard({
         </div>
 
         {testId && questionId ? (
-          <button
-            type="button"
-            onClick={handleRemove}
-            disabled={removing}
-            className="inline-flex items-center gap-1.5 rounded-lg px-3 py-2 text-xs font-bold text-red-500 hover:bg-red-50 disabled:opacity-60"
-          >
-            <Trash2 className="h-3.5 w-3.5" />
-            {removing ? t('wizard.questions.review.deleting') : t('wizard.questions.review.deleteQuestion')}
-          </button>
+          <div className="flex items-center gap-1">
+            <button
+              type="button"
+              onClick={() => onEdit?.(question)}
+              className="inline-flex items-center gap-1.5 rounded-lg px-3 py-2 text-xs font-bold text-[#64748B] hover:bg-[#F6F8F9] hover:text-[#2AA8A2]"
+            >
+              <Pencil className="h-3.5 w-3.5" />
+              {t('wizard.questions.review.editQuestion')}
+            </button>
+            <button
+              type="button"
+              onClick={handleRemove}
+              disabled={removing}
+              className="inline-flex items-center gap-1.5 rounded-lg px-3 py-2 text-xs font-bold text-red-500 hover:bg-red-50 disabled:opacity-60"
+            >
+              <Trash2 className="h-3.5 w-3.5" />
+              {removing ? t('wizard.questions.review.deleting') : t('wizard.questions.review.deleteQuestion')}
+            </button>
+          </div>
         ) : null}
       </div>
 
-      <div
-        className="mt-5 text-base font-extrabold leading-8 text-[#2A3433]"
-        dangerouslySetInnerHTML={{ __html: questionText }}
+      <QuestionStemBlock
+        question={question}
+        textClassName="mt-5 text-base font-extrabold leading-8 text-[#2A3433]"
+        imageWrapClassName="mt-4 overflow-hidden rounded-xl bg-[#F8FAFB] ring-1 ring-[#E5E9EB]"
+        imageClassName="max-h-64 w-full object-contain"
       />
-      {imageSrc ? (
-        <div className="mt-4 overflow-hidden rounded-xl bg-[#F8FAFB] ring-1 ring-[#E5E9EB]">
-          <img src={imageSrc} alt="" className="max-h-64 w-full object-contain" />
-        </div>
-      ) : null}
 
       {choices.length > 0 ? (
         <ul className="mt-5 space-y-3">
@@ -140,7 +145,7 @@ function GeneratedQuestionCard({
                   {!isTrueFalse ? (
                     <span className="shrink-0 text-xs font-bold text-[#94A3B8]">{letter})</span>
                   ) : null}
-                  <span className="min-w-0 break-words" dangerouslySetInnerHTML={{ __html: choice.body || choice.text || '' }} />
+                  <ChoiceBodyHtml choice={choice} className="min-w-0 break-words" />
                 </span>
                 {isCorrect && !hideGrading ? <Check className="h-4 w-4 shrink-0" strokeWidth={2.5} /> : null}
               </li>
@@ -198,6 +203,7 @@ function ExamRandomGeneratedQuestionsPanel({
   testId,
   allowPointsEdit = false,
   hideGrading = false,
+  surveyMode = false,
   onBack,
   onSaveDraft,
   onContinue,
@@ -211,7 +217,10 @@ function ExamRandomGeneratedQuestionsPanel({
   sectionTitle,
 }) {
   const { t } = useTranslation(['exams', 'common'])
+  const showToast = useToastStore((s) => s.showToast)
   const [questions, setQuestions] = useState(initialQuestions || [])
+  const [editingQuestion, setEditingQuestion] = useState(null)
+  const [savingEdit, setSavingEdit] = useState(false)
 
   const choiceLetters = useMemo(() => t('choiceLetters', { returnObjects: true }), [t])
 
@@ -240,6 +249,22 @@ function ExamRandomGeneratedQuestionsPanel({
       onQuestionsChange?.(next)
       return next
     })
+  }
+
+  const handleSaveEdit = async (payload) => {
+    if (!testId || !editingQuestion?.id) return
+    setSavingEdit(true)
+    try {
+      const data = await updateTestQuestion(testId, editingQuestion.id, payload)
+      const updated = data.question || data
+      showAppToast('wizard.questions.review.questionUpdated', 'success', { ns: 'exams' })
+      handleUpdated(updated)
+      setEditingQuestion(null)
+    } catch (err) {
+      showToast(err.message, 'error')
+    } finally {
+      setSavingEdit(false)
+    }
   }
 
   return (
@@ -274,6 +299,7 @@ function ExamRandomGeneratedQuestionsPanel({
               testId={testId}
               allowPointsEdit={allowPointsEdit && !hideGrading}
               hideGrading={hideGrading}
+              onEdit={setEditingQuestion}
               onRemoved={handleRemoved}
               onUpdated={handleUpdated}
               t={t}
@@ -316,6 +342,15 @@ function ExamRandomGeneratedQuestionsPanel({
           </div>
         </div>
       </ExamWizardFooter>
+
+      <EditTestQuestionModal
+        open={Boolean(editingQuestion)}
+        question={editingQuestion}
+        surveyMode={surveyMode || hideGrading}
+        submitting={savingEdit}
+        onClose={() => setEditingQuestion(null)}
+        onSubmit={handleSaveEdit}
+      />
     </div>
   )
 }

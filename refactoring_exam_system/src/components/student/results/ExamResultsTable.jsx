@@ -1,6 +1,8 @@
+import { useNavigate } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
-import { BookOpen, Download, SlidersHorizontal } from 'lucide-react'
+import { BookOpen, Download, Eye, SlidersHorizontal } from 'lucide-react'
 import SubjectsPagination from '../../subjects/SubjectsPagination'
+import { ROUTES } from '../../../constants/routes'
 import { formatBankCardDate } from '../../../lib/questionBanks'
 import { localizeDigits } from '../../../lib/localeNumber'
 import { getPercentageBarTone, getResultDisplayDate } from '../../../lib/studentResultsModel'
@@ -76,6 +78,7 @@ function ExamResultsTable({
   sortBy,
 }) {
   const { t } = useTranslation('student')
+  const navigate = useNavigate()
   const from = total === 0 ? 0 : (page - 1) * perPage + 1
   const to = Math.min(page * perPage, total)
 
@@ -116,7 +119,8 @@ function ExamResultsTable({
             <col className="w-[18%]" />
             <col className="w-[12%]" />
             <col className="w-[18%]" />
-            <col className="w-[14%]" />
+            <col className="w-[12%]" />
+            <col className="w-[10%]" />
           </colgroup>
           <thead>
             <tr className="border-b border-[var(--shell-border)]">
@@ -126,13 +130,14 @@ function ExamResultsTable({
               <th className={TH}>{t('performance.table.columns.score')}</th>
               <th className={TH}>{t('performance.table.columns.percentage')}</th>
               <th className={TH}>{t('performance.table.columns.gradedAt')}</th>
+              <th className={TH}>{t('performance.table.columns.actions')}</th>
             </tr>
           </thead>
           <tbody>
             {loading ? (
               Array.from({ length: 4 }).map((_, index) => (
                 <tr key={`sk-${index}`} className="border-b border-[var(--shell-border)]/50">
-                  <td colSpan={6} className={TD}>
+                  <td colSpan={7} className={TD}>
                     <div className="shell-skeleton h-8 animate-pulse rounded-lg" />
                   </td>
                 </tr>
@@ -170,6 +175,27 @@ function ExamResultsTable({
                   </td>
                   <td className={`${TD} whitespace-nowrap text-[var(--shell-text-muted)]`}>
                     {formatBankCardDate(getResultDisplayDate(row))}
+                  </td>
+                  <td className={TD}>
+                    {row.reviewAllowed && row.testId && row.attemptId ? (
+                      <button
+                        type="button"
+                        onClick={() =>
+                          navigate(
+                            ROUTES.STUDENT_EXAM_REVIEW.replace(':testId', row.testId).replace(
+                              ':attemptId',
+                              row.attemptId,
+                            ),
+                          )
+                        }
+                        className="inline-flex items-center gap-1.5 rounded-lg bg-[var(--shell-accent-bg)] px-3 py-2 text-xs font-bold text-[var(--shell-accent)] transition hover:opacity-90"
+                      >
+                        <Eye className="h-3.5 w-3.5" />
+                        {t('performance.table.review')}
+                      </button>
+                    ) : (
+                      <span className="text-xs text-[var(--shell-text-subtle)]">—</span>
+                    )}
                   </td>
                 </tr>
               ))

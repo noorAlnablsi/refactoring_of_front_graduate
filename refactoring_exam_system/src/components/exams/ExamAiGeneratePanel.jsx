@@ -3,6 +3,7 @@ import { useTranslation } from 'react-i18next'
 import { ArrowRight, Check, Sparkles, Trash2 } from 'lucide-react'
 import ExamWizardFooter from './ExamWizardFooter'
 import { showAppToast } from '../../lib/appToast'
+import { resolveQuestionImageSrc } from '../../lib/questionImage'
 import {
   deleteAiGeneratedQuestion,
   generateAiQuestions,
@@ -307,6 +308,15 @@ function ExamAiGeneratePanel({ test, testId, onBack, onSuccess, onSaveDraft, sav
                     <p className="mt-3 text-sm font-bold leading-7 text-[#2A3433]">
                       {question.question_text}
                     </p>
+                    {resolveQuestionImageSrc(question) ? (
+                      <div className="mt-3 overflow-hidden rounded-xl bg-[#F8FAFB] ring-1 ring-[#E5E9EB]">
+                        <img
+                          src={resolveQuestionImageSrc(question)}
+                          alt=""
+                          className="max-h-48 w-full object-contain"
+                        />
+                      </div>
+                    ) : null}
                     {choices.length > 0 ? (
                       <ul className="mt-3 space-y-2 text-right">
                         {choices.map((choice, choiceIndex) => (

@@ -80,14 +80,20 @@
     "loadingSubjects": "جاري تحميل المواد...",
     "assignSubjectModal": {
       "title": "إسناد مادة",
-      "description": "اختر مادة لإسناد الطالب {{name}} إليها",
+      "description": "اختر مادة أو أكثر لإسناد الطالب {{name}} إليها",
       "allAssigned": "جميع المواد مسندة لهذا الطالب",
       "noSubjects": "لا توجد مواد متاحة للإسناد",
       "alreadyEnrolled": "الطالب مسجّل في هذه المادة مسبقاً",
       "selectSubjectError": "يرجى اختيار مادة",
+      "selectSubjectsError": "يرجى اختيار مادة واحدة على الأقل",
       "success": "تم إسناد الطالب للمادة بنجاح",
+      "successOne": "تم إسناد الطالب للمادة بنجاح",
+      "successMany": "تم إسناد الطالب إلى {{count}} مواد بنجاح",
+      "successPartial": "تم إسناد {{assigned}} مواد، وفشل {{failed}}",
+      "assignFailed": "تعذّر إسناد المواد المحددة",
       "assigning": "جاري الإسناد...",
-      "assign": "إسناد"
+      "assign": "إسناد",
+      "assignMany": "إسناد ({{count}})"
     },
     "removeSubjectModal": {
       "title": "حذف الطالب من مادة",

@@ -24,6 +24,7 @@ import StudentSurveysPage from './pages/student/StudentSurveysPage'
 import ExamAttemptPage from './pages/student/ExamAttemptPage'
 import ExamEntryPage from './pages/student/ExamEntryPage'
 import StudentPerformancePage from './pages/student/StudentPerformancePage'
+import StudentExamReviewPage from './pages/student/StudentExamReviewPage'
 import StudentResultStatusPage from './pages/student/StudentResultStatusPage'
 import StudentDashboardGuard from './components/student/dashboard/StudentDashboardGuard'
 import StudentDashboardLayout from './components/student/dashboard/StudentDashboardLayout'
@@ -129,6 +130,7 @@ function App() {
           <Route path={ROUTES.STUDENT_EXAMS} element={<StudentExamsPage />} />
           <Route path={ROUTES.STUDENT_SURVEYS} element={<StudentSurveysPage />} />
           <Route path={ROUTES.STUDENT_RESULTS} element={<StudentPerformancePage />} />
+          <Route path={ROUTES.STUDENT_EXAM_REVIEW} element={<StudentExamReviewPage />} />
           <Route
             path={ROUTES.STUDENT_RESULTS_PENDING}
             element={<StudentResultStatusPage mode="pending" />}

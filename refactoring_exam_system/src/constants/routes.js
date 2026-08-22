@@ -50,6 +50,7 @@ export const ROUTES = {
   STUDENT_SURVEYS: '/student/surveys',
   STUDENT_EXAM_ENTRY: '/student/exams/:testId/entry',
   STUDENT_EXAM_ATTEMPT: '/student/exams/:testId/attempt',
+  STUDENT_EXAM_REVIEW: '/student/exams/:testId/attempts/:attemptId/review',
   STUDENT_RESULTS: '/student/results',
   STUDENT_RESULTS_PENDING: '/student/results/pending',
   STUDENT_SETTINGS: '/student/settings',

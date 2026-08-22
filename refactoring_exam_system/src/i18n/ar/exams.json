@@ -148,7 +148,10 @@
         "pointsLabel": "النقاط",
         "difficultyLabel": "الصعوبة",
         "saveEdit": "حفظ التعديل",
-        "savingEdit": "جاري الحفظ..."
+        "savingEdit": "جاري الحفظ...",
+        "editQuestion": "تعديل",
+        "editQuestionTitle": "تعديل السؤال",
+        "imageOnlyHint": "يمكن أن يكون السؤال صورة فقط دون نص."
       },
       "reviewSources": {
         "random": {
@@ -219,7 +222,14 @@
       "imported": "تم استيراد {{count}} سؤال من CSV",
       "importedWithFailures": "تم استيراد {{count}} سؤال مع فشل {{failed}} صف",
       "importing": "جاري الاستيراد...",
-      "importQuestions": "استيراد الأسئلة"
+      "importQuestions": "استيراد الأسئلة",
+      "imageHelperTitle": "رفع صورة للاستخدام في CSV",
+      "imageHelperBody": "ارفع الصورة هنا ثم انسخ الرابط إلى عمود image_url في ملف CSV.",
+      "uploadImageForCsv": "رفع صورة ونسخ الرابط",
+      "uploadingImage": "جاري الرفع...",
+      "imageUrlCopied": "تم رفع الصورة ونسخ الرابط",
+      "imageUploaded": "تم رفع الصورة",
+      "imageTypeError": "نوع الصورة غير مدعوم. استخدم JPG أو PNG أو WebP."
     },
     "publish": {
       "eyebrow": "الخطوة الأخيرة",
@@ -550,7 +560,9 @@
       "hint": "الأسئلة غير المقالية تُصحَّح تلقائياً. راجع النتائج ثم تابع.",
       "empty": "لا توجد أسئلة مصححة تلقائياً في هذه المحاولة.",
       "earned": "الدرجة المكتسبة",
-      "next": "التالي"
+      "next": "التالي",
+      "choicesTitle": "الخيارات وإجابة الطالب",
+      "studentChoice": "إجابة الطالب"
     },
     "manual": {
       "hint": "صحّح الأسئلة المقالية فقط (PENDING_REVIEW).",

@@ -3,8 +3,9 @@ import {
   isEssayQuestion,
   isMultiSelectQuestion,
 } from '../../../lib/attemptAnswers'
-import { resolveQuestionImageSrc } from '../../../lib/questionImage'
 import { getChoiceIndex } from '../../../lib/surveyResponses'
+import QuestionStemBlock from '../../shared/QuestionStemBlock'
+import ChoiceBodyHtml from '../../shared/ChoiceBodyHtml'
 import { formatLocaleNumber } from '../../../lib/localeNumber'
 import {
   shellBodyTextClass,
@@ -28,7 +29,6 @@ function SurveyRespondQuestionCard({
   const selected = Array.isArray(answer?.selected_choice_indices)
     ? answer.selected_choice_indices
     : []
-  const imageSrc = resolveQuestionImageSrc(question)
   const choices = Array.isArray(question.choices) ? question.choices : []
 
   return (
@@ -44,18 +44,12 @@ function SurveyRespondQuestionCard({
         </span>
       </div>
 
-      <div
-        className={`mt-3 text-sm leading-7 text-[var(--shell-text)]`}
-        dangerouslySetInnerHTML={{ __html: question.body || '' }}
+      <QuestionStemBlock
+        question={question}
+        textClassName="mt-3 text-sm leading-7 text-[var(--shell-text)]"
+        imageWrapClassName="mt-4 overflow-hidden rounded-xl bg-[var(--shell-input-bg)]"
+        imageClassName="max-h-64 w-full rounded-xl object-contain"
       />
-
-      {imageSrc ? (
-        <img
-          src={imageSrc}
-          alt=""
-          className="mt-4 max-h-64 w-full rounded-xl object-contain"
-        />
-      ) : null}
 
       {essay ? (
         <textarea
@@ -85,7 +79,7 @@ function SurveyRespondQuestionCard({
                 } ${disabled ? 'pointer-events-none opacity-60' : ''}`}
               >
                 <span className={`min-w-0 flex-1 break-words text-sm font-semibold leading-7 ${shellBodyTextClass}`}>
-                  <span dangerouslySetInnerHTML={{ __html: choice.body || '' }} />
+                  <ChoiceBodyHtml choice={choice} />
                 </span>
                 <input
                   type={multi ? 'checkbox' : 'radio'}

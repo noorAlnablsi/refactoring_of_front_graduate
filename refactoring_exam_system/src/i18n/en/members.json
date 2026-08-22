@@ -80,14 +80,20 @@
     "loadingSubjects": "Loading subjects...",
     "assignSubjectModal": {
       "title": "Assign subject",
-      "description": "Choose a subject to assign student {{name}} to",
+      "description": "Choose one or more subjects to assign student {{name}} to",
       "allAssigned": "All subjects are already assigned to this student",
       "noSubjects": "No subjects available for assignment",
       "alreadyEnrolled": "Student is already enrolled in this subject",
       "selectSubjectError": "Please select a subject",
+      "selectSubjectsError": "Please select at least one subject",
       "success": "Student assigned to subject successfully",
+      "successOne": "Student assigned to subject successfully",
+      "successMany": "Student assigned to {{count}} subjects successfully",
+      "successPartial": "{{assigned}} subjects assigned, {{failed}} failed",
+      "assignFailed": "Could not assign the selected subjects",
       "assigning": "Assigning...",
-      "assign": "Assign"
+      "assign": "Assign",
+      "assignMany": "Assign ({{count}})"
     },
     "removeSubjectModal": {
       "title": "Remove student from subject",

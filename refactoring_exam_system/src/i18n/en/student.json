@@ -351,7 +351,28 @@
         "teacher": "Teacher",
         "score": "Score",
         "percentage": "Percentage",
-        "gradedAt": "Evaluation date"
+        "gradedAt": "Evaluation date",
+        "actions": "Actions"
+      },
+      "review": "Review"
+    },
+    "review": {
+      "eyebrow": "Exam review",
+      "title": "Review questions & answers",
+      "subtitle": "Review exam questions and your answers after grading.",
+      "loading": "Loading review...",
+      "loadError": "Could not load exam review",
+      "empty": "No questions to review.",
+      "backToResults": "Back to results",
+      "finalScore": "Final score",
+      "percentage": "Percentage",
+      "status": "Status",
+      "questionNumber": "Question {{number}}",
+      "noAnswer": "No answer",
+      "earnedScore": "Earned score: {{score}}",
+      "statusValues": {
+        "GRADED": "Graded",
+        "SUBMITTED": "Submitted"
       }
     }
   }

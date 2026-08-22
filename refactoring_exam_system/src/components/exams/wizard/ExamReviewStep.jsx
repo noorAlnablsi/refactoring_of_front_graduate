@@ -94,6 +94,7 @@ function ExamReviewStep({
           questions={questions}
           allowPointsEdit={allowPointsEdit}
           hideGrading={isSurvey}
+          surveyMode={isSurvey}
           sectionTitle={t('wizard.review.questionList')}
           continueLabel={t('wizard.review.nextPublish')}
           onBack={onBack}

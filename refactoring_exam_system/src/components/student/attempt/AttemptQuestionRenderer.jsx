@@ -1,10 +1,16 @@
 import { Bookmark } from 'lucide-react'
 import { useTranslation } from 'react-i18next'
+import ChoiceBodyHtml from '../../shared/ChoiceBodyHtml'
 import {
   getQuestionImageUrl,
   isEssayQuestion,
   isMultiSelectQuestion,
 } from '../../../lib/attemptAnswers'
+import {
+  getQuestionStemHtml,
+  hasVisibleQuestionImage,
+  shouldShowQuestionStemHtml,
+} from '../../../lib/questionDisplay'
 import { formatLocaleNumber } from '../../../lib/localeNumber'
 
 function AttemptChoiceList({
@@ -60,13 +66,6 @@ function AttemptChoiceList({
       onKeyDown={handleListKeyDown}
     >
       {choices.map((choice, index) => {
-        const label =
-          typeof choice === 'string'
-            ? choice
-            : choice?.body ||
-              choice?.text ||
-              choice?.label ||
-              `${t('attempt.choice')} ${formatLocaleNumber(index + 1)}`
         const checked = selected.includes(index)
         const letter = choiceLetters[index] || String.fromCharCode(97 + index)
 
@@ -78,7 +77,7 @@ function AttemptChoiceList({
             } ${disabled ? 'pointer-events-none opacity-60' : ''}`}
           >
             <span className="min-w-0 flex-1 break-words text-sm font-semibold leading-7 text-[#2A3433]">
-              {label}
+              <ChoiceBodyHtml choice={choice} />
             </span>
             <span className="flex shrink-0 items-center gap-2">
               {showLetter ? <span className="text-xs font-bold text-[#94A3B8]">{letter}</span> : null}
@@ -126,6 +125,8 @@ function AttemptQuestionRenderer({
   const multi = isMultiSelectQuestion(typeCode)
   const essay = isEssayQuestion(typeCode)
   const imageUrl = getQuestionImageUrl(question)
+  const showStem = shouldShowQuestionStemHtml(question)
+  const showImageOnly = !showStem && hasVisibleQuestionImage(question)
   const choiceLetters = i18n.getResource(i18n.language, 'exams', 'choiceLetters') || []
   const sequential = variant === 'sequential'
   const questionId = question.test_question_id
@@ -140,11 +141,12 @@ function AttemptQuestionRenderer({
             </span>
           ) : null}
 
-          {question.snapshot_question_text ? (
-            <h2 className="mt-3 min-w-0 break-words text-start text-lg font-extrabold leading-8 text-[#2A3433] md:text-xl">
-              {question.snapshot_question_text}
-            </h2>
-          ) : imageUrl ? null : (
+          {showStem ? (
+            <div
+              className="mt-3 min-w-0 break-words text-start text-lg font-extrabold leading-8 text-[#2A3433] md:text-xl"
+              dangerouslySetInnerHTML={{ __html: getQuestionStemHtml(question) }}
+            />
+          ) : showImageOnly ? null : (
             <h2 className="mt-3 min-w-0 break-words text-start text-lg font-extrabold leading-8 text-[#2A3433] md:text-xl">
               {t('attempt.questionFallback')}
             </h2>
@@ -199,11 +201,12 @@ function AttemptQuestionRenderer({
       </div>
 
       <div className="flex flex-col items-stretch gap-3 sm:flex-row sm:items-start sm:justify-between">
-        {question.snapshot_question_text ? (
-          <h2 className="min-w-0 flex-1 break-words text-start text-lg font-extrabold leading-8 text-[#2A3433] md:text-xl">
-            {question.snapshot_question_text}
-          </h2>
-        ) : imageUrl ? (
+        {showStem ? (
+          <div
+            className="min-w-0 flex-1 break-words text-start text-lg font-extrabold leading-8 text-[#2A3433] md:text-xl"
+            dangerouslySetInnerHTML={{ __html: getQuestionStemHtml(question) }}
+          />
+        ) : showImageOnly ? (
           <div className="min-w-0 flex-1" />
         ) : (
           <h2 className="min-w-0 flex-1 break-words text-start text-lg font-extrabold leading-8 text-[#2A3433] md:text-xl">

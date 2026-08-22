@@ -44,6 +44,10 @@ export function normalizeManualQuestionForApi(question, { surveyMode = false } =
     payload.image_path = imagePath
   }
 
+  if (question.image_url) {
+    payload.image_url = String(question.image_url).trim()
+  }
+
   if (question.type_code !== 'ESSAY') {
     payload.choices = surveyMode
       ? ensureSurveyChoicesForApi(question.choices)

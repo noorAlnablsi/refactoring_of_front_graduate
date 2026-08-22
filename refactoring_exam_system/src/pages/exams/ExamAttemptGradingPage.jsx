@@ -5,7 +5,8 @@ import { ROUTES } from '../../constants/routes'
 import { GRADING_WIZARD_STEPS } from '../../lib/grading/attemptGradingModel'
 import { useExamAttemptGrading } from '../../hooks/exams/useExamAttemptGrading'
 import { formatLocaleNumber } from '../../lib/localeNumber'
-import { resolveQuestionImageSrc } from '../../lib/questionImage'
+import QuestionStemBlock from '../../components/shared/QuestionStemBlock'
+import GradingChoiceReview from '../../components/exams/GradingChoiceReview'
 import {
   shellAccentButtonClass,
   shellBodyTextClass,
@@ -23,8 +24,6 @@ const STEPS = [
 ]
 
 function QuestionBlock({ question, children }) {
-  const text = question.snapshot_question_text || question.body || ''
-  const imageSrc = resolveQuestionImageSrc(question)
   const points = question.points ?? question.snapshot_points ?? 0
   return (
     <article className={`p-5 ${shellCardClass}`}>
@@ -34,17 +33,12 @@ function QuestionBlock({ question, children }) {
         </p>
         <p className="text-xs font-bold text-[#64748B]">{formatLocaleNumber(points)} pts</p>
       </div>
-      {text ? (
-        <div
-          className="mt-3 text-sm font-bold leading-7 text-[#2A3433]"
-          dangerouslySetInnerHTML={{ __html: text }}
-        />
-      ) : null}
-      {imageSrc ? (
-        <div className="mt-3 overflow-hidden rounded-xl bg-[#F8FAFB] ring-1 ring-[#E5E9EB]">
-          <img src={imageSrc} alt="" className="max-h-64 w-full object-contain" />
-        </div>
-      ) : null}
+      <QuestionStemBlock
+        question={question}
+        textClassName="mt-3 text-sm font-bold leading-7 text-[#2A3433]"
+        imageWrapClassName="mt-3 overflow-hidden rounded-xl bg-[#F8FAFB] ring-1 ring-[#E5E9EB]"
+        imageClassName="max-h-64 w-full object-contain"
+      />
       {children}
     </article>
   )
@@ -126,6 +120,7 @@ function ExamAttemptGradingPage() {
           ) : (
             grading.autoQuestions.map((q) => (
               <QuestionBlock key={q.test_question_id} question={q}>
+                <GradingChoiceReview question={q} answer={q.answer} />
                 <div className="mt-4 rounded-xl bg-[#F6F8F9] p-4 text-sm">
                   <p className="text-xs font-semibold text-[#94A3B8]">{t('grading.auto.earned')}</p>
                   <p className="mt-1 font-extrabold text-[#2AA8A2]">

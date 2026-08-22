@@ -9,6 +9,15 @@ function ExamCenterRecentCard({ exam }) {
 
   const handleAction = () => {
     if (!exam.actionEnabled) return
+    if (exam.actionKey === 'viewResultAndReview' && exam.testId && exam.attemptId) {
+      navigate(
+        ROUTES.STUDENT_EXAM_REVIEW.replace(':testId', exam.testId).replace(
+          ':attemptId',
+          exam.attemptId,
+        ),
+      )
+      return
+    }
     navigate(ROUTES.STUDENT_RESULTS)
   }
 

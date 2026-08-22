@@ -351,7 +351,28 @@
         "teacher": "المعلم",
         "score": "الدرجة",
         "percentage": "النسبة",
-        "gradedAt": "تاريخ التقييم"
+        "gradedAt": "تاريخ التقييم",
+        "actions": "إجراءات"
+      },
+      "review": "مراجعة"
+    },
+    "review": {
+      "eyebrow": "مراجعة الامتحان",
+      "title": "مراجعة الأسئلة والإجابات",
+      "subtitle": "راجع أسئلة الامتحان وإجاباتك بعد التصحيح.",
+      "loading": "جاري تحميل المراجعة...",
+      "loadError": "تعذر تحميل مراجعة الامتحان",
+      "empty": "لا توجد أسئلة للمراجعة.",
+      "backToResults": "العودة للنتائج",
+      "finalScore": "الدرجة النهائية",
+      "percentage": "النسبة",
+      "status": "الحالة",
+      "questionNumber": "السؤال {{number}}",
+      "noAnswer": "لا توجد إجابة",
+      "earnedScore": "الدرجة المكتسبة: {{score}}",
+      "statusValues": {
+        "GRADED": "مصحّح",
+        "SUBMITTED": "مسلّم"
       }
     }
   }

@@ -1,10 +1,12 @@
 import { useEffect, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import { ArrowRight, Download, FileSpreadsheet, Upload } from 'lucide-react'
+import { ArrowRight, Download, FileSpreadsheet, ImagePlus, Upload } from 'lucide-react'
 import ExamWizardFooter from './ExamWizardFooter'
 import { showAppToast } from '../../lib/appToast'
 import { formatLocaleNumber } from '../../lib/localeNumber'
+import { isAllowedQuestionImageFile } from '../../lib/questionImage'
 import { getSubjectTopics } from '../../services/subjects.service'
+import { uploadImage } from '../../services/uploads.service'
 import {
   downloadExamQuestionsCsvTemplate,
   importQuestionsFromCsv,
@@ -22,8 +24,11 @@ function ExamCsvImportPanel({
   const { t } = useTranslation(['exams', 'common'])
   const showToast = useToastStore((s) => s.showToast)
   const inputRef = useRef(null)
+  const imageInputRef = useRef(null)
   const [file, setFile] = useState(null)
   const [loading, setLoading] = useState(false)
+  const [uploadingImage, setUploadingImage] = useState(false)
+  const [uploadedImageUrl, setUploadedImageUrl] = useState('')
   const [downloadingTemplate, setDownloadingTemplate] = useState(false)
   const [topics, setTopics] = useState([])
   const [topicsLoading, setTopicsLoading] = useState(Boolean(subjectId))
@@ -66,6 +71,34 @@ function ExamCsvImportPanel({
       showToast(err.message, 'error')
     } finally {
       setDownloadingTemplate(false)
+    }
+  }
+
+  const handleImageUpload = async (event) => {
+    const imageFile = event.target.files?.[0]
+    event.target.value = ''
+    if (!imageFile) return
+
+    if (!isAllowedQuestionImageFile(imageFile)) {
+      showAppToast('wizard.csv.imageTypeError', 'error', { ns: 'exams' })
+      return
+    }
+
+    setUploadingImage(true)
+    try {
+      const data = await uploadImage(imageFile)
+      const url = data.image_url || data.image_path || ''
+      setUploadedImageUrl(url)
+      if (url && navigator.clipboard?.writeText) {
+        await navigator.clipboard.writeText(url)
+        showAppToast('wizard.csv.imageUrlCopied', 'success', { ns: 'exams' })
+      } else {
+        showAppToast('wizard.csv.imageUploaded', 'success', { ns: 'exams' })
+      }
+    } catch (err) {
+      showToast(err.message, 'error')
+    } finally {
+      setUploadingImage(false)
     }
   }
 
@@ -137,6 +170,34 @@ function ExamCsvImportPanel({
             <Download className="h-4 w-4" />
             {downloadingTemplate ? t('wizard.csv.downloading') : t('wizard.csv.downloadTemplate')}
           </button>
+        </div>
+
+        <div className="mb-5 rounded-xl bg-[#F8FAFB] px-4 py-4 ring-1 ring-[#E5E9EB]">
+          <p className="text-sm font-semibold text-[#2A3433]">{t('wizard.csv.imageHelperTitle')}</p>
+          <p className="mt-1 text-xs leading-6 text-[#64748B]">{t('wizard.csv.imageHelperBody')}</p>
+          <div className="mt-4 flex flex-wrap items-center gap-3">
+            <button
+              type="button"
+              onClick={() => imageInputRef.current?.click()}
+              disabled={uploadingImage}
+              className="inline-flex items-center gap-2 rounded-xl bg-white px-4 py-2.5 text-sm font-bold text-[#2AA8A2] ring-1 ring-[#2AA8A2]/20 transition hover:bg-[#E8F7F6] disabled:opacity-60"
+            >
+              <ImagePlus className="h-4 w-4" />
+              {uploadingImage ? t('wizard.csv.uploadingImage') : t('wizard.csv.uploadImageForCsv')}
+            </button>
+            {uploadedImageUrl ? (
+              <code dir="ltr" className="max-w-full truncate rounded-lg bg-white px-3 py-2 text-xs text-[#475569] ring-1 ring-[#E5E9EB]">
+                {uploadedImageUrl}
+              </code>
+            ) : null}
+          </div>
+          <input
+            ref={imageInputRef}
+            type="file"
+            accept="image/jpeg,image/png,image/webp"
+            className="hidden"
+            onChange={handleImageUpload}
+          />
         </div>
 
         <div className="flex flex-col items-center justify-center rounded-2xl border border-dashed border-[#CBD5E1] bg-[#F8FAFB] px-6 py-12 text-center">

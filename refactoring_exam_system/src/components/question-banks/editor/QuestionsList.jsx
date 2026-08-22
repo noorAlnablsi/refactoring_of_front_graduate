@@ -7,6 +7,7 @@ import {
   getQuestionTypeLabel,
 } from '../../../lib/questionBanks'
 import { formatLocaleNumber } from '../../../lib/localeNumber'
+import { shouldShowQuestionStemHtml } from '../../../lib/questionDisplay'
 import { resolveQuestionImageSrc } from '../../../lib/questionImage'
 import { useToastStore } from '../../../store/toastStore'
 
@@ -140,7 +141,9 @@ function QuestionsList({
             </div>
             <div
               className="text-sm text-[#374151]"
-              dangerouslySetInnerHTML={{ __html: question.body }}
+              dangerouslySetInnerHTML={{
+                __html: shouldShowQuestionStemHtml(question) ? question.body : '',
+              }}
             />
             {imageSrc ? (
               <div className="mt-3 overflow-hidden rounded-xl bg-white ring-1 ring-[#E5E9EB]">

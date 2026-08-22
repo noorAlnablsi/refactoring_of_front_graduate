@@ -1,7 +1,8 @@
 import { useTranslation } from 'react-i18next'
 import { useSurveyManagerResponseDetail } from '../../hooks/surveys/useSurveyManagerResponseDetail'
 import { formatLocaleNumber } from '../../lib/localeNumber'
-import { resolveQuestionImageSrc } from '../../lib/questionImage'
+import QuestionStemBlock from '../shared/QuestionStemBlock'
+import ChoiceBodyHtml from '../shared/ChoiceBodyHtml'
 import {
   shellAccentButtonClass,
   shellBodyTextClass,
@@ -25,7 +26,6 @@ function AnswerBlock({ answer, index }) {
   const selectedChoices = Array.isArray(answer?.selected_choices) ? answer.selected_choices : []
   const essayText = String(answer?.answer_text || '').trim()
 
-  const imageSrc = resolveQuestionImageSrc(answer)
   const questionText = String(answer?.question_text || '').trim()
 
   return (
@@ -41,22 +41,16 @@ function AnswerBlock({ answer, index }) {
         ) : null}
       </div>
 
-      {questionText ? (
-        <div
-          className={`mt-3 text-sm leading-7 text-[var(--shell-text)]`}
-          dangerouslySetInnerHTML={{ __html: answer.question_text }}
-        />
-      ) : imageSrc ? null : (
-        <p className={`mt-3 ${shellSubtleTextClass}`}>{t('responses.detail.noQuestionText')}</p>
-      )}
-
-      {imageSrc ? (
-        <img
-          src={imageSrc}
-          alt=""
-          className="mt-4 max-h-56 w-full rounded-xl object-contain"
-        />
-      ) : null}
+      <QuestionStemBlock
+        question={{
+          body: questionText,
+          image_path: answer?.image_path,
+          image_url: answer?.image_url,
+        }}
+        textClassName="mt-3 text-sm leading-7 text-[var(--shell-text)]"
+        imageWrapClassName="mt-4 overflow-hidden rounded-xl bg-[var(--shell-input-bg)]"
+        imageClassName="max-h-56 w-full rounded-xl object-contain"
+      />
 
       <div className="mt-4">
         <p className={`text-xs font-bold ${shellBodyTextClass}`}>{t('responses.detail.answerLabel')}</p>
@@ -69,7 +63,11 @@ function AnswerBlock({ answer, index }) {
                 key={`${answer.test_question_id}-${choice.index}`}
                 className="rounded-xl bg-[var(--shell-accent-bg)] px-3 py-2 text-sm font-semibold text-[var(--shell-accent)]"
               >
-                {choice.body || t('responses.detail.choiceFallback', { index: formatLocaleNumber(choice.index) })}
+                {choice.body ? (
+                  <ChoiceBodyHtml choice={choice} />
+                ) : (
+                  t('responses.detail.choiceFallback', { index: formatLocaleNumber(choice.index) })
+                )}
               </li>
             ))}
           </ul>

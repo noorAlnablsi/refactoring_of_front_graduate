@@ -242,6 +242,7 @@ function ExamAddQuestionsStep({
         testId={testId}
         allowPointsEdit={false}
         hideGrading={surveyMode}
+        surveyMode={surveyMode}
         eyebrow={reviewCopy.eyebrow}
         title={reviewCopy.title}
         description={reviewCopy.description}

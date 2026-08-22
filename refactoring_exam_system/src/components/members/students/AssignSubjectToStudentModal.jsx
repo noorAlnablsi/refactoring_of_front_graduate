@@ -18,7 +18,7 @@ function AssignSubjectToStudentModalContent({ student, onClose, onSuccess }) {
   const membershipId = getStudentMembershipId(student)
   const [subjects, setSubjects] = useState([])
   const [enrolledIds, setEnrolledIds] = useState([])
-  const [selectedSubjectId, setSelectedSubjectId] = useState(null)
+  const [selectedSubjectIds, setSelectedSubjectIds] = useState([])
   const [loading, setLoading] = useState(false)
   const [fetching, setFetching] = useState(true)
 
@@ -40,6 +40,7 @@ function AssignSubjectToStudentModalContent({ student, onClose, onSuccess }) {
         if (cancelled) return
         setSubjects((subjectsRes.subjects || []).filter((subject) => !subject.is_archived))
         setEnrolledIds(enrolledSubjectIds)
+        setSelectedSubjectIds([])
       } catch (err) {
         if (!cancelled) showToast(err.message, 'error')
       } finally {
@@ -58,21 +59,55 @@ function AssignSubjectToStudentModalContent({ student, onClose, onSuccess }) {
     (subject) => !isStudentEnrolledInSubject(enrolledIds, subject.id),
   )
 
+  const toggleSubject = (subjectId) => {
+    setSelectedSubjectIds((prev) =>
+      prev.includes(subjectId)
+        ? prev.filter((id) => id !== subjectId)
+        : [...prev, subjectId],
+    )
+  }
+
   const handleAssign = async () => {
-    if (!selectedSubjectId) {
-      showToast(t('students.assignSubjectModal.selectSubjectError'), 'error')
+    if (selectedSubjectIds.length === 0) {
+      showToast(t('students.assignSubjectModal.selectSubjectsError'), 'error')
       return
     }
 
-    if (isStudentEnrolledInSubject(enrolledIds, selectedSubjectId)) {
+    const subjectIds = selectedSubjectIds.filter(
+      (subjectId) => !isStudentEnrolledInSubject(enrolledIds, subjectId),
+    )
+
+    if (subjectIds.length === 0) {
       showToast(t('students.assignSubjectModal.alreadyEnrolled'), 'error')
       return
     }
 
     setLoading(true)
     try {
-      await assignStudentToSubject(selectedSubjectId, membershipId)
-      showToast(t('students.assignSubjectModal.success'))
+      const results = await Promise.allSettled(
+        subjectIds.map((subjectId) => assignStudentToSubject(subjectId, membershipId)),
+      )
+
+      const assignedCount = results.filter((result) => result.status === 'fulfilled').length
+      const failedCount = results.length - assignedCount
+
+      if (assignedCount > 0 && failedCount > 0) {
+        showToast(
+          t('students.assignSubjectModal.successPartial', {
+            assigned: assignedCount,
+            failed: failedCount,
+          }),
+        )
+      } else if (assignedCount === 1) {
+        showToast(t('students.assignSubjectModal.successOne'))
+      } else if (assignedCount > 1) {
+        showToast(t('students.assignSubjectModal.successMany', { count: assignedCount }))
+      } else {
+        const firstError = results.find((result) => result.status === 'rejected')
+        showToast(firstError?.reason?.message || t('students.assignSubjectModal.assignFailed'), 'error')
+        return
+      }
+
       onSuccess()
       onClose()
     } catch (err) {
@@ -109,13 +144,13 @@ function AssignSubjectToStudentModalContent({ student, onClose, onSuccess }) {
         ) : (
           <div className="max-h-64 space-y-2 overflow-y-auto">
             {availableSubjects.map((subject) => {
-              const isSelected = selectedSubjectId === subject.id
+              const isSelected = selectedSubjectIds.includes(subject.id)
 
               return (
                 <button
                   key={subject.id}
                   type="button"
-                  onClick={() => setSelectedSubjectId(subject.id)}
+                  onClick={() => toggleSubject(subject.id)}
                   className={`flex w-full items-center justify-between rounded-xl px-4 py-3 text-right text-sm transition ${
                     isSelected
                       ? 'bg-[var(--shell-accent-bg)] ring-2 ring-[var(--shell-accent)]/35'
@@ -136,10 +171,14 @@ function AssignSubjectToStudentModalContent({ student, onClose, onSuccess }) {
           <button
             type="button"
             onClick={handleAssign}
-            disabled={loading || !selectedSubjectId || !membershipId}
+            disabled={loading || selectedSubjectIds.length === 0 || !membershipId}
             className="rounded-xl bg-[var(--shell-accent)] px-6 py-3 text-sm font-bold text-[var(--shell-accent-contrast)] disabled:opacity-70"
           >
-            {loading ? t('students.assignSubjectModal.assigning') : t('students.assignSubjectModal.assign')}
+            {loading
+              ? t('students.assignSubjectModal.assigning')
+              : selectedSubjectIds.length > 1
+                ? t('students.assignSubjectModal.assignMany', { count: selectedSubjectIds.length })
+                : t('students.assignSubjectModal.assign')}
           </button>
         </div>
       </div>
