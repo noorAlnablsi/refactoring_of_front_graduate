@@ -5,6 +5,13 @@ import { ROUTES } from '../constants/routes'
 import { useAppTranslation } from '../hooks/useAppTranslation'
 import { waitForAuthHydration } from '../lib/authSession'
 import { resolvePostLoginRoute } from '../lib/postLoginNavigation'
+import {
+  consumePendingExamRedirect,
+  ensureStudentMembershipSelected,
+  getStudentMemberships,
+  isStudentExamDeepLink,
+  resolveExamLinkAfterAuth,
+} from '../lib/studentExamDeepLink'
 import { beginEmailVerificationFlow, isEmailNotVerifiedError } from '../lib/authVerification'
 import { login } from '../services/auth.service'
 import { useAuthStore } from '../store/authStore'
@@ -21,7 +28,13 @@ function LoginPage() {
   const [password, setPassword] = useState('')
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
-  const [redirectTo] = useState(() => location.state?.redirectTo || null)
+  const [redirectTo] = useState(() => {
+    const fromState = location.state?.redirectTo || null
+    if (fromState) return fromState
+    const params = new URLSearchParams(location.search)
+    const fromQuery = params.get('next')
+    return fromQuery || null
+  })
   const [successMessageKey] = useState(() => {
     if (!location.state?.fromRegistration) return ''
     if (location.state?.institutionApproved) return 'login.registrationApproved'
@@ -45,6 +58,34 @@ function LoginPage() {
       await waitForAuthHydration()
       const data = await login({ email: email.trim(), password })
       useAuthStore.getState().setAuth(data)
+
+      const memberships = data.memberships || useAuthStore.getState().memberships || []
+      const pendingExamRedirect =
+        (isStudentExamDeepLink(redirectTo) ? redirectTo : null) || consumePendingExamRedirect()
+
+      const examTarget = resolveExamLinkAfterAuth({
+        redirectTo: pendingExamRedirect,
+        memberships,
+      })
+
+      if (examTarget) {
+        navigate(examTarget, { replace: true })
+        return
+      }
+
+      if (pendingExamRedirect && getStudentMemberships(memberships).length === 0) {
+        navigate(ROUTES.JOIN, { replace: true })
+        return
+      }
+
+      if (pendingExamRedirect && memberships.length > 1) {
+        ensureStudentMembershipSelected(memberships)
+        navigate(ROUTES.PATH_SELECTION, {
+          replace: true,
+          state: { redirectTo: pendingExamRedirect },
+        })
+        return
+      }
 
       if (redirectTo) {
         navigate(redirectTo, { replace: true })

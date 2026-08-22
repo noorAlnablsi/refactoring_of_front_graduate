@@ -5,6 +5,7 @@ import {
   PROCTORING_WS_EVENT,
 } from '../../constants/proctoring'
 import { ensureValidAccessToken } from '../../lib/authSession'
+import { buildStudentViolationWarning } from '../../lib/proctoring/violationWarning'
 import {
   collectBrowserMetadata,
   collectDeviceMetadata,
@@ -211,12 +212,7 @@ export class ProctoringService {
     }
 
     if (type === PROCTORING_INCOMING.VIOLATION_TRIGGERED) {
-      const severity = message.payload?.violation?.severity || 'LOW'
-      this.onWarning?.({
-        severity,
-        violation: message.payload?.violation || null,
-        payload: message.payload,
-      })
+      this.onWarning?.(buildStudentViolationWarning(message.payload || message))
       return
     }
 

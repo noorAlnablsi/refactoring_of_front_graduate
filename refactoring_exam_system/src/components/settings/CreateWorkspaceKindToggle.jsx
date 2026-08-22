@@ -1,24 +1,32 @@
 import { useTranslation } from 'react-i18next'
-import { Building2, UserRound } from 'lucide-react'
-import { WORKSPACE_KIND } from '../../constants/auth'
+import { Building2, GraduationCap, UserRound } from 'lucide-react'
+import { CREATE_WORKSPACE_MODE } from '../../constants/auth'
 
 function CreateWorkspaceKindToggle({ selected, onSelect }) {
   const { t } = useTranslation('settings')
   const options = [
     {
-      kind: WORKSPACE_KIND.INSTITUTION,
+      kind: CREATE_WORKSPACE_MODE.INSTITUTION,
       title: t('createWorkspace.institutionPlatform'),
       icon: Building2,
     },
     {
-      kind: WORKSPACE_KIND.SOLO,
+      kind: CREATE_WORKSPACE_MODE.SOLO,
       title: t('createWorkspace.soloTeacher'),
       icon: UserRound,
+    },
+    {
+      kind: CREATE_WORKSPACE_MODE.STUDENT_JOIN,
+      title: t('createWorkspace.studentJoin'),
+      icon: GraduationCap,
     },
   ]
 
   return (
-    <div className="grid grid-cols-1 gap-3 sm:grid-cols-2" data-keyboard-option-group="workspace-kind">
+    <div
+      className="grid grid-cols-1 gap-3 sm:grid-cols-3"
+      data-keyboard-option-group="workspace-kind"
+    >
       {options.map(({ kind, title, icon: Icon }) => {
         const isActive = selected === kind
 

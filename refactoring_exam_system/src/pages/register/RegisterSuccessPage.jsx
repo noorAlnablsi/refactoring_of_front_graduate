@@ -89,7 +89,11 @@ function RegisterSuccessPage() {
         : t('register.success.accountCreatedSubtitle')
 
   return (
-    <AuthShell heroImage={registerHeroSuccess} heroAlt={t('register.success.heroAlt')}>
+    <AuthShell
+      heroImage={registerHeroSuccess}
+      heroAlt={t('register.success.heroAlt')}
+      showHeroHeadline={false}
+    >
       <RegisterProgress activeStep={3} />
 
       <div className="flex flex-col items-center text-center">

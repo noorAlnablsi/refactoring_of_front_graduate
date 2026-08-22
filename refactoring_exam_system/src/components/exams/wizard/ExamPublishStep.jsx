@@ -463,7 +463,11 @@ function ExamPublishStep({
           <p className="mt-3 text-xs leading-6 text-[#94A3B8]">
             {t('wizard.publish.shareHint', { ns: 'surveys' })}
           </p>
-        ) : null}
+        ) : (
+          <p className="mt-3 text-xs leading-6 text-[#94A3B8]">
+            {t('wizard.publish.shareHint', { ns: 'exams' })}
+          </p>
+        )}
       </WizardSection>
 
       {showAssign ? (

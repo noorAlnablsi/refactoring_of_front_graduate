@@ -2,6 +2,7 @@ import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import DeleteAccountConfirmDialog from '../../components/common/DeleteAccountConfirmDialog'
+import { SettingsWorkspacesCard } from '../../components/settings/SettingsProfileSection'
 import StudentInterfaceSettingsCard from '../../components/student/settings/StudentInterfaceSettingsCard'
 import StudentPrivacySettingsCard from '../../components/student/settings/StudentPrivacySettingsCard'
 import StudentSupportSettingsCard from '../../components/student/settings/StudentSupportSettingsCard'
@@ -76,6 +77,8 @@ function StudentSettingsPage() {
         logoutLoading={logoutLoading}
         deleteLoading={deleteLoading}
       />
+
+      <SettingsWorkspacesCard />
 
       <DeleteAccountConfirmDialog
         open={deleteConfirmOpen}

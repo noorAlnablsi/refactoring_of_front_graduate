@@ -195,6 +195,16 @@
     "kindLabel": "Workspace type",
     "institutionPlatform": "Educational platform",
     "soloTeacher": "Independent teacher",
+    "studentJoin": "Student",
+    "studentTitle": "Join as a student workspace",
+    "studentSubtitle": "Enter a join code to enroll in an institution or learning path under your current account, without creating a new workspace.",
+    "studentAccountNoticeTitle": "Important account notice:",
+    "studentAccountNotice": "Your student membership will be linked to your current account via the join code. You will not need to create a new account.",
+    "studentJoinHint": "The join code is usually provided by the teacher or institution admin.",
+    "joinSubmit": "Join workspace",
+    "joining": "Joining...",
+    "joinTermsPrefix": "By clicking \"Join workspace\", you agree to the",
+    "joinSuccess": "Joined the workspace successfully",
     "logoLabelInstitution": "Institution logo (optional)",
     "logoLabelSolo": "Profile photo (optional)",
     "logoInstitution": "Institution logo (optional)",
@@ -237,7 +247,8 @@
       "institutionNameRequired": "Platform name is required",
       "teacherNameRequired": "Teacher name is required",
       "bioRequired": "Bio is required",
-      "failed": "Could not create workspace"
+      "failed": "Could not create workspace",
+      "joinFailed": "Could not join the workspace"
     }
   }
 }

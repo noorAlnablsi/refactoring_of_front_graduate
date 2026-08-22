@@ -3,6 +3,13 @@ export const WORKSPACE_KIND = {
   SOLO: 'SOLO',
 }
 
+/** UI-only mode on create-workspace screen (student joins by code; does not POST /workspaces). */
+export const CREATE_WORKSPACE_MODE = {
+  INSTITUTION: WORKSPACE_KIND.INSTITUTION,
+  SOLO: WORKSPACE_KIND.SOLO,
+  STUDENT_JOIN: 'STUDENT_JOIN',
+}
+
 export const REGISTRATION_FLOW = {
   INSTITUTION: 'institution',
   STUDENT: 'student',

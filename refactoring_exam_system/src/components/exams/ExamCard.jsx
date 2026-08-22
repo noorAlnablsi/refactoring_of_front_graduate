@@ -15,7 +15,7 @@ import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { ROUTES } from '../../constants/routes'
-import { TEST_STATUS } from '../../constants/tests'
+import { TEST_STATUS, TEST_WIZARD_STEPS } from '../../constants/tests'
 import { formatDate } from '../../lib/questionBanks'
 import {
   canShowCloseExamButton,
@@ -90,6 +90,10 @@ function ExamCard({ test, onArchive, onClose, onDelete }) {
     const progress = getExamWizardProgress(testId)
     const step = getResumeWizardStep(test, progress)
     navigate(ROUTES.EXAM_EDIT.replace(':id', testId) + `?step=${step}`)
+  }
+
+  const openSettings = () => {
+    navigate(ROUTES.EXAM_EDIT.replace(':id', testId) + `?step=${TEST_WIZARD_STEPS.SETTINGS}`)
   }
 
   const openAttempts = () => {
@@ -182,6 +186,10 @@ function ExamCard({ test, onArchive, onClose, onDelete }) {
                 {t('card.liveMonitoring')}
               </button>
             ) : null}
+            <button type="button" onClick={openSettings} className={`${neutralOutlineClass} sm:col-span-2`}>
+              <Edit3 className="h-4 w-4 shrink-0" />
+              {t('card.editSettings')}
+            </button>
             {showClose ? (
               <button type="button" onClick={() => onClose?.(test)} className={neutralOutlineClass}>
                 <Lock className="h-4 w-4 shrink-0" />

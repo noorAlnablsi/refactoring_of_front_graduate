@@ -1,25 +1,38 @@
 import { useEffect, useState } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { useLocation, useNavigate } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import AuthShell from '../components/auth/AuthShell'
 import MembershipSelector from '../components/auth/MembershipSelector'
 import { ROUTES } from '../constants/routes'
 import { resolveMembershipHomeRoute } from '../lib/postLoginNavigation'
+import {
+  consumePendingExamRedirect,
+  isStudentExamDeepLink,
+  peekPendingExamRedirect,
+} from '../lib/studentExamDeepLink'
 import { useAuthStore } from '../store/authStore'
 import pathSelectionHero from '../assets/auth/path-selection-hero.png'
+
+function normalizeRole(role) {
+  return String(role || '').trim().toUpperCase()
+}
 
 function PathSelectionPage() {
   const { t } = useTranslation('auth')
   const navigate = useNavigate()
+  const location = useLocation()
   const access_token = useAuthStore((s) => s.access_token)
   const memberships = useAuthStore((s) => s.memberships)
   const setSelectedMembership = useAuthStore((s) => s.setSelectedMembership)
   const [selectedId, setSelectedId] = useState(null)
   const [error, setError] = useState('')
+  const redirectTo =
+    (isStudentExamDeepLink(location.state?.redirectTo) ? location.state.redirectTo : null) ||
+    peekPendingExamRedirect()
 
   useEffect(() => {
     if (!access_token) {
-      navigate(ROUTES.LOGIN, { replace: true })
+      navigate(ROUTES.LOGIN, { replace: true, state: redirectTo ? { redirectTo } : null })
       return
     }
 
@@ -29,15 +42,16 @@ function PathSelectionPage() {
     }
 
     if (memberships.length === 1) {
-      setSelectedMembership(memberships[0].membership_id)
-      navigate(resolveMembershipHomeRoute(memberships[0]), { replace: true })
+      const membership = memberships[0]
+      setSelectedMembership(membership.membership_id)
+      if (redirectTo && normalizeRole(membership.role) === 'STUDENT') {
+        consumePendingExamRedirect()
+        navigate(redirectTo, { replace: true })
+        return
+      }
+      navigate(resolveMembershipHomeRoute(membership), { replace: true })
     }
-  }, [
-    access_token,
-    memberships,
-    navigate,
-    setSelectedMembership,
-  ])
+  }, [access_token, memberships, navigate, setSelectedMembership, redirectTo])
 
   const handleGo = () => {
     if (!selectedId) {
@@ -46,7 +60,16 @@ function PathSelectionPage() {
     }
 
     setSelectedMembership(selectedId)
-    const membership = memberships.find((item) => item.membership_id === selectedId)
+    const membership = memberships.find(
+      (item) => Number(item.membership_id) === Number(selectedId),
+    )
+
+    if (redirectTo && normalizeRole(membership?.role) === 'STUDENT') {
+      consumePendingExamRedirect()
+      navigate(redirectTo, { replace: true })
+      return
+    }
+
     navigate(resolveMembershipHomeRoute(membership))
   }
 

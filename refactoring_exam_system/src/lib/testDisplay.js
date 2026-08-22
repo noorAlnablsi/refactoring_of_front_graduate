@@ -144,6 +144,8 @@ export function canEditTest(test) {
   const status = String(test.status || '').toUpperCase()
 
   if (status === TEST_STATUS.DRAFT) return true
+  // Published exams may still need settings fixes (e.g. max_attempts).
+  if (status === TEST_STATUS.PUBLISHED) return true
 
   if (status === TEST_STATUS.SCHEDULED) {
     const publishAtMs = parseLocalDateTimeMs(test.scheduled_publish_at)
@@ -159,7 +161,7 @@ export function getEditBlockedMessage(test) {
 
   const status = String(test.status || '').toUpperCase()
 
-  if (status === TEST_STATUS.DRAFT) return ''
+  if (status === TEST_STATUS.DRAFT || status === TEST_STATUS.PUBLISHED) return ''
 
   if (status === TEST_STATUS.SCHEDULED) {
     const publishAtMs = parseLocalDateTimeMs(test.scheduled_publish_at)

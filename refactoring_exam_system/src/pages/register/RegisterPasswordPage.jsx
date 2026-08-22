@@ -62,7 +62,11 @@ function RegisterPasswordPage() {
   }
 
   return (
-    <AuthShell heroImage={registerHeroPassword} heroAlt={t('register.password.heroAlt')}>
+    <AuthShell
+      heroImage={registerHeroPassword}
+      heroAlt={t('register.password.heroAlt')}
+      showHeroHeadline={false}
+    >
       <RegisterProgress activeStep={2} />
 
       <form

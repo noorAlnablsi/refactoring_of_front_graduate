@@ -36,7 +36,8 @@
     "delete": "Delete",
     "archive": "Archive",
     "gradeAttempts": "Grade attempts",
-    "liveMonitoring": "Live monitoring"
+    "liveMonitoring": "Live monitoring",
+    "editSettings": "Edit settings"
   },
   "confirm": {
     "archive": "Archive exam \"{{name}}\"?",
@@ -231,6 +232,7 @@
       "immediateHint": "* Leave fields empty for immediate publish.",
       "shareTitle": "Sharing options",
       "directLink": "Direct exam link",
+      "shareHint": "This link is for students: it opens the exam entry page after the student signs in (or sends them to sign in, then returns to the same link).",
       "copy": "Copy",
       "linkCopied": "Link copied",
       "linkCopyFailed": "Could not copy link",
@@ -346,7 +348,7 @@
     "testNotFound": "Exam not found",
     "editDraftOnly": "Exam can only be edited while in DRAFT status",
     "editTooCloseToStart": "Exam cannot be edited less than 30 minutes before start time",
-    "editDraftOrScheduledOnly": "Exam can only be edited in DRAFT or SCHEDULED status (at least 30 minutes before scheduled publish)",
+    "editDraftOrScheduledOnly": "This exam cannot be edited in its current status (closed/archived). Published exam settings can be updated via Edit settings.",
     "editTooCloseToPublish": "Scheduled exam cannot be edited less than 30 minutes before publish time",
     "editMissingPublishAt": "Scheduled exam is missing a scheduled publish date"
   },

@@ -195,6 +195,16 @@
     "kindLabel": "نوع المساحة",
     "institutionPlatform": "منصة تعليمية",
     "soloTeacher": "معلم مستقل",
+    "studentJoin": "طالب",
+    "studentTitle": "الانضمام كمساحة طالب",
+    "studentSubtitle": "أدخل كود الانضمام للالتحاق بمؤسسة أو مسار تعليمي تحت حسابك الحالي، دون إنشاء مساحة عمل جديدة.",
+    "studentAccountNoticeTitle": "تنبيه هام حول الحساب:",
+    "studentAccountNotice": "سيتم ربط عضوية الطالب بمساحتك الحالية عبر كود الانضمام. لن تحتاج إلى إنشاء حساب جديد.",
+    "studentJoinHint": "يظهر كود الانضمام عادة لدى المعلم أو إدارة المؤسسة.",
+    "joinSubmit": "انضم إلى المساحة",
+    "joining": "جاري الانضمام...",
+    "joinTermsPrefix": "بالنقر على \"انضم إلى المساحة\"، فإنك توافق على",
+    "joinSuccess": "تم الانضمام إلى مساحة العمل بنجاح",
     "logoLabelInstitution": "شعار مؤسستك (اختياري)",
     "logoLabelSolo": "صورتك الشخصية (اختياري)",
     "logoInstitution": "شعار مؤسستك (اختياري)",
@@ -237,7 +247,8 @@
       "institutionNameRequired": "اسم المنصة مطلوب",
       "teacherNameRequired": "اسم المعلم مطلوب",
       "bioRequired": "نبذة عنك مطلوبة",
-      "failed": "تعذر إنشاء مساحة العمل"
+      "failed": "تعذر إنشاء مساحة العمل",
+      "joinFailed": "تعذر الانضمام إلى مساحة العمل"
     }
   }
 }

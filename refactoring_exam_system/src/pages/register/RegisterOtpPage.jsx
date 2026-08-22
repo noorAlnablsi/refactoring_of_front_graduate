@@ -5,7 +5,7 @@ import { ROUTES } from '../../constants/routes'
 import OtpInput from '../../components/auth/OtpInput'
 import RegisterProgress from '../../components/auth/RegisterProgress'
 import { useOtpVerification } from '../../hooks/useOtpVerification'
-import loginHero from '../../assets/auth/value-prop-side.png'
+import loginHero from '../../assets/auth/register-hero-otp.png'
 
 function RegisterOtpPage() {
   const { t } = useTranslation('auth')
@@ -26,7 +26,11 @@ function RegisterOtpPage() {
   } = useOtpVerification()
 
   return (
-    <AuthShell heroImage={loginHero} heroAlt={t('register.otp.heroAlt')}>
+    <AuthShell
+      heroImage={loginHero}
+      heroAlt={t('register.otp.heroAlt')}
+      showHeroHeadline={false}
+    >
       {!isStudentFlow && !isEmailVerificationFlow ? <RegisterProgress activeStep={3} /> : null}
 
       <h1 className="text-right text-3xl font-extrabold text-[#2A3433]">{t('register.otp.title')}</h1>

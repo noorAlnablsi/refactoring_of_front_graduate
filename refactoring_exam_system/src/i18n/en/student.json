@@ -125,6 +125,12 @@
     "subtitle": "Surveys assigned to you for completion.",
     "retry": "Retry"
   },
+  "examLinkGate": {
+    "title": "This exam link is for students",
+    "body": "This link opens the exam entry page with a student account. You are currently on a teacher/admin path, so the exam cannot be opened here.",
+    "loginAsStudent": "Sign in as a student",
+    "backToDashboard": "Back to dashboard"
+  },
   "entry": {
     "loading": "Preparing exam entry...",
     "loadError": "Could not load exam entry data",
@@ -178,7 +184,7 @@
     "resumeExam": "Resume exam",
     "startHint": "The button enables after you agree to the rules and pass the camera check (if required).",
     "cannotStart": "You cannot start this exam right now according to backend rules (start not allowed).",
-    "blockedMaxAttempts": "Not allowed — you have used all permitted attempts ({{count}}). You cannot enter this exam again.",
+    "blockedMaxAttempts": "Not allowed — you have used all permitted attempts ({{count}}). If the teacher raised the limit, save exam settings again then refresh this page.",
     "blockedAlreadyCompleted": "Not allowed — your previous attempt has ended and cannot be resumed. If you still have remaining attempts per exam settings, refresh the page or contact your teacher."
   },
   "calendar": {

@@ -1,7 +1,12 @@
+import { useTranslation } from 'react-i18next'
 import { AlertTriangle, ShieldAlert, Info } from 'lucide-react'
 import { VIOLATION_SEVERITY } from '../../constants/proctoring'
+import { translateBackendMessage } from '../../i18n/translateBackendMessage'
+import { resolveMonitoringLogMessage } from '../../lib/proctoring/monitoringModel'
 
 function ProctoringWarning({ warning }) {
+  const { t, i18n } = useTranslation('exams')
+
   if (!warning) return null
 
   const severity = String(warning.severity || VIOLATION_SEVERITY.LOW).toUpperCase()
@@ -27,6 +32,18 @@ function ProctoringWarning({ warning }) {
   const ui = styles[severity] || styles[VIOLATION_SEVERITY.LOW]
   const Icon = ui.Icon
 
+  const resolved =
+    resolveMonitoringLogMessage(
+      t,
+      {
+        eventType: warning.eventType || warning.violation?.violation_type || warning.violation?.type,
+        message: warning.message,
+      },
+      i18n.language,
+    ) ||
+    (warning.message ? translateBackendMessage(warning.message) : null) ||
+    t(`monitoring.severity.${severity}`, { defaultValue: severity })
+
   return (
     <div
       role="alert"
@@ -37,9 +54,7 @@ function ProctoringWarning({ warning }) {
         <Icon className="mt-0.5 h-5 w-5 shrink-0" />
         <div className="min-w-0 flex-1">
           <p className="text-sm font-extrabold">{ui.title}</p>
-          <p className="mt-1 text-xs font-semibold opacity-90">
-            {warning.message || `Severity: ${severity}`}
-          </p>
+          <p className="mt-1 text-xs font-semibold opacity-90">{resolved}</p>
         </div>
       </div>
     </div>
