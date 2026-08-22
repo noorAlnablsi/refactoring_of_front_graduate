@@ -1,6 +1,7 @@
-import { useState } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { useEffect, useState } from 'react'
+import { Navigate, useNavigate } from 'react-router-dom'
 import { Eye, EyeOff, ShieldCheck } from 'lucide-react'
+import { ROUTES } from '../../constants/routes'
 import { useAppTranslation } from '../../hooks/useAppTranslation'
 import { changePassword } from '../../services/auth.service'
 import { useAuthStore } from '../../store/authStore'
@@ -16,6 +17,8 @@ const inputClass =
 function ForceResetPasswordPage() {
   const { t } = useAppTranslation('auth')
   const navigate = useNavigate()
+  const access_token = useAuthStore((s) => s.access_token)
+  const must_reset_password = useAuthStore((s) => s.must_reset_password)
 
   const [password, setPassword] = useState('')
   const [confirmPassword, setConfirmPassword] = useState('')
@@ -23,6 +26,20 @@ function ForceResetPasswordPage() {
   const [showConfirm, setShowConfirm] = useState(false)
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
+
+  useEffect(() => {
+    if (!access_token) {
+      navigate(ROUTES.LOGIN, { replace: true })
+      return
+    }
+
+    if (!must_reset_password) {
+      const { memberships } = useAuthStore.getState()
+      navigate(resolvePostLoginRoute({ memberships, must_reset_password: false }), { replace: true })
+    }
+  }, [access_token, must_reset_password, navigate])
+
+  if (!access_token || !must_reset_password) return null
 
   const handleSubmit = async (e) => {
     e.preventDefault()

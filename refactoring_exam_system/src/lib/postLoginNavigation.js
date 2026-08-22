@@ -1,4 +1,5 @@
 import { ROUTES } from '../constants/routes'
+import { extractMustResetPassword } from './authPayload'
 import { useAuthStore } from '../store/authStore'
 
 export function mustForceResetPassword() {
@@ -18,8 +19,7 @@ export function resolveMembershipHomeRoute(membership) {
 
 
 export function resolvePostLoginRoute(data) {
-
-  if (data.must_reset_password) {
+  if (extractMustResetPassword(data)) {
     return ROUTES.FORCE_RESET_PASSWORD
   }
 

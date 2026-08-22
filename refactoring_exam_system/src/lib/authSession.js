@@ -1,4 +1,5 @@
 import { refreshAccessToken } from '../services/auth.service'
+import { getMyProfile } from '../services/users.service'
 import { useAuthStore } from '../store/authStore'
 import { getAccessTokenExpiresAt, isAccessTokenExpired } from './token'
 
@@ -113,23 +114,44 @@ export function waitForAuthHydration() {
   })
 }
 
+export async function syncAuthProfile() {
+  const { refresh_token, setMustResetPassword, updateUser } = useAuthStore.getState()
+  if (!refresh_token) return
+
+  try {
+    await ensureValidAccessToken()
+    const profile = await getMyProfile()
+    if (!profile || typeof profile !== 'object') return
+
+    updateUser(profile)
+    if (typeof profile.must_reset_password === 'boolean') {
+      setMustResetPassword(profile.must_reset_password)
+    }
+  } catch {
+    // Profile sync is best-effort during bootstrap.
+  }
+}
+
 export async function bootstrapAuth() {
   const { refresh_token, access_token, setTokens, clearAuth } = useAuthStore.getState()
 
   if (!refresh_token) return
 
-  if (access_token && !isAccessTokenExpired(access_token)) return
-
-  try {
-    const data = await refreshAccessToken(refresh_token)
-    setTokens({
-      access_token: data.access_token,
-      refresh_token: data.refresh_token,
-      user: data.user,
-    })
-  } catch {
-    clearAuth()
+  if (!access_token || isAccessTokenExpired(access_token)) {
+    try {
+      const data = await refreshAccessToken(refresh_token)
+      setTokens({
+        access_token: data.access_token,
+        refresh_token: data.refresh_token,
+        user: data.user,
+      })
+    } catch {
+      clearAuth()
+      return
+    }
   }
+
+  await syncAuthProfile()
 }
 
 export function enqueueTokenRefresh() {

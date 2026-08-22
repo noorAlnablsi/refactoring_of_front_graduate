@@ -36,6 +36,11 @@ function PathSelectionPage() {
       return
     }
 
+    if (useAuthStore.getState().must_reset_password) {
+      navigate(ROUTES.FORCE_RESET_PASSWORD, { replace: true })
+      return
+    }
+
     if (memberships.length === 0) {
       navigate(ROUTES.JOIN, { replace: true })
       return

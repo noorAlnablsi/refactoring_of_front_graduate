@@ -3,6 +3,7 @@ import { useLocation, useNavigate } from 'react-router-dom'
 import { OTP_LENGTH, OTP_RESEND_COOLDOWN_SEC, REGISTRATION_FLOW } from '../constants/auth'
 import { ROUTES } from '../constants/routes'
 import { tUI } from '../lib/appToast'
+import { normalizeAuthPayload } from '../lib/authPayload'
 import { waitForAuthHydration } from '../lib/authSession'
 import { resolvePostLoginRoute } from '../lib/postLoginNavigation'
 import {
@@ -138,7 +139,9 @@ export function useOtpVerification() {
           if (storedPassword && (isStudentFlow || isEmailVerificationFlow)) {
             try {
               await waitForAuthHydration()
-              const data = await login({ email: registeredEmail, password: storedPassword })
+              const data = normalizeAuthPayload(
+                await login({ email: registeredEmail, password: storedPassword }),
+              )
               useAuthStore.getState().setAuth(data)
               isLeavingRef.current = true
               reset()

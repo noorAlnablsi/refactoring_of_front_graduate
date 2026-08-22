@@ -1,5 +1,6 @@
 import { create } from 'zustand'
 import { createJSONStorage, persist } from 'zustand/middleware'
+import { extractMustResetPassword } from '../lib/authPayload'
 
 const initialState = {
   access_token: null,
@@ -16,26 +17,53 @@ export const useAuthStore = create(
     (set) => ({
       ...initialState,
 
-      setAuth: (payload) =>
-        set({
+      setAuth: (payload) => {
+        const must_reset_password = extractMustResetPassword(payload)
+        const user = payload.user
+          ? { ...payload.user, must_reset_password }
+          : payload.user || null
+
+        return set({
           access_token: payload.access_token || null,
           refresh_token: payload.refresh_token || null,
-          user: payload.user || null,
+          user,
           memberships: payload.memberships || [],
           requires_workspace_selection: Boolean(payload.requires_workspace_selection),
           selected_membership_id:
             payload.memberships?.length === 1 ? payload.memberships[0].membership_id : null,
-          must_reset_password: Boolean(payload.must_reset_password),
-        }),
+          must_reset_password,
+        })
+      },
 
-      clearMustResetPassword: () => set({ must_reset_password: false }),
+      clearMustResetPassword: () =>
+        set((state) => ({
+          must_reset_password: false,
+          user: state.user ? { ...state.user, must_reset_password: false } : state.user,
+        })),
+
+      setMustResetPassword: (must_reset_password) =>
+        set((state) => ({
+          must_reset_password: Boolean(must_reset_password),
+          user: state.user
+            ? { ...state.user, must_reset_password: Boolean(must_reset_password) }
+            : state.user,
+        })),
 
       setTokens: ({ access_token, refresh_token, user }) =>
-        set((state) => ({
-          access_token: access_token ?? state.access_token,
-          refresh_token: refresh_token ?? state.refresh_token,
-          user: user ?? state.user,
-        })),
+        set((state) => {
+          const nextUser = user ?? state.user
+          const must_reset_password =
+            user && typeof user.must_reset_password === 'boolean'
+              ? user.must_reset_password
+              : state.must_reset_password
+
+          return {
+            access_token: access_token ?? state.access_token,
+            refresh_token: refresh_token ?? state.refresh_token,
+            user: nextUser,
+            must_reset_password,
+          }
+        }),
 
       updateUser: (user) =>
         set((state) => ({

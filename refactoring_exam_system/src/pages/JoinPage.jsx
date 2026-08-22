@@ -14,6 +14,7 @@ function JoinPage() {
   const { t } = useTranslation(['auth', 'forms'])
   const navigate = useNavigate()
   const access_token = useAuthStore((s) => s.access_token)
+  const must_reset_password = useAuthStore((s) => s.must_reset_password)
   const [joinCode, setJoinCode] = useState('')
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
@@ -22,8 +23,13 @@ function JoinPage() {
   useEffect(() => {
     if (!access_token) {
       navigate(ROUTES.LOGIN, { replace: true, state: { redirectTo: ROUTES.JOIN } })
+      return
     }
-  }, [access_token, navigate])
+
+    if (must_reset_password) {
+      navigate(ROUTES.FORCE_RESET_PASSWORD, { replace: true })
+    }
+  }, [access_token, must_reset_password, navigate])
 
   const handleSubmit = async (event) => {
     event.preventDefault()
@@ -46,7 +52,7 @@ function JoinPage() {
     }
   }
 
-  if (!access_token) return null
+  if (!access_token || must_reset_password) return null
 
   return (
     <AuthShell heroImage={loginHero} heroAlt={t('join.heroAlt')}>

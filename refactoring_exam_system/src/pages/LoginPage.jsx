@@ -3,6 +3,7 @@ import { Link, useLocation, useNavigate } from 'react-router-dom'
 import { Eye, EyeOff } from 'lucide-react'
 import { ROUTES } from '../constants/routes'
 import { useAppTranslation } from '../hooks/useAppTranslation'
+import { normalizeAuthPayload } from '../lib/authPayload'
 import { waitForAuthHydration } from '../lib/authSession'
 import { resolvePostLoginRoute } from '../lib/postLoginNavigation'
 import {
@@ -56,8 +57,13 @@ function LoginPage() {
 
     try {
       await waitForAuthHydration()
-      const data = await login({ email: email.trim(), password })
+      const data = normalizeAuthPayload(await login({ email: email.trim(), password }))
       useAuthStore.getState().setAuth(data)
+
+      if (data.must_reset_password) {
+        navigate(ROUTES.FORCE_RESET_PASSWORD, { replace: true })
+        return
+      }
 
       const memberships = data.memberships || useAuthStore.getState().memberships || []
       const pendingExamRedirect =
@@ -128,6 +134,14 @@ function LoginPage() {
             </h1>
             <p className="mt-3 text-right text-sm leading-7 text-[#6B7280] md:text-base">
               {t('login.subtitle')}
+            </p>
+
+            <p className="mt-4 max-w-[448px] rounded-xl bg-[#F8FDFC] px-4 py-3 text-right text-sm leading-7 text-[#64748B] ring-1 ring-[#CFECE9]">
+              {t('login.institutionAccountHint')}{' '}
+              <Link to={ROUTES.FORGOT_PASSWORD} className="font-bold text-[#2AA8A2]">
+                {t('login.forgotPassword')}
+              </Link>{' '}
+              {t('login.institutionAccountHintSuffix')}
             </p>
 
             <form className="mt-8 space-y-6" onSubmit={handleLogin} autoComplete="off">
