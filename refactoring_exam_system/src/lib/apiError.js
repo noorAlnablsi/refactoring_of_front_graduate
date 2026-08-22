@@ -20,6 +20,14 @@ const FIELD_I18N_KEYS = {
   membership_id: 'membershipId',
   membership_ids: 'membershipIds',
   questions: 'questions',
+  body: 'questionBody',
+  image_url: 'questionImage',
+  image_path: 'questionImage',
+  choices: 'choices',
+  type_code: 'questionType',
+  difficulty: 'questionDifficulty',
+  points: 'questionPoints',
+  topic_id: 'topic',
 }
 
 export function getFieldLabel(field) {
@@ -47,27 +55,46 @@ function translateMessagePart(message) {
   return translateBackendMessage(text)
 }
 
+function formatQuestionIndexLabel(field) {
+  const index = Number(field) + 1
+  return translateFrontendMessage('errors.questionNumber', `سؤال ${index}`, { number: index })
+}
+
+function buildValidationLabel(parentLabel, field) {
+  if (/^\d+$/.test(field)) {
+    const itemLabel = formatQuestionIndexLabel(field)
+    return parentLabel ? `${parentLabel} — ${itemLabel}` : itemLabel
+  }
+
+  const fieldLabel = getFieldLabel(field)
+  return parentLabel ? `${parentLabel} — ${fieldLabel}` : fieldLabel
+}
+
+function expandValidationNode(value, label) {
+  if (Array.isArray(value)) {
+    return value.flatMap((item) => {
+      if (item == null || item === '') return []
+      if (typeof item === 'object') return expandValidationNode(item, label)
+      return [`${label}: ${translateMessagePart(String(item))}`]
+    })
+  }
+
+  if (value && typeof value === 'object') {
+    return Object.entries(value).flatMap(([field, childValue]) =>
+      expandValidationNode(childValue, buildValidationLabel(label, field)),
+    )
+  }
+
+  if (value == null || value === '') return []
+  return [`${label}: ${translateMessagePart(String(value))}`]
+}
+
 function formatValidationErrors(errors) {
   if (!errors || typeof errors !== 'object' || Array.isArray(errors)) return null
 
-  const parts = []
-
-  for (const [field, messages] of Object.entries(errors)) {
-    const label = getFieldLabel(field)
-    const values = Array.isArray(messages) ? messages : [messages]
-
-    for (const message of values) {
-      if (!message) continue
-      let text
-      if (typeof message === 'object') {
-        const candidate = message.msg ?? message.message ?? message.detail
-        text = typeof candidate === 'string' ? candidate : JSON.stringify(message)
-      } else {
-        text = String(message)
-      }
-      parts.push(`${label}: ${translateMessagePart(text)}`)
-    }
-  }
+  const parts = Object.entries(errors).flatMap(([field, value]) =>
+    expandValidationNode(value, getFieldLabel(field)),
+  )
 
   return parts.length ? parts.join(' • ') : null
 }

@@ -23,7 +23,14 @@
     "theme": "Theme",
     "membershipId": "Membership ID",
     "membershipIds": "Membership IDs",
-    "questions": "Questions"
+    "questions": "Questions",
+    "questionBody": "Question text",
+    "questionImage": "Question image",
+    "questionType": "Question type",
+    "questionDifficulty": "Difficulty",
+    "questionPoints": "Points",
+    "topic": "Topic",
+    "choices": "Choices"
   },
   "placeholders": {
     "fullName": "Enter your full name",

@@ -23,7 +23,14 @@
     "theme": "النمط",
     "membershipId": "معرّف العضوية",
     "membershipIds": "معرّفات العضوية",
-    "questions": "الأسئلة"
+    "questions": "الأسئلة",
+    "questionBody": "نص السؤال",
+    "questionImage": "صورة السؤال",
+    "questionType": "نوع السؤال",
+    "questionDifficulty": "مستوى الصعوبة",
+    "questionPoints": "العلامة",
+    "topic": "الموضوع",
+    "choices": "الخيارات"
   },
   "placeholders": {
     "fullName": "أدخل اسمك الكامل",

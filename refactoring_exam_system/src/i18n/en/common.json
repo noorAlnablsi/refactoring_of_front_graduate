@@ -10,7 +10,8 @@
   "errors": {
     "network": "Could not reach the server ({{url}}). Make sure the backend is running and the URL is correct.",
     "requestFailed": "Could not reach the server",
-    "unexpected": "An unexpected error occurred"
+    "unexpected": "An unexpected error occurred",
+    "questionNumber": "Question {{number}}"
   },
   "comingSoon": "Coming soon",
   "cancel": "Cancel",

@@ -15,10 +15,10 @@ import { parseApiError } from '../../lib/apiError'
 import { ROUTES } from '../../constants/routes'
 import { extractTopicsList } from '../../lib/subjectTopics'
 import { canAccessQuestionBanks, canEditQuestionBank, isQuestionBankOwner } from '../../lib/workspaceContext'
-import { isRichTextEmpty } from '../../lib/richText'
-import { hasQuestionStem, toQuestionImagePath } from '../../lib/questionImage'
+import { hasQuestionStem } from '../../lib/questionImage'
 import {
   getQuestionBanksListPath,
+  normalizeQuestionBankQuestionForApi,
   QUESTION_BANK_TABS,
   validateQuestionChoiceRules,
 } from '../../lib/questionBanks'
@@ -49,37 +49,6 @@ function createDefaultQuestion() {
       { body: '', is_correct: false },
     ],
   }
-}
-
-function normalizeQuestionForApi(question) {
-  const payload = {
-    body: isRichTextEmpty(question.body) ? '' : question.body.trim(),
-    type_code: question.type_code,
-    difficulty: question.difficulty,
-    points: Number(question.points) || 1,
-  }
-
-  const imagePath = toQuestionImagePath(question.image_path)
-  if (imagePath) {
-    payload.image_path = imagePath
-  }
-
-  if (question.image_url) {
-    payload.image_url = String(question.image_url).trim()
-  }
-
-  if (question.type_code !== 'ESSAY') {
-    payload.choices = question.choices.map((choice) => ({
-      body: choice.body.trim(),
-      is_correct: Boolean(choice.is_correct),
-    }))
-  }
-
-  if (question.topic_id) {
-    payload.topic_id = Number(question.topic_id)
-  }
-
-  return payload
 }
 
 function QuestionBankEditorPage() {
@@ -231,7 +200,7 @@ function QuestionBankEditorPage() {
 
   const handleSaveQuestion = () => {
     if (!validateDraftQuestion()) return
-    setLocalQuestions((prev) => [...prev, normalizeQuestionForApi(draftQuestion)])
+    setLocalQuestions((prev) => [...prev, normalizeQuestionBankQuestionForApi(draftQuestion)])
     setDraftQuestion(createDefaultQuestion())
     showAppToast('toast.questionSavedLocally', 'success', { ns: 'questionBanks' })
   }
@@ -250,7 +219,10 @@ function QuestionBankEditorPage() {
     try {
       await updateQuestionBank(bank.id, { visibility: publishVisibility })
       if (localQuestions.length > 0) {
-        await createQuestionBankQuestions(bank.id, localQuestions)
+        await createQuestionBankQuestions(
+          bank.id,
+          localQuestions.map((question) => normalizeQuestionBankQuestionForApi(question)),
+        )
       }
       showAppToast('toast.published', 'success', { ns: 'questionBanks' })
       navigate(banksListPath)

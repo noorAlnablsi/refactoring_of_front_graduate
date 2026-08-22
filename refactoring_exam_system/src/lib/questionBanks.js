@@ -1,6 +1,9 @@
 import i18n from '../i18n'
 import { ROUTES } from '../constants/routes'
-import { getPlainTextFromHtml } from './richText'
+import { toQuestionImagePath } from './questionImage'
+import { getPlainTextFromHtml, isRichTextEmpty } from './richText'
+
+const IMAGE_ONLY_QUESTION_BODY = '.'
 
 function tQB(key, options = {}) {
   return i18n.t(key, { ns: 'questionBanks', ...options })
@@ -325,4 +328,38 @@ export function formatBankQuestionsCount(bank) {
   const count = getBankQuestionsCount(bank)
   if (count == null || Number.isNaN(count)) return '—'
   return tQB('counts.questionsAccusative', { count: count.toLocaleString(getCountLocale()) })
+}
+
+/** Backend question-banks API accepts image_path only (not image_url). */
+export function normalizeQuestionBankQuestionForApi(question) {
+  const imagePath = toQuestionImagePath(question?.image_path || question?.image_url)
+
+  let body = isRichTextEmpty(question?.body) ? '' : String(question.body).trim()
+  if (!body && imagePath) {
+    body = IMAGE_ONLY_QUESTION_BODY
+  }
+
+  const payload = {
+    body,
+    type_code: question.type_code,
+    difficulty: question.difficulty,
+    points: Number(question.points) || 1,
+  }
+
+  if (imagePath) {
+    payload.image_path = imagePath
+  }
+
+  if (question.type_code !== 'ESSAY') {
+    payload.choices = (question.choices || []).map((choice) => ({
+      body: String(choice.body || '').trim(),
+      is_correct: Boolean(choice.is_correct),
+    }))
+  }
+
+  if (question.topic_id) {
+    payload.topic_id = Number(question.topic_id)
+  }
+
+  return payload
 }

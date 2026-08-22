@@ -10,7 +10,8 @@
   "errors": {
     "network": "تعذّر الاتصال بالخادم ({{url}}). تأكد أن الباكند يعمل وأن العنوان صحيح.",
     "requestFailed": "تعذّر الاتصال بالخادم",
-    "unexpected": "حدث خطأ غير متوقع"
+    "unexpected": "حدث خطأ غير متوقع",
+    "questionNumber": "سؤال {{number}}"
   },
   "comingSoon": "قريباً",
   "cancel": "إلغاء",

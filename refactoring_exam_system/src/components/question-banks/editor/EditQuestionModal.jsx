@@ -5,10 +5,10 @@ import {
   DIFFICULTY_OPTIONS,
   getQuestionTypeLabel,
   getTrueFalseChoices,
+  normalizeQuestionBankQuestionForApi,
   validateQuestionChoiceRules,
 } from '../../../lib/questionBanks'
 import { hasQuestionStem, toQuestionImagePath } from '../../../lib/questionImage'
-import { isRichTextEmpty } from '../../../lib/richText'
 import { customModalOverlayClass, customModalPanelSafeClass } from '../../../lib/shellUi'
 import QuestionBodyEditor from './QuestionBodyEditor'
 
@@ -39,34 +39,12 @@ function normalizeForForm(question) {
 }
 
 function toApiPayload(form, originalQuestion) {
-  const payload = {
-    body: isRichTextEmpty(form.body) ? '' : form.body.trim(),
-    type_code: form.type_code,
-    difficulty: form.difficulty,
-    points: Number(form.points) || 1,
-  }
+  const payload = normalizeQuestionBankQuestionForApi(form)
 
   const nextPath = toQuestionImagePath(form.image_path)
   const prevPath = toQuestionImagePath(originalQuestion?.image_path)
-  if (nextPath) {
-    payload.image_path = nextPath
-  } else if (prevPath) {
+  if (!nextPath && prevPath) {
     payload.remove_image = true
-  }
-
-  if (form.image_url) {
-    payload.image_url = String(form.image_url).trim()
-  }
-
-  if (form.type_code !== 'ESSAY') {
-    payload.choices = form.choices.map((choice) => ({
-      body: choice.body.trim(),
-      is_correct: Boolean(choice.is_correct),
-    }))
-  }
-
-  if (form.topic_id) {
-    payload.topic_id = Number(form.topic_id)
   }
 
   return payload
