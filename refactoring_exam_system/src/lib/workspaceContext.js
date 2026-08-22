@@ -76,6 +76,11 @@ export function canAssignTeachers() {
   return membership.is_owner || membership.role === 'ADMIN'
 }
 
+/** Enroll workspace students into a subject (owner/admin in institution, solo owner). */
+export function canAssignStudentsToSubject() {
+  return canCreateSubject()
+}
+
 export function canSendInvites() {
   const membership = getActiveMembership()
   if (!membership) return false
