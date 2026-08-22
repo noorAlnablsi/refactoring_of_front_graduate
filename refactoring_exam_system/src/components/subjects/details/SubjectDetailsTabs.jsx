@@ -1,14 +1,16 @@
 import { useTranslation } from 'react-i18next'
+import { isSoloTeacher } from '../../../lib/workspaceContext'
 
 const TAB_IDS = ['overview', 'teachers', 'students', 'banks', 'exams']
 
 function SubjectDetailsTabs({ activeTab, onChange }) {
   const { t } = useTranslation('subjects')
+  const visibleTabs = isSoloTeacher() ? TAB_IDS.filter((tabId) => tabId !== 'teachers') : TAB_IDS
 
   return (
     <div className="border-b border-[#E5E9EB]">
       <div className="flex gap-10 overflow-x-auto">
-        {TAB_IDS.map((tabId) => (
+        {visibleTabs.map((tabId) => (
           <button
             key={tabId}
             type="button"

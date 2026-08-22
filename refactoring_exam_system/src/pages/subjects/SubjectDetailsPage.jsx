@@ -102,12 +102,14 @@ function SubjectDetailsPage() {
         <SubjectOverviewTab
           subject={subject}
           teachers={teachers}
+          students={students}
           questionBanks={questionBanks}
           topics={topics}
           exams={tests}
           examsLoading={testsLoading}
           examsError={testsError}
           onViewAllTeachers={() => setActiveTab('teachers')}
+          onViewAllStudents={() => setActiveTab('students')}
           onRefreshTopics={refetch}
         />
       ) : null}

@@ -1,11 +1,14 @@
 import { useTranslation } from 'react-i18next'
 import { FolderOpen } from 'lucide-react'
+import UserAvatar from '../../dashboard/UserAvatar'
 import {
   getQuestionBankName,
   getTeacherName,
   getTeacherSpecialty,
   sortByRecentDate,
 } from '../../../lib/subjectDisplay'
+import { isSoloTeacher } from '../../../lib/workspaceContext'
+import { getStudentMembershipId } from '../../../lib/workspaceStudents'
 import TeacherAvatar from './TeacherAvatar'
 import SubjectTopicsSection from './SubjectTopicsSection'
 import { SubjectRecentExamsPanel } from './SubjectExamsTab'
@@ -13,16 +16,25 @@ import { SubjectRecentExamsPanel } from './SubjectExamsTab'
 function SubjectOverviewTab({
   subject,
   teachers,
+  students = [],
   questionBanks,
   topics,
   exams = [],
   examsLoading = false,
   examsError = '',
   onViewAllTeachers,
+  onViewAllStudents,
   onRefreshTopics,
 }) {
   const { t } = useTranslation(['subjects', 'common'])
+  const showRecentStudents = isSoloTeacher()
   const recentTeachers = sortByRecentDate(teachers).slice(0, 2)
+  const recentStudents = sortByRecentDate(students, [
+    'enrolled_at',
+    'assigned_at',
+    'created_at',
+    'updated_at',
+  ]).slice(0, 2)
   const recentBanks = sortByRecentDate(questionBanks).slice(0, 3)
   const recentExams = exams.slice(0, 5)
 
@@ -44,8 +56,22 @@ function SubjectOverviewTab({
 
         <section className="rounded-2xl bg-white p-6 shadow-[0_2px_12px_rgba(15,23,42,0.04)] ring-1 ring-[#E5E9EB]">
           <div className="mb-5 flex items-center justify-between gap-3">
-            <h2 className="text-lg font-bold text-[#2A3433]">{t('details.overview.recentTeachers')}</h2>
-            {teachers.length > 0 ? (
+            <h2 className="text-lg font-bold text-[#2A3433]">
+              {showRecentStudents
+                ? t('details.overview.recentStudents')
+                : t('details.overview.recentTeachers')}
+            </h2>
+            {showRecentStudents ? (
+              students.length > 0 ? (
+                <button
+                  type="button"
+                  onClick={onViewAllStudents}
+                  className="text-sm font-bold text-[#2AA8A2] transition hover:opacity-80"
+                >
+                  {t('actions.viewAll', { ns: 'common' })}
+                </button>
+              ) : null
+            ) : teachers.length > 0 ? (
               <button
                 type="button"
                 onClick={onViewAllTeachers}
@@ -56,7 +82,37 @@ function SubjectOverviewTab({
             ) : null}
           </div>
 
-          {recentTeachers.length === 0 ? (
+          {showRecentStudents ? (
+            recentStudents.length === 0 ? (
+              <p className="text-sm text-[#94A3B8]">{t('details.students.empty')}</p>
+            ) : (
+              <div className="grid gap-4 sm:grid-cols-2">
+                {recentStudents.map((student) => {
+                  const membershipId = getStudentMembershipId(student)
+                  const fullName = student.full_name || student.name || '—'
+
+                  return (
+                    <div
+                      key={membershipId ?? student.assignment_id ?? student.user_id}
+                      className="flex items-center gap-3 rounded-2xl bg-[#F8FAFB] px-4 py-4 ring-1 ring-[#EEF2F3]"
+                    >
+                      <UserAvatar
+                        user={{ full_name: fullName, avatar_url: student.avatar_url }}
+                        size="md"
+                        rounded
+                      />
+                      <div className="min-w-0">
+                        <p className="truncate font-bold text-[#2A3433]">{fullName}</p>
+                        <p className="mt-1 truncate text-xs text-[#94A3B8]">
+                          {student.email || student.phone_number || student.phone || '—'}
+                        </p>
+                      </div>
+                    </div>
+                  )
+                })}
+              </div>
+            )
+          ) : recentTeachers.length === 0 ? (
             <p className="text-sm text-[#94A3B8]">{t('details.overview.noTeachers')}</p>
           ) : (
             <div className="grid gap-4 sm:grid-cols-2">

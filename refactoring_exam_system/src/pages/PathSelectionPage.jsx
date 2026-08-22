@@ -83,6 +83,8 @@ function PathSelectionPage() {
       heroImage={pathSelectionHero}
       heroAlt={t('pathSelection.heroAlt')}
       heroImagePosition="right center"
+      showHeroHeadline={false}
+      showHeroUsersBadge={false}
     >
       <h1 className="text-right text-3xl font-extrabold text-[#2A3433] md:text-4xl">
         {t('pathSelection.title')}

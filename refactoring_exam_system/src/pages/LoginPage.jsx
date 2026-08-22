@@ -210,6 +210,7 @@ function LoginPage() {
               image={loginHero}
               alt={t('login.heroAlt')}
               showHeadline={false}
+              showUsersBadge={false}
             />
           </div>
         </div>
