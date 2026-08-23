@@ -147,13 +147,17 @@ export function useExamWizard({ isNew = false, kind = TEST_KIND.EXAM } = {}) {
       try {
         const data = await getTestById(id)
         const fetched = data.test || data
-        setTest((prev) => mergeTestPreservingQuestions(prev, fetched))
+        let merged = fetched
+        setTest((prev) => {
+          merged = mergeTestPreservingQuestions(prev, fetched)
+          return merged
+        })
 
-        if (!canEditTest(fetched)) {
-          const msg = getEditBlockedMessage(fetched)
+        if (!canEditTest(merged)) {
+          const msg = getEditBlockedMessage(merged)
           if (msg) showToast(msg, 'error')
         }
-        return fetched
+        return merged
       } catch (err) {
         showToast(parseApiError(err), 'error')
         navigate(listRoute, { replace: true })

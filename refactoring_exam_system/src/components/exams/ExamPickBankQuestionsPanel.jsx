@@ -6,6 +6,7 @@ import { showAppToast } from '../../lib/appToast'
 import { formatLocaleNumber } from '../../lib/localeNumber'
 import { resolveQuestionImageSrc } from '../../lib/questionImage'
 import { getQuestionBankQuestions } from '../../services/questionBanks.service'
+import { extractTestQuestions } from '../../lib/testModel'
 import { addQuestionsFromBank } from '../../services/tests.service'
 import { useToastStore } from '../../store/toastStore'
 
@@ -201,12 +202,13 @@ function ExamPickBankQuestionsPanel({
 
     setSubmitting(true)
     try {
-      await addQuestionsFromBank(testId, {
+      const data = await addQuestionsFromBank(testId, {
         bank_id: bank.id,
         question_ids: selectedIds,
       })
+      const importedQuestions = extractTestQuestions(data)
       showAppToast('wizard.pickBank.added', 'success', { ns: 'exams', count: selectedIds.length })
-      onSuccess?.()
+      await onSuccess?.(importedQuestions)
     } catch (err) {
       showToast(err.message, 'error')
     } finally {

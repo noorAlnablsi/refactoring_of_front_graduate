@@ -108,6 +108,7 @@
       "emptyHint": "No questions in this exam yet — choose an add method and complete it to enable \"Next — Settings\".",
       "addedHint": "{{count}} questions added — you can continue to settings.",
       "minOneError": "Add at least one question before moving to settings",
+      "reviewOpenFailed": "Questions were added, but the review screen could not be opened. Refresh the page or try again.",
       "minOneTitle": "Add at least one question",
       "previous": "Previous",
       "nextSettings": "Next — Settings",

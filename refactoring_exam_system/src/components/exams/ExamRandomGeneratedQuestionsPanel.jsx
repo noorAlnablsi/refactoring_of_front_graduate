@@ -222,7 +222,10 @@ function ExamRandomGeneratedQuestionsPanel({
   const [editingQuestion, setEditingQuestion] = useState(null)
   const [savingEdit, setSavingEdit] = useState(false)
 
-  const choiceLetters = useMemo(() => t('choiceLetters', { returnObjects: true }), [t])
+  const choiceLetters = useMemo(() => {
+    const letters = t('choiceLetters', { returnObjects: true })
+    return Array.isArray(letters) ? letters : []
+  }, [t])
 
   const resolvedContinueLabel = continueLabel ?? t('wizard.questions.nextSettings')
   const resolvedEyebrow = eyebrow ?? t('wizard.questions.reviewSources.random.eyebrow')

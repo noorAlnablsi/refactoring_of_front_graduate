@@ -2,7 +2,7 @@ import { useCallback, useEffect, useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { EXAM_QUESTIONS_VIEWS } from '../../../lib/examWizardProgress'
 import { showAppToast } from '../../../lib/appToast'
-import { getTestId } from '../../../lib/testModel'
+import { extractTestQuestions, getTestId } from '../../../lib/testModel'
 import AddRandomBanksModal from '../AddRandomBanksModal'
 import ExamAiGeneratePanel from '../ExamAiGeneratePanel'
 import ExamCsvImportPanel from '../ExamCsvImportPanel'
@@ -150,9 +150,18 @@ function ExamAddQuestionsStep({
     return () => onBlueprintActiveChange?.(false)
   }, [subFlowActive, onBlueprintActiveChange])
 
+  useEffect(() => {
+    if (!showGeneratedView) return
+    if (generatedQuestions?.length || questions.length) return
+    setShowGeneratedView(false)
+    setGeneratedQuestions(null)
+    onBlueprintActiveChange?.(false)
+  }, [showGeneratedView, generatedQuestions, questions.length, onBlueprintActiveChange])
+
   const resolveGeneratedQuestions = (nextQuestions) => {
-    if (nextQuestions?.length) return nextQuestions
-    return questions
+    if (Array.isArray(nextQuestions) && nextQuestions.length) return nextQuestions
+    if (questions.length) return questions
+    return []
   }
 
   const handleNext = () => {
@@ -183,10 +192,15 @@ function ExamAddQuestionsStep({
   const finishQuestionsImport = async (source, importedQuestions) => {
     const refreshed = await onRefresh?.()
     const nextQuestions =
-      (importedQuestions?.length ? importedQuestions : null) ||
-      refreshed?.questions ||
-      null
-    openGeneratedReview(source, nextQuestions)
+      (Array.isArray(importedQuestions) && importedQuestions.length ? importedQuestions : null) ||
+      extractTestQuestions(refreshed) ||
+      (questions.length ? questions : null)
+
+    const opened = openGeneratedReview(source, nextQuestions)
+    if (!opened) {
+      showAppToast('wizard.questions.reviewOpenFailed', 'error', { ns: 'exams' })
+    }
+    return opened
   }
 
   const handleBanksSelected = (banks) => {
