@@ -19,6 +19,8 @@ import { hasQuestionStem } from '../../lib/questionImage'
 import {
   getQuestionBanksListPath,
   normalizeQuestionBankQuestionForApi,
+  normalizeQuestionBankQuestionForDisplay,
+  normalizeQuestionBankQuestionFromApi,
   QUESTION_BANK_TABS,
   validateQuestionChoiceRules,
 } from '../../lib/questionBanks'
@@ -112,7 +114,9 @@ function QuestionBankEditorPage() {
         try {
           const questionsData = await loadQuestionBankQuestionsForView(id, { bank: selectedBank })
           if (!cancelled) {
-            setServerQuestions(questionsData.questions || [])
+            setServerQuestions(
+              (questionsData.questions || []).map(normalizeQuestionBankQuestionFromApi),
+            )
           }
         } catch (questionsError) {
           if (cancelled) return
@@ -200,7 +204,7 @@ function QuestionBankEditorPage() {
 
   const handleSaveQuestion = () => {
     if (!validateDraftQuestion()) return
-    setLocalQuestions((prev) => [...prev, normalizeQuestionBankQuestionForApi(draftQuestion)])
+    setLocalQuestions((prev) => [...prev, normalizeQuestionBankQuestionForDisplay(draftQuestion)])
     setDraftQuestion(createDefaultQuestion())
     showAppToast('toast.questionSavedLocally', 'success', { ns: 'questionBanks' })
   }
@@ -238,7 +242,9 @@ function QuestionBankEditorPage() {
     setUpdatingQuestion(true)
     try {
       const result = await updateQuestionInBank(bank.id, editingQuestion.id, payload)
-      const updatedQuestion = result?.question || { ...editingQuestion, ...payload }
+      const updatedQuestion = normalizeQuestionBankQuestionFromApi(
+        result?.question || { ...editingQuestion, ...payload },
+      )
       setServerQuestions((prev) =>
         prev.map((question) => (String(question.id) === String(editingQuestion.id) ? updatedQuestion : question)),
       )
@@ -287,14 +293,14 @@ function QuestionBankEditorPage() {
       setServerQuestions((prev) => {
         const existingIds = new Set(prev.map((question) => String(question.id)))
         const next = imported.filter((question) => !existingIds.has(String(question.id)))
-        return [...prev, ...next]
+        return [...prev, ...next.map(normalizeQuestionBankQuestionFromApi)]
       })
       return
     }
 
     try {
       const questionsData = await getQuestionBankQuestions(bank.id)
-      setServerQuestions(questionsData.questions || [])
+      setServerQuestions((questionsData.questions || []).map(normalizeQuestionBankQuestionFromApi))
     } catch (err) {
       showToast(parseApiError(err), 'error')
     }

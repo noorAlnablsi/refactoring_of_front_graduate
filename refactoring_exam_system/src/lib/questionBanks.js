@@ -2,6 +2,8 @@ import i18n from '../i18n'
 import { ROUTES } from '../constants/routes'
 import {
   IMAGE_ONLY_QUESTION_BODY,
+  isImageOnlyPlaceholderBody,
+  resolveQuestionImageSrc,
   toQuestionImagePath,
 } from './questionImage'
 import { getPlainTextFromHtml, isRichTextEmpty } from './richText'
@@ -336,6 +338,7 @@ export function normalizeQuestionBankQuestionForApi(question) {
   const imagePath = toQuestionImagePath(question?.image_path || question?.image_url)
 
   let body = isRichTextEmpty(question?.body) ? '' : String(question.body).trim()
+  if (isImageOnlyPlaceholderBody(body)) body = ''
   if (!body && imagePath) {
     body = IMAGE_ONLY_QUESTION_BODY
   }
@@ -363,4 +366,47 @@ export function normalizeQuestionBankQuestionForApi(question) {
   }
 
   return payload
+}
+
+/** Enrich API question rows so UI can always resolve image_url. */
+export function normalizeQuestionBankQuestionFromApi(question) {
+  if (!question || typeof question !== 'object') return question
+
+  const imagePath = toQuestionImagePath(
+    question.image_path ||
+      question.snapshot_image_path ||
+      question.image_url ||
+      question.snapshot_image_url,
+  )
+  const imageUrl =
+    question.image_url ||
+    question.snapshot_image_url ||
+    resolveQuestionImageSrc({ image_path: imagePath }) ||
+    ''
+
+  return {
+    ...question,
+    image_path: imagePath,
+    image_url: imageUrl,
+  }
+}
+
+/** Keep display fields (image_url) when staging questions before publish. */
+export function normalizeQuestionBankQuestionForDisplay(question) {
+  const apiPayload = normalizeQuestionBankQuestionForApi(question)
+  const imagePath =
+    apiPayload.image_path ||
+    toQuestionImagePath(question?.image_path || question?.image_url)
+
+  return {
+    ...question,
+    ...apiPayload,
+    body: apiPayload.body,
+    image_path: imagePath,
+    image_url:
+      question?.image_url ||
+      question?.snapshot_image_url ||
+      resolveQuestionImageSrc({ image_path: imagePath }) ||
+      '',
+  }
 }

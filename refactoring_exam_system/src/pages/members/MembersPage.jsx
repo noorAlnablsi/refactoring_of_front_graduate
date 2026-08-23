@@ -11,6 +11,7 @@ import { useMembersOverview } from '../../hooks/members/useMembersOverview'
 import {
   canAccessMembersModule,
   canBulkImportWorkspaceMembers,
+  canShowStudentGroupsInSidebar,
 } from '../../lib/workspaceContext'
 import {
   shellAccentButtonClass,
@@ -25,6 +26,7 @@ function MembersPage() {
   const { groups, loading: groupsLoading } = useMembersGroupsPreview(5)
   const [importOpen, setImportOpen] = useState(false)
   const canImport = canBulkImportWorkspaceMembers()
+  const showGroups = canShowStudentGroupsInSidebar()
 
   if (!canAccessMembersModule()) {
     return <Navigate to={ROUTES.DASHBOARD} replace />
@@ -64,7 +66,9 @@ function MembersPage() {
         isInstitution={isInstitution}
       />
 
-      <MembersGroupsPreview groups={groups} loading={groupsLoading} />
+      {showGroups ? (
+        <MembersGroupsPreview groups={groups} loading={groupsLoading} />
+      ) : null}
 
       <ImportMembersCsvModal
         open={importOpen}

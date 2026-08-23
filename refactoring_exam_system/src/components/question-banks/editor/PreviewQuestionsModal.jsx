@@ -1,7 +1,7 @@
 import { useTranslation } from 'react-i18next'
 import { X } from 'lucide-react'
+import QuestionStemBlock from '../../shared/QuestionStemBlock'
 import { getQuestionTopicLabel, getQuestionTypeLabel } from '../../../lib/questionBanks'
-import { resolveQuestionImageSrc } from '../../../lib/questionImage'
 import { customModalOverlayClass, customModalPanelSafeClass } from '../../../lib/shellUi'
 
 function PreviewChoices({ question, t }) {
@@ -60,9 +60,7 @@ function PreviewQuestionsModal({ open, questions, topics = [], onClose }) {
           </button>
         </div>
         <div className="max-h-[70vh] space-y-3 overflow-auto">
-          {questions.map((question, index) => {
-            const imageSrc = resolveQuestionImageSrc(question)
-            return (
+          {questions.map((question, index) => (
             <article key={`${question.id || 'local'}-${index}`} className="rounded-xl border border-[#EEF2F3] p-4">
               <div className="mb-2 flex items-center justify-between gap-2 text-xs text-[#64748B]">
                 <span>{t('editor.questionNumber', { number: index + 1 })}</span>
@@ -72,19 +70,15 @@ function PreviewQuestionsModal({ open, questions, topics = [], onClose }) {
                   <span>{getQuestionTopicLabel(question, topics)}</span>
                 </div>
               </div>
-              <div
-                className="text-sm font-semibold text-[#374151]"
-                dangerouslySetInnerHTML={{ __html: question.body }}
+              <QuestionStemBlock
+                question={question}
+                textClassName="text-sm font-semibold text-[#374151]"
+                imageWrapClassName="mt-3 overflow-hidden rounded-xl bg-[#F8FAFB] ring-1 ring-[#E5E9EB]"
+                imageClassName="max-h-56 w-full object-contain"
               />
-              {imageSrc ? (
-                <div className="mt-3 overflow-hidden rounded-xl bg-[#F8FAFB] ring-1 ring-[#E5E9EB]">
-                  <img src={imageSrc} alt="" className="max-h-56 w-full object-contain" />
-                </div>
-              ) : null}
               <PreviewChoices question={question} t={t} />
             </article>
-            )
-          })}
+          ))}
         </div>
       </div>
     </div>

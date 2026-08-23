@@ -2,6 +2,7 @@ import { Link } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { BookOpen } from 'lucide-react'
 import { ROUTES } from '../../constants/routes'
+import { canShowStudentGroupsInSidebar } from '../../lib/workspaceContext'
 import { formatStatValue } from '../../lib/subjectDisplay'
 import { formatAverageScorePercent } from '../../lib/workspaceDashboardModel'
 import {
@@ -13,6 +14,7 @@ import {
 
 function TeacherDashboardSubjects({ subjects, loading }) {
   const { t } = useTranslation('dashboard')
+  const showGroupsLink = canShowStudentGroupsInSidebar()
 
   return (
     <section className={`flex h-full flex-col ${shellCardClass}`}>
@@ -21,12 +23,14 @@ function TeacherDashboardSubjects({ subjects, loading }) {
           <BookOpen className="h-5 w-5 text-[var(--shell-accent)]" strokeWidth={2} />
           <h2 className={shellSectionTitleClass}>{t('teacher.subjects.title')}</h2>
         </div>
-        <Link
-          to={ROUTES.GROUPS}
-          className="rounded-full bg-[var(--shell-accent-bg)] px-3 py-1 text-xs font-bold text-[var(--shell-accent)]"
-        >
-          {t('teacher.subjects.manageGroups')}
-        </Link>
+        {showGroupsLink ? (
+          <Link
+            to={ROUTES.GROUPS}
+            className="rounded-full bg-[var(--shell-accent-bg)] px-3 py-1 text-xs font-bold text-[var(--shell-accent)]"
+          >
+            {t('teacher.subjects.manageGroups')}
+          </Link>
+        ) : null}
       </div>
 
       {loading ? (

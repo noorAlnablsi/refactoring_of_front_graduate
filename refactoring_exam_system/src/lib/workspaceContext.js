@@ -96,24 +96,22 @@ export function canAccessExams() {
 }
 
 export function canAccessStudentGroups() {
-  const membership = getActiveMembership()
-  if (!membership) return false
-  return membership.role !== 'STUDENT'
+  return canShowStudentGroupsInSidebar()
 }
 
 export function canShowStudentGroupsInSidebar() {
   const membership = getActiveMembership()
   if (!membership || membership.role === 'STUDENT') return false
+  if (isSoloTeacher(membership)) return false
   if (membership.role === 'TEACHER') return true
-  if (membership.workspace?.kind === 'SOLO') return true
   return false
 }
 
 export function canMutateStudentGroups() {
   const membership = getActiveMembership()
   if (!membership || membership.role === 'STUDENT') return false
+  if (isSoloTeacher(membership)) return false
   if (membership.role === 'TEACHER') return true
-  if (membership.workspace?.kind === 'SOLO' && membership.is_owner) return true
   return false
 }
 

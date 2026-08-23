@@ -135,11 +135,7 @@ export async function archiveQuestionBank(bankId) {
   return data
 }
 
-export async function loadQuestionBankQuestionsForView(bankId, { bank } = {}) {
-  if (Array.isArray(bank?.questions) && bank.questions.length) {
-    return { questions: bank.questions }
-  }
-
+export async function loadQuestionBankQuestionsForView(bankId) {
   return getQuestionBankQuestions(bankId)
 }
 

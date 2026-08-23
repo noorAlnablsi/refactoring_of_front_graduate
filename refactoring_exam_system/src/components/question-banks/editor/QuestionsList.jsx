@@ -7,8 +7,7 @@ import {
   getQuestionTypeLabel,
 } from '../../../lib/questionBanks'
 import { formatLocaleNumber } from '../../../lib/localeNumber'
-import { shouldShowQuestionStemHtml } from '../../../lib/questionDisplay'
-import { resolveQuestionImageSrc } from '../../../lib/questionImage'
+import QuestionStemBlock from '../../shared/QuestionStemBlock'
 import { useToastStore } from '../../../store/toastStore'
 
 async function copyText(text, showToast, successMessage, errorMessages) {
@@ -89,9 +88,7 @@ function QuestionsList({
       </div>
 
       <div className="space-y-3">
-        {questions.map((question, index) => {
-          const imageSrc = resolveQuestionImageSrc(question)
-          return (
+        {questions.map((question, index) => (
           <article key={`${question.id || 'local'}-${index}`} className="rounded-xl bg-[#F8FAFB] p-4">
             <div className="mb-2 flex flex-wrap items-center justify-between gap-2">
               <span className="rounded-md bg-[#E8F7F6] px-2 py-1 text-xs font-bold text-[#2AA8A2]">
@@ -139,17 +136,12 @@ function QuestionsList({
                 ) : null}
               </div>
             </div>
-            <div
-              className="text-sm text-[#374151]"
-              dangerouslySetInnerHTML={{
-                __html: shouldShowQuestionStemHtml(question) ? question.body : '',
-              }}
+            <QuestionStemBlock
+              question={question}
+              textClassName="text-sm text-[#374151]"
+              imageWrapClassName="mt-3 overflow-hidden rounded-xl bg-white ring-1 ring-[#E5E9EB]"
+              imageClassName="max-h-56 w-full object-contain"
             />
-            {imageSrc ? (
-              <div className="mt-3 overflow-hidden rounded-xl bg-white ring-1 ring-[#E5E9EB]">
-                <img src={imageSrc} alt="" className="max-h-56 w-full object-contain" />
-              </div>
-            ) : null}
             {readOnly && Array.isArray(question.choices) && question.choices.length ? (
               <ul className="mt-3 space-y-1.5 text-sm text-[#64748B]">
                 {question.choices.map((choice, choiceIndex) => (
@@ -164,8 +156,7 @@ function QuestionsList({
               </ul>
             ) : null}
           </article>
-          )
-        })}
+        ))}
       </div>
     </section>
   )

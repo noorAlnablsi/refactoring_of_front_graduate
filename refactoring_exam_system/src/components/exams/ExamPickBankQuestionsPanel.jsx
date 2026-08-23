@@ -7,6 +7,7 @@ import { formatLocaleNumber } from '../../lib/localeNumber'
 import QuestionStemBlock from '../shared/QuestionStemBlock'
 import { getQuestionBankQuestions } from '../../services/questionBanks.service'
 import { extractTestQuestions, normalizeExamReviewQuestions } from '../../lib/testModel'
+import { normalizeQuestionBankQuestionFromApi } from '../../lib/questionBanks'
 import { addQuestionsFromBank } from '../../services/tests.service'
 import { useToastStore } from '../../store/toastStore'
 
@@ -143,7 +144,7 @@ function ExamPickBankQuestionsPanel({
     getQuestionBankQuestions(bank.id, { search: debouncedSearch || undefined })
       .then((data) => {
         if (!cancelled) {
-          setQuestions(data.questions || [])
+          setQuestions((data.questions || []).map(normalizeQuestionBankQuestionFromApi))
         }
       })
       .catch((err) => showToast(err.message, 'error'))

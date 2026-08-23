@@ -31,9 +31,13 @@ export function extractTestQuestions(payload) {
   return []
 }
 
+import { normalizeQuestionBankQuestionFromApi } from './questionBanks'
+
 export function normalizeExamReviewQuestions(questions) {
   if (!Array.isArray(questions)) return []
-  return questions.filter((question) => question && typeof question === 'object')
+  return questions
+    .filter((question) => question && typeof question === 'object')
+    .map(normalizeQuestionBankQuestionFromApi)
 }
 
 export function mergeTestPreservingQuestions(previous, next) {

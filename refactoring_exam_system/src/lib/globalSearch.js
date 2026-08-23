@@ -1,4 +1,5 @@
 import { ROUTES } from '../constants/routes'
+import { canShowStudentGroupsInSidebar } from './workspaceContext'
 
 export const GLOBAL_SEARCH_SECTIONS = [
   { key: 'subjects', type: 'subject' },
@@ -11,9 +12,16 @@ export const GLOBAL_SEARCH_SECTIONS = [
   { key: 'results', type: 'result' },
 ]
 
+function getVisibleSearchSections() {
+  return GLOBAL_SEARCH_SECTIONS.filter((section) => {
+    if (section.key === 'groups') return canShowStudentGroupsInSidebar()
+    return true
+  })
+}
+
 export function flattenGlobalSearchResults(payload) {
   const grouped = payload?.results || {}
-  return GLOBAL_SEARCH_SECTIONS.map((section) => {
+  return getVisibleSearchSections().map((section) => {
     const items = Array.isArray(grouped[section.key]) ? grouped[section.key] : []
     return {
       key: section.key,

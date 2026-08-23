@@ -8,7 +8,7 @@ import {
   normalizeQuestionBankQuestionForApi,
   validateQuestionChoiceRules,
 } from '../../../lib/questionBanks'
-import { hasQuestionStem, toQuestionImagePath } from '../../../lib/questionImage'
+import { hasQuestionStem, isImageOnlyPlaceholderBody, resolveQuestionImageSrc, toQuestionImagePath } from '../../../lib/questionImage'
 import { customModalOverlayClass, customModalPanelSafeClass } from '../../../lib/shellUi'
 import QuestionBodyEditor from './QuestionBodyEditor'
 
@@ -16,10 +16,20 @@ const inputClassName =
   'w-full rounded-xl bg-[#F6F8F9] px-4 py-3 text-sm text-[#374151] outline-none placeholder:text-[#94A3B8] focus:ring-2 focus:ring-[#2AA8A2]/40'
 
 function normalizeForForm(question) {
+  const rawBody = question?.body || question?.snapshot_question_text || ''
   return {
-    body: question?.body || '',
-    image_path: toQuestionImagePath(question?.image_path),
-    image_url: question?.image_url || '',
+    body: isImageOnlyPlaceholderBody(rawBody) ? '' : rawBody,
+    image_path: toQuestionImagePath(
+      question?.image_path ||
+        question?.snapshot_image_path ||
+        question?.image_url ||
+        question?.snapshot_image_url,
+    ),
+    image_url:
+      question?.image_url ||
+      question?.snapshot_image_url ||
+      resolveQuestionImageSrc(question) ||
+      '',
     type_code: question?.type_code || 'MCQ',
     difficulty: question?.difficulty || 'EASY',
     points: Number(question?.points) || 1,

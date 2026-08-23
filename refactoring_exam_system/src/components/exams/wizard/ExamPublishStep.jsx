@@ -32,7 +32,7 @@ import { getSubjectGroups, getWorkspaceGroups } from '../../../services/studentG
 import { getWorkspaceStudents, getWorkspaceTeachers } from '../../../services/workspaces.service'
 import { showAppToast } from '../../../lib/appToast'
 import { parseApiError } from '../../../lib/apiError'
-import { isInstitutionManager, isStudentGroupOwner } from '../../../lib/workspaceContext'
+import { isInstitutionManager, isSoloTeacher, isStudentGroupOwner } from '../../../lib/workspaceContext'
 import { useToastStore } from '../../../store/toastStore'
 
 const inputClassName =
@@ -131,7 +131,7 @@ function ExamPublishStep({
   const subjectId = test?.subject_id
   const audience = getSurveyAudienceScope(test)
   const showAssign = !isSurvey || audience === SURVEY_AUDIENCE_SCOPE.TARGETED
-  const showGroups = showAssign && Boolean(subjectId)
+  const showGroups = showAssign && Boolean(subjectId) && !isSoloTeacher()
   const [publishDate, setPublishDate] = useState('')
   const [publishTime, setPublishTime] = useState('')
   const [recipientTab, setRecipientTab] = useState(RECIPIENT_TABS.GROUPS)
@@ -228,10 +228,10 @@ function ExamPublishStep({
           testId
             ? getAssignedStudents(testId).catch(() => ({ students: [] }))
             : Promise.resolve({ students: [] }),
-          subjectId
+          showGroups && subjectId
             ? getSubjectGroups(subjectId, { search: searchParam }).catch(() => ({ groups: [] }))
             : Promise.resolve({ groups: [] }),
-          subjectId
+          showGroups && subjectId
             ? getWorkspaceGroups().catch(() => ({ groups: [] }))
             : Promise.resolve({ groups: [] }),
         ])
@@ -286,7 +286,7 @@ function ExamPublishStep({
     return () => {
       cancelled = true
     }
-  }, [isSurvey, showAssign, subjectId, testId, showToast, debouncedSearch])
+  }, [isSurvey, showAssign, showGroups, subjectId, testId, showToast, debouncedSearch])
 
   const filteredStudents = students
   const filteredGroups = groups
@@ -330,7 +330,9 @@ function ExamPublishStep({
   const syncAssignments = async () => {
     if (!testId) return
 
-    const validGroupIds = filterAssignableGroupIds(groups, selectedGroupIds)
+    const validGroupIds = showGroups
+      ? filterAssignableGroupIds(groups, selectedGroupIds)
+      : []
 
     if (selectedStudentIds.length === 0 && validGroupIds.length === 0) return
 
@@ -346,7 +348,9 @@ function ExamPublishStep({
     try {
       if (isSurvey) {
         if (audience === SURVEY_AUDIENCE_SCOPE.TARGETED) {
-          const validGroupIds = filterAssignableGroupIds(groups, selectedGroupIds)
+          const validGroupIds = showGroups
+            ? filterAssignableGroupIds(groups, selectedGroupIds)
+            : []
           if (selectedStudentIds.length === 0 && validGroupIds.length === 0) {
             showAppToast('toast.targetedRequired', 'error', { ns: 'surveys' })
             return

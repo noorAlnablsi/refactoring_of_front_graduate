@@ -2,15 +2,23 @@ import { useCallback, useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { translateBackendMessage } from '../../i18n/translateBackendMessage'
 import { normalizeStudentGroup } from '../../lib/studentGroupsModel'
+import { canShowStudentGroupsInSidebar } from '../../lib/workspaceContext'
 import { getWorkspaceGroups } from '../../services/studentGroups.service'
 
 export function useMembersGroupsPreview(limit = 5) {
   const { t } = useTranslation('groups')
   const [groups, setGroups] = useState([])
-  const [loading, setLoading] = useState(true)
+  const [loading, setLoading] = useState(canShowStudentGroupsInSidebar())
   const [error, setError] = useState('')
 
   const fetchGroups = useCallback(async () => {
+    if (!canShowStudentGroupsInSidebar()) {
+      setGroups([])
+      setLoading(false)
+      setError('')
+      return
+    }
+
     setLoading(true)
     setError('')
     try {
