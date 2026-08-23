@@ -3,52 +3,74 @@ import { toQuestionImagePath } from './questionImage'
 import { validateQuestionChoiceRules } from './questionBanks'
 import { ensureSurveyChoicesForApi } from './examQuestions'
 
-export function getTestQuestionBody(question = {}) {
+function coerceQuestion(question) {
+  return question && typeof question === 'object' ? question : {}
+}
+
+export function getTestQuestionBody(question) {
+  const record = coerceQuestion(question)
   return (
-    question.snapshot_question_text ||
-    question.body ||
-    question.question_text ||
+    record.snapshot_question_text ||
+    record.body ||
+    record.question_text ||
     ''
   )
 }
 
-export function getTestQuestionImagePath(question = {}) {
-  return toQuestionImagePath(
-    question.snapshot_image_path || question.image_path,
-  )
+export function getTestQuestionImagePath(question) {
+  const record = coerceQuestion(question)
+  return toQuestionImagePath(record.snapshot_image_path || record.image_path)
 }
 
-export function getTestQuestionImageUrl(question = {}) {
-  return question.snapshot_image_url || question.image_url || ''
+export function getTestQuestionImageUrl(question) {
+  const record = coerceQuestion(question)
+  return record.snapshot_image_url || record.image_url || ''
 }
-
-export function getTestQuestionChoices(question = {}) {
-  if (Array.isArray(question.snapshot_choices) && question.snapshot_choices.length) {
-    return question.snapshot_choices
+function parseChoiceList(value) {
+  if (Array.isArray(value)) {
+    return value.filter((choice) => choice != null && typeof choice === 'object')
   }
-  if (Array.isArray(question.choices) && question.choices.length) {
-    return question.choices
+  if (typeof value === 'string') {
+    try {
+      const parsed = JSON.parse(value)
+      return Array.isArray(parsed)
+        ? parsed.filter((choice) => choice != null && typeof choice === 'object')
+        : []
+    } catch {
+      return []
+    }
   }
   return []
 }
 
-export function normalizeTestQuestionForForm(question = {}) {
+export function getTestQuestionChoices(question) {
+  const record = coerceQuestion(question)
+  const snapshotChoices = parseChoiceList(record.snapshot_choices)
+  if (snapshotChoices.length) return snapshotChoices
+
+  const choices = parseChoiceList(record.choices)
+  if (choices.length) return choices
+
+  return []
+}
+
+export function normalizeTestQuestionForForm(question) {
+  const record = coerceQuestion(question)
   return {
-    body: getTestQuestionBody(question),
-    image_path: getTestQuestionImagePath(question),
-    image_url: getTestQuestionImageUrl(question),
-    type_code: question.snapshot_type_code || question.type_code || 'MCQ',
-    difficulty: question.snapshot_difficulty || question.difficulty || 'EASY',
-    points: Number(question.snapshot_points ?? question.points) || 1,
-    topic_id: question.topic_id || '',
-    choices: getTestQuestionChoices(question).map((choice) => ({
+    body: getTestQuestionBody(record),
+    image_path: getTestQuestionImagePath(record),
+    image_url: getTestQuestionImageUrl(record),
+    type_code: record.snapshot_type_code || record.type_code || 'MCQ',
+    difficulty: record.snapshot_difficulty || record.difficulty || 'EASY',
+    points: Number(record.snapshot_points ?? record.points) || 1,
+    topic_id: record.topic_id || '',
+    choices: getTestQuestionChoices(record).map((choice) => ({
       id: choice.id,
       body: choice.body || choice.text || choice.choice_text || '',
       is_correct: Boolean(choice.is_correct),
     })),
   }
 }
-
 export function buildTestQuestionPatchPayload(form, originalQuestion, { surveyMode = false } = {}) {
   const payload = {
     body: isRichTextEmpty(form.body) ? '' : form.body.trim(),
@@ -63,10 +85,6 @@ export function buildTestQuestionPatchPayload(form, originalQuestion, { surveyMo
     payload.image_path = nextPath
   } else if (prevPath) {
     payload.remove_image = true
-  }
-
-  if (form.image_url) {
-    payload.image_url = String(form.image_url).trim()
   }
 
   if (form.type_code !== 'ESSAY') {

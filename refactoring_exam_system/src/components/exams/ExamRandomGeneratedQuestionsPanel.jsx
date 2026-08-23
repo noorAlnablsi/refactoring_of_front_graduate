@@ -29,6 +29,8 @@ function GeneratedQuestionCard({
   t,
   choiceLetters,
 }) {
+  if (!question || typeof question !== 'object') return null
+
   const showToast = useToastStore((s) => s.showToast)
   const [removing, setRemoving] = useState(false)
   const [points, setPoints] = useState(question.snapshot_points ?? question.points ?? 0)
@@ -128,6 +130,7 @@ function GeneratedQuestionCard({
       {choices.length > 0 ? (
         <ul className="mt-5 space-y-3">
           {choices.map((choice, choiceIndex) => {
+            if (!choice) return null
             const letter =
               choiceLetters[choiceIndex] || formatLocaleNumber(choiceIndex + 1)
             const isCorrect = Boolean(choice.is_correct)
@@ -296,7 +299,7 @@ function ExamRandomGeneratedQuestionsPanel({
         <div className="space-y-5">
           {questions.map((question, index) => (
             <GeneratedQuestionCard
-              key={question.id || index}
+              key={question?.id ?? `question-${index}`}
               question={question}
               index={index}
               testId={testId}
@@ -346,14 +349,16 @@ function ExamRandomGeneratedQuestionsPanel({
         </div>
       </ExamWizardFooter>
 
-      <EditTestQuestionModal
-        open={Boolean(editingQuestion)}
-        question={editingQuestion}
-        surveyMode={surveyMode || hideGrading}
-        submitting={savingEdit}
-        onClose={() => setEditingQuestion(null)}
-        onSubmit={handleSaveEdit}
-      />
+      {editingQuestion ? (
+        <EditTestQuestionModal
+          open
+          question={editingQuestion}
+          surveyMode={surveyMode || hideGrading}
+          submitting={savingEdit}
+          onClose={() => setEditingQuestion(null)}
+          onSubmit={handleSaveEdit}
+        />
+      ) : null}
     </div>
   )
 }

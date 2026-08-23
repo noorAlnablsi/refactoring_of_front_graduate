@@ -1,21 +1,26 @@
 import { isRichTextEmpty } from './richText'
 import { resolveQuestionImageSrc } from './questionImage'
 
-export function getQuestionStemHtml(question = {}) {
+function coerceQuestionRecord(question) {
+  return question && typeof question === 'object' ? question : {}
+}
+
+export function getQuestionStemHtml(question) {
+  const record = coerceQuestionRecord(question)
   return (
-    question.snapshot_question_text ||
-    question.body ||
-    question.question_text ||
+    record.snapshot_question_text ||
+    record.body ||
+    record.question_text ||
     ''
   )
 }
 
-export function shouldShowQuestionStemHtml(question = {}) {
+export function shouldShowQuestionStemHtml(question) {
   return !isRichTextEmpty(getQuestionStemHtml(question))
 }
 
-export function getQuestionImageSrc(question = {}) {
-  return resolveQuestionImageSrc(question)
+export function getQuestionImageSrc(question) {
+  return resolveQuestionImageSrc(coerceQuestionRecord(question))
 }
 
 export function hasVisibleQuestionImage(question = {}) {

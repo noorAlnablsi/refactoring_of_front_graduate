@@ -33,7 +33,7 @@ function EditTestQuestionModal({
   const [error, setError] = useState('')
 
   useEffect(() => {
-    if (!open) return
+    if (!open || !question) return
     setForm(normalizeTestQuestionForForm(question))
     setError('')
   }, [open, question])

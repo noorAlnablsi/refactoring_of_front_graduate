@@ -2,7 +2,7 @@ import { useCallback, useEffect, useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { EXAM_QUESTIONS_VIEWS } from '../../../lib/examWizardProgress'
 import { showAppToast } from '../../../lib/appToast'
-import { extractTestQuestions, getTestId } from '../../../lib/testModel'
+import { extractTestQuestions, getTestId, normalizeExamReviewQuestions } from '../../../lib/testModel'
 import AddRandomBanksModal from '../AddRandomBanksModal'
 import ExamAiGeneratePanel from '../ExamAiGeneratePanel'
 import ExamCsvImportPanel from '../ExamCsvImportPanel'
@@ -50,13 +50,16 @@ function ExamAddQuestionsStep({
     [blueprintBanks],
   )
 
+  const reviewReady =
+    showGeneratedView && Boolean(generatedQuestions?.length || questions.length)
+
   const subFlowActive =
     Boolean(blueprintBanks?.length) ||
     Boolean(selectedFromBank) ||
     showManualView ||
     showCsvView ||
     showAiView ||
-    showGeneratedView
+    reviewReady
 
   const saveQuestionsProgress = useCallback(
     (questionsProgress) => {
@@ -155,12 +158,12 @@ function ExamAddQuestionsStep({
     if (generatedQuestions?.length || questions.length) return
     setShowGeneratedView(false)
     setGeneratedQuestions(null)
-    onBlueprintActiveChange?.(false)
-  }, [showGeneratedView, generatedQuestions, questions.length, onBlueprintActiveChange])
+  }, [showGeneratedView, generatedQuestions, questions.length])
 
   const resolveGeneratedQuestions = (nextQuestions) => {
-    if (Array.isArray(nextQuestions) && nextQuestions.length) return nextQuestions
-    if (questions.length) return questions
+    const normalized = normalizeExamReviewQuestions(nextQuestions)
+    if (normalized.length) return normalized
+    if (questions.length) return normalizeExamReviewQuestions(questions)
     return []
   }
 
@@ -190,17 +193,35 @@ function ExamAddQuestionsStep({
   }
 
   const finishQuestionsImport = async (source, importedQuestions) => {
-    const refreshed = await onRefresh?.()
-    const nextQuestions =
-      (Array.isArray(importedQuestions) && importedQuestions.length ? importedQuestions : null) ||
-      extractTestQuestions(refreshed) ||
-      (questions.length ? questions : null)
+    const initialQuestions = resolveGeneratedQuestions(importedQuestions)
 
-    const opened = openGeneratedReview(source, nextQuestions)
-    if (!opened) {
-      showAppToast('wizard.questions.reviewOpenFailed', 'error', { ns: 'exams' })
+    if (initialQuestions.length) {
+      const opened = openGeneratedReview(source, initialQuestions)
+      if (!opened) {
+        showAppToast('wizard.questions.reviewOpenFailed', 'error', { ns: 'exams' })
+        return false
+      }
+    } else {
+      const refreshed = await onRefresh?.()
+      const refreshedQuestions = resolveGeneratedQuestions(extractTestQuestions(refreshed))
+      const opened = openGeneratedReview(source, refreshedQuestions)
+      if (!opened) {
+        showAppToast('wizard.questions.reviewOpenFailed', 'error', { ns: 'exams' })
+        return false
+      }
     }
-    return opened
+
+    try {
+      const refreshed = await onRefresh?.()
+      const syncedQuestions = normalizeExamReviewQuestions(extractTestQuestions(refreshed))
+      if (syncedQuestions.length) {
+        setGeneratedQuestions(syncedQuestions)
+      }
+    } catch {
+      // Review is already open with fallback questions from import.
+    }
+
+    return true
   }
 
   const handleBanksSelected = (banks) => {
@@ -249,7 +270,7 @@ function ExamAddQuestionsStep({
     )
   }
 
-  if (showGeneratedView && (generatedQuestions?.length || questions.length)) {
+  if (reviewReady) {
     return (
       <ExamRandomGeneratedQuestionsPanel
         questions={generatedQuestions?.length ? generatedQuestions : questions}

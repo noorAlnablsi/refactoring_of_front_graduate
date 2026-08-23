@@ -31,6 +31,11 @@ export function extractTestQuestions(payload) {
   return []
 }
 
+export function normalizeExamReviewQuestions(questions) {
+  if (!Array.isArray(questions)) return []
+  return questions.filter((question) => question && typeof question === 'object')
+}
+
 export function mergeTestPreservingQuestions(previous, next) {
   const testData = next?.test || next
   if (!testData) return previous || null
