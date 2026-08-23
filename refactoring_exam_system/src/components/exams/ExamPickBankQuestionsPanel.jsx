@@ -4,7 +4,7 @@ import { ArrowRight, Check, Plus, Search } from 'lucide-react'
 import ExamWizardFooter from './ExamWizardFooter'
 import { showAppToast } from '../../lib/appToast'
 import { formatLocaleNumber } from '../../lib/localeNumber'
-import { resolveQuestionImageSrc } from '../../lib/questionImage'
+import QuestionStemBlock from '../shared/QuestionStemBlock'
 import { getQuestionBankQuestions } from '../../services/questionBanks.service'
 import { extractTestQuestions, normalizeExamReviewQuestions } from '../../lib/testModel'
 import { addQuestionsFromBank } from '../../services/tests.service'
@@ -20,7 +20,6 @@ function SelectableBankQuestionCard({ question, selected, onToggle, t, choiceLet
   const choices = Array.isArray(question.choices) ? question.choices : []
   const points = question.points ?? 0
   const isTrueFalse = question.type_code === 'TRUE_FALSE'
-  const imageSrc = resolveQuestionImageSrc(question)
   const topicName =
     question?.topic_name ||
     question?.topic?.name ||
@@ -69,15 +68,12 @@ function SelectableBankQuestionCard({ question, selected, onToggle, t, choiceLet
         </button>
       </div>
 
-      <div
-        className="mt-5 text-base font-extrabold leading-8 text-[#2A3433]"
-        dangerouslySetInnerHTML={{ __html: question.body || '' }}
+      <QuestionStemBlock
+        question={question}
+        textClassName="mt-5 text-base font-extrabold leading-8 text-[#2A3433]"
+        imageWrapClassName="mt-4 overflow-hidden rounded-xl bg-[#F8FAFB] ring-1 ring-[#E5E9EB]"
+        imageClassName="max-h-64 w-full object-contain"
       />
-      {imageSrc ? (
-        <div className="mt-4 overflow-hidden rounded-xl bg-[#F8FAFB] ring-1 ring-[#E5E9EB]">
-          <img src={imageSrc} alt="" className="max-h-64 w-full object-contain" />
-        </div>
-      ) : null}
 
       {choices.length > 0 ? (
         <ul className="mt-5 space-y-3">

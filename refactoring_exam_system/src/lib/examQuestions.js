@@ -1,5 +1,5 @@
 import { isRichTextEmpty } from './richText'
-import { hasQuestionStem, toQuestionImagePath } from './questionImage'
+import { hasQuestionStem, IMAGE_ONLY_QUESTION_BODY, toQuestionImagePath } from './questionImage'
 import { validateQuestionChoiceRules } from './questionBanks'
 import { tUI } from './appToast'
 
@@ -31,21 +31,22 @@ export function ensureSurveyChoicesForApi(choices = []) {
 }
 
 export function normalizeManualQuestionForApi(question, { surveyMode = false } = {}) {
+  const imagePath = toQuestionImagePath(question.image_path || question.image_url)
+  let body = isRichTextEmpty(question.body) ? '' : question.body.trim()
+  if (!body && imagePath) {
+    body = IMAGE_ONLY_QUESTION_BODY
+  }
+
   const payload = {
-    body: isRichTextEmpty(question.body) ? '' : question.body.trim(),
+    body,
     type_code: question.type_code,
     difficulty: question.difficulty,
     points: surveyMode ? 1 : Number(question.points) || 1,
     explanation: question.explanation?.trim() || '',
   }
 
-  const imagePath = toQuestionImagePath(question.image_path)
   if (imagePath) {
     payload.image_path = imagePath
-  }
-
-  if (question.image_url) {
-    payload.image_url = String(question.image_url).trim()
   }
 
   if (question.type_code !== 'ESSAY') {

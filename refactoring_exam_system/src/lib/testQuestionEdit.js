@@ -1,5 +1,9 @@
 import { isRichTextEmpty } from './richText'
-import { toQuestionImagePath } from './questionImage'
+import {
+  IMAGE_ONLY_QUESTION_BODY,
+  isImageOnlyPlaceholderBody,
+  toQuestionImagePath,
+} from './questionImage'
 import { validateQuestionChoiceRules } from './questionBanks'
 import { ensureSurveyChoicesForApi } from './examQuestions'
 
@@ -9,17 +13,22 @@ function coerceQuestion(question) {
 
 export function getTestQuestionBody(question) {
   const record = coerceQuestion(question)
-  return (
+  const body =
     record.snapshot_question_text ||
     record.body ||
     record.question_text ||
     ''
-  )
+  return isImageOnlyPlaceholderBody(body) ? '' : body
 }
 
 export function getTestQuestionImagePath(question) {
   const record = coerceQuestion(question)
-  return toQuestionImagePath(record.snapshot_image_path || record.image_path)
+  return toQuestionImagePath(
+    record.snapshot_image_path ||
+      record.image_path ||
+      record.snapshot_image_url ||
+      record.image_url,
+  )
 }
 
 export function getTestQuestionImageUrl(question) {
@@ -72,17 +81,23 @@ export function normalizeTestQuestionForForm(question) {
   }
 }
 export function buildTestQuestionPatchPayload(form, originalQuestion, { surveyMode = false } = {}) {
+  const imagePath = toQuestionImagePath(form.image_path || form.image_url)
+  let body = isRichTextEmpty(form.body) ? '' : form.body.trim()
+  if (isImageOnlyPlaceholderBody(body)) body = ''
+  if (!body && imagePath) {
+    body = IMAGE_ONLY_QUESTION_BODY
+  }
+
   const payload = {
-    body: isRichTextEmpty(form.body) ? '' : form.body.trim(),
+    body,
     type_code: form.type_code,
     difficulty: form.difficulty,
     points: surveyMode ? 1 : Number(form.points) || 1,
   }
 
-  const nextPath = toQuestionImagePath(form.image_path)
   const prevPath = getTestQuestionImagePath(originalQuestion)
-  if (nextPath) {
-    payload.image_path = nextPath
+  if (imagePath) {
+    payload.image_path = imagePath
   } else if (prevPath) {
     payload.remove_image = true
   }
@@ -106,8 +121,9 @@ export function buildTestQuestionPatchPayload(form, originalQuestion, { surveyMo
 }
 
 export function validateTestQuestionForm(form, { surveyMode = false } = {}) {
-  const hasText = !isRichTextEmpty(form.body)
-  const hasImage = Boolean(toQuestionImagePath(form.image_path) || form.image_url)
+  const hasText =
+    !isRichTextEmpty(form.body) && !isImageOnlyPlaceholderBody(form.body)
+  const hasImage = Boolean(toQuestionImagePath(form.image_path || form.image_url))
   if (!hasText && !hasImage) {
     return 'validation.questionContentRequired'
   }

@@ -1,9 +1,16 @@
 import { API_BASE_URL } from '../config/env'
-import { isRichTextEmpty } from './richText'
+import { getPlainTextFromHtml, isRichTextEmpty } from './richText'
 
 const UPLOADS_MARKER = '/uploads/'
 
 const ALLOWED_IMAGE_TYPES = new Set(['image/jpeg', 'image/jpg', 'image/png', 'image/webp'])
+
+/** Backend placeholder for image-only questions (must not be shown in UI). */
+export const IMAGE_ONLY_QUESTION_BODY = '.'
+
+export function isImageOnlyPlaceholderBody(html = '') {
+  return getPlainTextFromHtml(html) === IMAGE_ONLY_QUESTION_BODY
+}
 
 export function toQuestionImagePath(value) {
   const raw = String(value || '').trim()
@@ -43,12 +50,10 @@ export function isAllowedQuestionImageFile(file) {
 
 export function hasQuestionStem(question = {}) {
   const text = question.body || question.snapshot_question_text || ''
-  const hasText = !isRichTextEmpty(text)
+  const hasText = !isRichTextEmpty(text) && !isImageOnlyPlaceholderBody(text)
   const hasImage = Boolean(
-    toQuestionImagePath(question.image_path) ||
-      question.image_url ||
-      question.snapshot_image_path ||
-      question.snapshot_image_url,
+    toQuestionImagePath(question.image_path || question.image_url) ||
+      toQuestionImagePath(question.snapshot_image_path || question.snapshot_image_url),
   )
   return hasText || hasImage
 }

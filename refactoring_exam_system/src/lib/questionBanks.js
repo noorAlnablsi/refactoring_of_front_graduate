@@ -1,9 +1,10 @@
 import i18n from '../i18n'
 import { ROUTES } from '../constants/routes'
-import { toQuestionImagePath } from './questionImage'
+import {
+  IMAGE_ONLY_QUESTION_BODY,
+  toQuestionImagePath,
+} from './questionImage'
 import { getPlainTextFromHtml, isRichTextEmpty } from './richText'
-
-const IMAGE_ONLY_QUESTION_BODY = '.'
 
 function tQB(key, options = {}) {
   return i18n.t(key, { ns: 'questionBanks', ...options })

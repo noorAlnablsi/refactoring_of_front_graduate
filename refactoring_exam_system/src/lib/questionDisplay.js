@@ -1,5 +1,5 @@
 import { isRichTextEmpty } from './richText'
-import { resolveQuestionImageSrc } from './questionImage'
+import { isImageOnlyPlaceholderBody, resolveQuestionImageSrc } from './questionImage'
 
 function coerceQuestionRecord(question) {
   return question && typeof question === 'object' ? question : {}
@@ -7,12 +7,12 @@ function coerceQuestionRecord(question) {
 
 export function getQuestionStemHtml(question) {
   const record = coerceQuestionRecord(question)
-  return (
+  const stem =
     record.snapshot_question_text ||
     record.body ||
     record.question_text ||
     ''
-  )
+  return isImageOnlyPlaceholderBody(stem) ? '' : stem
 }
 
 export function shouldShowQuestionStemHtml(question) {
