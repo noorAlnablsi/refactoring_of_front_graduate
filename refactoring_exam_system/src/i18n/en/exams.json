@@ -36,6 +36,7 @@
     "delete": "Delete",
     "archive": "Archive",
     "gradeAttempts": "Grade attempts",
+    "viewResults": "View results",
     "liveMonitoring": "Live monitoring",
     "editSettings": "Edit settings"
   },
@@ -505,6 +506,9 @@
       "generated": "Generated {{count}} questions successfully"
     }
   },
+  "gradingDisplay": {
+    "fullyGraded": "Graded"
+  },
   "grading": {
     "attempts": {
       "eyebrow": "Exam grading",
@@ -523,6 +527,34 @@
         "status": "Status",
         "source": "Submission source",
         "score": "Score",
+        "action": "Action"
+      }
+    },
+    "results": {
+      "eyebrow": "Exam results",
+      "title": "View results",
+      "subtitle": "Review student scores and answers after grading is complete.",
+      "backToExams": "Back to exams",
+      "listTitle": "Graded students ({{count}})",
+      "refresh": "Refresh",
+      "loading": "Loading results...",
+      "empty": "No graded attempts yet.",
+      "retry": "Retry",
+      "viewStudent": "View answers",
+      "detailTitle": "Student answer review",
+      "detailLoading": "Loading answers...",
+      "unknownStudent": "Student",
+      "finalScore": "Final score",
+      "percentage": "Percentage",
+      "stats": {
+        "graded": "Graded attempts",
+        "pending": "Awaiting grading",
+        "inProgress": "In progress"
+      },
+      "columns": {
+        "student": "Student",
+        "score": "Score",
+        "percentage": "Percentage",
         "action": "Action"
       }
     },

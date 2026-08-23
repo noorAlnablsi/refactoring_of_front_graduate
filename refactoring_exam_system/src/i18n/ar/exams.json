@@ -36,6 +36,7 @@
     "delete": "حذف",
     "archive": "أرشفة",
     "gradeAttempts": "تصحيح المحاولات",
+    "viewResults": "عرض النتائج",
     "liveMonitoring": "المراقبة الحية",
     "editSettings": "تعديل الإعدادات"
   },
@@ -505,6 +506,9 @@
       "generated": "تم توليد {{count}} سؤال بنجاح"
     }
   },
+  "gradingDisplay": {
+    "fullyGraded": "مصحّح"
+  },
   "grading": {
     "attempts": {
       "eyebrow": "تصحيح الامتحان",
@@ -523,6 +527,34 @@
         "status": "الحالة",
         "source": "مصدر التسليم",
         "score": "الدرجة",
+        "action": "إجراء"
+      }
+    },
+    "results": {
+      "eyebrow": "نتائج الامتحان",
+      "title": "عرض النتائج",
+      "subtitle": "راجع درجات الطلاب وإجاباتهم بعد اكتمال التصحيح.",
+      "backToExams": "العودة للامتحانات",
+      "listTitle": "الطلاب المصحّحون ({{count}})",
+      "refresh": "تحديث",
+      "loading": "جاري تحميل النتائج...",
+      "empty": "لا توجد محاولات مصحّحة بعد.",
+      "retry": "إعادة المحاولة",
+      "viewStudent": "عرض الإجابات",
+      "detailTitle": "مراجعة إجابات الطالب",
+      "detailLoading": "جاري تحميل الإجابات...",
+      "unknownStudent": "طالب",
+      "finalScore": "الدرجة النهائية",
+      "percentage": "النسبة المئوية",
+      "stats": {
+        "graded": "محاولات مصحّحة",
+        "pending": "بانتظار التصحيح",
+        "inProgress": "قيد التقدم"
+      },
+      "columns": {
+        "student": "الطالب",
+        "score": "الدرجة",
+        "percentage": "النسبة",
         "action": "إجراء"
       }
     },

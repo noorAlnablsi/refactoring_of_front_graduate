@@ -41,6 +41,7 @@ function ExamsPage() {
     { id: TEST_TABS.SCHEDULED, label: t('tabs.scheduled', { ns: 'exams' }) },
     { id: TEST_TABS.PUBLISHED, label: t('tabs.published', { ns: 'exams' }) },
     { id: TEST_TABS.CLOSED, label: t('tabs.closed', { ns: 'exams' }) },
+    { id: TEST_TABS.CORRECTED, label: t('tabs.corrected', { ns: 'exams' }) },
   ]
   const [activeTab, setActiveTab] = useState(TEST_TABS.ALL)
   const { filteredTests, loading, error, search, setSearch, refetch } = useTests(activeTab)

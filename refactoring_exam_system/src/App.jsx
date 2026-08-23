@@ -38,6 +38,7 @@ import SurveysPage from './pages/surveys/SurveysPage'
 import SurveyRespondPage from './pages/surveys/SurveyRespondPage'
 import SurveyResponsesPage from './pages/surveys/SurveyResponsesPage'
 import ExamAttemptsPage from './pages/exams/ExamAttemptsPage'
+import ExamResultsPage from './pages/exams/ExamResultsPage'
 import ExamAttemptGradingPage from './pages/exams/ExamAttemptGradingPage'
 import ExamMonitoringPage from './pages/exams/ExamMonitoringPage'
 import InvitePreviewPage from './pages/invites/InvitePreviewPage'
@@ -102,6 +103,7 @@ function App() {
           <Route path={ROUTES.SURVEY_EDIT} element={<SurveyEditPage />} />
           <Route path={ROUTES.SURVEY_RESPONSES} element={<SurveyResponsesPage />} />
           <Route path={ROUTES.EXAM_ATTEMPTS} element={<ExamAttemptsPage />} />
+          <Route path={ROUTES.EXAM_RESULTS} element={<ExamResultsPage />} />
           <Route path={ROUTES.EXAM_ATTEMPT_GRADE} element={<ExamAttemptGradingPage />} />
           <Route path={ROUTES.EXAM_MONITORING} element={<ExamMonitoringPage />} />
           <Route path={ROUTES.ANALYTICS} element={<AnalyticsPage />} />

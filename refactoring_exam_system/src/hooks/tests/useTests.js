@@ -35,6 +35,8 @@ export function useTests(activeTab) {
 
       if (activeTab === TEST_TABS.ALL) {
         nextTests = filterTestsByTab(nextTests, TEST_TABS.ALL)
+      } else if (activeTab === TEST_TABS.CORRECTED) {
+        nextTests = filterTestsByTab(nextTests, TEST_TABS.CORRECTED)
       }
 
       setTests(nextTests)

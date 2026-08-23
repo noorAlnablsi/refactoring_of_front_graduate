@@ -21,6 +21,7 @@ export const ROUTES = {
   SURVEY_RESPONSES: '/surveys/:id/responses',
   SURVEY_RESPOND: '/surveys/:id',
   EXAM_ATTEMPTS: '/exams/:id/attempts',
+  EXAM_RESULTS: '/exams/:id/results',
   EXAM_ATTEMPT_GRADE: '/exams/:id/attempts/:attemptId/grade',
   EXAM_MONITORING: '/exams/:id/monitoring',
   ANALYTICS: '/analytics',

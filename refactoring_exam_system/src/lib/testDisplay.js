@@ -2,6 +2,7 @@ import { ROUTES } from '../constants/routes'
 import { TEST_AVAILABILITY_TIME_MODE, TEST_STATUS, TEST_TABS } from '../constants/tests'
 import { tUI } from './appToast'
 import { getTestId } from './testModel'
+import { isExamFullyGraded } from './testGradingDisplay'
 
 function parseLocalDateTimeMs(value) {
   if (!value) return null
@@ -52,9 +53,18 @@ export const TEST_STATUS_STYLES = {
   [TEST_STATUS.ARCHIVED]: 'bg-[#F1F5F9] text-[#94A3B8]',
 }
 
+export const TEST_FULLY_GRADED_BADGE_STYLE = 'bg-[#DCFCE7] text-[#15803D]'
+
 export function getTestStatusLabel(status) {
   if (!status) return '—'
   return tUI(`status.${status}`, { ns: 'exams', defaultValue: status })
+}
+
+export function getExamDisplayStatusLabel(test) {
+  if (isExamFullyGraded(test)) {
+    return tUI('gradingDisplay.fullyGraded', { ns: 'exams' })
+  }
+  return getTestStatusLabel(test?.status)
 }
 
 export function filterTestsByTab(tests = [], tab) {
@@ -77,6 +87,9 @@ export function filterTestsByTab(tests = [], tab) {
   }
   if (tab === TEST_TABS.CLOSED) {
     return tests.filter((test) => test.status === TEST_STATUS.CLOSED)
+  }
+  if (tab === TEST_TABS.CORRECTED) {
+    return tests.filter((test) => isExamFullyGraded(test))
   }
   return tests
 }

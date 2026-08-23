@@ -1,6 +1,7 @@
 import {
   Activity,
   Archive,
+  BarChart3,
   ClipboardCheck,
   Clock,
   Edit3,
@@ -27,6 +28,7 @@ import {
 import { getTestId, getTestName } from '../../lib/testModel'
 import { getResumeWizardStep, getExamWizardProgress } from '../../lib/examWizardProgress'
 import { readProctoringEnabledFlag } from '../../lib/proctoring/isProctoringEnabled'
+import { isExamFullyGraded } from '../../lib/testGradingDisplay'
 import { getTestById } from '../../services/tests.service'
 import {
   shellAccentButtonClass,
@@ -48,6 +50,7 @@ function ExamCard({ test, onArchive, onClose, onDelete }) {
   const isDraft = test.status === TEST_STATUS.DRAFT
   const isPublished = test.status === TEST_STATUS.PUBLISHED
   const isClosed = test.status === TEST_STATUS.CLOSED
+  const fullyGraded = isExamFullyGraded(test)
   const testId = getTestId(test)
   const listedProctoringFlag = readProctoringEnabledFlag(test)
   const [resolvedProctoringFlag, setResolvedProctoringFlag] = useState(null)
@@ -79,8 +82,9 @@ function ExamCard({ test, onArchive, onClose, onDelete }) {
     (listedProctoringFlag == null && resolvedProctoringFlag === true)
 
   const showContinue = isDraft
-  const showGrade = isPublished || isClosed
-  const showMonitor = isPublished && monitoringEnabled
+  const showGrade = (isPublished || isClosed) && !fullyGraded
+  const showViewResults = fullyGraded
+  const showMonitor = isPublished && monitoringEnabled && !fullyGraded
   const showClose = canShowCloseExamButton(test)
 
   const showDelete = isDraft || isClosed
@@ -100,6 +104,10 @@ function ExamCard({ test, onArchive, onClose, onDelete }) {
     navigate(ROUTES.EXAM_ATTEMPTS.replace(':id', testId))
   }
 
+  const openResults = () => {
+    navigate(ROUTES.EXAM_RESULTS.replace(':id', testId))
+  }
+
   const openMonitoring = () => {
     navigate(ROUTES.EXAM_MONITORING.replace(':id', testId))
   }
@@ -112,7 +120,7 @@ function ExamCard({ test, onArchive, onClose, onDelete }) {
   const dangerOutlineClass =
     'inline-flex h-auto min-h-11 w-full items-center justify-center gap-1.5 whitespace-normal rounded-xl border border-[var(--shell-border)] bg-[var(--shell-surface)] px-3 py-2.5 text-center text-sm font-bold leading-tight text-[var(--shell-danger-text)] transition hover:bg-[var(--shell-danger-bg)]'
 
-  const publishedGrid = isPublished && showGrade
+  const publishedGrid = isPublished && (showGrade || showViewResults || showMonitor)
 
   return (
     <article className={`flex h-full flex-col p-5 ${shellCardInteractiveClass}`}>
@@ -123,7 +131,7 @@ function ExamCard({ test, onArchive, onClose, onDelete }) {
           </h3>
           {test.subject_name ? <p className={`mt-1 ${shellBodyTextClass}`}>{test.subject_name}</p> : null}
         </div>
-        <ExamStatusBadge status={test.status} />
+        <ExamStatusBadge status={test.status} test={test} />
       </div>
 
       {test.description ? (
@@ -172,14 +180,25 @@ function ExamCard({ test, onArchive, onClose, onDelete }) {
       <div className={`mt-auto flex flex-col gap-2.5 border-t pt-4 ${shellDividerClass}`}>
         {publishedGrid ? (
           <div className="grid grid-cols-1 gap-2.5 sm:grid-cols-2">
-            <button
-              type="button"
-              onClick={openAttempts}
-              className={`${primaryButtonClass}${showMonitor ? '' : ' sm:col-span-2'}`}
-            >
-              <ClipboardCheck className="h-4 w-4 shrink-0" />
-              {t('card.gradeAttempts')}
-            </button>
+            {showViewResults ? (
+              <button
+                type="button"
+                onClick={openResults}
+                className={`${primaryButtonClass}${showMonitor ? '' : ' sm:col-span-2'}`}
+              >
+                <BarChart3 className="h-4 w-4 shrink-0" />
+                {t('card.viewResults')}
+              </button>
+            ) : showGrade ? (
+              <button
+                type="button"
+                onClick={openAttempts}
+                className={`${primaryButtonClass}${showMonitor ? '' : ' sm:col-span-2'}`}
+              >
+                <ClipboardCheck className="h-4 w-4 shrink-0" />
+                {t('card.gradeAttempts')}
+              </button>
+            ) : null}
             {showMonitor ? (
               <button type="button" onClick={openMonitoring} className={softMonitorClass}>
                 <Activity className="h-4 w-4 shrink-0" />
@@ -220,6 +239,13 @@ function ExamCard({ test, onArchive, onClose, onDelete }) {
               <button type="button" onClick={openAttempts} className={primaryButtonClass}>
                 <ClipboardCheck className="h-4 w-4 shrink-0" />
                 {t('card.gradeAttempts')}
+              </button>
+            ) : null}
+
+            {showViewResults ? (
+              <button type="button" onClick={openResults} className={primaryButtonClass}>
+                <BarChart3 className="h-4 w-4 shrink-0" />
+                {t('card.viewResults')}
               </button>
             ) : null}
 

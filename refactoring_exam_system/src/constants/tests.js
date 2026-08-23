@@ -30,6 +30,7 @@ export const TEST_TABS = {
   SCHEDULED: 'scheduled',
   PUBLISHED: 'published',
   CLOSED: 'closed',
+  CORRECTED: 'corrected',
 
   DRAFTS: 'drafts',
 }
