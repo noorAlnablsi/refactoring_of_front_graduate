@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
+import { normalizeExamReviewQuestions } from '../../lib/testModel'
 import { getAttemptGradingResult, getTestAttempt } from '../../services/tests.service'
 
 function normalizeReviewQuestions(data) {
@@ -33,7 +34,7 @@ export function useStudentExamReview(testId, attemptId) {
       }
       const nextAttempt = payload?.attempt || payload
       setAttempt(nextAttempt)
-      setQuestions(normalizeReviewQuestions(payload))
+      setQuestions(normalizeExamReviewQuestions(normalizeReviewQuestions(payload)))
     } catch (err) {
       setError(err.message || t('performance.review.loadError'))
       setAttempt(null)

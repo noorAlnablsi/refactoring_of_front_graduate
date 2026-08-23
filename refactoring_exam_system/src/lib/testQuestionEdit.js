@@ -2,6 +2,7 @@ import { isRichTextEmpty } from './richText'
 import {
   IMAGE_ONLY_QUESTION_BODY,
   isImageOnlyPlaceholderBody,
+  resolveQuestionImageSrc,
   toQuestionImagePath,
 } from './questionImage'
 import { validateQuestionChoiceRules } from './questionBanks'
@@ -32,8 +33,7 @@ export function getTestQuestionImagePath(question) {
 }
 
 export function getTestQuestionImageUrl(question) {
-  const record = coerceQuestion(question)
-  return record.snapshot_image_url || record.image_url || ''
+  return resolveQuestionImageSrc(coerceQuestion(question)) || ''
 }
 function parseChoiceList(value) {
   if (Array.isArray(value)) {

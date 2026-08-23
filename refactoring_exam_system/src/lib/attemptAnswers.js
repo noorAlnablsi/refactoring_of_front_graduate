@@ -1,6 +1,7 @@
 
 import { localizeDigits } from './localeNumber'
 import { resolveQuestionImageSrc } from './questionImage'
+import { normalizeExamReviewQuestions } from './testModel'
 import { normalizeSettingsConfig } from './testSettings'
 
 export const ATTEMPT_QUESTION_TYPE = {
@@ -15,13 +16,15 @@ export function normalizeAttemptPayload(data) {
   const attempt = data?.attempt || data?.data?.attempt || data
   if (!attempt) return null
 
+  const rawQuestions = Array.isArray(attempt.questions) ? attempt.questions : []
+
   return {
     ...attempt,
     id: attempt.id,
     test_id: attempt.test_id,
     status: attempt.status,
     remaining_seconds: Number(attempt.remaining_seconds) || 0,
-    questions: Array.isArray(attempt.questions) ? attempt.questions : [],
+    questions: normalizeExamReviewQuestions(rawQuestions),
     answers: Array.isArray(attempt.answers) ? attempt.answers : [],
   }
 }

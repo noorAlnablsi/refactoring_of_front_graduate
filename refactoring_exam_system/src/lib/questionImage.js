@@ -20,15 +20,41 @@ export function toQuestionImagePath(value) {
   return raw.replace(/^uploads\//, '')
 }
 
+export function extractQuestionImagePath(questionOrPath) {
+  if (!questionOrPath) return ''
+  if (typeof questionOrPath === 'string') return toQuestionImagePath(questionOrPath)
+
+  return toQuestionImagePath(
+    questionOrPath.image_path ||
+      questionOrPath.snapshot_image_path ||
+      questionOrPath.image_url ||
+      questionOrPath.snapshot_image_url,
+  )
+}
+
+/** Prefer rebuilding from image_path using frontend API_BASE_URL (backend image_url may use wrong host). */
 export function resolveQuestionImageSrc(questionOrUrl) {
   if (!questionOrUrl) return null
-  if (typeof questionOrUrl === 'string') return resolveImageValue(questionOrUrl)
+
+  if (typeof questionOrUrl === 'string') {
+    const raw = String(questionOrUrl).trim()
+    if (!raw) return null
+    const path = toQuestionImagePath(raw)
+    if (path && raw.includes(UPLOADS_MARKER)) {
+      return resolveImageValue(path)
+    }
+    return resolveImageValue(raw)
+  }
+
+  const path = extractQuestionImagePath(questionOrUrl)
+  if (path) {
+    const fromPath = resolveImageValue(path)
+    if (fromPath) return fromPath
+  }
 
   return (
     resolveImageValue(questionOrUrl.image_url) ||
-    resolveImageValue(questionOrUrl.snapshot_image_url) ||
-    resolveImageValue(questionOrUrl.image_path) ||
-    resolveImageValue(questionOrUrl.snapshot_image_path)
+    resolveImageValue(questionOrUrl.snapshot_image_url)
   )
 }
 

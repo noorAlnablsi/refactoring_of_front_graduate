@@ -378,16 +378,17 @@ export function normalizeQuestionBankQuestionFromApi(question) {
       question.image_url ||
       question.snapshot_image_url,
   )
-  const imageUrl =
-    question.image_url ||
-    question.snapshot_image_url ||
-    resolveQuestionImageSrc({ image_path: imagePath }) ||
-    ''
+  const imageUrl = resolveQuestionImageSrc({
+    image_path: imagePath,
+    snapshot_image_path: question.snapshot_image_path,
+    image_url: question.image_url,
+    snapshot_image_url: question.snapshot_image_url,
+  })
 
   return {
     ...question,
     image_path: imagePath,
-    image_url: imageUrl,
+    image_url: imageUrl || '',
   }
 }
 
@@ -398,15 +399,17 @@ export function normalizeQuestionBankQuestionForDisplay(question) {
     apiPayload.image_path ||
     toQuestionImagePath(question?.image_path || question?.image_url)
 
+  const imageUrl = resolveQuestionImageSrc({
+    image_path: imagePath,
+    image_url: question?.image_url,
+    snapshot_image_url: question?.snapshot_image_url,
+  })
+
   return {
     ...question,
     ...apiPayload,
     body: apiPayload.body,
     image_path: imagePath,
-    image_url:
-      question?.image_url ||
-      question?.snapshot_image_url ||
-      resolveQuestionImageSrc({ image_path: imagePath }) ||
-      '',
+    image_url: imageUrl || '',
   }
 }

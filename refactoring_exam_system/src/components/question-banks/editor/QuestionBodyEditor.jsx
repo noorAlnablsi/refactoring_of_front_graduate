@@ -69,7 +69,7 @@ function QuestionBodyEditor({
   const [uploading, setUploading] = useState(false)
   const [imageError, setImageError] = useState('')
 
-  const previewSrc = resolveQuestionImageSrc(imageUrl || imagePath)
+  const previewSrc = resolveQuestionImageSrc({ image_path: imagePath, image_url: imageUrl })
   const hasImage = Boolean(previewSrc)
 
   const refreshActiveFormats = useCallback(() => {
@@ -139,14 +139,14 @@ function QuestionBodyEditor({
     setImageError('')
     try {
       const uploaded = await uploadImage(file)
-      const nextPath = toQuestionImagePath(uploaded?.image_path)
+      const nextPath = toQuestionImagePath(uploaded?.image_path || uploaded?.image_url)
       if (!nextPath) {
         setImageError(t('editor.toolbar.imageUploadFailed'))
         return
       }
       onImageChange?.({
         image_path: nextPath,
-        image_url: uploaded.image_url || resolveQuestionImageSrc(nextPath) || '',
+        image_url: resolveQuestionImageSrc({ image_path: nextPath }) || '',
       })
     } catch (err) {
       setImageError(translateBackendMessage(err?.message) || t('editor.toolbar.imageUploadFailed'))
