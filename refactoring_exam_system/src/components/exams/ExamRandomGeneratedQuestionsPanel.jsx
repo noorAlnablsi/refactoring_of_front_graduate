@@ -63,7 +63,7 @@ function GeneratedQuestionCard({
     if (!testId || !questionId) return
     setSaving(true)
     try {
-      const payload = { difficulty }
+      const payload = hideGrading ? {} : { difficulty }
       if (allowPointsEdit) {
         payload.points = Number(points) || 1
       }
@@ -84,9 +84,11 @@ function GeneratedQuestionCard({
           <span className="rounded-full bg-[#E8F7F6] px-3 py-1 text-xs font-bold text-[#2AA8A2]">
             {topicName}
           </span>
-          <span className={`rounded-full px-3 py-1 text-xs font-bold ${getDifficultyBadgeClass(difficulty)}`}>
-            {t('wizard.questions.review.difficulty')} {t(`difficulty.${difficulty}`, { defaultValue: difficulty })}
-          </span>
+          {hideGrading ? null : (
+            <span className={`rounded-full px-3 py-1 text-xs font-bold ${getDifficultyBadgeClass(difficulty)}`}>
+              {t('wizard.questions.review.difficulty')} {t(`difficulty.${difficulty}`, { defaultValue: difficulty })}
+            </span>
+          )}
           {hideGrading ? null : (
             <span className="rounded-full bg-[#E8F7F6] px-3 py-1 text-xs font-bold text-[#2AA8A2]">
               {formatLocaleNumber(points)}{' '}
@@ -157,7 +159,7 @@ function GeneratedQuestionCard({
         </ul>
       ) : null}
 
-      {testId && questionId ? (
+      {testId && questionId && (!hideGrading || allowPointsEdit) ? (
         <div className="mt-5 flex flex-wrap items-end gap-3 border-t border-[#EEF2F4] pt-4">
           {allowPointsEdit ? (
             <label className="text-right text-xs">
@@ -173,20 +175,22 @@ function GeneratedQuestionCard({
               />
             </label>
           ) : null}
-          <label className="text-right text-xs">
-            <span className="mb-1 block font-semibold text-[#94A3B8]">
-              {t('wizard.questions.review.difficultyLabel')}
-            </span>
-            <select
-              value={difficulty}
-              onChange={(e) => setDifficulty(e.target.value)}
-              className="h-10 rounded-lg bg-[#F6F8F9] px-3 text-sm font-bold outline-none ring-1 ring-[#E5E9EB]"
-            >
-              <option value="EASY">{t('difficulty.EASY')}</option>
-              <option value="MEDIUM">{t('difficulty.MEDIUM')}</option>
-              <option value="HARD">{t('difficulty.HARD')}</option>
-            </select>
-          </label>
+          {hideGrading ? null : (
+            <label className="text-right text-xs">
+              <span className="mb-1 block font-semibold text-[#94A3B8]">
+                {t('wizard.questions.review.difficultyLabel')}
+              </span>
+              <select
+                value={difficulty}
+                onChange={(e) => setDifficulty(e.target.value)}
+                className="h-10 rounded-lg bg-[#F6F8F9] px-3 text-sm font-bold outline-none ring-1 ring-[#E5E9EB]"
+              >
+                <option value="EASY">{t('difficulty.EASY')}</option>
+                <option value="MEDIUM">{t('difficulty.MEDIUM')}</option>
+                <option value="HARD">{t('difficulty.HARD')}</option>
+              </select>
+            </label>
+          )}
           <button
             type="button"
             onClick={handleSaveMeta}

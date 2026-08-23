@@ -3,7 +3,7 @@ import {
   isEssayQuestion,
   isMultiSelectQuestion,
 } from '../../../lib/attemptAnswers'
-import { getChoiceIndex } from '../../../lib/surveyResponses'
+import { getChoiceIndex, getSurveyQuestionTypeCode } from '../../../lib/surveyResponses'
 import QuestionStemBlock from '../../shared/QuestionStemBlock'
 import ChoiceBodyHtml from '../../shared/ChoiceBodyHtml'
 import { formatLocaleNumber } from '../../../lib/localeNumber'
@@ -23,7 +23,7 @@ function SurveyRespondQuestionCard({
 }) {
   const { t } = useTranslation('surveys')
   const questionId = question.test_question_id
-  const typeCode = question.type_code
+  const typeCode = getSurveyQuestionTypeCode(question)
   const multi = isMultiSelectQuestion(typeCode)
   const essay = isEssayQuestion(typeCode)
   const selected = Array.isArray(answer?.selected_choice_indices)

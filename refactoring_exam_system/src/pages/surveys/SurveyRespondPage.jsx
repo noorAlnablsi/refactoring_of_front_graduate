@@ -223,7 +223,7 @@ function SurveyRespondPage() {
             <button
               type="button"
               onClick={() => setSubmitOpen(true)}
-              disabled={submitting || answeredCount < 1}
+              disabled={submitting || !response?.response_id}
               className={`${shellAccentButtonClass} disabled:opacity-70`}
             >
               <Send className="h-4 w-4" />

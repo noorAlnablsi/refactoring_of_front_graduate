@@ -39,11 +39,14 @@ function SelectableBankQuestionCard({ question, selected, onToggle, t, choiceLet
           <span className="rounded-full bg-[#E8F7F6] px-3 py-1 text-xs font-bold text-[#2AA8A2]">
             {topicName}
           </span>
-          <span
-            className={`rounded-full px-3 py-1 text-xs font-bold ${getDifficultyBadgeClass(question.difficulty)}`}
-          >
-            {t('wizard.pickBank.difficulty')} {t(`difficulty.${question.difficulty}`, { defaultValue: question.difficulty })}
-          </span>
+          {hideGrading ? null : (
+            <span
+              className={`rounded-full px-3 py-1 text-xs font-bold ${getDifficultyBadgeClass(question.difficulty)}`}
+            >
+              {t('wizard.pickBank.difficulty')}{' '}
+              {t(`difficulty.${question.difficulty}`, { defaultValue: question.difficulty })}
+            </span>
+          )}
           <span className="rounded-full bg-[#DBEAFE] px-3 py-1 text-xs font-bold text-[#2563EB]">
             {t(`questionTypes.${question.type_code}`, { defaultValue: question.type_code })}
           </span>

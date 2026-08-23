@@ -143,22 +143,24 @@ function EditTestQuestionModal({
         <div className="space-y-4">
           <div className="text-xs font-semibold text-[#94A3B8]">{getQuestionTypeLabel(form.type_code)}</div>
 
-          <div className="space-y-2">
-            <label className="text-sm font-semibold text-[#374151]">
-              {t('labels.difficulty', { ns: 'questionBanks' })}
-            </label>
-            <select
-              value={form.difficulty}
-              onChange={(event) => setField('difficulty', event.target.value)}
-              className={inputClassName}
-            >
-              {DIFFICULTY_OPTIONS.map((option) => (
-                <option key={option.value} value={option.value}>
-                  {option.label}
-                </option>
-              ))}
-            </select>
-          </div>
+          {!surveyMode ? (
+            <div className="space-y-2">
+              <label className="text-sm font-semibold text-[#374151]">
+                {t('labels.difficulty', { ns: 'questionBanks' })}
+              </label>
+              <select
+                value={form.difficulty}
+                onChange={(event) => setField('difficulty', event.target.value)}
+                className={inputClassName}
+              >
+                {DIFFICULTY_OPTIONS.map((option) => (
+                  <option key={option.value} value={option.value}>
+                    {option.label}
+                  </option>
+                ))}
+              </select>
+            </div>
+          ) : null}
 
           <div className="space-y-2">
             <label className="text-sm font-semibold text-[#374151]">

@@ -109,18 +109,22 @@ function QuestionBuilderForm({ value, onChange, onSave, onAddAnother, topics = [
       </div>
 
       <div className="mt-4 space-y-2">
-        <label className="text-sm font-semibold text-[#374151]">{t('labels.difficulty')}</label>
-        <select
-          value={value.difficulty}
-          onChange={(event) => setField('difficulty', event.target.value)}
-          className={inputClassName}
-        >
-          {DIFFICULTY_OPTIONS.map((option) => (
-            <option key={option.value} value={option.value}>
-              {option.label}
-            </option>
-          ))}
-        </select>
+        {!hideGrading ? (
+          <>
+            <label className="text-sm font-semibold text-[#374151]">{t('labels.difficulty')}</label>
+            <select
+              value={value.difficulty}
+              onChange={(event) => setField('difficulty', event.target.value)}
+              className={inputClassName}
+            >
+              {DIFFICULTY_OPTIONS.map((option) => (
+                <option key={option.value} value={option.value}>
+                  {option.label}
+                </option>
+              ))}
+            </select>
+          </>
+        ) : null}
       </div>
 
       <div className="mt-4 space-y-2">

@@ -6,6 +6,8 @@ import {
   countAnsweredSurveyQuestions,
   isSurveyResponseInProgress,
   isSurveyResponseSubmitted,
+  normalizeSurveyQuestions,
+  normalizeSurveyResponse,
 } from '../../lib/surveyResponses'
 import {
   getSurveyForRespondent,
@@ -39,8 +41,10 @@ export function useSurveyRespond(surveyId) {
 
   const applyPayload = useCallback((data) => {
     const nextSurvey = data?.survey || null
-    const nextQuestions = Array.isArray(data?.questions) ? data.questions : []
-    const nextResponse = data?.my_response ?? data?.response ?? null
+    const nextQuestions = normalizeSurveyQuestions(
+      Array.isArray(data?.questions) ? data.questions : [],
+    )
+    const nextResponse = normalizeSurveyResponse(data?.my_response ?? data?.response ?? null)
 
     setSurvey(nextSurvey)
     if (nextQuestions.length) setQuestions(nextQuestions)
@@ -106,7 +110,9 @@ export function useSurveyRespond(surveyId) {
     setSaving(true)
     try {
       const data = await saveSurveyResponseAnswers(surveyId, responseId, answers)
-      if (data?.response) setResponse(data.response)
+      if (data?.response) {
+        setResponse(normalizeSurveyResponse(data.response))
+      }
       setDirty(false)
       return true
     } finally {
@@ -127,10 +133,12 @@ export function useSurveyRespond(surveyId) {
     setError('')
     try {
       const data = await startOrResumeSurveyResponse(surveyId)
-      const nextQuestions = Array.isArray(data?.questions) && data.questions.length
-        ? data.questions
-        : questionsRef.current
-      const nextResponse = data?.response || null
+      const nextQuestions = normalizeSurveyQuestions(
+        Array.isArray(data?.questions) && data.questions.length
+          ? data.questions
+          : questionsRef.current,
+      )
+      const nextResponse = normalizeSurveyResponse(data?.response || null)
 
       if (nextQuestions.length) setQuestions(nextQuestions)
       setResponse(nextResponse)
@@ -221,7 +229,9 @@ export function useSurveyRespond(surveyId) {
   const submit = useCallback(async () => {
     const currentResponse = responseRef.current
     const responseId = currentResponse?.response_id
-    if (!surveyId || !responseId) return null
+    if (!surveyId || !responseId) {
+      throw new Error('Survey response id is missing')
+    }
 
     if (saveTimerRef.current) {
       window.clearTimeout(saveTimerRef.current)
@@ -234,7 +244,7 @@ export function useSurveyRespond(surveyId) {
       await persistAnswers().catch(() => {})
       const data = await submitSurveyResponse(surveyId, responseId)
       if (data?.response) {
-        setResponse(data.response)
+        setResponse(normalizeSurveyResponse(data.response))
         if (data.response.answers) {
           setAnswersMap(buildSurveyAnswersMap(data.response.answers))
         }
