@@ -54,6 +54,12 @@ export function useSurveyRespond(surveyId) {
       setAnswersMap(buildSurveyAnswersMap(nextResponse.answers))
     }
 
+    if (!nextResponse) {
+      setPhase('intro')
+      setDirty(false)
+      return
+    }
+
     if (isSurveyResponseSubmitted(nextResponse)) {
       setPhase('completed')
       setDirty(false)

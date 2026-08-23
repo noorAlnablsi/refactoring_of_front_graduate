@@ -1,7 +1,7 @@
 import { ROUTES } from '../constants/routes'
 import { TEST_AVAILABILITY_TIME_MODE, TEST_STATUS, TEST_TABS } from '../constants/tests'
 import { tUI } from './appToast'
-import { getTestId } from './testModel'
+import { extractTestQuestions, getTestId } from './testModel'
 import { isExamFullyGraded } from './testGradingDisplay'
 
 function parseLocalDateTimeMs(value) {
@@ -102,6 +102,25 @@ export function getExamListStatusQuery(tab) {
   return {}
 }
 
+export function hasExplicitTestQuestionsCount(test) {
+  if (!test) return false
+
+  const countCandidates = [
+    test.questions_count,
+    test.question_count,
+    test.questionsCount,
+    test.questionCount,
+    test.total_questions,
+    test.totalQuestions,
+    test.num_questions,
+    test.questions_total,
+  ]
+
+  return countCandidates.some(
+    (candidate) => candidate != null && candidate !== '' && Number.isFinite(Number(candidate)),
+  )
+}
+
 export function getTestQuestionsCount(test) {
   if (!test) return 0
 
@@ -123,9 +142,8 @@ export function getTestQuestionsCount(test) {
     }
   }
 
-  if (Array.isArray(test.questions)) {
-    return test.questions.length
-  }
+  const questions = extractTestQuestions(test)
+  if (questions.length) return questions.length
 
   return 0
 }

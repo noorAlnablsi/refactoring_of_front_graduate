@@ -29,7 +29,10 @@ function formatAvailabilityLabel(test) {
   return '—'
 }
 
-function formatSubjectFallback() {
+function formatSubjectFallback(subjectId) {
+  if (subjectId != null && subjectId !== '') {
+    return tStudent('subjectFallback', { id: subjectId })
+  }
   return '—'
 }
 

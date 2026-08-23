@@ -152,7 +152,7 @@
     "submitMessagePartial": "لا يزال لديك {{count}} سؤالاً بلا إجابة. هل تريد التسليم الآن؟",
     "submitNote": "بعد التسليم تصبح الإجابات نهائية.",
     "completedTitle": "تم تسليم استجابتك",
-    "completedMessage": "شكراً لمشاركتك. يمكنك مراجعة إجاباتك أدناه دون تعديل.",
+    "completedMessage": "شكراً لمشاركتك.",
     "questionNumber": "سؤال {{number}}",
     "essayPlaceholder": "اكتب إجابتك هنا...",
     "choicesAria": "خيارات الإجابة",

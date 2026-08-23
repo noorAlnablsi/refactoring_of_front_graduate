@@ -37,6 +37,7 @@ function SurveyRespondPage() {
     error,
     survey,
     questions,
+    response,
     answersMap,
     phase,
     starting,
@@ -158,13 +159,17 @@ function SurveyRespondPage() {
           ) : null}
           <div className={`mt-4 flex flex-wrap gap-3 text-xs font-semibold ${shellSubtleTextClass}`}>
             <span>{t(`audience.${audience.toLowerCase()}`)}</span>
-            <span>•</span>
-            <span>
-              {t('respond.progress', {
-                answered: formatLocaleNumber(answeredCount),
-                total: formatLocaleNumber(questions.length),
-              })}
-            </span>
+            {phase === 'answering' ? (
+              <>
+                <span>•</span>
+                <span>
+                  {t('respond.progress', {
+                    answered: formatLocaleNumber(answeredCount),
+                    total: formatLocaleNumber(questions.length),
+                  })}
+                </span>
+              </>
+            ) : null}
           </div>
         </header>
 
@@ -193,7 +198,7 @@ function SurveyRespondPage() {
           </div>
         ) : null}
 
-        {(phase === 'answering' || phase === 'completed') && questions.length ? (
+        {phase === 'answering' && questions.length ? (
           <div className="space-y-4">
             {questions.map((question, index) => (
               <SurveyRespondQuestionCard

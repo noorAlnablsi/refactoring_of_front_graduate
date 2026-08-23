@@ -152,7 +152,7 @@
     "submitMessagePartial": "You still have {{count}} unanswered question(s). Submit now?",
     "submitNote": "After submission, answers become final.",
     "completedTitle": "Your response was submitted",
-    "completedMessage": "Thank you for participating. You can review your answers below without editing.",
+    "completedMessage": "Thank you for participating.",
     "questionNumber": "Question {{number}}",
     "essayPlaceholder": "Write your answer here...",
     "choicesAria": "Answer choices",

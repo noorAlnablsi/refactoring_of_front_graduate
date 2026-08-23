@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useMemo, useState } from 'react'
 import { filterTestsByTab } from '../../lib/testDisplay'
+import { enrichManagedSurveysWithQuestionCounts } from '../../lib/surveys'
 import { getManagedSurveys } from '../../services/surveys.service'
 
 const DEFAULT_PER_PAGE = 20
@@ -22,7 +23,8 @@ export function useSurveys(activeTab, { search = '', page = 1, perPage = DEFAULT
         include_archived: false,
       })
       const nextSurveys = data.surveys || data.items || []
-      setSurveys(nextSurveys)
+      const enrichedSurveys = await enrichManagedSurveysWithQuestionCounts(nextSurveys)
+      setSurveys(enrichedSurveys)
       setTotal(data.total ?? data.count ?? nextSurveys.length)
       setPages(Math.max(Number(data.pages) || 1, 1))
     } catch (err) {

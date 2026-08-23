@@ -1,6 +1,8 @@
 import { SURVEY_AUDIENCE_SCOPE, TEST_AVAILABILITY_TIME_MODE, TEST_KIND } from '../constants/tests'
 import { ROUTES } from '../constants/routes'
-import { getTestId } from './testModel'
+import { getTestById } from '../services/tests.service'
+import { getTestQuestionsCount, hasExplicitTestQuestionsCount } from './testDisplay'
+import { extractTestQuestions, getTestId } from './testModel'
 
 export function isSurveyTest(test) {
   return String(test?.availability_time_mode || '').toUpperCase() === TEST_AVAILABILITY_TIME_MODE.SURVEY
@@ -43,4 +45,48 @@ export function getSurveyAudienceI18nKey(scope) {
 export function isActiveWorkspaceMember(member) {
   const status = String(member?.status || member?.membership_status || 'ACTIVE').toUpperCase()
   return status === 'ACTIVE'
+}
+
+function surveyNeedsQuestionCountEnrichment(survey) {
+  if (!survey) return false
+  if (hasExplicitTestQuestionsCount(survey)) return false
+  if (extractTestQuestions(survey).length > 0) return false
+  return true
+}
+
+/** Managed survey list omits questions_count — hydrate from GET /tests/{id}. */
+export async function enrichManagedSurveysWithQuestionCounts(surveys = []) {
+  if (!Array.isArray(surveys) || !surveys.length) return surveys
+
+  const targets = surveys.filter(surveyNeedsQuestionCountEnrichment)
+  if (!targets.length) return surveys
+
+  const countEntries = await Promise.all(
+    targets.map(async (survey) => {
+      const surveyId = getTestId(survey)
+      if (surveyId == null || surveyId === '') return [surveyId, 0]
+
+      try {
+        const data = await getTestById(surveyId)
+        return [surveyId, getTestQuestionsCount(data)]
+      } catch {
+        return [surveyId, 0]
+      }
+    }),
+  )
+
+  const countById = new Map(countEntries)
+  return surveys.map((survey) => {
+    const surveyId = getTestId(survey)
+    if (!surveyNeedsQuestionCountEnrichment(survey)) return survey
+
+    const questionsCount = countById.get(surveyId)
+    if (questionsCount == null) return survey
+
+    return {
+      ...survey,
+      questions_count: questionsCount,
+      question_count: questionsCount,
+    }
+  })
 }

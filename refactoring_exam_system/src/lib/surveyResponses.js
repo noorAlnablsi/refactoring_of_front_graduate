@@ -1,13 +1,36 @@
 import {
-  buildAnswersMapFromAttempt,
   isEssayQuestion,
   isMultiSelectQuestion,
 } from './attemptAnswers'
-import { getTestQuestionChoices } from './testQuestionEdit'
 
 export const SURVEY_RESPONSE_STATUS = {
   IN_PROGRESS: 'IN_PROGRESS',
   SUBMITTED: 'SUBMITTED',
+}
+
+function parseSurveyChoiceList(value) {
+  if (Array.isArray(value)) {
+    return value.filter((choice) => choice != null && typeof choice === 'object')
+  }
+  if (typeof value === 'string') {
+    try {
+      const parsed = JSON.parse(value)
+      return Array.isArray(parsed)
+        ? parsed.filter((choice) => choice != null && typeof choice === 'object')
+        : []
+    } catch {
+      return []
+    }
+  }
+  return []
+}
+
+function getSurveyQuestionChoices(question) {
+  const snapshotChoices = parseSurveyChoiceList(question?.snapshot_choices)
+  if (snapshotChoices.length) return snapshotChoices
+  const choices = parseSurveyChoiceList(question?.choices)
+  if (choices.length) return choices
+  return []
 }
 
 export function getSurveyQuestionId(question) {
@@ -35,7 +58,7 @@ export function normalizeSurveyQuestion(question) {
 
   const testQuestionId = getSurveyQuestionId(question)
   const typeCode = getSurveyQuestionTypeCode(question)
-  const choices = getTestQuestionChoices(question)
+  const choices = getSurveyQuestionChoices(question)
 
   return {
     ...question,
@@ -64,6 +87,7 @@ export function getSurveyResponseStatus(response) {
 
 
 export function getManagerSurveyResponseCompletion(response) {
+  if (!response || typeof response !== 'object') return null
   const status = getSurveyResponseStatus(response)
   if (status === SURVEY_RESPONSE_STATUS.SUBMITTED || status === SURVEY_RESPONSE_STATUS.IN_PROGRESS) {
     return status
@@ -82,7 +106,22 @@ export function isSurveyResponseInProgress(response) {
 }
 
 export function buildSurveyAnswersMap(answers = []) {
-  return buildAnswersMapFromAttempt(answers)
+  const map = {}
+
+  for (const item of answers) {
+    const id = item?.test_question_id
+    if (id == null) continue
+
+    map[id] = {
+      test_question_id: id,
+      selected_choice_indices: Array.isArray(item.selected_choice_indices)
+        ? [...item.selected_choice_indices]
+        : null,
+      answer_text: item.answer_text ?? null,
+    }
+  }
+
+  return map
 }
 
 export function getChoiceIndex(choice, fallbackIndex = 0) {
