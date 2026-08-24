@@ -53,6 +53,9 @@ export class ProctoringService {
     this.audio = null
     this.face = null
     this.browser = null
+
+    // الأحداث التي وصلت قبل SESSION_STARTED تُحفظ وتُرسل عند بدء الجلسة
+    this._pendingEvents = []
   }
 
   setVideoElement(videoElement) {
@@ -236,6 +239,18 @@ export class ProctoringService {
     }
 
     this.browser?.start()
+
+    // أرسل الأحداث المحجوبة التي وصلت قبل SESSION_STARTED
+    if (this._pendingEvents.length) {
+      console.info('[PROCTORING] flushing pending events:', this._pendingEvents.length)
+      const pending = this._pendingEvents.splice(0)
+      for (const evt of pending) {
+        const sent = this.ws?.send(evt.type, evt.payload)
+        if (!sent) {
+          this.#restFallback(evt.type, evt.payload)
+        }
+      }
+    }
   }
 
   emitEvent(type, payload = {}) {
@@ -245,6 +260,8 @@ export class ProctoringService {
       type === PROCTORING_WS_EVENT.STUDENT_JOINED || type === PROCTORING_WS_EVENT.CAMERA_STATUS
 
     if (!this.monitoringActive && !allowedBeforeSession) {
+      // احفظ الحدث لإرساله فور بدء الجلسة
+      this._pendingEvents.push({ type, payload })
       return
     }
 
@@ -269,6 +286,7 @@ export class ProctoringService {
     if (this.stopped) return
     this.stopped = true
     this.monitoringActive = false
+    this._pendingEvents = []
     console.info('[PROCTORING STOP]', { testId: this.testId, attemptId: this.attemptId })
 
     this.browser?.stop()

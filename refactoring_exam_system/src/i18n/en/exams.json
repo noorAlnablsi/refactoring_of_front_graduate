@@ -600,6 +600,7 @@
     "manual": {
       "hint": "Grade essay questions only (PENDING_REVIEW).",
       "empty": "No questions need manual grading.",
+      "noStudentAnswer": "The student answer was not returned by the server for this attempt.",
       "scoreLabel": "Score",
       "feedbackLabel": "Teacher feedback (optional)",
       "saving": "Saving...",

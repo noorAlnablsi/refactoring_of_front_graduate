@@ -17,6 +17,88 @@ export const GRADING_WIZARD_STEPS = {
   FINAL: 4,
 }
 
+function normalizeAnswerShape(rawAnswer) {
+  if (!rawAnswer || typeof rawAnswer !== 'object') return null
+
+  const selectedCandidates = [
+    rawAnswer.selected_choice_indices,
+    rawAnswer.selected_choices_indices,
+    rawAnswer.selected_choice_ids,
+    rawAnswer.selected_choices,
+  ]
+  const selectedRaw = selectedCandidates.find((candidate) => Array.isArray(candidate)) || null
+  const selected_choice_indices = Array.isArray(selectedRaw)
+    ? selectedRaw
+        .map((value) => Number(value?.index ?? value?.choice_index ?? value))
+        .filter((value) => Number.isFinite(value))
+    : null
+
+  const answer_text =
+    rawAnswer.answer_text ??
+    rawAnswer.response_text ??
+    rawAnswer.text_answer ??
+    rawAnswer.essay_answer ??
+    rawAnswer.student_answer ??
+    null
+
+  return {
+    ...rawAnswer,
+    test_question_id:
+      rawAnswer.test_question_id ?? rawAnswer.question_id ?? rawAnswer.testQuestionId ?? null,
+    grading_status:
+      rawAnswer.grading_status ?? rawAnswer.status ?? rawAnswer.review_status ?? null,
+    earned_score: rawAnswer.earned_score ?? rawAnswer.score ?? rawAnswer.awarded_score ?? null,
+    teacher_feedback:
+      rawAnswer.teacher_feedback ?? rawAnswer.feedback ?? rawAnswer.instructor_feedback ?? '',
+    selected_choice_indices,
+    answer_text,
+  }
+}
+
+function hasAnswerPayload(answer) {
+  if (!answer) return false
+  if (String(answer.grading_status || '').trim()) return true
+  if (answer.earned_score != null && answer.earned_score !== '') return true
+  if (Array.isArray(answer.selected_choice_indices) && answer.selected_choice_indices.length > 0) return true
+  if (String(answer.answer_text || '').trim()) return true
+  return false
+}
+
+function buildAttemptAnswerIndex(attempt) {
+  const arrays = [
+    attempt?.answers,
+    attempt?.attempt_answers,
+    attempt?.submitted_answers,
+    attempt?.question_answers,
+  ]
+  const all = arrays.find((value) => Array.isArray(value)) || []
+  const index = new Map()
+
+  all.forEach((item) => {
+    const normalized = normalizeAnswerShape(item)
+    const qid = normalized?.test_question_id
+    if (qid != null) index.set(String(qid), normalized)
+  })
+
+  return index
+}
+
+function getQuestionAnswer(question, attemptAnswerIndex) {
+  const direct = normalizeAnswerShape(question?.answer)
+  if (hasAnswerPayload(direct)) return direct
+
+  const qid = question?.test_question_id
+  if (qid == null) return direct
+  const indexed = attemptAnswerIndex.get(String(qid)) || null
+  if (hasAnswerPayload(indexed)) return indexed
+  return direct || indexed
+}
+
+function isEssayType(question) {
+  const type = String(question?.snapshot_type_code || question?.type_code || '').toUpperCase()
+  return type === 'ESSAY'
+}
+
 function pickAttemptStudentName(raw) {
   const student = raw?.student && typeof raw.student === 'object' ? raw.student : null
   const user = raw?.user && typeof raw.user === 'object' ? raw.user : null
@@ -104,21 +186,39 @@ export function normalizeAttemptListItem(raw) {
 
 export function getPendingManualAnswers(attempt) {
   const questions = Array.isArray(attempt?.questions) ? attempt.questions : []
-  return questions.filter((q) => {
-    const answer = q.answer || null
+  const answerIndex = buildAttemptAnswerIndex(attempt)
+  return questions
+    .map((q) => ({ ...q, answer: getQuestionAnswer(q, answerIndex) }))
+    .filter((q) => {
+      const answer = q.answer || null
     const status = String(answer?.grading_status || '').toUpperCase()
-    return status === ANSWER_GRADING_STATUS.PENDING_REVIEW
-  })
+      if (status === ANSWER_GRADING_STATUS.PENDING_REVIEW) return true
+
+      // بعض ردود الباك لا تعطي grading_status للأسئلة المقالية قبل تصحيحها
+      if (isEssayType(q)) {
+        const hasEssayText = Boolean(String(answer?.answer_text || '').trim())
+        const hasScore = answer?.earned_score != null && answer?.earned_score !== ''
+        const alreadyGraded =
+          status === ANSWER_GRADING_STATUS.MANUALLY_GRADED ||
+          status === ANSWER_GRADING_STATUS.AUTO_GRADED
+        return hasEssayText && !hasScore && !alreadyGraded
+      }
+
+      return false
+    })
 }
 
 export function getAutoGradedAnswers(attempt) {
   const questions = Array.isArray(attempt?.questions) ? attempt.questions : []
-  return questions.filter((q) => {
-    const answer = q.answer || null
+  const answerIndex = buildAttemptAnswerIndex(attempt)
+  return questions
+    .map((q) => ({ ...q, answer: getQuestionAnswer(q, answerIndex) }))
+    .filter((q) => {
+      const answer = q.answer || null
     const status = String(answer?.grading_status || '').toUpperCase()
     if (!answer) return false
     return status !== ANSWER_GRADING_STATUS.PENDING_REVIEW
-  })
+    })
 }
 
 export function hasPendingManualGrading(attempt) {

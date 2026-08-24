@@ -7,9 +7,19 @@ import { getTestQuestionChoices } from '../../lib/testQuestionEdit'
 function GradingChoiceReview({ question, answer, hideCorrect = false }) {
   const { t, i18n } = useTranslation('exams')
   const choices = getTestQuestionChoices(question)
-  const selected = Array.isArray(answer?.selected_choice_indices)
+  const selectedIndices = Array.isArray(answer?.selected_choice_indices)
     ? answer.selected_choice_indices
+        .map((value) => Number(value?.index ?? value?.choice_index ?? value))
+        .filter((value) => Number.isFinite(value))
     : []
+  const selectedIds = Array.isArray(answer?.selected_choice_ids)
+    ? answer.selected_choice_ids.map((value) => String(value))
+    : Array.isArray(answer?.selected_choices)
+      ? answer.selected_choices
+          .map((value) => value?.id ?? value?.choice_id)
+          .filter((value) => value != null)
+          .map((value) => String(value))
+      : []
   const typeCode = String(question.snapshot_type_code || question.type_code || '').toUpperCase()
   const isTrueFalse = typeCode === 'TRUE_FALSE'
   const choiceLetters = i18n.getResource(i18n.language, 'exams', 'choiceLetters') || []
@@ -21,7 +31,9 @@ function GradingChoiceReview({ question, answer, hideCorrect = false }) {
       <p className="text-xs font-semibold text-[#94A3B8]">{t('grading.auto.choicesTitle')}</p>
       <ul className="space-y-2">
         {choices.map((choice, index) => {
-          const isSelected = selected.includes(index)
+          const isSelected =
+            selectedIndices.includes(index) ||
+            (choice?.id != null && selectedIds.includes(String(choice.id)))
           const isCorrect = Boolean(choice.is_correct)
           const letter = choiceLetters[index] || formatLocaleNumber(index + 1)
 

@@ -161,7 +161,11 @@ function ExamAttemptGradingPage() {
                     <div className="mt-4 rounded-xl bg-[#F8FDFC] p-4 text-sm leading-7 text-[#374151] ring-1 ring-[#CFECE9]">
                       {q.answer.answer_text}
                     </div>
-                  ) : null}
+                  ) : (
+                    <p className={`mt-4 text-sm ${shellSubtleTextClass}`}>
+                      {t('grading.manual.noStudentAnswer')}
+                    </p>
+                  )}
                   <div className="mt-4 grid gap-3 sm:grid-cols-2">
                     <label className="text-xs font-semibold text-[#94A3B8]">
                       {t('grading.manual.scoreLabel')}

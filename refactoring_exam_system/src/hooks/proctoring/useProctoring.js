@@ -22,29 +22,31 @@ export function useProctoring({
   onAttemptTerminatedRef.current = onAttemptTerminated
 
   const [status, setStatus] = useState(PROCTORING_CONNECTION_STATE.DISCONNECTED)
-  const [warning, setWarning] = useState(null)
+  const [warningQueue, setWarningQueue] = useState([])
   const [error, setError] = useState(null)
   const [running, setRunning] = useState(false)
   const [cameraStream, setCameraStream] = useState(null)
 
+  // warning = أول عنصر في القائمة (المعروض حالياً)
+  const warning = warningQueue[0] ?? null
+
   const showWarning = useCallback((payload) => {
-    if (!payload) {
-      setWarning(null)
-      return
-    }
-    setWarning({
+    if (!payload) return
+    const entry = {
       ...payload,
-      _id: `${Date.now()}-${payload.severity || 'low'}-${payload.message || ''}`,
-    })
+      _id: `${Date.now()}-${Math.random().toString(36).slice(2)}-${payload.severity || 'low'}`,
+    }
+    setWarningQueue((prev) => [...prev, entry])
   }, [])
 
+  // عند انتهاء مدة التنبيه الحالي، ننتقل للتالي في القائمة
   useEffect(() => {
     if (!warning) return undefined
     const timer = window.setTimeout(() => {
-      setWarning(null)
+      setWarningQueue((prev) => prev.slice(1))
     }, WARNING_AUTO_DISMISS_MS)
     return () => window.clearTimeout(timer)
-  }, [warning])
+  }, [warning?._id])
 
   const stop = useCallback(async () => {
     const service = serviceRef.current
@@ -71,7 +73,7 @@ export function useProctoring({
     }
 
     setError(null)
-    setWarning(null)
+    setWarningQueue([])
 
     const settings = getProctoringSettings(nextSettingsSource)
 
@@ -162,6 +164,7 @@ export function useProctoring({
       service.onConnectionStateChange = setStatus
       service.onWarning = showWarning
       service.onError = (err) => setError(err?.message || String(err))
+      setWarningQueue([])
       service.onAttemptTerminated = (payload) => {
         onAttemptTerminatedRef.current?.(payload)
       }
@@ -191,6 +194,7 @@ export function useProctoring({
   return {
     status,
     warning,
+    warningQueue,
     error,
     running,
     cameraStream,
@@ -199,7 +203,7 @@ export function useProctoring({
     stop,
     getService,
     adoptService,
-    clearWarning: () => setWarning(null),
+    clearWarning: () => setWarningQueue([]),
   }
 }
 
