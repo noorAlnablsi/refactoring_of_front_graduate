@@ -15,6 +15,7 @@ import {
   submitManualGrading,
 } from '../../services/tests.service'
 import { showAppToast } from '../../lib/appToast'
+import { translateBackendMessage } from '../../i18n/translateBackendMessage'
 import { useToastStore } from '../../store/toastStore'
 
 export function useExamAttemptGrading(testId, attemptId) {
@@ -91,7 +92,7 @@ export function useExamAttemptGrading(testId, attemptId) {
         setStep(GRADING_WIZARD_STEPS.AUTO)
       }
     } catch (err) {
-      showToast(err?.message || String(err), 'error')
+      showToast(translateBackendMessage(err?.message || String(err)), 'error')
       navigate(ROUTES.EXAM_ATTEMPTS.replace(':id', testId), { replace: true })
     } finally {
       setLoading(false)
@@ -169,7 +170,7 @@ export function useExamAttemptGrading(testId, attemptId) {
       setStep(GRADING_WIZARD_STEPS.PROCTORING)
       await loadReview()
     } catch (err) {
-      showToast(err?.message || String(err), 'error')
+      showToast(translateBackendMessage(err?.message || String(err)), 'error')
     } finally {
       setSaving(false)
     }
@@ -216,7 +217,7 @@ export function useExamAttemptGrading(testId, attemptId) {
       showAppToast('grading.final.saved', 'success', { ns: 'exams' })
       navigate(ROUTES.EXAM_ATTEMPTS.replace(':id', testId))
     } catch (err) {
-      showToast(err?.message || String(err), 'error')
+      showToast(translateBackendMessage(err?.message || String(err)), 'error')
     } finally {
       setSaving(false)
     }
