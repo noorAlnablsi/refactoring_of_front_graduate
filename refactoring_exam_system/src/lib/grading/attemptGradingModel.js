@@ -19,12 +19,17 @@ export const GRADING_WIZARD_STEPS = {
 
 function normalizeAnswerShape(rawAnswer) {
   if (!rawAnswer || typeof rawAnswer !== 'object') return null
+  const nested = rawAnswer.answer && typeof rawAnswer.answer === 'object' ? rawAnswer.answer : null
 
   const selectedCandidates = [
     rawAnswer.selected_choice_indices,
     rawAnswer.selected_choices_indices,
     rawAnswer.selected_choice_ids,
     rawAnswer.selected_choices,
+    nested?.selected_choice_indices,
+    nested?.selected_choices_indices,
+    nested?.selected_choice_ids,
+    nested?.selected_choices,
   ]
   const selectedRaw = selectedCandidates.find((candidate) => Array.isArray(candidate)) || null
   const selected_choice_indices = Array.isArray(selectedRaw)
@@ -39,17 +44,47 @@ function normalizeAnswerShape(rawAnswer) {
     rawAnswer.text_answer ??
     rawAnswer.essay_answer ??
     rawAnswer.student_answer ??
+    nested?.answer_text ??
+    nested?.response_text ??
+    nested?.text_answer ??
+    nested?.essay_answer ??
+    nested?.student_answer ??
     null
 
   return {
     ...rawAnswer,
     test_question_id:
-      rawAnswer.test_question_id ?? rawAnswer.question_id ?? rawAnswer.testQuestionId ?? null,
+      rawAnswer.test_question_id ??
+      rawAnswer.question_id ??
+      rawAnswer.testQuestionId ??
+      nested?.test_question_id ??
+      nested?.question_id ??
+      nested?.testQuestionId ??
+      null,
     grading_status:
-      rawAnswer.grading_status ?? rawAnswer.status ?? rawAnswer.review_status ?? null,
-    earned_score: rawAnswer.earned_score ?? rawAnswer.score ?? rawAnswer.awarded_score ?? null,
+      rawAnswer.grading_status ??
+      rawAnswer.status ??
+      rawAnswer.review_status ??
+      nested?.grading_status ??
+      nested?.status ??
+      nested?.review_status ??
+      null,
+    earned_score:
+      rawAnswer.earned_score ??
+      rawAnswer.score ??
+      rawAnswer.awarded_score ??
+      nested?.earned_score ??
+      nested?.score ??
+      nested?.awarded_score ??
+      null,
     teacher_feedback:
-      rawAnswer.teacher_feedback ?? rawAnswer.feedback ?? rawAnswer.instructor_feedback ?? '',
+      rawAnswer.teacher_feedback ??
+      rawAnswer.feedback ??
+      rawAnswer.instructor_feedback ??
+      nested?.teacher_feedback ??
+      nested?.feedback ??
+      nested?.instructor_feedback ??
+      '',
     selected_choice_indices,
     answer_text,
   }
@@ -87,11 +122,24 @@ function getQuestionAnswer(question, attemptAnswerIndex) {
   const direct = normalizeAnswerShape(question?.answer)
   if (hasAnswerPayload(direct)) return direct
 
+  // بعض استجابات الباك ترجع بيانات الإجابة مباشرة داخل السؤال
+  const fromQuestionFlat = normalizeAnswerShape({
+    test_question_id: question?.test_question_id,
+    selected_choice_indices: question?.selected_choice_indices,
+    selected_choice_ids: question?.selected_choice_ids,
+    selected_choices: question?.selected_choices,
+    answer_text: question?.answer_text ?? question?.response_text ?? question?.student_answer,
+    grading_status: question?.grading_status ?? question?.answer_status,
+    earned_score: question?.earned_score ?? question?.score ?? question?.awarded_score,
+    teacher_feedback: question?.teacher_feedback ?? question?.feedback,
+  })
+  if (hasAnswerPayload(fromQuestionFlat)) return fromQuestionFlat
+
   const qid = question?.test_question_id
   if (qid == null) return direct
   const indexed = attemptAnswerIndex.get(String(qid)) || null
   if (hasAnswerPayload(indexed)) return indexed
-  return direct || indexed
+  return direct || fromQuestionFlat || indexed
 }
 
 function isEssayType(question) {
@@ -191,11 +239,16 @@ export function getPendingManualAnswers(attempt) {
     .map((q) => ({ ...q, answer: getQuestionAnswer(q, answerIndex) }))
     .filter((q) => {
       const answer = q.answer || null
-    const status = String(answer?.grading_status || '').toUpperCase()
+      const status = String(answer?.grading_status || '').toUpperCase()
+      const essay = isEssayType(q)
+
+      // المقالي يعالج يدوياً إلا إذا صرّح الباك أنه AUTO_GRADED
+      if (essay && status !== ANSWER_GRADING_STATUS.AUTO_GRADED) return true
+
       if (status === ANSWER_GRADING_STATUS.PENDING_REVIEW) return true
 
       // بعض ردود الباك لا تعطي grading_status للأسئلة المقالية قبل تصحيحها
-      if (isEssayType(q)) {
+      if (essay) {
         const hasEssayText = Boolean(String(answer?.answer_text || '').trim())
         const hasScore = answer?.earned_score != null && answer?.earned_score !== ''
         const alreadyGraded =
@@ -213,12 +266,7 @@ export function getAutoGradedAnswers(attempt) {
   const answerIndex = buildAttemptAnswerIndex(attempt)
   return questions
     .map((q) => ({ ...q, answer: getQuestionAnswer(q, answerIndex) }))
-    .filter((q) => {
-      const answer = q.answer || null
-    const status = String(answer?.grading_status || '').toUpperCase()
-    if (!answer) return false
-    return status !== ANSWER_GRADING_STATUS.PENDING_REVIEW
-    })
+    .filter((q) => !isEssayType(q))
 }
 
 export function hasPendingManualGrading(attempt) {

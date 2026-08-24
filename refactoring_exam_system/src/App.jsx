@@ -102,10 +102,10 @@ function App() {
           <Route path={ROUTES.SURVEY_CREATE} element={<SurveyCreatePage />} />
           <Route path={ROUTES.SURVEY_EDIT} element={<SurveyEditPage />} />
           <Route path={ROUTES.SURVEY_RESPONSES} element={<SurveyResponsesPage />} />
-          <Route path={ROUTES.EXAM_ATTEMPTS} element={<ExamAttemptsPage />} />
-          <Route path={ROUTES.EXAM_RESULTS} element={<ExamResultsPage />} />
           <Route path={ROUTES.EXAM_ATTEMPT_GRADE} element={<ExamAttemptGradingPage />} />
           <Route path={ROUTES.EXAM_MONITORING} element={<ExamMonitoringPage />} />
+          <Route path={ROUTES.EXAM_ATTEMPTS} element={<ExamAttemptsPage />} />
+          <Route path={ROUTES.EXAM_RESULTS} element={<ExamResultsPage />} />
           <Route path={ROUTES.ANALYTICS} element={<AnalyticsPage />} />
           <Route path={ROUTES.ANALYTICS_INTEGRITY_REPORTS} element={<IntegrityReportsPage />} />
           <Route path={ROUTES.SETTINGS} element={<SettingsPage />} />

@@ -595,7 +595,8 @@
       "earned": "Earned score",
       "next": "Next",
       "choicesTitle": "Choices & student answer",
-      "studentChoice": "Student answer"
+      "studentChoice": "Student answer",
+      "correctChoice": "Correct answer"
     },
     "manual": {
       "hint": "Grade essay questions only (PENDING_REVIEW).",

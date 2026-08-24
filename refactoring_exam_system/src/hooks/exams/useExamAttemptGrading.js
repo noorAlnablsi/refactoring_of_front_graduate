@@ -8,6 +8,7 @@ import {
   hasPendingManualGrading,
 } from '../../lib/grading/attemptGradingModel'
 import {
+  getAttemptGradingResult,
   getProctoringGradingReview,
   getTestAttempt,
   patchAttemptFinalScore,
@@ -32,13 +33,42 @@ export function useExamAttemptGrading(testId, attemptId) {
   const [finalReason, setFinalReason] = useState('')
   const [approveSuggested, setApproveSuggested] = useState(true)
 
+  const normalizeAttemptPayload = useCallback((payload) => {
+    const attempt = payload?.attempt || payload
+    const fallbackQuestions = Array.isArray(payload?.questions) ? payload.questions : []
+    const attemptQuestions = Array.isArray(attempt?.questions) ? attempt.questions : []
+    return {
+      ...(attempt || {}),
+      questions: attemptQuestions.length ? attemptQuestions : fallbackQuestions,
+      answers: Array.isArray(attempt?.answers)
+        ? attempt.answers
+        : Array.isArray(payload?.answers)
+          ? payload.answers
+          : [],
+    }
+  }, [])
+
   const reload = useCallback(async () => {
     if (!testId || !attemptId) return
     setLoading(true)
     try {
+      // وفقًا لردّ الباك: endpoint grading/result لا يرجع إجابات الأسئلة.
+      // للحصول على questions[].answer لازم نستخدم details endpoint:
+      // GET /tests/{testId}/attempts/{attemptId}
       const data = await getTestAttempt(testId, attemptId)
-      const next = data.attempt || data
+      const next = normalizeAttemptPayload(data)
       setAttempt(next)
+
+      // grading/result يستخدم فقط لتحديد أين نحن ضمن الفلو (MANUAL vs PROCTORING vs FINAL)
+      // لأنه لا يحتوي إجابات الأسئلة نفسها.
+      let gradingStatus = null
+      try {
+        gradingStatus = await getAttemptGradingResult(testId, attemptId)
+      } catch {
+        gradingStatus = null
+      }
+      const msg = String(gradingStatus?.message || '').toUpperCase()
+      const gradingCompleted = Boolean(gradingStatus?.grading_completed)
 
       const pending = getPendingManualAnswers(next)
       const scores = {}
@@ -51,10 +81,12 @@ export function useExamAttemptGrading(testId, attemptId) {
       setManualScores(scores)
       setManualFeedback(feedback)
 
-      if (hasPendingManualGrading(next)) {
-        setStep(GRADING_WIZARD_STEPS.MANUAL)
-      } else if (String(next.status || '').toUpperCase() === 'GRADED') {
+      if (String(next.status || '').toUpperCase() === 'GRADED' || gradingCompleted) {
         setStep(GRADING_WIZARD_STEPS.FINAL)
+      } else if (/MANUAL\s+GRADING|WAITING\s+FOR\s+MANUAL|MANUAL/i.test(msg) || hasPendingManualGrading(next)) {
+        setStep(GRADING_WIZARD_STEPS.MANUAL)
+      } else if (/PROCTORING/i.test(msg)) {
+        setStep(GRADING_WIZARD_STEPS.PROCTORING)
       } else {
         setStep(GRADING_WIZARD_STEPS.AUTO)
       }
@@ -64,7 +96,7 @@ export function useExamAttemptGrading(testId, attemptId) {
     } finally {
       setLoading(false)
     }
-  }, [testId, attemptId, navigate, showToast])
+  }, [testId, attemptId, navigate, normalizeAttemptPayload, showToast])
 
   useEffect(() => {
     reload()
@@ -91,6 +123,12 @@ export function useExamAttemptGrading(testId, attemptId) {
       return null
     }
   }, [testId, attemptId])
+
+  useEffect(() => {
+    if (step !== GRADING_WIZARD_STEPS.PROCTORING && step !== GRADING_WIZARD_STEPS.FINAL) return undefined
+    void loadReview()
+    return undefined
+  }, [step, loadReview])
 
   const goNextFromAuto = useCallback(() => {
     if (pendingQuestions.length > 0) {
@@ -121,8 +159,11 @@ export function useExamAttemptGrading(testId, attemptId) {
 
     setSaving(true)
     try {
-      const data = await submitManualGrading(testId, attemptId, answers)
-      const next = data.attempt || data
+      await submitManualGrading(testId, attemptId, answers)
+
+      // Refresh لضمان أن الباك أعاد questions[].answer للواجهة
+      const refreshed = await getTestAttempt(testId, attemptId)
+      const next = normalizeAttemptPayload(refreshed)
       setAttempt(next)
       showAppToast('grading.manual.saved', 'success', { ns: 'exams' })
       setStep(GRADING_WIZARD_STEPS.PROCTORING)
@@ -139,12 +180,14 @@ export function useExamAttemptGrading(testId, attemptId) {
     manualScores,
     manualFeedback,
     loadReview,
+    normalizeAttemptPayload,
     showToast,
   ])
 
   const goNextFromProctoring = useCallback(() => {
     setStep(GRADING_WIZARD_STEPS.FINAL)
-  }, [])
+    void loadReview()
+  }, [loadReview])
 
   const submitFinal = useCallback(async () => {
     if (!testId || !attemptId) return
@@ -164,12 +207,13 @@ export function useExamAttemptGrading(testId, attemptId) {
         return
       }
 
-      const data = await patchAttemptFinalScore(testId, attemptId, payload)
+      await patchAttemptFinalScore(testId, attemptId, payload)
+
+      // Refresh لعرض الحالة النهائية/الدرجات حسب آخر بيانات من الباك
+      const refreshed = await getTestAttempt(testId, attemptId)
+      const next = normalizeAttemptPayload(refreshed)
+      setAttempt(next)
       showAppToast('grading.final.saved', 'success', { ns: 'exams' })
-      if (data?.attempt) setAttempt(data.attempt)
-      else if (data?.status) {
-        setAttempt((prev) => ({ ...(prev || {}), status: data.status, final_score: data.final_score }))
-      }
       navigate(ROUTES.EXAM_ATTEMPTS.replace(':id', testId))
     } catch (err) {
       showToast(err?.message || String(err), 'error')

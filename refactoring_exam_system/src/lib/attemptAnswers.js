@@ -97,8 +97,12 @@ export function serializeAnswersPayload(answersMap, questions = [], { includeEmp
 
   for (const question of questions) {
     const id = question.test_question_id
-    const typeCode = question.snapshot_type_code
-    const answer = answersMap[id] || getEmptyAnswer(id, typeCode)
+    const typeCode = question.snapshot_type_code || question.type_code
+    const answer =
+      answersMap[id] ||
+      answersMap[String(id)] ||
+      (id != null && Number.isFinite(Number(id)) ? answersMap[Number(id)] : null) ||
+      getEmptyAnswer(id, typeCode)
 
     if (!includeEmpty && !isAnswerProvided(answer, typeCode)) continue
 
@@ -124,7 +128,7 @@ export function serializeAnswersPayload(answersMap, questions = [], { includeEmp
 
 export function getUnansweredQuestionIds(answersMap, questions = []) {
   return questions
-    .filter((q) => !isAnswerProvided(answersMap[q.test_question_id], q.snapshot_type_code))
+    .filter((q) => !isAnswerProvided(answersMap[q.test_question_id], q.snapshot_type_code || q.type_code))
     .map((q) => q.test_question_id)
 }
 

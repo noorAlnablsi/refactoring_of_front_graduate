@@ -595,7 +595,8 @@
       "earned": "الدرجة المكتسبة",
       "next": "التالي",
       "choicesTitle": "الخيارات وإجابة الطالب",
-      "studentChoice": "إجابة الطالب"
+      "studentChoice": "إجابة الطالب",
+      "correctChoice": "الإجابة الصحيحة"
     },
     "manual": {
       "hint": "صحّح الأسئلة المقالية فقط (PENDING_REVIEW).",

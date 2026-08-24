@@ -124,7 +124,9 @@ function ExamAttemptGradingPage() {
                 <div className="mt-4 rounded-xl bg-[#F6F8F9] p-4 text-sm">
                   <p className="text-xs font-semibold text-[#94A3B8]">{t('grading.auto.earned')}</p>
                   <p className="mt-1 font-extrabold text-[#2AA8A2]">
-                    {formatLocaleNumber(q.answer?.earned_score ?? 0)}
+                    {q.answer?.earned_score != null && q.answer?.earned_score !== ''
+                      ? formatLocaleNumber(q.answer.earned_score)
+                      : '—'}
                   </p>
                   <p className="mt-2 text-xs text-[#64748B]">
                     {t(`grading.answerStatus.${q.answer?.grading_status}`, {

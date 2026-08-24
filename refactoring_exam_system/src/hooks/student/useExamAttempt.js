@@ -292,8 +292,12 @@ export function useExamAttempt(testId) {
     if (submittingRef.current) return null
     if (typeof navigator !== 'undefined' && !navigator.onLine) return null
 
-    const payload = serializeAnswersPayload(answersRef.current, currentAttempt.questions || [])
-    if (!payload.length && !dirtyRef.current) return null
+    const questionList =
+      Array.isArray(currentAttempt.questions) && currentAttempt.questions.length
+        ? currentAttempt.questions
+        : questions
+    const payload = serializeAnswersPayload(answersRef.current, questionList)
+    if (!payload.length) return null
 
     setSaving(true)
     try {
@@ -315,7 +319,7 @@ export function useExamAttempt(testId) {
     } finally {
       setSaving(false)
     }
-  }, [testId])
+  }, [testId, questions])
 
   const applyHydratedAnswers = useCallback(
     (resolvedAttempt, serverMap) => {
@@ -694,15 +698,27 @@ export function useExamAttempt(testId) {
         }
       }
 
-      submittingRef.current = true
-      setSubmitting(true)
       setError(null)
 
       try {
+        // احفظ الإجابات أولًا قبل قفل submit؛ وإلا persistAnswers كان يتخطى لأن submittingRef=true
         await persistAnswers()
+
+        submittingRef.current = true
+        setSubmitting(true)
+
+        const answers = serializeAnswersPayload(
+          answersRef.current,
+          questions,
+          { includeEmpty: false },
+        )
         await stopProctoringRef.current?.()
         clearEntryProctoringBridge()
-        const data = await submitTestAttempt(testId, attemptId)
+        const data = await submitTestAttempt(
+          testId,
+          attemptId,
+          answers.length ? { answers } : {},
+        )
         clearAttemptLocalDraft(testId, attemptId)
         clearAttemptEntryRules(testId)
         clearAttemptOfflineState(testId, attemptId)
