@@ -5,11 +5,14 @@ import { getWorkspaceId } from './workspaceContext'
 import { useAuthStore } from '../store/authStore'
 import { API_BASE_URL } from '../config/env'
 
+axios.defaults.headers.common['ngrok-skip-browser-warning'] = 'true'
+
 const api = axios.create({
   baseURL: API_BASE_URL,
   headers: {
     'Content-Type': 'application/json',
     Accept: 'application/json',
+    'ngrok-skip-browser-warning': 'true',
   },
 })
 
